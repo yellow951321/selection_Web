@@ -3,10 +3,11 @@ const router = express.Router();
 
 var sessionTable = require('./')
 
-router.post('/',(req,res)=>{
-
-
+router.get('/',(req,res)=>{
+  res.render('login');
 });
+
+
 
 
 
