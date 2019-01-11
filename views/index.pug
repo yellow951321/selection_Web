@@ -1,5 +1,11 @@
 extends layout
 
+append head
+  link(rel='stylesheet', href='/stylesheets/manage.css')
+
 append content
   h1= title
   p(class='ui button') 13 to #{title}
+
+append script
+  link(rel='stylesheet', href='/javascripts/manage.js')
