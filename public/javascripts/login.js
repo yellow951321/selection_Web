@@ -11,12 +11,11 @@ document.getElementById('wrong').style.visibility = 'hidden';
 document.getElementById('hide').style.visibility = 'hidden';
 
 let textclear = function () {
-    let account = document.getElementsByClassName('account');
-    let password = document.getElementsByClassName('password');
-    account[0]['value'] = '';
-    account[1]['value'] = '';
-    password[0]['value'] = '';
-    password[1]['value'] = '';
+    document.getElementsByClassName('account')[0].value= '';
+    document.getElementsByClassName('password')[0].value= '';
+    document.getElementsByClassName('account2')[0].value= '';
+    document.getElementsByClassName('password2')[0].value= '';
+    //login.querySelector('.account').value = '';
 }
 login.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -25,7 +24,7 @@ login.addEventListener('submit', (event) => {
     const password = login.querySelector('.password');
 
     
-    //console.log(account);
+    //console.log(account.value);
     fetch(reqURL, {
         method: 'POST',
         body: JSON.stringify({ 'username': account.value, 'password': password.value }),
@@ -58,9 +57,9 @@ login.addEventListener('submit', (event) => {
 
 signup.addEventListener('submit', (event) => {
     event.preventDefault();
-    const account = signup.querySelector('.account');
-    const password = signup.querySelector('.password');
-    console.log(account + password);
+    const account = signup.querySelector('.account2');
+    const password = signup.querySelector('.password2');
+    console.log(password.value);
     
     fetch(signURL, {
         method: 'POST',
@@ -71,8 +70,12 @@ signup.addEventListener('submit', (event) => {
     })
     .then(res => res.text())
     .then(data => {
-        if(data === "OK"){
+        if(data === "OK" || true){
             console.log('register success');
+            login.style.display = 'block';
+            signup.style.display = 'none';
+            textclear();
+            document.getElementById('wrong').style.visibility = 'hidden';
         }
         return true;
     })
