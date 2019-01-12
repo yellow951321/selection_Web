@@ -16,11 +16,15 @@ router.post('/',(req,res)=>{
       username: req.body.username,
       password: req.body.password
     });
-
+    console.log('Eeeee');
     user.save().then((doc)=>{
       console.log(doc);
       res.status(200).send("OK");
-      fs.mkdir('/../data/'+req.body.username,{recursive: true});
+      fs.mkdir('data/'+req.body.username,{recursive: true},(err)=>{
+        if(err) console.log(err);
+        else 
+          console.log("mkdir operation complete");
+      });
     },(e)=>{
       console.log(e);
       res.status(400).send(e);

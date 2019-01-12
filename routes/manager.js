@@ -42,6 +42,19 @@ router.post('/save',(req,res)=>{
   }
 });
 
+
+router.post('/fetch',(req,res)=>{
+  var account = sessionTable.findBySId(req.body.sessionId);
+  if(account){
+    var files = fetch(req.body.info);
+    if(files instanceof Array){
+      //render the problem.
+    }else{
+      //render the editNode.
+    }
+  }
+});
+
 function pathGen(username,year,type,campus,name){
   return '../data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
 }
@@ -54,7 +67,7 @@ function fetch(info){
   const year = info.year ? `/${info.year}/` : '';
   const type = info.type ? `/${info.type}/` : '';
   const campus = info.campus ? `/${info.campus}/` : '';
-  const proName = info.proName ? `/${info.proName}` : '';
+  const proName = info.proName ? `/${info.proName}/` : '';
   const path = pathGen(username,year,type,campus,proName);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{

@@ -3,9 +3,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-//const mongoose = require('./db/mongoose');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const mongoose = require('./db/mongoose');
+
 const loginRouter = require('./routes/login');
 const signupRouter = require('./routes/signup');
 const managerRouter = require('./routes/manager');
