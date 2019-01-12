@@ -22,8 +22,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'semantic')));
 app.use(express.static(path.join(__dirname, 'routes')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/log', loginRouter);
 app.use('/signup',signupRouter);
 app.use('/man',managerRouter);

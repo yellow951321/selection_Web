@@ -40,7 +40,7 @@ login.addEventListener('submit', (event) => {
         if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
-            //window.location = 'http://localhost:3000/';
+            window.location = 'http://localhost:11021/man';
         }
         else
         {

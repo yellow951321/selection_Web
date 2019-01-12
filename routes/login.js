@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 var session = require('./session');
-var User = require('./../models/user');
+var {User} = require('./../models/user');
 var sessionTable = require('./session');
 
 router.get('/',(req,res)=>{
@@ -44,7 +44,6 @@ router.post('/in',(req,res)=>{
         res.status(400).send(`No matched account named ${req.body.username}`);
       }
     });
-    res.status(200).send("OK");
 });
 
 router.post('/out',(req,res)=>{

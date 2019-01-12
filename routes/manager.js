@@ -5,13 +5,31 @@ const fs = require('fs');
 
 var sessionTable = require('./session');
 
+router.get('/',(req,res)=>{
+  res.render('index',{title:'express'});
+});
+
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
-  // let out = pug.renderFile('login');
-  // console.log(out);
-  // console.log('holleo');
-  // res.status(200).send('OK');
-  res.render('manage/_render_manage',{info:[req.body.info, req.body.info]});
+  const username = "nober";
+  const path = pathGen(username,req.body.info.year,req.body.info.type,req.body.info.campus,req.body.info.name);
+  fs.stat(path,(err,state)=>{
+    if(err){
+      console.log(err);
+      fs.mkdir(path,{recursive:true},(err)=>{
+        if(err) console.log(err);
+        console.log('mkdir operation complete');
+      });
+    }
+    console.log(state);
+    
+  });
+  fs.copyFile('data/projectSchema.json',path,(err)=>{
+    if(err) console.log(err);
+    else  
+      console.log("Mdir operation is completed");
+  });
+  res.render('manage/_render_manage',{info:[req.body.info]});
 });
 
 router.post('/save',(req,res)=>{
@@ -61,10 +79,10 @@ router.post('/fetch',(req,res)=>{
 });
 
 function pathGen(username,year,type,campus,name){
-  return '../data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
+  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
 }
 function pathGenWithoutName(username,year,type,campus){
-  return '../data/'+username+'/'+year+'/'+type+'/'+campus;
+  return 'data/'+username+'/'+year+'/'+type+'/'+campus;
 }
 
 function fetch(info){

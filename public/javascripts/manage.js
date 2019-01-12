@@ -32,12 +32,12 @@ addForm.addEventListener('submit', (event) => {
     fetch(reqURL, {
         method: 'POST',
         body: JSON.stringify({
-            'sessionID': '123',
+            'sessionId': '123',
             'info': {
                 'year': year.value,
                 'campus': school.value,
                 'name': project.value,
-                'type': type.type
+                'type': type.value
             }
         }),
         headers: {
