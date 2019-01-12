@@ -1,0 +1,17 @@
+h1:first-child {
+    margin-top: 0.5rem;
+    margin-left: 3rem;
+}
+
+.ui.button {
+    width: 8rem;
+    font-size: 1.5rem;
+}
+
+.ui.modal > .close {
+    padding-top: 0;
+}
+
+.addProject {
+    width: 40%;
+}
