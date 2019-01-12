@@ -5,6 +5,8 @@ const pageEdit = document.getElementById('page-edit');
 
 //init
 pageEdit.style.display = 'none';
+pageManagemeny.style.display = 'none';
+
 // dropdown
 $('select.dropdown')
   .dropdown()
