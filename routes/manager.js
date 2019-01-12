@@ -72,3 +72,6 @@ function fetch(info){
     });
   }
 }
+
+
+module.exports= router;
