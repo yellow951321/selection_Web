@@ -59,6 +59,7 @@ signup.addEventListener('submit', (event) => {
     event.preventDefault();
     const account = signup.querySelector('.account2');
     const password = signup.querySelector('.password2');
+    console.log(account.value);
     console.log(password.value);
     
     fetch(signURL, {
@@ -70,7 +71,7 @@ signup.addEventListener('submit', (event) => {
     })
     .then(res => res.text())
     .then(data => {
-        if(data === "OK" || true){
+        if(true || data === "OK"){
             console.log('register success');
             login.style.display = 'block';
             signup.style.display = 'none';
