@@ -4,31 +4,32 @@ append head
   link(rel='stylesheet', href='/stylesheets/login.css')
 
 append content
-  h1= title
+  br
   //p(class='ui button') Welcome #{title}
-  
-  form(class="ui form", method='POST', id='login')
-      h1 LOGIN
-      div(class="field")
-        label(class="interface") account:
-        input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account")
-      div(class="field")
-        label(class="interface") password:
-        input(type='text', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password")
-
-      button(class="ui primary button", type = 'submit', style='width:100px;height:40px;') login
-      button(class="ui button", type = 'button', id='signupbutton', style='width:100px;height:40px;') sign up
-  
-  form(class="ui form", method='POST', id='signup')
-      h1 SIGN UP
-      div(class="field")
-        label(class="interface") account:
-        input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account")
-      div(class="field")
-        label(class="interface") password:
-        input(type='text', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password")
-      button(class="ui secondary button", type='submit', style='width:100px;height:40px;') Confirm
-      button(class="ui button", id='back', type='button', style='width:100px;height:40px;') Back
+  div(class="ui center aligned container")
+    form(class="ui form", method='POST', id='login')
+        h1 LOGIN
+        div(class="field")
+          label(class="interface") account:
+          input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account", minlength="6", maxlength="25")
+        div(class="field")
+          label(class="interface") password:
+          div(class="ui left pointing red basic label", id="hide") Password Wrong
+          input(type='password', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
+          div(class="ui left pointing red basic label", id="wrong") Password Wrong
+        button(class="ui primary button", type = 'submit', style='width:100px;height:40px;') login
+        button(class="ui button", type = 'button', id='signupbutton', style='width:100px;height:40px;') sign up
+    
+    form(class="ui form", method='POST', id='signup')
+        h1 SIGN UP
+        div(class="field")
+          label(class="interface") account:
+          input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account", minlength="6", maxlength="25")
+        div(class="field")
+          label(class="interface") password:
+          input(type='password', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
+        button(class="ui secondary button", type='submit', style='width:100px;height:40px;') Confirm
+        button(class="ui button", id='back', type='button', style='width:100px;height:40px;') Back
 
       
 
