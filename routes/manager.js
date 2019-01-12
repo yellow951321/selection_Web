@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const pug = require('pug');
 const fs = require('fs');
 
 var sessionTable = require('./session');
 
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
-  res.render('/////',req.body.info);
+  // let out = pug.renderFile('login');
+  // console.log(out);
+  // console.log('holleo');
+  // res.status(200).send('OK');
+  res.render('manage/_render_manage',{info:[req.body.info, req.body.info]});
 });
 
 router.post('/save',(req,res)=>{

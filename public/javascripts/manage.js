@@ -1,5 +1,3 @@
-const host = 'localhost:3000';
-
 $('select.dropdown')
   .dropdown()
 ;
@@ -19,35 +17,37 @@ const addProjectClicked = (event) => {
 
 document.getElementById('add-project').addEventListener('click', addProjectClicked);
 
+const pageManagement = document.getElementById('page-management');
 //add event listener to Add button (for new project)
 const addForm = document.getElementById('addForm');
 addForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const reqURL = 'http://' + host + '/man/add';
+    const reqURL = '/man/add';
     const project = addForm.querySelector('.addForm__project');
     const year = addForm.querySelector('.addForm__year');
     const school = addForm.querySelector('.addForm__school');
     const type = addForm.querySelector('.addForm__type');
 
     fetch(reqURL, {
-        method: 'post',
+        method: 'POST',
         body: JSON.stringify({
             'sessionID': '123',
             'info': {
                 'year': year.value,
                 'campus': school.value,
                 'name': project.value,
-                'type': school.type, 
+                'type': type.type
             }
         }),
         headers: {
-            'Content-Type': 'addliction/json'
+            'Content-Type': 'application/json'
         }
     })   
-    .then(res => res.json())
+    .then(res => res.text())
     .then(data => {
-        console.log(res);
+        console.log(typeof data);
+        pageManagement.insertAdjacentHTML('beforeend', data);
     })
     
 
