@@ -1,5 +1,28 @@
 extends layout
 
+append head
+  title manage
+  link(rel='stylesheet', href='/stylesheets/manage.css')
+
 append content
-  h1= title
-  p(class='ui button') 13 to #{title}
+  //- header
+  section#header.ui.top.fixed.menu.header
+    h1#title.title management
+    .right.menu
+      button#add.ui.blue.right.floated.button.btn.btn-info.btn-lg.add(data-toggle='modal', data-target='#myModal') Add
+      button#save.ui.blue.right.floated.button.save Save
+      button#logout.ui.blue.right.floated.button.logout Logout
+
+    form.ui.modal.form
+      button.close.icon &times;
+      h4.header Add new project1111
+      .content.field
+        label(for='project')
+          b Project Name
+        input(type='text', placeholder='Enter Project Name', name='project' required)
+        button#addProject.addProject.ui.button(type='submit') submit
+
+
+
+append script
+  script(src='/javascripts/manage.js')
