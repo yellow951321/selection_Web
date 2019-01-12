@@ -5,8 +5,8 @@ const fs = require('fs');
 var sessionTable = require('/session');
 
 router.post('/add',(req,res)=>{
-  const username = sessionTable.findBySId(req.body.sessionId);
-
+  //const username = sessionTable.findBySId(req.body.sessionId);
+  res.render('/////',req.body.info);
 });
 
 router.post('/save',(req,res)=>{

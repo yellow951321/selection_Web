@@ -11,6 +11,7 @@ router.get('/',(req,res)=>{
 router.post('/',(req,res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>','gi');
   if(!rMatch.test(req.body.username) && !rMatch.test(req.body.password)){
+    console.log('enter');
     var user = new User({
       username: req.body.username,
       password: req.body.password
