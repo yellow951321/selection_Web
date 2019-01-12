@@ -1,0 +1,23 @@
+include _objects.pug
+mixin newEdit()
+	form.ui.form.segment
+		.three.fields
+			.field
+				label 構面
+				select.ui.selection.dropdown(value='教學')
+					each val, index in layout
+						if index != '年度' && index != '學校' && index != '類型'
+							option(value=index)=index
+			.field
+				label 項目
+				select.ui.selection.dropdown
+					each val, index in layout['教學']
+						option(value=index)=index
+			.field
+				label 詳細資料
+				select.ui.selection.dropdown     
+					each val, index in layout['教學']['強化教學品質']
+						option(value=index)=index   
+		.field
+			label 內容
+				textarea(name="", rows="5")
