@@ -28,7 +28,7 @@ login.addEventListener('submit', (event) => {
     //console.log(account);
     fetch(reqURL, {
         method: 'POST',
-        body: JSON.stringify({ 'account': account.value, 'password': password.value }),
+        body: JSON.stringify({ 'username': account.value, 'password': password.value }),
         headers: {
             //'Accept': "application/json",
             'Content-Type': "application/json"
@@ -38,7 +38,7 @@ login.addEventListener('submit', (event) => {
     .then(data => {
         //const error = login.querySelector( '.login__error' );
         //console.log(data);
-        if (data === ' OK') {
+        if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
             //window.location = 'http://localhost:3000/';
@@ -64,7 +64,7 @@ signup.addEventListener('submit', (event) => {
     
     fetch(signURL, {
         method: 'POST',
-        body: JSON.stringify({ 'account': account.value, 'password': password.value }),
+        body: JSON.stringify({ 'username': account.value, 'password': password.value }),
         headers: {
             'Content-Type': "application/json"
         }
