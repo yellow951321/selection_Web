@@ -1,6 +1,7 @@
 extends layout
 
 append head
+  include manage/_manage.pug
   title manage
   link(rel='stylesheet', href='/stylesheets/manage.css')
 
@@ -13,16 +14,39 @@ append content
       button#save.ui.blue.right.floated.button.save Save
       button#logout.ui.blue.right.floated.button.logout Logout
 
-    form.ui.modal.form
-      button.close.icon &times;
-      h4.header Add new project1111
+  //- popup addproject
+  .ui.container
+    form.ui.form.modal
+      h4.header Add new project
       .content.field
-        label(for='project')
-          b Project Name
-        input(type='text', placeholder='Enter Project Name', name='project' required)
-        button#addProject.addProject.ui.button(type='submit') submit
+        label(for='project') 計畫名稱
+        input(type='text', placeholder='Enter Project Name', name='project' required)        
+        label(for='year') 年份
+        input(type='number', min='1900', max='2099', step='1',value='2019', name='year' required)
+        label(for='school') 學校
+        input(type='text', placeholder='Enter school Name', name='school' required)
+        label(for='project') 學校類型
+        input(type='text', placeholder='Enter school type', name='type' required)
+      .actions          
+        button#close-modal.ui.black.deny.button(type='button') 取消        
+        button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增                
 
+  //- content
+  //- page management
+  #page-management.ui.container.pusher
+    -
+      const a = Object.freeze({
+        'name': '計畫名稱',
+        'year': '1999',
+        'campus': '成功大學',
+        'type': '普通大學'
+      });
+    +manage(a)
 
+  //- page edit
+  include manage/_edit.pug
+  #page-edit.ui.container.pusher
+    +newEdit(layout)
 
 append script
   script(src='/javascripts/manage.js')
