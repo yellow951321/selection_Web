@@ -10,7 +10,6 @@ router.get('/',(req,res)=>{
 
 router.post('/',(req,res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>','gi');
-
   if(!rMatch.test(req.body.username) && !rMatch.test(req.body.password)){
     var user = new User({
       username: req.body.username,
@@ -26,7 +25,6 @@ router.post('/',(req,res)=>{
       res.status(400).send(e);
     });
   }
-
 });
 
 module.exports = router;
