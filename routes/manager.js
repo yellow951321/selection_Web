@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-var sessionTable = require('/session');
+var sessionTable = require('./session');
 
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
