@@ -16,19 +16,19 @@ append content
 
   //- popup addproject
   .ui.container
-    form.ui.form.modal
-      h4.header Add new project
+    form#addForm.ui.form.modal
+      h4.header 新增計畫
       .content.field
         label(for='project') 計畫名稱
-        input(type='text', placeholder='Enter Project Name', name='project' required)        
+        input.addForm__project(type='text', placeholder='Enter Project Name', name='project' required)        
         label(for='year') 年份
-        input(type='number', min='1900', max='2099', step='1',value='2019', name='year' required)
+        input.addForm__year(type='number', min='1900', max='2099', step='1',value='2019', name='year' required)
         label(for='school') 學校
-        input(type='text', placeholder='Enter school Name', name='school' required)
+        input.addForm__school(type='text', placeholder='Enter school Name', name='school' required)
         label(for='project') 學校類型
-        input(type='text', placeholder='Enter school type', name='type' required)
+        input.addForm__type(type='text', placeholder='Enter school type', name='type' required)
       .actions          
-        button#close-modal.ui.black.deny.button(type='button') 取消        
+        button.ui.black.deny.button(type='button') 取消        
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增                
 
   //- content
