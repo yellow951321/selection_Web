@@ -1,6 +1,16 @@
+// variables
+const pageSelect = document.getElementById('page-select');
+const pageManagement = document.getElementById('page-management');
+const pageEdit = document.getElementById('page-edit');
+
+//init
+pageEdit.style.display = 'none';
+// dropdown
 $('select.dropdown')
   .dropdown()
 ;
+
+// modal setting
 const addClicked = () => {
     $('.ui.modal')
     .modal('show')
@@ -9,6 +19,7 @@ const addClicked = () => {
 
 document.getElementById('add').addEventListener('click', addClicked);
 
+// adding project
 const addProjectClicked = (event) => {
     $('.ui.modal').modal({
         onApprove : function(){return false;}
@@ -17,7 +28,6 @@ const addProjectClicked = (event) => {
 
 document.getElementById('add-project').addEventListener('click', addProjectClicked);
 
-const pageManagement = document.getElementById('page-management');
 //add event listener to Add button (for new project)
 const addForm = document.getElementById('addForm');
 addForm.addEventListener('submit', (event) => {
@@ -48,8 +58,7 @@ addForm.addEventListener('submit', (event) => {
     .then(data => {
         console.log(typeof data);
         pageManagement.insertAdjacentHTML('beforeend', data);
-    })
-    
+    })    
 
     $('.ui.modal').modal('hide');
 })

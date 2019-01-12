@@ -2,6 +2,7 @@ extends layout
 
 append head
   include manage/_manage.pug
+  include manage/_edit.pug
   title manage
   link(rel='stylesheet', href='/stylesheets/manage.css')
 
@@ -32,20 +33,14 @@ append content
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增                
 
   //- content
+  //- page select
+  #page-select.ui.container.pusher
+
   //- page management
   #page-management.ui.container.pusher
-    -
-      const a = Object.freeze({
-        'name': '計畫名稱',
-        'year': '1999',
-        'campus': '成功大學',
-        'type': '普通大學'
-      });
-    +manage(a)
 
   //- page edit
-  include manage/_edit.pug
-  #page-edit.ui.container.pusher
+  #page-edit.ui.container.pusher.myhide
     +newEdit(layout)
 
 append script
