@@ -6,6 +6,9 @@ const reqURL = '/log/in';
 const signURL = '/signup';
 
 signup.style.display = 'none';
+//document.getElementById('wrong').style.display = 'none';
+document.getElementById('wrong').style.visibility = 'hidden';
+document.getElementById('hide').style.visibility = 'hidden';
 
 let textclear = function () {
     let account = document.getElementsByClassName('account');
@@ -21,32 +24,34 @@ login.addEventListener('submit', (event) => {
     const account = login.querySelector('.account');
     const password = login.querySelector('.password');
 
-    //console.log(event);
+    
+    //console.log(account);
     fetch(reqURL, {
         method: 'POST',
-        body: JSON.stringify({ 'account': account.value, 'password': password.value }),
+        body: JSON.stringify({ 'username': account.value, 'password': password.value }),
         headers: {
             //'Accept': "application/json",
             'Content-Type': "application/json"
         }
     })
-    //.then( res => res.json() )
+    .then( res => res.text() )
     .then(data => {
         //const error = login.querySelector( '.login__error' );
-        //console.log(data['statusText']);
-        if (data['statusText'] === 'OK') {
+        //console.log(data);
+        if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
             //window.location = 'http://localhost:3000/';
         }
-        /*else
+        else
         {
-            loginClear();
-            login.querySelector( '.login__reset' ).classList.add( 'login__reset--hidden' );
+            document.getElementById('wrong').style.visibility = 'visible';
+            //document.getElementById('wrong').style.display = 'block';
+            /*login.querySelector( '.login__reset' ).classList.add( 'login__reset--hidden' );
             login.querySelector( '.login__forget' ).classList.remove( 'login__forget--hidden' );
             if( error.classList.contains( 'login__error--hidden' ))
-                error.classList.remove( 'login__error--hidden' );
-        }*/
+                error.classList.remove( 'login__error--hidden' );*/
+        }
         return true
     })
 })
@@ -59,13 +64,14 @@ signup.addEventListener('submit', (event) => {
     
     fetch(signURL, {
         method: 'POST',
-        body: JSON.stringify({ 'account': account.value, 'password': password.value }),
+        body: JSON.stringify({ 'username': account.value, 'password': password.value }),
         headers: {
             'Content-Type': "application/json"
         }
     })
-    .then(data =>{
-        if(data['statusText' === "OK"]){
+    .then(res => res.text())
+    .then(data => {
+        if(data === "OK"){
             console.log('register success');
         }
         return true;
@@ -84,5 +90,6 @@ backbutton.addEventListener('click', (event) => {
     login.style.display = 'block';
     signup.style.display = 'none';
     textclear();
+    document.getElementById('wrong').style.visibility = 'hidden';
     console.log('back');
 })

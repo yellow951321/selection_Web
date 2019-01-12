@@ -11,9 +11,7 @@ body {
 /*.interface {
     font-size: 205px;
 }*/
-#login {
-    position: static;
-}
-#signup {
-    position: relative;
-}
+
+/*.ui form {
+    align-content: center;
+}*/
