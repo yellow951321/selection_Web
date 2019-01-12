@@ -1,0 +1,19 @@
+body {
+    padding: 10px;
+    font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+/*p {
+    font-size: 25px;
+    color: chocolate;
+  }*/
+
+/*.interface {
+    font-size: 205px;
+}*/
+#login {
+    position: static;
+}
+#signup {
+    position: relative;
+}

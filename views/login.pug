@@ -1,5 +1,36 @@
 extends layout
 
+append head
+  link(rel='stylesheet', href='/stylesheets/login.css')
+
 append content
   h1= title
-  p(class='ui button') 13 to #{title}
+  //p(class='ui button') Welcome #{title}
+  
+  form(class="ui form", method='POST', id='login')
+      h1 LOGIN
+      div(class="field")
+        label(class="interface") account:
+        input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account")
+      div(class="field")
+        label(class="interface") password:
+        input(type='text', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password")
+
+      button(class="ui primary button", type = 'submit', style='width:100px;height:40px;') login
+      button(class="ui button", type = 'button', id='signupbutton', style='width:100px;height:40px;') sign up
+  
+  form(class="ui form", method='POST', id='signup')
+      h1 SIGN UP
+      div(class="field")
+        label(class="interface") account:
+        input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account")
+      div(class="field")
+        label(class="interface") password:
+        input(type='text', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password")
+      button(class="ui secondary button", type='submit', style='width:100px;height:40px;') Confirm
+      button(class="ui button", id='back', type='button', style='width:100px;height:40px;') Back
+
+      
+
+append script
+  script(src='/javascripts/login.js')
