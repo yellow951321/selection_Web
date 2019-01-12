@@ -24,7 +24,7 @@ router.post('/check',(req,res)=>{
 
 
 router.post('/in',(req,res)=>{
-    /*User.findOne({
+    User.findOne({
       username: req.body.username,
       password: req.body.password
     },(err,doc)=>{
@@ -43,7 +43,7 @@ router.post('/in',(req,res)=>{
       }else {
         res.status(400).send(`No matched account named ${req.body.username}`);
       }
-    });*/
+    });
     res.status(200).send("OK");
 });
 

@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'semantic')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/log', loginRouter);
-//app.use('/signup',)
+app.use('/signup',signupRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -40,5 +40,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+process.env.PORT = 11021;
 
 module.exports = app;
