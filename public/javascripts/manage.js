@@ -2,9 +2,17 @@
 const pageSelect = document.getElementById('page-select');
 const pageManagement = document.getElementById('page-management');
 const pageEdit = document.getElementById('page-edit');
+const pageHeader = document.getElementById('header'); 
 let sessionId = '123';
+
+var schema = {};
+
 //init
-// pageEdit.style.display = 'none';
+pageHeader.querySelector('.add').style.display = 'none';
+pageHeader.querySelector('.add-content').style.display = 'none';
+pageHeader.querySelector('.save-content').style.display = 'none';
+pageEdit.style.display = 'none';
+pageManagement.style.display = 'none';
 
 // dropdown
 $('select.dropdown')
@@ -89,8 +97,13 @@ const projectSelected = (event) => {
     selectionNowSchool = school;
     selectionNowType = type;
 
+    //change button and page
+    pageHeader.querySelector('.add').style.display = 'none';
+    pageHeader.querySelector('.add-content').style.display = 'block';
+    pageHeader.querySelector('.save-content').style.display = 'block';
     pageManagement.style.display = 'none';
     pageEdit.style.display = 'block';
+
 
     fetch( 'man/edit', {
         method: 'POST',
@@ -108,6 +121,10 @@ const projectSelected = (event) => {
     .then( res => res.text() )
     .then( data => {
         pageEdit.insertAdjacentHTML('beforeend', data);
+
+        $('select.dropdown')
+        .dropdown()
+        ;
     })
 }
 
@@ -168,8 +185,11 @@ const butttonSelected = (event) => {
             pageManagement.style.display = 'block';
             pageManagement.insertAdjacentHTML('beforeend', data);
             const childs = pageManagement.children;
-            childs[childs.length-1].querySelector( '.edit' ).addEventListener( 'click', projectSelected);
-            childs[childs.length-1].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);            
+            for(let i=0; i<childs.length; ++i){
+                childs[i].querySelector( '.edit' ).addEventListener( 'click', projectSelected);
+                childs[i].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);
+            }
+            pageHeader.querySelector('.add').style.display = 'block';            
         }     
     })    
 }
