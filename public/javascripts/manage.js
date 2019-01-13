@@ -43,7 +43,7 @@ addForm.addEventListener('submit', (event) => {
     fetch(reqURL, {
         method: 'POST',
         body: JSON.stringify({
-            'sessionId': '123',
+            'sessionId': sessionId,
             'info': {
                 'year': year.value,
                 'campus': school.value,
@@ -109,7 +109,7 @@ const butttonSelected = (event) => {
         else if ( selectionNowPage === 'type' ){
             typeBlock.style.display = 'none';
             schoolBlock.insertAdjacentHTML('beforeend', data);
-            const childs = typeBlock.children;         
+            const childs = schoolBlock.children;         
             for(let i = 0; i < childs.length; i++){
                 childs[i].addEventListener('click' , butttonSelected);
             }
@@ -137,4 +137,8 @@ fetch( 'man/fetch', {
     selectionNowPage = 'year'; 
 })
 
-//selection > get type, campus
+// page-management 
+
+// page-management > variables
+
+
