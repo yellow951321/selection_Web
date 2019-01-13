@@ -12,11 +12,12 @@ router.get('/',(req,res)=>{
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
   const username = "nober";
+  const pathWithoutName = pathGenWithoutName(username,req.body.info.year,req.body.info.type,req.body.info.campus);
   const path = pathGen(username,req.body.info.year,req.body.info.type,req.body.info.campus,req.body.info.name);
   fs.stat(path,(err,state)=>{
     if(err){
       console.log(err);
-      fs.mkdir(path,{recursive:true},(err)=>{
+      fs.mkdir(pathWithoutName,{recursive:true},(err)=>{
         if(err) console.log(err);
         console.log('mkdir operation complete');
       });
@@ -71,7 +72,6 @@ router.post('/save',(req,res)=>{
 
 
 router.post('/fetch',(req,res)=>{
-<<<<<<< HEAD
   var account = sessionTable.findBySId(req.body.sessionId);
   console.log(req.body);
   const info = {
@@ -104,74 +104,24 @@ router.post('/fetch',(req,res)=>{
 });
 
 router.post('/edit',(req,res)=>{
-  //edit when press edition btn
-=======
-//   var account = sessionTable.findBySId(req.body.sessionId);
-//   const info = {
-//     username : account.username,
-//     year : req.body.year,
-//     type : req.body.type,
-//     campus : req.body.campus
-//   }
-//   if(account){
-//     var files = fetch(info);
-//     if(files instanceof Array){
-//       //render the problem.
-//       res.render
-//     }else{
-//       //render the editNode.
-//     }
-//   }
-  
-    if(req.body.year === undefined)
-      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
-    else if(req.body.type === ''){
-      res.render('manage/_render_select_button', { contents:['普通','綜合']});
+  var account = sessionTable.findBySId(req.body.sessionId);
+  const info = {
+    username : 'nober',
+    year : req.body.year,
+    type : req.body.type,
+    campus : req.body.campus,
+    proName : req.body.name
+  }
+  console.log(info);
+  fetch(info,(files)=>{
+    //console.log(files);
+    if(files instanceof Object){
+      objToNode(files,(context)=>{
+        console.log(context);
+        res.render('manage/_edit',{info:context});
+      });
     }
-    else if(req.body.campus === ''){
-      res.render('manage/_render_select_button', { contents:['成大','成大']});
-	}
-	else {
-		res.render('manage/_render_manage.pug', {
-			info : [ 
-				{
-					'name' : 'fuck',
-					'year' : '1999',
-					'campus': 'NCKU',
-					'type': '普通'			
-				}
-			]		
-		})
-	}	
-});
-
-router.post('/edit',(req,res)=>{
-  	//edit when press edition button
-  	res.render('manage/_render_edit', {
-	  	info: [
-			{
-				'dimension': '教學',
-				'item': '強化教學品質',
-				'detail': '推廣創新教學模式',
-				'content': '2112313',
-				'page': {
-					start: '30',
-					end: '23',
-				}
-			},
-			{
-				'dimension': '教學',
-				'item': '強化教學品質',
-				'detail': '推廣創新教學模式',
-				'content': '2112313',
-				'page': {
-					start: '30',
-					end: '23',
-				}
-			}
-		]
-	});
->>>>>>> db7999573c90de5f4c7b67ebf4769b22df35bc79
+  });
 });
 
 
@@ -189,7 +139,7 @@ function fetch(info,cb){
   const year = info.year ? `/${info.year}` : '';
   const type = info.type ? `/${info.type}` : '';
   const campus = info.campus ? `/${info.campus}` : '';
-  const proName = info.proName ? `/${info.proName}` : '';
+  const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : '';
   const path = 'data'+username+year+type+campus+proName;
   console.log(path);
   if(proName != ""){
@@ -228,9 +178,10 @@ function splitArrayIntoContext(arr,cb){
 
 
 function objToNode(project,cb){
+  console.log(project);
   var context = [];
   for(dimension in project)
-    for(item in dimesion)
+    for(item in dimension)
       for(detail in item){
         if(detail instanceof Array && detail.length > 0){
           for(content of detail){
@@ -241,12 +192,13 @@ function objToNode(project,cb){
               t.content = content.paragraph;
               t.page.start = content.page[0];
               t.page.end = content.page[1];
+              
               context.push(t);
           }
         }
       }
 
-  cb(project);
+  cb(context);
 }
 
 function nodeToObj(path,body,cb){
