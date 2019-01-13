@@ -57,20 +57,65 @@ addForm.addEventListener('submit', (event) => {
     })   
     .then(res => res.text())
     .then(data => {
-        console.log(typeof data);
         pageManagement.insertAdjacentHTML('beforeend', data);
     })    
 
     $('.ui.modal').modal('hide');
 })
 
-// selection
+// variables for selection, manage, edit
 
 // selection variable
 let selectionNowPage = 'start';
 let selectionNowYear = '';
 let selectionNowType = '';
 let selectionNowSchool = '';
+let selectionNowProject = '';
+
+// page-management 
+
+// page-mnaagement > variables
+const projectSelected = (event) => {
+    //get the whole project node
+    projectNode = event.target.parentNode.parentNode;
+
+    // variables
+    const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
+    const year = projectNode.querySelector( '.manage__year ' ).innerHTML;
+    const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
+    const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
+    selectionNowProject = name;
+    selectionNowYear = year;
+    selectionNowSchool = school;
+    selectionNowType = type;
+
+    pageManagement.style.display = 'none';
+    pageEdit.style.display = 'block';
+
+    fetch( 'man/edit', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId,
+            name: name, 
+            year: year,
+            type: type,
+            campus: school
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then( res => res.text() )
+    .then( data => {
+        pageEdit.insertAdjacentHTML('beforeend', data);
+    })
+}
+
+const projectDeleted = (event) => {
+
+}
+
+// selection
 
 // selection > fetch button
 const butttonSelected = (event) => {
@@ -97,6 +142,7 @@ const butttonSelected = (event) => {
     })
     .then(res => res.text())
     .then(data => {
+        // change to type page
         if( selectionNowPage === 'year'){
             yearBlock.style.display = 'none';
             typeBlock.insertAdjacentHTML('beforeend', data);
@@ -106,6 +152,7 @@ const butttonSelected = (event) => {
             }
             selectionNowPage = 'type';
         }
+        // change to school page
         else if ( selectionNowPage === 'type' ){
             typeBlock.style.display = 'none';
             schoolBlock.insertAdjacentHTML('beforeend', data);
@@ -114,7 +161,16 @@ const butttonSelected = (event) => {
                 childs[i].addEventListener('click' , butttonSelected);
             }
             selectionNowPage = 'school';
-        }    
+        }
+        // show projects
+        else if ( selectionNowPage === 'school' ){
+            pageSelect.style.display = 'none';
+            pageManagement.style.display = 'block';
+            pageManagement.insertAdjacentHTML('beforeend', data);
+            const childs = pageManagement.children;
+            childs[childs.length-1].querySelector( '.edit' ).addEventListener( 'click', projectSelected);
+            childs[childs.length-1].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);            
+        }     
     })    
 }
 
@@ -136,9 +192,5 @@ fetch( 'man/fetch', {
     }    
     selectionNowPage = 'year'; 
 })
-
-// page-management 
-
-// page-management > variables
 
 

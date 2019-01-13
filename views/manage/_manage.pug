@@ -1,9 +1,9 @@
 mixin manage(info)
   .ui.segment.center.aligned.grid
-      h3.sixteen.wide.column=info['name']
-      p.four.wide.column=info['year']
-      p.four.wide.column=info['campus']
-      p.four.wide.column=info['type']
+      h3.sixteen.wide.column.manage__name=info['name']
+      p.four.wide.column.manage__year=info['year']
+      p.four.wide.column.manage__school=info['campus']
+      p.four.wide.column.manage__type=info['type']
       .right.aligned
-        button.ui.button.two.wide.column.edit edit
-        button.ui.button.two.wide.column.delete delete
+        button.ui.button.two.wide.column.edit 編輯
+        button.ui.button.two.wide.column.delete 刪除

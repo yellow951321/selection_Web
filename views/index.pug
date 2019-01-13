@@ -11,9 +11,10 @@ append content
   section#header.ui.top.fixed.menu.header
     h1#title.title management
     .right.menu
-      button#add.ui.blue.right.floated.button.btn.btn-info.btn-lg.add(data-toggle='modal', data-target='#myModal') Add
-      button#save.ui.blue.right.floated.button.save Save
-      button#logout.ui.blue.right.floated.button.logout Logout
+      button#add.ui.blue.right.floated.button.add 新增
+      button.add-content.ui.blue.floated.button 新增
+      button.save.ui.blue.right.floated.button 儲存
+      button.logout.ui.blue.right.floated.button 登出
 
   //- popup addproject
   .ui.container
@@ -44,7 +45,6 @@ append content
 
   //- page edit
   #page-edit.ui.container.pusher
-    +newEdit()
 
 append script
   script(src='/javascripts/manage.js')
