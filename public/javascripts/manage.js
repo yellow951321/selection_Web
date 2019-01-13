@@ -4,8 +4,7 @@ const pageManagement = document.getElementById('page-management');
 const pageEdit = document.getElementById('page-edit');
 
 //init
-pageEdit.style.display = 'none';
-pageManagemeny.style.display = 'none';
+// pageEdit.style.display = 'none';
 
 // dropdown
 $('select.dropdown')

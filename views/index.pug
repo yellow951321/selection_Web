@@ -3,6 +3,7 @@ extends layout
 append head
   include manage/_manage.pug
   include manage/_edit.pug
+  include magane/_render_year.pug
   title manage
   link(rel='stylesheet', href='/stylesheets/manage.css')
 
@@ -41,7 +42,7 @@ append content
 
   //- page edit
   #page-edit.ui.container.pusher.myhide
-    +newEdit(layout)
+    +newEdit()
 
 append script
   script(src='/javascripts/manage.js')
