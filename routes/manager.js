@@ -67,6 +67,7 @@ router.post('/save',(req,res)=>{
 
 
 router.post('/fetch',(req,res)=>{
+<<<<<<< HEAD
   var account = sessionTable.findBySId(req.body.sessionId);
   console.log(req.body);
   const info = {
@@ -86,6 +87,33 @@ router.post('/fetch',(req,res)=>{
     });
   }
 
+=======
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus
+//   }
+//   if(account){
+//     var files = fetch(info);
+//     if(files instanceof Array){
+//       //render the problem.
+//       res.render
+//     }else{
+//       //render the editNode.
+//     }
+//   }
+  
+    if(req.body.year === undefined)
+      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
+    else if(req.body.type === ''){
+      res.render('manage/_render_select_button', { contents:['普通','綜合']});
+    }
+    else if(req.body.campus === ''){
+      res.render('manage/_render_select_button', { contents:['成大','成大']});
+    }
+>>>>>>> 03a797c3143289300f107891cccdf297b35dd524
 });
 
 router.post('/edit',(req,res)=>{
