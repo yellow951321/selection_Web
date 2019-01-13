@@ -70,6 +70,14 @@ router.post('/save',(req,res)=>{
   }
 });
 
+router.post('/schema',(req,res)=>{
+  fs.readFile('data/projectSchema.json',(err,data)=>{
+    if(err) return console.log(err);
+    if(data){
+      res.status(200).send(data);
+    }
+  });
+});
 
 router.post('/fetch',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
@@ -192,7 +200,7 @@ function objToNode(project,cb){
               t.content = content.paragraph;
               t.page.start = content.page[0];
               t.page.end = content.page[1];
-              
+              console.log("Adding");
               context.push(t);
           }
         }
