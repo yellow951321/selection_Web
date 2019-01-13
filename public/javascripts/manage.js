@@ -16,7 +16,7 @@ var schema = {};
 
 //init
 function init(){
-    pageHeader.querySelector('.add').style.display = 'none';
+    pageHeader.querySelector('.add').style.display = 'block';
     pageHeader.querySelector('.add-content').style.display = 'none';
     pageHeader.querySelector('.save-content').style.display = 'none';
     pageSelect.style.display = 'block';
@@ -83,7 +83,7 @@ addForm.addEventListener('submit', (event) => {
     })   
     .then(res => res.text())
     .then(data => {
-        pageManagement.insertAdjacentHTML('beforeend', data);
+        backClicked();
     })    
 
     $('.ui.modal').modal('hide');
@@ -91,6 +91,7 @@ addForm.addEventListener('submit', (event) => {
 
 // back button
 const backClicked = () => {
+    // empty the pages
     const selectYear = pageSelect.querySelector('.select__year');
     const selectType = pageSelect.querySelector('.select__type');
     const selectSchool = pageSelect.querySelector('.select__school');
@@ -101,7 +102,6 @@ const backClicked = () => {
             temp[x].removeChild(temp[x].firstChild);
         }
     }
-    console.log('hhihi');
     // fetch years 
     fetch( 'man/fetch', {
         method: 'POST',
