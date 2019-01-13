@@ -85,12 +85,12 @@ router.post('/fetch',(req,res)=>{
   }
   
     if(req.body.year === undefined)
-      res.render('manage/_render_year', { years:[1994,1996,1998]} );
+      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
     else if(req.body.type === ''){
-      res.render('manage/_render_type', { types:['普通','綜合']});
+      res.render('manage/_render_select_button', { contents:['普通','綜合']});
     }
     else if(req.body.campus === ''){
-      res.render('manage/_render_school', { schools:['成大','成大']});
+      res.render('manage/_render_select_button', { contents:['成大','成大']});
     }
 });
 
