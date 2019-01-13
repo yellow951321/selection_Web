@@ -11,7 +11,6 @@ router.get('/',(req,res)=>{
 
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
-<<<<<<< HEAD
   const username = "nober";
   const path = pathGen(username,req.body.info.year,req.body.info.type,req.body.info.campus,req.body.info.name);
   fs.stat(path,(err,state)=>{
@@ -30,12 +29,6 @@ router.post('/add',(req,res)=>{
     else  
       console.log("Mdir operation is completed");
   });
-=======
-  // let out = pug.renderFile('login');
-  // console.log(out);
-  // console.log('holleo');
-  // res.status(200).send('OK');
->>>>>>> 22910c1934662099b890671ea9674dea5fedb562
   res.render('manage/_render_manage',{info:[req.body.info]});
 });
 
@@ -83,8 +76,15 @@ router.post('/fetch',(req,res)=>{
   //     //render the editNode.
   //   }
   // }
-
-
+  
+    if(req.body.year === undefined)
+      res.render('manage/_render_year', { years:[1994,1996,1998]} );
+    else if(req.body.type === ''){
+      res.render('manage/_render_type', { types:['普通','綜合']});
+    }
+    else if(req.body.campus === ''){
+      res.render('manage/_render_school', { schools:['成大','成大']});
+    }
 });
 
 

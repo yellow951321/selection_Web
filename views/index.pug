@@ -3,8 +3,7 @@ extends layout
 append head
   include manage/_manage.pug
   include manage/_edit.pug
-  include magane/_render_year.pug
-  title manage
+  include manage/_select.pug
   link(rel='stylesheet', href='/stylesheets/manage.css')
 
 append content
@@ -36,12 +35,15 @@ append content
   //- content
   //- page select
   #page-select.ui.container.pusher
+    .select__year
+    .select__type
+    .select__school
 
   //- page management
   #page-management.ui.container.pusher
 
   //- page edit
-  #page-edit.ui.container.pusher.myhide
+  #page-edit.ui.container.pusher
     +newEdit()
 
 append script
