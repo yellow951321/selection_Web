@@ -67,16 +67,21 @@ router.post('/save',(req,res)=>{
 
 
 router.post('/fetch',(req,res)=>{
-  var account = sessionTable.findBySId(req.body.sessionId);
-  if(account){
-    var files = fetch(req.body.info);
-    if(files instanceof Array){
-      //render the problem.
-    }else{
-      //render the editNode.
-    }
-  }
+  // var account = sessionTable.findBySId(req.body.sessionId);
+  // if(account){
+  //   var files = fetch(req.body.info);
+  //   if(files instanceof Array){
+  //     //render the problem.
+  //   }else{
+  //     //render the editNode.
+  //   }
+  // }
+
+
 });
+
+
+
 
 function pathGen(username,year,type,campus,name){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
