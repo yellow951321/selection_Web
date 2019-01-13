@@ -76,8 +76,15 @@ router.post('/fetch',(req,res)=>{
   //     //render the editNode.
   //   }
   // }
-
-
+  
+    if(req.body.year === undefined)
+      res.render('manage/_render_year', { years:[1994,1996,1998]} );
+    else if(req.body.type === ''){
+      res.render('manage/_render_type', { types:['普通','綜合']});
+    }
+    else if(req.body.campus === ''){
+      res.render('manage/_render_school', { schools:['成大','成大']});
+    }
 });
 
 

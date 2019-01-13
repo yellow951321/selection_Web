@@ -1,2 +1,3 @@
-mixin showYear(year)
-    button.four.wide.column.ui.segment=year
+include _select.pug
+for year in years
+    +showYear(year)

@@ -2,7 +2,7 @@
 const pageSelect = document.getElementById('page-select');
 const pageManagement = document.getElementById('page-management');
 const pageEdit = document.getElementById('page-edit');
-
+let sessionId = '123';
 //init
 // pageEdit.style.display = 'none';
 
@@ -63,3 +63,78 @@ addForm.addEventListener('submit', (event) => {
 
     $('.ui.modal').modal('hide');
 })
+
+// selection
+
+// selection variable
+let selectionNowPage = 'start';
+let selectionNowYear = '';
+let selectionNowType = '';
+let selectionNowSchool = '';
+
+// selection > fetch button
+const butttonSelected = (event) => {
+    event.preventDefault();
+    selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear;     
+    selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType;     
+    selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool;     
+    
+    const yearBlock = pageSelect.querySelector('.select__year');
+    const typeBlock = pageSelect.querySelector('.select__type');
+    const schoolBlock = pageSelect.querySelector('.select__school');
+    
+    fetch( 'man/fetch', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId, 
+            year: selectionNowYear,
+            type: selectionNowType,
+            campus: selectionNowSchool
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        if( selectionNowPage === 'year'){
+            yearBlock.style.display = 'none';
+            typeBlock.insertAdjacentHTML('beforeend', data);
+            const childs = typeBlock.children;            
+            for(let i = 0; i < childs.length; i++){
+                childs[i].addEventListener('click' , butttonSelected);
+            }
+            selectionNowPage = 'type';
+        }
+        else if ( selectionNowPage === 'type' ){
+            typeBlock.style.display = 'none';
+            schoolBlock.insertAdjacentHTML('beforeend', data);
+            const childs = typeBlock.children;         
+            for(let i = 0; i < childs.length; i++){
+                childs[i].addEventListener('click' , butttonSelected);
+            }
+            selectionNowPage = 'school';
+        }    
+    })    
+}
+
+
+fetch( 'man/fetch', {
+    method: 'POST',
+    body: JSON.stringify({sessionId: sessionId}),
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(res => res.text())
+.then(data => {
+    const yearBlock =pageSelect.querySelector('.select__year');
+    yearBlock.insertAdjacentHTML('beforeend', data);
+    const childs = yearBlock.children;
+    for(let i = 0; i < childs.length; i++){
+        childs[i].addEventListener('click' , butttonSelected);
+    }    
+    selectionNowPage = 'year'; 
+})
+
+//selection > get type, campus
