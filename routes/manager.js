@@ -91,11 +91,47 @@ router.post('/fetch',(req,res)=>{
     }
     else if(req.body.campus === ''){
       res.render('manage/_render_select_button', { contents:['成大','成大']});
-    }
+	}
+	else {
+		res.render('manage/_render_manage.pug', {
+			info : [ 
+				{
+					'name' : 'fuck',
+					'year' : '1999',
+					'campus': 'NCKU',
+					'type': '普通'			
+				}
+			]		
+		})
+	}	
 });
 
 router.post('/edit',(req,res)=>{
-  //edit when press edition button
+  	//edit when press edition button
+  	res.render('manage/_render_edit', {
+	  	info: [
+			{
+				'dimension': '教學',
+				'item': '強化教學品質',
+				'detail': '推廣創新教學模式',
+				'content': '2112313',
+				'page': {
+					start: '30',
+					end: '23',
+				}
+			},
+			{
+				'dimension': '教學',
+				'item': '強化教學品質',
+				'detail': '推廣創新教學模式',
+				'content': '2112313',
+				'page': {
+					start: '30',
+					end: '23',
+				}
+			}
+		]
+	});
 });
 
 
