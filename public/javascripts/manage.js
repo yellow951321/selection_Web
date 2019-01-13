@@ -5,15 +5,33 @@ const pageEdit = document.getElementById('page-edit');
 const pageHeader = document.getElementById('header'); 
 let sessionId = '123';
 
+// selection variable
+let selectionNowPage = 'start';
+let selectionNowYear = '';
+let selectionNowType = '';
+let selectionNowSchool = '';
+let selectionNowProject = '';
+
 var schema = {};
 
 //init
-pageHeader.querySelector('.add').style.display = 'none';
-pageHeader.querySelector('.add-content').style.display = 'none';
-pageHeader.querySelector('.save-content').style.display = 'none';
-pageEdit.style.display = 'none';
-pageManagement.style.display = 'none';
+function init(){
+    pageHeader.querySelector('.add').style.display = 'block';
+    pageHeader.querySelector('.add-content').style.display = 'none';
+    pageHeader.querySelector('.save-content').style.display = 'none';
+    pageSelect.style.display = 'block';
+    pageSelect.querySelector('.select__year').style.display = 'block';
+    pageSelect.querySelector('.select__type').style.display = 'block';
+    pageEdit.style.display = 'none';
+    pageManagement.style.display = 'none';
 
+    selectionNowPage = 'start';
+    selectionNowYear = '';
+    selectionNowType = '';
+    selectionNowSchool = '';
+    selectionNowProject = '';
+}
+init();
 // dropdown
 $('select.dropdown')
   .dropdown()
@@ -65,20 +83,51 @@ addForm.addEventListener('submit', (event) => {
     })   
     .then(res => res.text())
     .then(data => {
-        pageManagement.insertAdjacentHTML('beforeend', data);
+        backClicked();
     })    
 
     $('.ui.modal').modal('hide');
 })
 
+// back button
+const backClicked = () => {
+    // empty the pages
+    const selectYear = pageSelect.querySelector('.select__year');
+    const selectType = pageSelect.querySelector('.select__type');
+    const selectSchool = pageSelect.querySelector('.select__school');
+
+    const temp = [selectYear, selectType, selectSchool, pageManagement, pageEdit];
+    for( var x in temp){
+        while(temp[x].firstChild){
+            temp[x].removeChild(temp[x].firstChild);
+        }
+    }
+    // fetch years 
+    fetch( 'man/fetch', {
+        method: 'POST',
+        body: JSON.stringify({sessionId: sessionId}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        init();
+        const yearBlock =pageSelect.querySelector('.select__year');
+        yearBlock.insertAdjacentHTML('beforeend', data);
+        const childs = yearBlock.children;
+        for(let i = 0; i < childs.length; i++){
+            childs[i].addEventListener('click' , butttonSelected);
+        }    
+        selectionNowPage = 'year'; 
+    })
+}
+
+pageHeader.querySelector('.back').addEventListener('click', backClicked);
+
 // variables for selection, manage, edit
 
-// selection variable
-let selectionNowPage = 'start';
-let selectionNowYear = '';
-let selectionNowType = '';
-let selectionNowSchool = '';
-let selectionNowProject = '';
+// selection 
 
 // page-management 
 
