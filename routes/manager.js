@@ -20,17 +20,52 @@ router.post('/add',(req,res)=>{
       fs.mkdir(pathWithoutName,{recursive:true},(err)=>{
         if(err) console.log(err);
         console.log('mkdir operation complete');
+        fs.copyFile('data/projectSchema.json',path,(err)=>{
+          if(err) console.log(err);
+          else  
+            console.log("Mdir operation is completed");
+            const info = {
+              username : username,
+              year : req.body.info.year,
+              type : req.body.info.type,
+              campus : req.body.info.campus,
+            }
+            fetch(info,(files)=>{
+              if(files instanceof Array && req.body.info.campus){
+                splitArrayIntoContext(files,(context)=>{
+                  console.log(context);
+                  res.render('manage/_render_manage',{info:context});
+                });
+              }
+            });
+        });
+      });
+    }else if(state){
+      fs.copyFile('data/projectSchema.json',path,(err)=>{
+        if(err) console.log(err);
+        else  
+          console.log("Mdir operation is completed");
+          const info = {
+            username : username,
+            year : req.body.info.year,
+            type : req.body.info.type,
+            campus : req.body.info.campus,
+          }
+          fetch(info,(files)=>{
+            if(files instanceof Array && req.body.info.campus){
+              splitArrayIntoContext(files,(context)=>{
+                console.log(context);
+                res.render('manage/_render_manage',{info:context});
+              });
+            }
+          });
       });
     }
-    console.log(state);
+    
     
   });
-  fs.copyFile('data/projectSchema.json',path,(err)=>{
-    if(err) console.log(err);
-    else  
-      console.log("Mdir operation is completed");
-  });
-  res.render('manage/_render_manage',{info:[req.body.info]});
+  //res.render('manage/_render_manage',{info:[req.body.info]});
+  
 });
 
 router.post('/save',(req,res)=>{
@@ -126,7 +161,7 @@ router.post('/edit',(req,res)=>{
     if(files instanceof Object){
       objToNode(files,(context)=>{
         console.log(context);
-        res.render('manage/_edit',{info:context});
+        res.render('manage/_render_edit',{info:context});
       });
     }
   });
@@ -189,17 +224,20 @@ function objToNode(project,cb){
   console.log(project);
   var context = [];
   for(dimension in project)
-    for(item in dimension)
-      for(detail in item){
-        if(detail instanceof Array && detail.length > 0){
-          for(content of detail){
+    for(item in project[dimension])
+      for(detail in project[dimension][item]){
+        console.log(detail);
+        //console.log(detail.length > 0);
+        if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
+          for(content of project[dimension][item][detail]){
             let t = {};
               t.dimension = dimension;
               t.item = item;
               t.detail = detail;
               t.content = content.paragraph;
-              t.page.start = content.page[0];
-              t.page.end = content.page[1];
+              t.page = {};
+              t.page.start = "1";
+              t.page.end = "1";
               console.log("Adding");
               context.push(t);
           }
