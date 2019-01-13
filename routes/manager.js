@@ -67,17 +67,35 @@ router.post('/save',(req,res)=>{
 
 
 router.post('/fetch',(req,res)=>{
-  // var account = sessionTable.findBySId(req.body.sessionId);
-  // if(account){
-  //   var files = fetch(req.body.info);
-  //   if(files instanceof Array){
-  //     //render the problem.
-  //   }else{
-  //     //render the editNode.
-  //   }
-  // }
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus
+//   }
+//   if(account){
+//     var files = fetch(info);
+//     if(files instanceof Array){
+//       //render the problem.
+//       res.render
+//     }else{
+//       //render the editNode.
+//     }
+//   }
+  
+    if(req.body.year === undefined)
+      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
+    else if(req.body.type === ''){
+      res.render('manage/_render_select_button', { contents:['普通','綜合']});
+    }
+    else if(req.body.campus === ''){
+      res.render('manage/_render_select_button', { contents:['成大','成大']});
+    }
+});
 
-
+router.post('/edit',(req,res)=>{
+  //edit when press edition button
 });
 
 
