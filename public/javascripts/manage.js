@@ -20,8 +20,16 @@ function init(){
     pageHeader.querySelector('.add-content').style.display = 'none';
     pageHeader.querySelector('.save-content').style.display = 'none';
     pageSelect.style.display = 'block';
+    pageSelect.querySelector('.select__year').style.display = 'block';
+    pageSelect.querySelector('.select__type').style.display = 'block';
     pageEdit.style.display = 'none';
     pageManagement.style.display = 'none';
+
+    selectionNowPage = 'start';
+    selectionNowYear = '';
+    selectionNowType = '';
+    selectionNowSchool = '';
+    selectionNowProject = '';
 }
 init();
 // dropdown
