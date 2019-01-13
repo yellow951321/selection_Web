@@ -166,6 +166,7 @@ router.post('/edit',(req,res)=>{
     }
   });
 });
+
 router.post('/addContent',(req,res)=>{
   res.render('mange/_render_edit');
 });
