@@ -262,4 +262,26 @@ fetch( 'man/fetch', {
     selectionNowPage = 'year'; 
 })
 
+// Edit
 
+// Edit > addButton
+const addContent = () =>{
+    fetch( 'man/addContent', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId, 
+            year: selectionNowYear,
+            type: selectionNowType,
+            campus: selectionNowSchool
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => { 
+        pageEdit.insertAdjacentHTML('beforeend', data);
+    })
+}
+
+pageHeader.querySelector('.add-content').addEventListener('click', addContent);
