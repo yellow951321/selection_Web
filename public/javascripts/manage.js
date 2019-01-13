@@ -262,4 +262,71 @@ fetch( 'man/fetch', {
     selectionNowPage = 'year'; 
 })
 
+// Edit
 
+// Edit > addButton
+const addContent = () =>{
+    fetch( 'man/addContent', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId, 
+            info: {
+                year: selectionNowYear,
+                type: selectionNowType,
+                campus: selectionNowSchool,
+                name: selectionNowProject,
+            }    
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => { 
+        pageEdit.insertAdjacentHTML('beforeend', data);
+    })
+}
+
+pageHeader.querySelector('.add-content').addEventListener('click', addContent);
+
+// Edit > saveButton
+
+const saveContent = () =>{
+    const childs = Array.from(pageEdit.children);
+    console.log(childs)
+    const contents = [];
+    childs.forEach((child)=>{
+        contents.push({
+            dimension: child.querySelector('.dimension').value,
+            item: child.querySelector('.item').value,
+            detail: child.querySelector('.detail').value,
+            content: child.querySelector('.content').value,
+            page: {
+                start: child.querySelector('.page__start').value,
+                end: child.querySelector('.page__end').value
+            }
+        });
+    })
+    fetch( 'man/save', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId, 
+            info: {
+                year: selectionNowYear,
+                type: selectionNowType,
+                campus: selectionNowSchool,
+                name: selectionNowProject
+            },
+            data: contents
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => { 
+        console.log(data);
+    })
+}
+
+pageHeader.querySelector('.save-content').addEventListener('click', saveContent);
