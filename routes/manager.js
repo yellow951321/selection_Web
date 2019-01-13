@@ -36,29 +36,33 @@ router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
   if(account){
     const username = account.username;
-    const year = req.info.year;
-    const type = req.info.type;
-    const campus = req.info.campus;
-    const name = req.info.name;
-    const data = req.data;
-    const pathWithName = pathGen(username,year,campus,name);
-    const path = pathGenWithoutName(username,year,campus);
+    const year = req.body.info.year;
+    const type = req.body.info.type;
+    const campus = req.body.info.campus;
+    const name = req.body.info.name;
+    const data = req.body.data;
+    const pathWithName = pathGen(username,year,type,campus,name);
+    const path = pathGenWithoutName(username,year,type,campus);
     fs.stat(pathWithName,(err,state)=>{
       if(err){
         fs.mkdir(path,{recursive: true},(err)=>{
           if(err) return console.log(err);
           console.log(`make dir and files in ${path}`);
-          fs.writeFile(pathWithName,data,(err)=>{
+          nodeToObj(pathWithName,data,(modData)=>{
+            fs.writeFile(pathWithName,modData,(err)=>{
+              if(err) return console.log(err);
+              console.log(`Save ${pathWithName} is completed`);
+              return res.status(200).send("OK");
+            });
+          });
+        });
+      }else if(state){
+        nodeToObj(pathWithName,data,(modData)=>{
+          fs.writeFile(pathWithName,modData,(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
             return res.status(200).send("OK");
           });
-        });
-      }else if(state){
-        fs.writeFile(pathWithName,data,(err)=>{
-          if(err) return console.log(err);
-          console.log(`Save ${pathWithName} is completed`);
-          return res.status(200).send("OK");
         });
       }
     });
@@ -67,6 +71,41 @@ router.post('/save',(req,res)=>{
 
 
 router.post('/fetch',(req,res)=>{
+<<<<<<< HEAD
+  var account = sessionTable.findBySId(req.body.sessionId);
+  console.log(req.body);
+  const info = {
+    username : 'nober',
+    year : req.body.year,
+    type : req.body.type,
+    campus : req.body.campus,
+    proName : req.body.name
+  }
+  console.log(info);
+  if(account == undefined){
+    fetch(info,(files)=>{
+        if(files instanceof Array && !req.body.campus ){
+          console.log(files);
+          res.render('manage/_render_select_button',{contents: files});
+        }else if(files instanceof Array && req.body.campus){
+          console.log(files);
+          splitArrayIntoContext(files,(context)=>{
+            console.log(context);
+            res.render('manage/_render_manage',{info:context});
+          });
+        }else if(files instanceof Object ){
+          objToNode(files,(context)=>{
+            res.render('manage/_edit',{info:context});
+          });
+        }
+    });
+  }
+
+});
+
+router.post('/edit',(req,res)=>{
+  //edit when press edition btn
+=======
 //   var account = sessionTable.findBySId(req.body.sessionId);
 //   const info = {
 //     username : account.username,
@@ -132,41 +171,110 @@ router.post('/edit',(req,res)=>{
 			}
 		]
 	});
+>>>>>>> db7999573c90de5f4c7b67ebf4769b22df35bc79
 });
 
 
 
 
 function pathGen(username,year,type,campus,name){
-  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
+  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'.json';
 }
 function pathGenWithoutName(username,year,type,campus){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus;
 }
 
-function fetch(info){
-  const username = info.username ? `/${info.username}/`: '';
-  const year = info.year ? `/${info.year}/` : '';
-  const type = info.type ? `/${info.type}/` : '';
-  const campus = info.campus ? `/${info.campus}/` : '';
-  const proName = info.proName ? `/${info.proName}/` : '';
-  const path = pathGen(username,year,type,campus,proName);
+function fetch(info,cb){
+  const username = info.username ? `/${info.username}`: '';
+  const year = info.year ? `/${info.year}` : '';
+  const type = info.type ? `/${info.type}` : '';
+  const campus = info.campus ? `/${info.campus}` : '';
+  const proName = info.proName ? `/${info.proName}` : '';
+  const path = 'data'+username+year+type+campus+proName;
+  console.log(path);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{
       if(err) return console.log(err);
       if(data){
-        return JSON.parse(data);
+         cb(JSON.parse(data));
       }
     });
   }else{
     fs.readdir(path,(err,files)=>{
       if(err) return console.log(err);
       if(files){
-        return files;
+        console.log('read complete');
+        //console.log(files);
+        cb(files);
       }
     });
   }
 }
 
+function splitArrayIntoContext(arr,cb){
+  var temp = [];
+  for(name of arr){
+    let t = {};
+    var content = name.split("_");
+    t.year = content[0];
+    t.type = content[1];
+    t.campus = content[2];
+    t.name = content[3].match(/[^.]+/)[0];
+    temp.push(t);
+    
+  }
+  cb(temp);
+}
 
+
+function objToNode(project,cb){
+  var context = [];
+  for(dimension in project)
+    for(item in dimesion)
+      for(detail in item){
+        if(detail instanceof Array && detail.length > 0){
+          for(content of detail){
+            let t = {};
+              t.dimension = dimension;
+              t.item = item;
+              t.detail = detail;
+              t.content = content.paragraph;
+              t.page.start = content.page[0];
+              t.page.end = content.page[1];
+              context.push(t);
+          }
+        }
+      }
+
+  cb(project);
+}
+
+function nodeToObj(path,body,cb){
+  fs.readFile(path,"utf-8",(err,data)=>{
+    if(err) return console.log(err);
+    if(data){
+      data = JSON.parse(data);
+      if(body instanceof Array){
+        for(con in body){
+          var item = new ContentSchema(con.page,con.content);
+          data[con.dimension][con.item][con.detail].push(item);
+        }
+      }
+      cb(data);
+    }
+  });
+}
+
+
+
+
+function ContentSchema(page,paragraph){
+  if(page.start && page.end){
+    this.page = [];
+    this.page[0] = page.start;
+    this.page[1] = page.end;
+  }
+  this.paragraph = paragraph ? paragraph : "";
+  this.title = "";
+}
 module.exports= router;
