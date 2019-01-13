@@ -70,8 +70,9 @@ router.post('/add',(req,res)=>{
 
 router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
-  if(account){
-    const username = account.username;
+  console.log(req.body);
+  if(account == undefined){
+    const username = 'nober';
     const year = req.body.info.year;
     const type = req.body.info.type;
     const campus = req.body.info.campus;
