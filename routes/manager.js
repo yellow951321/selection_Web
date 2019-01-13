@@ -95,7 +95,7 @@ router.post('/fetch',(req,res)=>{
 });
 
 router.post('/edit',(req,res)=>{
-  //edit when press edition button
+  //edit when press edition btn
 });
 
 
