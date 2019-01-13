@@ -68,30 +68,24 @@ router.post('/save',(req,res)=>{
 
 router.post('/fetch',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
+  console.log(req.body);
   const info = {
-    username : account.username,
+    username : 'nober',
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus
   }
-  if(account){
-    var files = fetch(info);
-    if(files instanceof Array){
-      //render the problem.
-      res.render
-    }else{
-      //render the editNode.
-    }
+  console.log(info);
+  if(account == undefined){
+    fetch(info,(files)=>{
+        if(files instanceof Array){
+          console.log(files);
+          res.render('manage/_render_select_button',{contents: files});
+        }else{
+        }
+    });
   }
-  
-    if(req.body.year === undefined)
-      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
-    else if(req.body.type === ''){
-      res.render('manage/_render_select_button', { contents:['普通','綜合']});
-    }
-    else if(req.body.campus === ''){
-      res.render('manage/_render_select_button', { contents:['成大','成大']});
-    }
+
 });
 
 router.post('/edit',(req,res)=>{
@@ -108,25 +102,28 @@ function pathGenWithoutName(username,year,type,campus){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus;
 }
 
-function fetch(info){
-  const username = info.username ? `/${info.username}/`: '';
-  const year = info.year ? `/${info.year}/` : '';
-  const type = info.type ? `/${info.type}/` : '';
-  const campus = info.campus ? `/${info.campus}/` : '';
-  const proName = info.proName ? `/${info.proName}/` : '';
-  const path = pathGen(username,year,type,campus,proName);
+function fetch(info,cb){
+  const username = info.username ? `/${info.username}`: '';
+  const year = info.year ? `/${info.year}` : '';
+  const type = info.type ? `/${info.type}` : '';
+  const campus = info.campus ? `/${info.campus}` : '';
+  const proName = info.proName ? `/${info.proName}` : '';
+  const path = 'data'+username+year+type+campus+proName;
+  console.log(path);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{
       if(err) return console.log(err);
       if(data){
-        return JSON.parse(data);
+         cb(JSON.parse(data));
       }
     });
   }else{
     fs.readdir(path,(err,files)=>{
       if(err) return console.log(err);
       if(files){
-        return files;
+        console.log('read complete');
+        console.log(files);
+        cb(files);
       }
     });
   }
