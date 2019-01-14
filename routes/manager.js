@@ -81,7 +81,7 @@ router.post('/add',(req,res)=>{
 router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
   console.log(req.body);
-  if(account == undefined){
+  if(account){
     const username = 'nober';
     const year = req.body.info.year;
     const type = req.body.info.type;
@@ -95,7 +95,7 @@ router.post('/save',(req,res)=>{
         fs.mkdir(path,{recursive: true},(err)=>{
           if(err) return console.log(err);
           console.log(`make dir and files in ${path}`);
-          nodeToObj(pathWithName,data,(modData)=>{
+          nodeToObj('data/projectSchema.json',data,(modData)=>{
             fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
               if(err) return console.log(err);
               console.log(`Save ${pathWithName} is completed`);
@@ -104,7 +104,7 @@ router.post('/save',(req,res)=>{
           });
         });
       }else if(state){
-        nodeToObj(pathWithName,data,(modData)=>{
+        nodeToObj('data/projectSchema.json',data,(modData)=>{
           fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
@@ -127,16 +127,17 @@ router.post('/schema',(req,res)=>{
 
 router.post('/fetch',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
+  console.log(account);
   console.log(req.body);
   const info = {
-    username : 'nober',
+    username : account? account.username : 'nober',
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus,
     proName : req.body.name
   }
   console.log(info);
-  if(account == undefined){
+  if(account){
     fetch(info,(files)=>{
         if(files instanceof Array && !req.body.campus ){
           console.log(files);
@@ -287,6 +288,7 @@ function nodeToObj(path,body,cb){
     if(err) return console.log(err);
     if(data){
       data = JSON.parse(data);
+      console.log(body);
       if(body instanceof Array){
         for(con of body){
           console.log(con);
@@ -297,6 +299,10 @@ function nodeToObj(path,body,cb){
       cb(data);
     }
   });
+
+
+
+
 }
 
 
