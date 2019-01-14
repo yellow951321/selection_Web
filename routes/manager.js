@@ -183,14 +183,16 @@ router.post('/addContent',(req,res)=>{
 });
 
 router.post('/delete',(req,res)=>{
-  const account = sessionTable.findBySId(req.sessionId);
+  const account = sessionTable.findBySId(req.body.sessionId);
   const username = account ? account.username : 'nober';
-  const year = req.info.year;
-  const type = req.info.type;
-  const campus = req.info.campus;
-  const name = req.info.name;
+  const year = req.body.info.year;
+  const type = req.body.info.type;
+  const campus = req.body.info.campus;
+  const name = req.body.info.name;
   const oldPath = pathGen(username,year,type,campus,name);
   const newPath = pathGenDeleteName(username,year,type,campus,name);
+  console.log(oldPath);
+  console.log(newPath);
   fs.rename(oldPath,newPath,(err)=>{
     if(err) console.log(err);
     console.log(`rename completed with ${newPath}`);
@@ -241,7 +243,7 @@ function splitArrayIntoContext(arr,cb){
   for(name of arr){
     let t = {};
     var content = name.split("_");
-    if(content.length <= 3){
+    if(content.length <= 4){
       t.year = content[0];
       t.type = content[1];
       t.campus = content[2];
