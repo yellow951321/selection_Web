@@ -81,7 +81,7 @@ router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
   console.log(req.body);
   if(account){
-    const username = 'nober';
+    const username = account.username;
     const year = req.body.info.year;
     const type = req.body.info.type;
     const campus = req.body.info.campus;
