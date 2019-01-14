@@ -81,7 +81,7 @@ router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
   console.log(req.body);
   if(account){
-    const username = 'nober';
+    const username = account.username;
     const year = req.body.info.year;
     const type = req.body.info.type;
     const campus = req.body.info.campus;
@@ -175,7 +175,6 @@ router.post('/edit',(req,res)=>{
     if(files instanceof Object){
       objToNode(files,(context)=>{
         //console.log(context);
-        console.log(context instanceof Array);
         res.render('manage/_render_edit',{info:context});
       });
     }

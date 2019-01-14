@@ -51,11 +51,13 @@ mixin edit(info)
 			.field
 				label 項目
 				select.item.ui.selection.dropdown(value=info[ 'item' ])
+					- console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
 					each val, index in layout[ info[ 'dimension' ] ]
 						option(value=index)=index
 			.field
 				label 詳細資料
-				select.detail.ui.selection.dropdown(value=info[ 'detail' ])     
+				select.detail.ui.selection.dropdown(value=info[ 'detail' ])
+					//- console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
 					each val, index in layout[ info[ 'dimension' ] ][ info[ 'item' ] ]
 						option(value=index)=index   
 		.field
