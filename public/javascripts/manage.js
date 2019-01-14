@@ -196,7 +196,7 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked);
 // manage > variables
 const projectSelected = (event) => {
     //get the whole project node
-    projectNode = event.target.parentNode.parentNode;
+    const projectNode = event.target.parentNode.parentNode;
 
     // variables
     const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
@@ -244,10 +244,36 @@ const projectSelected = (event) => {
 
 const projectDeleted = (event) => {
     if( confirm( '確定要刪除嗎' ) ){
-        alert( '成功' );
-    } 
-    else{
-        alert( '失敗' );
+        //get the whole project node
+        const projectNode = event.target.parentNode.parentNode;
+    
+        // variables
+        const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
+        const year = projectNode.querySelector( '.manage__year ' ).innerHTML;
+        const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
+        const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
+    
+
+        fetch( 'man/delete', {
+            method: 'POST',
+            body: JSON.stringify({
+                sessionId: sessionId,
+                info: {
+                    name: name, 
+                    year: year,
+                    type: type,
+                    campus: school
+                }
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.text())
+        .then(data => {
+            pageManagement.removeChild( projectNode ); 
+            alert( '成功' );
+        });
     }
 }
 
