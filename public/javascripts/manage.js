@@ -71,9 +71,9 @@ const fetchUserName = () => {
     console.log(user);
     if( user !== undefined){
         if( user instanceof Array)
-            user = user[0].substring(10);
+            user = user[0].substring(5);
         else
-            user = user.substring(10);
+            user = user.substring(5);
         return user;        
     }
 }
