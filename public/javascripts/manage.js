@@ -15,6 +15,20 @@ let selectionNowProject = '';
 var schema = {};
 
 //init
+fetch( '/man/schema' , {
+    method: 'POST',
+    body: JSON.stringify({
+        'sessionId': sessionId,
+    }),
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then( res => res.json())
+.then( data => {
+    schema = data;
+})
+
 function init(){
     pageHeader.querySelector('.add').style.display = 'block';
     pageHeader.querySelector('.add-content').style.display = 'none';
@@ -33,9 +47,12 @@ function init(){
 }
 init();
 // dropdown
-$('select.dropdown')
-  .dropdown()
-;
+function refreshDropdown(){
+    $('select.dropdown')
+        .dropdown()
+    ;
+}
+refreshDropdown();
 
 // modal setting
 const addClicked = () => {
@@ -129,9 +146,9 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked);
 
 // selection 
 
-// page-management 
+// manage
 
-// page-mnaagement > variables
+// mnaage > variables
 const projectSelected = (event) => {
     //get the whole project node
     projectNode = event.target.parentNode.parentNode;
@@ -170,10 +187,12 @@ const projectSelected = (event) => {
     .then( res => res.text() )
     .then( data => {
         pageEdit.insertAdjacentHTML('beforeend', data);
-
-        $('select.dropdown')
-        .dropdown()
-        ;
+        const contentNodes = Array.from(pageEdit.querySelectorAll( 'form.ui.form.segment' ));
+        contentNodes.forEach( (node) => {
+            node.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged);
+            node.querySelector('.item').addEventListener('change', itemDropdownOnChanged);           
+            refreshDropdown();
+        })
     })
 }
 
@@ -264,6 +283,40 @@ fetch( 'man/fetch', {
 
 // Edit
 
+// Edit > dropdow
+
+const dimensionDropdownOnChanged = (event) => {
+    const editNode = event.target.parentNode.parentNode.parentNode;
+    const item = editNode.querySelector('div.item.ui.selection.dropdown').firstChild;
+    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild;
+    while(item.firstChild){
+        item.removeChild(item.firstChild);
+    }
+    while(detail.firstChild){
+        detail.removeChild(detail.firstChild);
+    }
+    const defaultItem = Object.keys(schema[ event.target.value ])[0];
+    item.value = defaultItem;
+    Object.keys(schema[ event.target.value ]).forEach( (name) => {
+        item.insertAdjacentHTML( 'beforeend', `<option value = ${ name } > ${ name } </option>`)
+    })
+    Object.keys(schema[ event.target.value ][ defaultItem ]).forEach( (name) => {
+        detail.insertAdjacentHTML( 'beforeend', `<option value = ${ name } > ${ name } </option>`)
+    })
+}
+
+const itemDropdownOnChanged = (event) => {
+    const editNode = event.target.parentNode.parentNode.parentNode;
+    const dimension = editNode.querySelector('div.dimension.ui.selection.dropdown').firstChild;
+    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild;
+    while(detail.firstChild){
+        detail.removeChild(detail.firstChild);
+    }
+    Object.keys(schema[ dimension.value ][ event.target.value ]).forEach( (name) => {
+        detail.insertAdjacentHTML( 'beforeend', `<option value = ${ name } > ${ name } </option>`)
+    })
+}
+
 // Edit > addButton
 const addContent = () =>{
     fetch( 'man/addContent', {
@@ -284,6 +337,10 @@ const addContent = () =>{
     .then(res => res.text())
     .then(data => { 
         pageEdit.insertAdjacentHTML('beforeend', data);
+        //add event listener to dropdowns
+        pageEdit.lastChild.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged);
+        pageEdit.lastChild.querySelector('.item').addEventListener('change', itemDropdownOnChanged);
+        refreshDropdown();
     })
 }
 
