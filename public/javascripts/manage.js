@@ -3,7 +3,10 @@ const pageSelect = document.getElementById('page-select');
 const pageManagement = document.getElementById('page-management');
 const pageEdit = document.getElementById('page-edit');
 const pageHeader = document.getElementById('header'); 
+const breadCrumb = document.getElementById('breadcrumb');
+
 let sessionId = '123';
+let userName = '使用者';
 
 // selection variable
 let selectionNowPage = 'start';
@@ -15,20 +18,6 @@ let selectionNowProject = '';
 var schema = {};
 
 //init
-fetch( '/man/schema' , {
-    method: 'POST',
-    body: JSON.stringify({
-        'sessionId': sessionId,
-    }),
-    headers: {
-        'Content-Type': 'application/json'
-    }
-})
-.then( res => res.json())
-.then( data => {
-    schema = data;
-})
-
 function init(){
     pageHeader.querySelector('.add').style.display = 'block';
     pageHeader.querySelector('.add-content').style.display = 'none';
@@ -46,6 +35,61 @@ function init(){
     selectionNowProject = '';
 }
 init();
+
+//init > fetchdata and get sessionId
+
+fetch( '/man/schema' , {
+    method: 'POST',
+    body: JSON.stringify({
+        'sessionId': sessionId,
+    }),
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then( res => res.json())
+.then( data => {
+    schema = data;
+})
+
+const getSesstionId = () => {
+
+}
+const refreshBreadCrumb = () =>{
+    while(breadCrumb.firstChild){
+        breadCrumb.removeChild(breadCrumb.firstChild);
+    }
+    breadCrumb.insertAdjacentHTML( 'beforeend', ` 
+        <div class="section"> ${ userName } </div> 
+    `);
+
+    if( selectionNowYear == '')
+        return;
+    breadCrumb.insertAdjacentHTML( 'beforeend', `
+        <div class="divider"> / </div>
+        <div class="section"> ${ selectionNowYear } </div> 
+    `);
+    if( selectionNowType == '')
+        return;
+    breadCrumb.insertAdjacentHTML( 'beforeend', `
+        <div class="divider"> / </div>
+        <div class="section"> ${ selectionNowType } </div> 
+    `);    
+    if( selectionNowSchool == '')
+        return;
+    breadCrumb.insertAdjacentHTML( 'beforeend', `
+        <div class="divider"> / </div>
+        <div class="section"> ${ selectionNowSchool } </div> 
+    `);    
+    if( selectionNowProject == '')
+        return;
+    breadCrumb.insertAdjacentHTML( 'beforeend', `
+        <div class="divider"> / </div>
+        <div class="section"> ${ selectionNowProject } </div> 
+    `);            
+}
+refreshBreadCrumb();
+
 // dropdown
 function refreshDropdown(){
     $('select.dropdown')
@@ -106,7 +150,7 @@ addForm.addEventListener('submit', (event) => {
     $('.ui.modal').modal('hide');
 })
 
-// back button
+// backButton
 const backClicked = () => {
     // empty the pages
     const selectYear = pageSelect.querySelector('.select__year');
@@ -137,6 +181,7 @@ const backClicked = () => {
             childs[i].addEventListener('click' , butttonSelected);
         }    
         selectionNowPage = 'year'; 
+        refreshBreadCrumb();
     })
 }
 
@@ -148,7 +193,7 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked);
 
 // manage
 
-// mnaage > variables
+// manage > variables
 const projectSelected = (event) => {
     //get the whole project node
     projectNode = event.target.parentNode.parentNode;
@@ -193,11 +238,17 @@ const projectSelected = (event) => {
             node.querySelector('.item').addEventListener('change', itemDropdownOnChanged);           
             refreshDropdown();
         })
+        refreshBreadCrumb();
     })
 }
 
 const projectDeleted = (event) => {
-
+    if( confirm( '確定要刪除嗎' ) ){
+        alert( '成功' );
+    } 
+    else{
+        alert( '失敗' );
+    }
 }
 
 // selection
@@ -236,6 +287,7 @@ const butttonSelected = (event) => {
                 childs[i].addEventListener('click' , butttonSelected);
             }
             selectionNowPage = 'type';
+            refreshBreadCrumb();
         }
         // change to school page
         else if ( selectionNowPage === 'type' ){
@@ -246,6 +298,7 @@ const butttonSelected = (event) => {
                 childs[i].addEventListener('click' , butttonSelected);
             }
             selectionNowPage = 'school';
+            refreshBreadCrumb();
         }
         // show projects
         else if ( selectionNowPage === 'school' ){
@@ -257,7 +310,8 @@ const butttonSelected = (event) => {
                 childs[i].querySelector( '.edit' ).addEventListener( 'click', projectSelected);
                 childs[i].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);
             }
-            pageHeader.querySelector('.add').style.display = 'block';            
+            pageHeader.querySelector('.add').style.display = 'block';
+            refreshBreadCrumb();            
         }     
     })    
 }
@@ -350,13 +404,12 @@ pageHeader.querySelector('.add-content').addEventListener('click', addContent);
 
 const saveContent = () =>{
     const childs = Array.from(pageEdit.children);
-    console.log(childs)
     const contents = [];
     childs.forEach((child)=>{
         contents.push({
-            dimension: child.querySelector('.dimension').value,
-            item: child.querySelector('.item').value,
-            detail: child.querySelector('.detail').value,
+            dimension: child.querySelector('div.dimension.ui.selection.dropdown').firstChild.value,
+            item: child.querySelector('div.item.ui.selection.dropdown').firstChild.value,
+            detail: child.querySelector('.detail').firstChild.value,
             content: child.querySelector('.content').value,
             page: {
                 start: child.querySelector('.page__start').value,
@@ -382,7 +435,7 @@ const saveContent = () =>{
     })
     .then(res => res.text())
     .then(data => { 
-        console.log(data);
+        alert(data);
     })
 }
 

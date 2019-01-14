@@ -35,17 +35,20 @@ append content
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增                
 
   //- content
+  //- breadcrumb
+  .ui.container.pusher
+    #breadcrumb.ui.huge.breadcrumb
   //- page select
-  #page-select.ui.container.pusher
+  #page-select.ui.container
     .select__year
     .select__type
     .select__school
 
   //- page management
-  #page-management.ui.container.pusher
+  #page-management.ui.container
 
   //- page edit
-  #page-edit.ui.container.pusher
+  #page-edit.ui.container
 
 append script
   script(src='/javascripts/manage.js')
