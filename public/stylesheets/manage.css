@@ -17,6 +17,7 @@ h1:first-child {
 
 .pusher {
     margin-top: 10rem;
+    margin-bottom: 1rem; 
 }
 
 .segment h3 {
