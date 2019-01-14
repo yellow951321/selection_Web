@@ -173,7 +173,7 @@ router.post('/edit',(req,res)=>{
     //console.log(files);
     if(files instanceof Object){
       objToNode(files,(context)=>{
-        console.log(context);
+        //console.log(context);
         res.render('manage/_render_edit',{info:context});
       });
     }
