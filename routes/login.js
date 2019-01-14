@@ -36,7 +36,7 @@ router.post('/in',(req,res)=>{
         const sessionId = uid.sync(18);
         const SA = new SessionAccount('/',sessionId,doc.username,doc.password,0000000);
         sessionTable.push(SA);
-        console.log(`${sessionTable} at login.js:30`);
+        console.log(sessionTable+'at login.js:39');
         res.cookie('sessionId',sessionId);
         res.cookie('path',doc.username);
         res.status(200).send("OK");
