@@ -86,7 +86,7 @@ router.post('/save',(req,res)=>{
           if(err) return console.log(err);
           console.log(`make dir and files in ${path}`);
           nodeToObj(pathWithName,data,(modData)=>{
-            fs.writeFile(pathWithName,modData,(err)=>{
+            fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
               if(err) return console.log(err);
               console.log(`Save ${pathWithName} is completed`);
               return res.status(200).send("OK");
@@ -95,7 +95,7 @@ router.post('/save',(req,res)=>{
         });
       }else if(state){
         nodeToObj(pathWithName,data,(modData)=>{
-          fs.writeFile(pathWithName,modData,(err)=>{
+          fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
             return res.status(200).send("OK");
@@ -257,7 +257,8 @@ function nodeToObj(path,body,cb){
     if(data){
       data = JSON.parse(data);
       if(body instanceof Array){
-        for(con in body){
+        for(con of body){
+          console.log(con);
           var item = new ContentSchema(con.page,con.content);
           data[con.dimension][con.item][con.detail].push(item);
         }
