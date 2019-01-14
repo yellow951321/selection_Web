@@ -76,7 +76,6 @@ router.post('/add',(req,res)=>{
     
   });
   //res.render('manage/_render_manage',{info:[req.body.info]});
-  
 });
 
 router.post('/save',(req,res)=>{
@@ -183,7 +182,22 @@ router.post('/addContent',(req,res)=>{
   res.render('manage/_render_newEdit');
 });
 
+router.post('/delete',(req,res)=>{
+  const account = sessionTable.findBySId(req.sessionId);
+  const username = account ? account.username : 'nober';
+  const year = req.info.year;
+  const type = req.info.type;
+  const campus = req.info.campus;
+  const name = req.info.name;
+  const oldPath = pathGen(username,year,type,campus,name);
+  const newPath = pathGenDeleteName(username,year,type,campus,name);
+  fs.rename(oldPath,newPath,(err)=>{
+    if(err) console.log(err);
+    console.log(`rename completed with ${newPath}`);
+    res.status(200).send("OK");
+  });
 
+});
 
 function pathGen(username,year,type,campus,name){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'.json';
@@ -192,6 +206,9 @@ function pathGenWithoutName(username,year,type,campus){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus;
 }
 
+function pathGenDeleteName(username,year,type,campus,name){
+  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'_'+'d'+'.json';
+}
 function fetch(info,cb){
   const username = info.username ? `/${info.username}`: '';
   const year = info.year ? `/${info.year}` : '';
@@ -224,12 +241,13 @@ function splitArrayIntoContext(arr,cb){
   for(name of arr){
     let t = {};
     var content = name.split("_");
-    t.year = content[0];
-    t.type = content[1];
-    t.campus = content[2];
-    t.name = content[3].match(/[^.]+/)[0];
-    temp.push(t);
-    
+    if(content.length <= 3){
+      t.year = content[0];
+      t.type = content[1];
+      t.campus = content[2];
+      t.name = content[3].match(/[^.]+/)[0];
+      temp.push(t);
+    }
   }
   cb(temp);
 }
