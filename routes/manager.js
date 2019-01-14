@@ -129,7 +129,7 @@ router.post('/fetch',(req,res)=>{
   console.log(account);
   console.log(req.body);
   const info = {
-    username : account? account.username : 'nober',
+    username : account.username,
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus,
@@ -162,7 +162,7 @@ router.post('/fetch',(req,res)=>{
 router.post('/edit',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
   const info = {
-    username : 'nober',
+    username : account.username,
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus,
