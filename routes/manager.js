@@ -10,8 +10,7 @@ router.get('/',(req,res)=>{
 });
 
 router.post('/add',(req,res)=>{
-  //const username = sessionTable.findBySId(req.body.sessionId);
-  const username = "nober";
+  const username = sessionTable.findBySId(req.body.sessionId).username;
   const pathWithoutName = pathGenWithoutName(username,req.body.info.year,req.body.info.type,req.body.info.campus);
   const path = pathGen(username,req.body.info.year,req.body.info.type,req.body.info.campus,req.body.info.name);
   fs.stat(path,(err,state)=>{
@@ -130,7 +129,7 @@ router.post('/fetch',(req,res)=>{
   console.log(account);
   console.log(req.body);
   const info = {
-    username : account? account.username : 'nober',
+    username : account.username,
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus,
@@ -154,6 +153,8 @@ router.post('/fetch',(req,res)=>{
           });
         }
     });
+  }else{
+    res.status(400).send();
   }
 
 });
@@ -161,7 +162,7 @@ router.post('/fetch',(req,res)=>{
 router.post('/edit',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
   const info = {
-    username : 'nober',
+    username : account.username,
     year : req.body.year,
     type : req.body.type,
     campus : req.body.campus,

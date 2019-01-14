@@ -215,7 +215,7 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked);
 // logoutButton
 
 const logoutClicked = () => {
-    fetch( 'man/fetch', {
+    fetch( 'log/out', {
         method: 'POST',
         body: JSON.stringify({sessionId: sessionId}),
         headers: {

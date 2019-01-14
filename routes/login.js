@@ -48,9 +48,9 @@ router.post('/in',(req,res)=>{
 
 router.post('/out',(req,res)=>{
   const sid = req.body.sessionId;
-  const username  = req.body.username;
+  //const username  = req.body.username;
   sessionTable = sessionTable.filter((account)=>{
-    return account.sessionId != sid && account.username != username;
+    return account.sessionId != sid;
   });
   res.status(200).send("Log out");
   console.log(`${req.body.username} log out`);
