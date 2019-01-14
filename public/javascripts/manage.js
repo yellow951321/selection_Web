@@ -212,6 +212,24 @@ const backClicked = () => {
 
 pageHeader.querySelector('.back').addEventListener('click', backClicked);
 
+// logoutButton
+
+const logoutClicked = () => {
+    fetch( 'man/fetch', {
+        method: 'POST',
+        body: JSON.stringify({sessionId: sessionId}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        window.location = window.location.href.substring( 0, window.location.href - 3) + 'log';
+    })
+}
+
+pageHeader.querySelector('.logout').addEventListener('click', logoutClicked);
+
 // variables for selection, manage, edit
 
 // selection 
