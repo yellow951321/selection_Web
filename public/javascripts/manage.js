@@ -52,9 +52,34 @@ fetch( '/man/schema' , {
     schema = data;
 })
 
-const getSesstionId = () => {
-
+const fetchSession = () => {
+    let sId = document.cookie.match(/sessionId=[^;]+/);
+    console.log(sId);
+    if( sId !== undefined){
+        if( sId instanceof Array)
+            sId = sId[0].substring(10);
+        else
+            sId = sId.substring(10);
+        return sId;        
+    }
 }
+
+sessionId = fetchSession();
+
+const fetchUserName = () => {
+    let user = document.cookie.match(/path=[^;]+/);
+    console.log(user);
+    if( user !== undefined){
+        if( user instanceof Array)
+            user = user[0].substring(10);
+        else
+            user = user.substring(10);
+        return user;        
+    }
+}
+
+userName = fetchUserName();
+
 const refreshBreadCrumb = () =>{
     while(breadCrumb.firstChild){
         breadCrumb.removeChild(breadCrumb.firstChild);
