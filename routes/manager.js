@@ -38,6 +38,17 @@ router.post('/add',(req,res)=>{
                 });
               }
             });
+            fs.readFile(path,(err,data)=>{
+              if(err) console.log(err);
+              if(data){
+                data = JSON.parse(data);
+                data["年度"] = req.body.info.year;
+                fs.writeFile(path,JSON.stringify(data),(err)=>{
+                  if(err) console.log(err);
+                    console.log("save operation have been completed");
+                }); 
+              }
+            });
         });
       });
     }else if(state){
