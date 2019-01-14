@@ -1,14 +1,10 @@
-.myhide {
-    display: none;
-}
-
 h1:first-child {
     margin-top: 0.5rem;
     margin-left: 3rem;
 }
 
 .ui.button {
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .ui.modal > .close {
@@ -23,6 +19,9 @@ h1:first-child {
     margin-top: 10rem;
 }
 
+.segment h3 {
+    font-size: 1.7rem;
+}
 .segment p{
-    font-size: 1.25rem;
+    font-size: 1.1rem;
 }

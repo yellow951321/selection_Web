@@ -1,23 +1,63 @@
 include _objects.pug
 mixin newEdit()
 	form.ui.form.segment
-		.three.fields
+		.four.fields
+			.field
+				.fields
+					.eight.wide.field
+						label 開始頁面
+						input.page__start(type='number' value='1')
+					.eight.wide.field
+						label 結束頁面
+						input.page__end(type='number' value='1')
 			.field
 				label 構面
-				select.ui.selection.dropdown(value='教學')
+				select.dimension.ui.selection.dropdown
 					each val, index in layout
 						if index != '年度' && index != '學校' && index != '類型'
 							option(value=index)=index
 			.field
 				label 項目
-				select.ui.selection.dropdown
-					each val, index in layout['教學']
+				select.item.ui.selection.dropdown
+					each val, index in layout[ '教學' ]
 						option(value=index)=index
 			.field
 				label 詳細資料
-				select.ui.selection.dropdown     
-					each val, index in layout['教學']['強化教學品質']
+				select.detail.ui.selection.dropdown     
+					each val, index in layout[ '教學' ][ '強化教學品質' ]
 						option(value=index)=index   
 		.field
 			label 內容
-				textarea(name="", rows="5")
+				textarea.content(name="", rows="5")
+
+
+mixin edit(info)
+	form.ui.form.segment
+		.four.fields
+			.field
+				.fields
+					.eight.wide.field
+						label 開始頁面
+						input.page__start(type='number' value=info[ 'page' ][ 'start' ])
+					.eight.wide.field
+						label 結束頁面
+						input.page__end(type='number' value=info[ 'page'][ 'end' ])
+			.field
+				label 構面
+				select.dimension.ui.selection.dropdown(value=info[ 'dimension' ])
+					each val, index in layout
+						if index != '年度' && index != '學校' && index != '類型'
+							option(value=index)=index
+			.field
+				label 項目
+				select.item.ui.selection.dropdown(value=info[ 'item' ])
+					each val, index in layout[ info[ 'dimension' ] ]
+						option(value=index)=index
+			.field
+				label 詳細資料
+				select.detail.ui.selection.dropdown(value=info[ 'detail' ])     
+					each val, index in layout[ info[ 'dimension' ] ][ info[ 'item' ] ]
+						option(value=index)=index   
+		.field
+			label 內容
+				textarea.content(name="", rows="5")=info[ 'content' ]

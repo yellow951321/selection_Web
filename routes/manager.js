@@ -12,125 +12,272 @@ router.get('/',(req,res)=>{
 router.post('/add',(req,res)=>{
   //const username = sessionTable.findBySId(req.body.sessionId);
   const username = "nober";
+  const pathWithoutName = pathGenWithoutName(username,req.body.info.year,req.body.info.type,req.body.info.campus);
   const path = pathGen(username,req.body.info.year,req.body.info.type,req.body.info.campus,req.body.info.name);
   fs.stat(path,(err,state)=>{
     if(err){
       console.log(err);
-      fs.mkdir(path,{recursive:true},(err)=>{
+      fs.mkdir(pathWithoutName,{recursive:true},(err)=>{
         if(err) console.log(err);
         console.log('mkdir operation complete');
+        fs.copyFile('data/projectSchema.json',path,(err)=>{
+          if(err) console.log(err);
+          else  
+            console.log("Mdir operation is completed");
+            const info = {
+              username : username,
+              year : req.body.info.year,
+              type : req.body.info.type,
+              campus : req.body.info.campus,
+            }
+            fetch(info,(files)=>{
+              if(files instanceof Array && req.body.info.campus){
+                splitArrayIntoContext(files,(context)=>{
+                  console.log(context);
+                  res.render('manage/_render_manage',{info:context});
+                });
+              }
+            });
+        });
+      });
+    }else if(state){
+      fs.copyFile('data/projectSchema.json',path,(err)=>{
+        if(err) console.log(err);
+        else  
+          console.log("Mdir operation is completed");
+          const info = {
+            username : username,
+            year : req.body.info.year,
+            type : req.body.info.type,
+            campus : req.body.info.campus,
+          }
+          fetch(info,(files)=>{
+            if(files instanceof Array && req.body.info.campus){
+              splitArrayIntoContext(files,(context)=>{
+                console.log(context);
+                res.render('manage/_render_manage',{info:context});
+              });
+            }
+          });
       });
     }
-    console.log(state);
+    
     
   });
-  fs.copyFile('data/projectSchema.json',path,(err)=>{
-    if(err) console.log(err);
-    else  
-      console.log("Mdir operation is completed");
-  });
-  res.render('manage/_render_manage',{info:[req.body.info]});
+  //res.render('manage/_render_manage',{info:[req.body.info]});
+  
 });
 
 router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
-  if(account){
-    const username = account.username;
-    const year = req.info.year;
-    const type = req.info.type;
-    const campus = req.info.campus;
-    const name = req.info.name;
-    const data = req.data;
-    const pathWithName = pathGen(username,year,campus,name);
-    const path = pathGenWithoutName(username,year,campus);
+  console.log(req.body);
+  if(account == undefined){
+    const username = 'nober';
+    const year = req.body.info.year;
+    const type = req.body.info.type;
+    const campus = req.body.info.campus;
+    const name = req.body.info.name;
+    const data = req.body.data;
+    const pathWithName = pathGen(username,year,type,campus,name);
+    const path = pathGenWithoutName(username,year,type,campus);
     fs.stat(pathWithName,(err,state)=>{
       if(err){
         fs.mkdir(path,{recursive: true},(err)=>{
           if(err) return console.log(err);
           console.log(`make dir and files in ${path}`);
-          fs.writeFile(pathWithName,data,(err)=>{
+          nodeToObj(pathWithName,data,(modData)=>{
+            fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
+              if(err) return console.log(err);
+              console.log(`Save ${pathWithName} is completed`);
+              return res.status(200).send("OK");
+            });
+          });
+        });
+      }else if(state){
+        nodeToObj(pathWithName,data,(modData)=>{
+          fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
             return res.status(200).send("OK");
           });
-        });
-      }else if(state){
-        fs.writeFile(pathWithName,data,(err)=>{
-          if(err) return console.log(err);
-          console.log(`Save ${pathWithName} is completed`);
-          return res.status(200).send("OK");
         });
       }
     });
   }
 });
 
+router.post('/schema',(req,res)=>{
+  fs.readFile('data/projectSchema.json',(err,data)=>{
+    if(err) return console.log(err);
+    if(data){
+      res.status(200).send(data);
+    }
+  });
+});
 
 router.post('/fetch',(req,res)=>{
-//   var account = sessionTable.findBySId(req.body.sessionId);
-//   const info = {
-//     username : account.username,
-//     year : req.body.year,
-//     type : req.body.type,
-//     campus : req.body.campus
-//   }
-//   if(account){
-//     var files = fetch(info);
-//     if(files instanceof Array){
-//       //render the problem.
-//       res.render
-//     }else{
-//       //render the editNode.
-//     }
-//   }
-  
-    if(req.body.year === undefined)
-      res.render('manage/_render_select_button', { contents:[1994,1996,1998]} );
-    else if(req.body.type === ''){
-      res.render('manage/_render_select_button', { contents:['普通','綜合']});
-    }
-    else if(req.body.campus === ''){
-      res.render('manage/_render_select_button', { contents:['成大','成大']});
-    }
+  var account = sessionTable.findBySId(req.body.sessionId);
+  console.log(req.body);
+  const info = {
+    username : 'nober',
+    year : req.body.year,
+    type : req.body.type,
+    campus : req.body.campus,
+    proName : req.body.name
+  }
+  console.log(info);
+  if(account == undefined){
+    fetch(info,(files)=>{
+        if(files instanceof Array && !req.body.campus ){
+          console.log(files);
+          res.render('manage/_render_select_button',{contents: files});
+        }else if(files instanceof Array && req.body.campus){
+          console.log(files);
+          splitArrayIntoContext(files,(context)=>{
+            console.log(context);
+            res.render('manage/_render_manage',{info:context});
+          });
+        }else if(files instanceof Object ){
+          objToNode(files,(context)=>{
+            res.render('manage/_edit',{info:context});
+          });
+        }
+    });
+  }
+
 });
 
 router.post('/edit',(req,res)=>{
-  //edit when press edition button
+  var account = sessionTable.findBySId(req.body.sessionId);
+  const info = {
+    username : 'nober',
+    year : req.body.year,
+    type : req.body.type,
+    campus : req.body.campus,
+    proName : req.body.name
+  }
+  console.log(info);
+  fetch(info,(files)=>{
+    //console.log(files);
+    if(files instanceof Object){
+      objToNode(files,(context)=>{
+        console.log(context);
+        res.render('manage/_render_edit',{info:context});
+      });
+    }
+  });
 });
 
+router.post('/addContent',(req,res)=>{
+  res.render('manage/_render_newEdit');
+});
 
 
 
 function pathGen(username,year,type,campus,name){
-  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+name+'.json';
+  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'.json';
 }
 function pathGenWithoutName(username,year,type,campus){
   return 'data/'+username+'/'+year+'/'+type+'/'+campus;
 }
 
-function fetch(info){
-  const username = info.username ? `/${info.username}/`: '';
-  const year = info.year ? `/${info.year}/` : '';
-  const type = info.type ? `/${info.type}/` : '';
-  const campus = info.campus ? `/${info.campus}/` : '';
-  const proName = info.proName ? `/${info.proName}/` : '';
-  const path = pathGen(username,year,type,campus,proName);
+function fetch(info,cb){
+  const username = info.username ? `/${info.username}`: '';
+  const year = info.year ? `/${info.year}` : '';
+  const type = info.type ? `/${info.type}` : '';
+  const campus = info.campus ? `/${info.campus}` : '';
+  const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : '';
+  const path = 'data'+username+year+type+campus+proName;
+  console.log(path);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{
       if(err) return console.log(err);
       if(data){
-        return JSON.parse(data);
+         cb(JSON.parse(data));
       }
     });
   }else{
     fs.readdir(path,(err,files)=>{
       if(err) return console.log(err);
       if(files){
-        return files;
+        console.log('read complete');
+        //console.log(files);
+        cb(files);
       }
     });
   }
 }
 
+function splitArrayIntoContext(arr,cb){
+  var temp = [];
+  for(name of arr){
+    let t = {};
+    var content = name.split("_");
+    t.year = content[0];
+    t.type = content[1];
+    t.campus = content[2];
+    t.name = content[3].match(/[^.]+/)[0];
+    temp.push(t);
+    
+  }
+  cb(temp);
+}
 
+
+function objToNode(project,cb){
+  console.log(project);
+  var context = [];
+  for(dimension in project)
+    for(item in project[dimension])
+      for(detail in project[dimension][item]){
+        console.log(detail);
+        //console.log(detail.length > 0);
+        if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
+          for(content of project[dimension][item][detail]){
+            let t = {};
+              t.dimension = dimension;
+              t.item = item;
+              t.detail = detail;
+              t.content = content.paragraph;
+              t.page = {};
+              t.page.start = "1";
+              t.page.end = "1";
+              console.log("Adding");
+              context.push(t);
+          }
+        }
+      }
+
+  cb(context);
+}
+
+function nodeToObj(path,body,cb){
+  fs.readFile(path,"utf-8",(err,data)=>{
+    if(err) return console.log(err);
+    if(data){
+      data = JSON.parse(data);
+      if(body instanceof Array){
+        for(con of body){
+          console.log(con);
+          var item = new ContentSchema(con.page,con.content);
+          data[con.dimension][con.item][con.detail].push(item);
+        }
+      }
+      cb(data);
+    }
+  });
+}
+
+
+
+
+function ContentSchema(page,paragraph){
+  if(page.start && page.end){
+    this.page = [];
+    this.page[0] = page.start;
+    this.page[1] = page.end;
+  }
+  this.paragraph = paragraph ? paragraph : "";
+  this.title = "";
+}
 module.exports= router;
