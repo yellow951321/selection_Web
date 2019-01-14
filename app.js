@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const mongoose = require('./db/mongoose');
+const mongoose = require('./db/mongoose.yello');
 
 const loginRouter = require('./routes/login');
 const signupRouter = require('./routes/signup');

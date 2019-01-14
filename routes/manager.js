@@ -104,6 +104,7 @@ router.post('/save',(req,res)=>{
         });
       }else if(state){
         nodeToObj('data/projectSchema.json',data,(modData)=>{
+          console.log(modData);
           fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
@@ -173,7 +174,8 @@ router.post('/edit',(req,res)=>{
     //console.log(files);
     if(files instanceof Object){
       objToNode(files,(context)=>{
-        console.log(context);
+        //console.log(context);
+        console.log(context instanceof Array);
         res.render('manage/_render_edit',{info:context});
       });
     }
