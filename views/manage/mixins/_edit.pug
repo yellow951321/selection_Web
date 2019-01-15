@@ -25,10 +25,13 @@ mixin newEdit()
 				label 詳細資料
 				select.detail.ui.selection.dropdown     
 					each val, index in layout[ '教學' ][ '強化教學品質' ]
-						option(value=index)=index   
+						option(value=index)=index
+		.field
+			label 標題
+			input.title
 		.field
 			label 內容
-				textarea.content(name="", rows="5")
+			textarea.content(name="", rows="5")
 
 
 mixin edit(info)
@@ -51,15 +54,18 @@ mixin edit(info)
 			.field
 				label 項目
 				select.item.ui.selection.dropdown(value=info[ 'item' ])
-					- console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
+					//- - console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
 					each val, index in layout[ info[ 'dimension' ] ]
 						option(value=index)=index
 			.field
 				label 詳細資料
 				select.detail.ui.selection.dropdown(value=info[ 'detail' ])
-					//- console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
+					//- - console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
 					each val, index in layout[ info[ 'dimension' ] ][ info[ 'item' ] ]
 						option(value=index)=index   
 		.field
+			label 標題
+			input.title
+		.field
 			label 內容
-				textarea.content(name="", rows="5")=info[ 'content' ]
+			textarea.content(name="", rows="5")=info[ 'content' ]

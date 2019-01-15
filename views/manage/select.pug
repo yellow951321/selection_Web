@@ -1,0 +1,20 @@
+include mixins/_select.pug
+
+extends component/layout
+
+//- append buttons in the header
+append buttons
+  button.add.ui.blue.right.floated.button.add 新增
+  button.logout.ui.blue.right.floated.button 登出
+
+append content
+  //- content
+  //- page select
+  #page-select.ui.container
+    for val in contents
+      +showSelectButton(val)
+
+append buttons
+
+append script
+  script(src='/javascripts/manage/select.js')

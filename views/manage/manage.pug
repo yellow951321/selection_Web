@@ -1,0 +1,18 @@
+include mixins/_manage.pug
+
+extends component/layout
+
+//- append buttons in the header
+append buttons
+  button.add.ui.blue.right.floated.button.add 新增
+  button.logout.ui.blue.right.floated.button 登出
+
+append content
+  //- content
+  //- page management
+  #page-management.ui.container
+	for val in info
+		+manage(val)
+
+append script
+  script(src='/javascripts/manage/manage.js')

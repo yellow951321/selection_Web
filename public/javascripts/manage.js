@@ -60,7 +60,7 @@ const fetchSession = () => {
             sId = sId[0].substring(10);
         else
             sId = sId.substring(10);
-        return sId;        
+        return sId;
     }
 }
 
@@ -74,7 +74,7 @@ const fetchUserName = () => {
             user = user[0].substring(5);
         else
             user = user.substring(5);
-        return user;        
+        return user;
     }
 }
 
@@ -84,34 +84,34 @@ const refreshBreadCrumb = () =>{
     while(breadCrumb.firstChild){
         breadCrumb.removeChild(breadCrumb.firstChild);
     }
-    breadCrumb.insertAdjacentHTML( 'beforeend', ` 
-        <div class="section"> ${ userName } </div> 
+    breadCrumb.insertAdjacentHTML( 'beforeend', `
+        <div class="section"> ${ userName } </div>
     `);
 
     if( selectionNowYear == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowYear } </div> 
+        <div class="section"> ${ selectionNowYear } </div>
     `);
     if( selectionNowType == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowType } </div> 
-    `);    
+        <div class="section"> ${ selectionNowType } </div>
+    `);
     if( selectionNowSchool == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowSchool } </div> 
-    `);    
+        <div class="section"> ${ selectionNowSchool } </div>
+    `);
     if( selectionNowProject == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowProject } </div> 
-    `);            
+        <div class="section"> ${ selectionNowProject } </div>
+    `);
 }
 refreshBreadCrumb();
 
@@ -166,11 +166,11 @@ addForm.addEventListener('submit', (event) => {
         headers: {
             'Content-Type': 'application/json'
         }
-    })   
+    })
     .then(res => res.text())
     .then(data => {
         backClicked();
-    })    
+    })
 
     $('.ui.modal').modal('hide');
 })

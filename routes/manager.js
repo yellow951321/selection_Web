@@ -32,7 +32,7 @@ router.post('/add',(req,res)=>{
             fetch(info,(files)=>{
               if(files instanceof Array && req.body.info.campus){
                 splitArrayIntoContext(files,(context)=>{
-                  console.log(context);
+                  // console.log(context);
                   res.render('manage/_render_manage',{info:context});
                 });
               }
@@ -79,7 +79,7 @@ router.post('/add',(req,res)=>{
 
 router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
-  console.log(req.body);
+  // console.log(req.body);
   if(account){
     const username = account.username;
     const year = req.body.info.year;
@@ -104,7 +104,7 @@ router.post('/save',(req,res)=>{
         });
       }else if(state){
         nodeToObj('data/projectSchema.json',data,(modData)=>{
-          console.log(modData);
+          // console.log(modData);
           fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
@@ -127,8 +127,8 @@ router.post('/schema',(req,res)=>{
 
 router.post('/fetch',(req,res)=>{
   var account = sessionTable.findBySId(req.body.sessionId);
-  console.log(account);
-  console.log(req.body);
+  // console.log(account);
+  // console.log(req.body);
   const info = {
     username : account.username,
     year : req.body.year,
@@ -136,16 +136,16 @@ router.post('/fetch',(req,res)=>{
     campus : req.body.campus,
     proName : req.body.name
   }
-  console.log(info);
+  // console.log(info);
   if(account){
     fetch(info,(files)=>{
         if(files instanceof Array && !req.body.campus ){
-          console.log(files);
+          // console.log(files);
           res.render('manage/_render_select_button',{contents: files});
         }else if(files instanceof Array && req.body.campus){
-          console.log(files);
+          // console.log(files);
           splitArrayIntoContext(files,(context)=>{
-            console.log(context);
+            // console.log(context);
             res.render('manage/_render_manage',{info:context});
           });
         }else if(files instanceof Object ){
@@ -169,12 +169,12 @@ router.post('/edit',(req,res)=>{
     campus : req.body.campus,
     proName : req.body.name
   }
-  console.log(info);
+  // console.log(info);
   fetch(info,(files)=>{
     //console.log(files);
     if(files instanceof Object){
       objToNode(files,(context)=>{
-        //console.log(context);
+        // console.log(context);
         res.render('manage/_render_edit',{info:context});
       });
     }
@@ -194,8 +194,8 @@ router.post('/delete',(req,res)=>{
   const name = req.body.info.name;
   const oldPath = pathGen(username,year,type,campus,name);
   const newPath = pathGenDeleteName(username,year,type,campus,name);
-  console.log(oldPath);
-  console.log(newPath);
+  // console.log(oldPath);
+  // console.log(newPath);
   fs.rename(oldPath,newPath,(err)=>{
     if(err) console.log(err);
     console.log(`rename completed with ${newPath}`);
@@ -221,7 +221,7 @@ function fetch(info,cb){
   const campus = info.campus ? `/${info.campus}` : '';
   const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : '';
   const path = 'data'+username+year+type+campus+proName;
-  console.log(path);
+  // console.log(path);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{
       if(err) return console.log(err);
@@ -259,12 +259,12 @@ function splitArrayIntoContext(arr,cb){
 
 
 function objToNode(project,cb){
-  console.log(project);
+  // console.log(project);
   var context = [];
   for(dimension in project)
     for(item in project[dimension])
       for(detail in project[dimension][item]){
-        console.log(detail);
+        // console.log(detail);
         //console.log(detail.length > 0);
         if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
           for(content of project[dimension][item][detail]){
@@ -276,7 +276,7 @@ function objToNode(project,cb){
               t.page = {};
               t.page.start = "1";
               t.page.end = "1";
-              console.log("Adding");
+              // console.log("Adding");
               context.push(t);
           }
         }
@@ -290,10 +290,10 @@ function nodeToObj(path,body,cb){
     if(err) return console.log(err);
     if(data){
       data = JSON.parse(data);
-      console.log(body);
+      // console.log(body);
       if(body instanceof Array){
         for(con of body){
-          console.log(con);
+          // console.log(con);
           var item = new ContentSchema(con.page,con.content);
           data[con.dimension][con.item][con.detail].push(item);
         }

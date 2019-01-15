@@ -1,0 +1,16 @@
+include mixins/_edit.pug
+
+for x in info
+    +edit(x)
+
+extends component/layout
+
+append content
+  //- content
+  //- page edit
+  #page-edit.ui.container
+    for x in info
+        +edit(x)
+
+append script
+  script(src='/javascripts/manage/edit.js')
