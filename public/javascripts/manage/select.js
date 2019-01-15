@@ -7,7 +7,7 @@ let selectionNowSchool = '';
 let selectionNowProject = '';
 
 const addForm = document.getElementById('addForm');
-const breadCrumb = document.getElementById( 'breadCrumb' );
+const breadCrumb = document.getElementById( 'breadcrumb' );
 const header = document.getElementById( 'header' );
 
 // variables > functions
@@ -17,11 +17,11 @@ const getCurrentPath = () => {
     let pathSplit = window.location.pathname;
     pathSplit = pathSplit.split("/");
 
-    userName = pathSplit[1]
-    selectionNowYear = pathSplit[2] ? pathSplit[2] : '';
-    selectionNowType = pathSplit[3] ? pathSplit[3] : '';
-    selectionNowSchool = pathSplit[4] ? pathSplit[4] : '';
-    selectionNowProject = pathSplit[5] ? pathSplit[5] : '';
+    userName = pathSplit[2]
+    selectionNowYear = pathSplit[3] ? decodeURI( pathSplit[3] ) : '';
+    selectionNowType = pathSplit[4] ? decodeURI( pathSplit[4] ) : '';
+    selectionNowSchool = pathSplit[5] ? decodeURI( pathSplit[5] ) : '';
+    selectionNowProject = pathSplit[6] ? decodeURI( pathSplit[6] ) : '';
 }
 
     // fetch session from cookies
@@ -48,75 +48,72 @@ const addButtonClicked = ( event ) => {
 const buttonSelected = ( event ) => {
     // determine current folder
     if( selectionNowYear === ''){
-        selectionNowYear = event.target.value;
-        // year selected
-        window.location = window.location + '/' + selectionNowYear + '?sessionId=' + sessionId;
+        selectionNowYear = event.target.innerHTML;
+        window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowYear}?sessionId=${sessionId}` );
     }
     else if ( selectionNowType === ''){
-        selectionNowType = event.target.value;
+        selectionNowType = event.target.innerHTML;
         // type selected
-        window.location = window.location + '/' + selectionNowYear + '/' + selectionNowType + '?sessionId=' + sessionId;
+        window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowType}?sessionId=${sessionId}` );
     }
     else if ( selectionNowSchool === ''){
-        selectionNowschool = event.target.value;
+        selectionNowSchool = event.target.innerHTML;
         // school selected
-        window.location = window.location + '/' + selectionNowYear + '/' + selectionNowType + '/' + selectionNowSchool + '?sessionId=' + sessionId;
+        window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowSchool}?sessionId=${sessionId}` );
     }
 }
 
     // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
     breadCrumb.insertAdjacentHTML( 'beforeend', `
-        <div class="section"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}?sessionId=${sessionId}"> ${ userName } </div>
     `);
 
     if( selectionNowYear == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
     `);
 
     if( selectionNowType == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
     `);
 
     if( selectionNowSchool == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowSchool } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
     `);
 
     if( selectionNowProject == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowProject } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
     `);
 }
 
 // init
 
 getCurrentPath();
-    // refreshBreadCrumb needs to execute after get current path
-refreshBreadCrumb();
 sessionId = fetchSession();
+    // refreshBreadCrumb needs to execute after get current path and fetchSession
+refreshBreadCrumb();
 
 // add event listener
 
 // add event listener to the selectButton
-Object.keys(
-    Array.from( document.getElementById( 'page-select' ).querySelectorAll( '.button' ) )
-).forEach( (button) =>{
+Array.from( document.getElementById( 'page-select' ).querySelectorAll( '.button' ) ).forEach( (button) =>{
     button.addEventListener( 'click', buttonSelected);
 })
 
 // add event listener to the add button
-header.querySelector( '.add', addButtonClicked );
+header.querySelector( '.add' ).addEventListener( 'click',  addButtonClicked);
 
 // add event listener to the addForm
 // when addform submit rederect to the new project location
@@ -146,7 +143,8 @@ addForm.addEventListener('submit', (event) => {
     })
     .then(res => res.text())
     .then(data => {
-        backClicked();
+        if( data === 'OK')
+            window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}?sessionId=${sessionId}` )
     })
 
     $('.ui.modal').modal('hide');

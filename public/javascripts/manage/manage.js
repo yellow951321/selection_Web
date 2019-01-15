@@ -7,7 +7,7 @@ let selectionNowSchool = '';
 let selectionNowProject = '';
 
 const addForm = document.getElementById('addForm');
-const breadCrumb = document.getElementById( 'breadCrumb' );
+const breadCrumb = document.getElementById( 'breadcrumb' );
 const header = document.getElementById( 'header' );
 
 // variables > functions
@@ -17,11 +17,11 @@ const getCurrentPath = () => {
     let pathSplit = window.location.pathname;
     pathSplit = pathSplit.split("/");
 
-    userName = pathSplit[1]
-    selectionNowYear = pathSplit[2] ? pathSplit[2] : '';
-    selectionNowType = pathSplit[3] ? pathSplit[3] : '';
-    selectionNowSchool = pathSplit[4] ? pathSplit[4] : '';
-    selectionNowProject = pathSplit[5] ? pathSplit[5] : '';
+    userName = pathSplit[2]
+    selectionNowYear = pathSplit[3] ? decodeURI( pathSplit[3] ) : '';
+    selectionNowType = pathSplit[4] ? decodeURI( pathSplit[4] ) : '';
+    selectionNowSchool = pathSplit[5] ? decodeURI( pathSplit[5] ) : '';
+    selectionNowProject = pathSplit[6] ? decodeURI( pathSplit[6] ) : '';
 }
 
     // fetch session from cookies
@@ -55,11 +55,11 @@ const editDeleteButtonClicked = ( event ) => {
     const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
     const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
 
-    if( event.target.value === '編輯'){
+    if( event.target.innerHTML === '編輯'){
         // redirect to the target folder
-        window.location = window.location + '/' + name + '?sessionId=' + sessionId;
+        window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${name}?sessionId=${sessionId}` );
     }
-    else if( event.target.value === '刪除' ){
+    else if( event.target.innerHTML === '刪除' ){
         if( confirm( '確定要刪除嗎' ) ){
 
             fetch( 'man/delete', {
@@ -79,7 +79,7 @@ const editDeleteButtonClicked = ( event ) => {
             })
             .then(res => res.text())
             .then(data => {
-                pageManagement.removeChild( projectNode );
+                projectNode.parentNode.removeChild( projectNode );
                 alert( '成功' );
             });
         }
@@ -89,62 +89,60 @@ const editDeleteButtonClicked = ( event ) => {
     // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
     breadCrumb.insertAdjacentHTML( 'beforeend', `
-        <div class="section"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}?sessionId=${sessionId}"> ${ userName } </div>
     `);
 
     if( selectionNowYear == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
     `);
 
     if( selectionNowType == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
     `);
 
     if( selectionNowSchool == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowSchool } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
     `);
 
     if( selectionNowProject == '')
         return;
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
-        <div class="section"> ${ selectionNowProject } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
     `);
 }
 
 // init
 
 getCurrentPath();
-    // refreshBreadCrumb needs to execute after get current path
-refreshBreadCrumb();
 sessionId = fetchSession();
+    // refreshBreadCrumb needs to execute after get current path and fetchSession
+refreshBreadCrumb();
 
 // add event listener
 
-// add event listener to the selectButton
-Object.keys(
-    Array.from( document.getElementById( 'page-management' ).querySelectorAll( '.edit' ) )
-).forEach( (button) =>{
+console.log(document.getElementById( 'page-management' ).querySelector( '.edit' ));
+// add event listener to the edit and delete button
+Array.from( document.getElementById( 'page-management' ).querySelectorAll( '.edit' ) ).forEach( (button) =>{
+    console.log(button);
     button.addEventListener( 'click', editDeleteButtonClicked);
 })
 
-Object.keys(
-    Array.from( document.getElementById( 'page-management' ).querySelectorAll( '.delete' ) )
-).forEach( (button) =>{
+Array.from( document.getElementById( 'page-management' ).querySelectorAll( '.delete' ) ).forEach( (button) =>{
     button.addEventListener( 'click', editDeleteButtonClicked);
 })
 
 // add event listener to the add button
-header.querySelector( '.add', addButtonClicked );
+header.querySelector( '.add' ).addEventListener( 'click',  addButtonClicked);
 
 // add event listener to the addForm
 // when addform submit rederect to the new project location
@@ -174,7 +172,7 @@ addForm.addEventListener('submit', (event) => {
     })
     .then(res => res.text())
     .then(data => {
-        backClicked();
+        window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}?sessionId=${sessionId}` )
     })
 
     $('.ui.modal').modal('hide');

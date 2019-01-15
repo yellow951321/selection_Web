@@ -1,6 +1,5 @@
-include mixins/_manage.pug
-
 extends component/layout
+include mixins/_manage.pug
 
 //- append buttons in the header
 append buttons
@@ -11,8 +10,8 @@ append content
   //- content
   //- page management
   #page-management.ui.container
-	for val in info
-		+manage(val)
+    for val in info
+      +manage(val)
 
 append script
   script(src='/javascripts/manage/manage.js')

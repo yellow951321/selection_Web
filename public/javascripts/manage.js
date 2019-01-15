@@ -232,7 +232,7 @@ pageHeader.querySelector('.logout').addEventListener('click', logoutClicked);
 
 // variables for selection, manage, edit
 
-// selection 
+// selection
 
 // manage
 
@@ -263,7 +263,7 @@ const projectSelected = (event) => {
         method: 'POST',
         body: JSON.stringify({
             sessionId: sessionId,
-            name: name, 
+            name: name,
             year: year,
             type: type,
             campus: school
@@ -278,7 +278,7 @@ const projectSelected = (event) => {
         const contentNodes = Array.from(pageEdit.querySelectorAll( 'form.ui.form.segment' ));
         contentNodes.forEach( (node) => {
             node.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged);
-            node.querySelector('.item').addEventListener('change', itemDropdownOnChanged);           
+            node.querySelector('.item').addEventListener('change', itemDropdownOnChanged);
             refreshDropdown();
         })
         refreshBreadCrumb();
@@ -289,20 +289,20 @@ const projectDeleted = (event) => {
     if( confirm( '確定要刪除嗎' ) ){
         //get the whole project node
         const projectNode = event.target.parentNode.parentNode;
-    
+
         // variables
         const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
         const year = projectNode.querySelector( '.manage__year ' ).innerHTML;
         const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
         const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
-    
+
 
         fetch( 'man/delete', {
             method: 'POST',
             body: JSON.stringify({
                 sessionId: sessionId,
                 info: {
-                    name: name, 
+                    name: name,
                     year: year,
                     type: type,
                     campus: school
@@ -314,7 +314,7 @@ const projectDeleted = (event) => {
         })
         .then(res => res.text())
         .then(data => {
-            pageManagement.removeChild( projectNode ); 
+            pageManagement.removeChild( projectNode );
             alert( '成功' );
         });
     }
@@ -328,15 +328,15 @@ const butttonSelected = (event) => {
     selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear;     
     selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType;     
     selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool;     
-    
+
     const yearBlock = pageSelect.querySelector('.select__year');
     const typeBlock = pageSelect.querySelector('.select__type');
     const schoolBlock = pageSelect.querySelector('.select__school');
-    
+
     fetch( 'man/fetch', {
         method: 'POST',
         body: JSON.stringify({
-            sessionId: sessionId, 
+            sessionId: sessionId,
             year: selectionNowYear,
             type: selectionNowType,
             campus: selectionNowSchool
@@ -351,7 +351,7 @@ const butttonSelected = (event) => {
         if( selectionNowPage === 'year'){
             yearBlock.style.display = 'none';
             typeBlock.insertAdjacentHTML('beforeend', data);
-            const childs = typeBlock.children;            
+            const childs = typeBlock.children;
             for(let i = 0; i < childs.length; i++){
                 childs[i].addEventListener('click' , butttonSelected);
             }
@@ -362,7 +362,7 @@ const butttonSelected = (event) => {
         else if ( selectionNowPage === 'type' ){
             typeBlock.style.display = 'none';
             schoolBlock.insertAdjacentHTML('beforeend', data);
-            const childs = schoolBlock.children;         
+            const childs = schoolBlock.children;
             for(let i = 0; i < childs.length; i++){
                 childs[i].addEventListener('click' , butttonSelected);
             }
@@ -380,9 +380,9 @@ const butttonSelected = (event) => {
                 childs[i].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);
             }
             pageHeader.querySelector('.add').style.display = 'block';
-            refreshBreadCrumb();            
-        }     
-    })    
+            refreshBreadCrumb();
+        }
+    })
 }
 
 

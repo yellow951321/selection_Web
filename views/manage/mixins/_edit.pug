@@ -13,18 +13,18 @@ mixin newEdit()
 			.field
 				label 構面
 				select.dimension.ui.selection.dropdown
-					each val, index in layout
+					each val, index in schema
 						if index != '年度' && index != '學校' && index != '類型'
 							option(value=index)=index
 			.field
 				label 項目
 				select.item.ui.selection.dropdown
-					each val, index in layout[ '教學' ]
+					each val, index in schema[ '教學' ]
 						option(value=index)=index
 			.field
 				label 詳細資料
-				select.detail.ui.selection.dropdown     
-					each val, index in layout[ '教學' ][ '強化教學品質' ]
+				select.detail.ui.selection.dropdown
+					each val, index in schema[ '教學' ][ '強化教學品質' ]
 						option(value=index)=index
 		.field
 			label 標題
@@ -48,21 +48,21 @@ mixin edit(info)
 			.field
 				label 構面
 				select.dimension.ui.selection.dropdown(value=info[ 'dimension' ])
-					each val, index in layout
+					each val, index in schema
 						if index != '年度' && index != '學校' && index != '類型'
 							option(value=index)=index
 			.field
 				label 項目
 				select.item.ui.selection.dropdown(value=info[ 'item' ])
 					//- - console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
-					each val, index in layout[ info[ 'dimension' ] ]
+					each val, index in schema[ info[ 'dimension' ] ]
 						option(value=index)=index
 			.field
 				label 詳細資料
 				select.detail.ui.selection.dropdown(value=info[ 'detail' ])
 					//- - console.log(info['dimension']+' '+info[ 'item' ]+' '+info['detail'])
-					each val, index in layout[ info[ 'dimension' ] ][ info[ 'item' ] ]
-						option(value=index)=index   
+					each val, index in schema[ info[ 'dimension' ] ][ info[ 'item' ] ]
+						option(value=index)=index
 		.field
 			label 標題
 			input.title

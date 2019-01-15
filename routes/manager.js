@@ -17,7 +17,7 @@ router.post('/add',(req,res)=>{
         console.log('mkdir operation complete');
         fs.copyFile('data/projectSchema.json',path,(err)=>{
           if(err) console.log(err);
-          else  
+          else
             console.log("Mdir operation is completed");
             const info = {
               username : username,
@@ -29,7 +29,7 @@ router.post('/add',(req,res)=>{
               if(files instanceof Array && req.body.info.campus){
                 splitArrayIntoContext(files,(context)=>{
                   // console.log(context);
-                  res.render('manage/_render_manage',{info:context});
+                  res.status(200).send( 'OK' );
                 });
               }
             });
@@ -41,7 +41,7 @@ router.post('/add',(req,res)=>{
                 fs.writeFile(path,JSON.stringify(data),(err)=>{
                   if(err) console.log(err);
                     console.log("save operation have been completed");
-                }); 
+                });
               }
             });
         });
@@ -49,7 +49,7 @@ router.post('/add',(req,res)=>{
     }else if(state){
       fs.copyFile('data/projectSchema.json',path,(err)=>{
         if(err) console.log(err);
-        else  
+        else
           console.log("Mdir operation is completed");
           const info = {
             username : username,
@@ -61,14 +61,12 @@ router.post('/add',(req,res)=>{
             if(files instanceof Array && req.body.info.campus){
               splitArrayIntoContext(files,(context)=>{
                 console.log(context);
-                res.render('manage/_render_manage',{info:context});
+                res.status(200).send( 'OK' );
               });
             }
           });
       });
     }
-    
-    
   });
   //res.render('manage/_render_manage',{info:[req.body.info]});
 });
@@ -122,16 +120,19 @@ router.post('/schema',(req,res)=>{
     }
   });
 });
+router.get('/test',(req,res)=>{
 
+});
 
 router.get('/:username',(req,res)=>{
+  console.log( '123' );
   var account = sessionTable.findBySId(req.query.sessionId);
   if(account && account.username == req.params.username){
     fetch({
       username: account.username
     },(files)=>{
       if(files instanceof Array ){
-        res.render('manage/_render_select_button',{contents: files});
+        res.render('manage/select',{contents: files});
       }
     });
   }else{
@@ -146,13 +147,13 @@ router.get('/:username',(req,res)=>{
 
 router.get('/:username/:year',(req,res)=>{
   var account = sessionTable.findBySId(req.query.sessionId);
-  if(accout && account.username == req.params.username){
+  if(account && account.username == req.params.username){
     fetch({
       username: account.username,
       year : req.params.year
     },(files)=>{
       if(files instanceof Array){
-        res.render('manage/_render_select_button',{contents: files});
+        res.render('manage/select',{contents: files});
       }
     });
   }else{
@@ -167,14 +168,14 @@ router.get('/:username/:year',(req,res)=>{
 
 router.get('/:username/:year/:type',(req,res)=>{
   var account = sessionTable.findBySId(req.query.sessionId);
-  if(accout && account.username == req.params.username){
+  if(account && account.username == req.params.username){
     fetch({
       username: account.username,
       year : req.params.year,
       type : req.params.type
     },(files)=>{
       if(files instanceof Array){
-        res.render('manage/_render_select_button',{contents: files});
+        res.render('manage/select',{contents: files});
       }
     });
   }else{
@@ -189,7 +190,7 @@ router.get('/:username/:year/:type',(req,res)=>{
 
 router.get('/:username/:year/:type/:campus',(req,res)=>{
   var account = sessionTable.findBySId(req.query.sessionId);
-  if(accout && account.username == req.params.username){
+  if(account && account.username == req.params.username){
     fetch({
       username: account.username,
       year : req.params.year,
@@ -199,7 +200,7 @@ router.get('/:username/:year/:type/:campus',(req,res)=>{
       if(files instanceof Array){
         splitArrayIntoContext(files,(context)=>{
           //console.log(context);
-          res.render('manage/_render_manage',{info:context});
+          res.render('manage/manage',{info:context});
         });
       }
     });
@@ -215,7 +216,7 @@ router.get('/:username/:year/:type/:campus',(req,res)=>{
 
 router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
   var account = sessionTable.findBySId(req.query.sessionId);
-  if(accout && account.username == req.params.username){
+  if(account && account.username == req.params.username){
     fetch({
       username: account.username,
       year : req.params.year,
@@ -225,7 +226,8 @@ router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
     },(files)=>{
       if(files instanceof Object){
         objToNode(files,(context)=>{
-          res.render('manage/_edit',{info:context});
+          console.log(context);
+          res.render('manage/edit',{info:context});
         });
       }
     });
@@ -238,15 +240,15 @@ router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
     res.send();
   }
   // console.log(info);
-  fetch(info,(files)=>{
-    //console.log(files);
-    if(files instanceof Object){
-      objToNode(files,(context)=>{
-        // console.log(context);
-        res.render('manage/_render_edit',{info:context});
-      });
-    }
-  });
+  // fetch(info,(files)=>{
+  //   //console.log(files);
+  //   if(files instanceof Object){
+  //     objToNode(files,(context)=>{
+  //       // console.log(context);
+  //       res.render('manage/edit',{info:context});
+  //     });
+  //   }
+  // });
 });
 
 
@@ -308,7 +310,7 @@ router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
 // });
 
 router.post('/addContent',(req,res)=>{
-  res.render('manage/_render_newEdit');
+  res.render('manage/newEdit');
 });
 
 router.post('/delete',(req,res)=>{

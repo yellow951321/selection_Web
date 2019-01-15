@@ -1,16 +1,18 @@
-include mixins/_edit.pug
-
-for x in info
-    +edit(x)
-
 extends component/layout
+
+//- append buttons in the header
+append buttons
+  button.add-content.ui.blue.floated.button 新增
+  button.save-content.ui.blue.right.floated.button 儲存
+  button.logout.ui.blue.right.floated.button 登出
 
 append content
   //- content
   //- page edit
+  include mixins/_edit.pug
   #page-edit.ui.container
     for x in info
-        +edit(x)
+      +edit(x)
 
 append script
   script(src='/javascripts/manage/edit.js')

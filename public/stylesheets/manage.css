@@ -1,5 +1,5 @@
-h1:first-child {
-    margin-top: 0.5rem;
+#breadcrumb {
+    margin-top: 1rem;
     margin-left: 3rem;
 }
 
@@ -17,7 +17,7 @@ h1:first-child {
 
 .pusher {
     margin-top: 10rem;
-    margin-bottom: 1rem; 
+    margin-bottom: 1rem;
 }
 
 .segment h3 {

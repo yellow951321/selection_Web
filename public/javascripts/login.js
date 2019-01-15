@@ -5,6 +5,20 @@ const backbutton = document.getElementById('back');
 const reqURL = '/log/in';
 const signURL = '/signup';
 
+const fetchSession = () => {
+    let sId = document.cookie.match(/sessionId=[^;]+/);
+    console.log(sId);
+    if( sId !== undefined){
+        if( sId instanceof Array)
+            sId = sId[0].substring(10);
+        else
+            sId = sId.substring(10);
+        return sId;
+    }
+}
+
+let sessionId = fetchSession();
+
 signup.style.display = 'none';
 //document.getElementById('wrong').style.display = 'none';
 document.getElementById('wrong').style.visibility = 'hidden';
@@ -23,7 +37,7 @@ login.addEventListener('submit', (event) => {
     const account = login.querySelector('.account');
     const password = login.querySelector('.password');
 
-    
+
     //console.log(account.value);
     fetch(reqURL, {
         method: 'POST',
@@ -40,7 +54,7 @@ login.addEventListener('submit', (event) => {
         if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
-            window.location = 'http://localhost:11021/man';
+            window.location = 'http://localhost:11021/man' + `/${account.value}?sessionId=${sessionId}`;
         }
         else
         {
@@ -97,3 +111,4 @@ backbutton.addEventListener('click', (event) => {
     document.getElementById('wrong').style.visibility = 'hidden';
     console.log('back');
 })
+
