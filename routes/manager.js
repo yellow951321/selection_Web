@@ -5,10 +5,6 @@ const fs = require('fs');
 
 var sessionTable = require('./session');
 
-router.get('/',(req,res)=>{
-  res.render('index',{title:'express'});
-});
-
 router.post('/add',(req,res)=>{
   const username = sessionTable.findBySId(req.body.sessionId).username;
   const pathWithoutName = pathGenWithoutName(username,req.body.info.year,req.body.info.type,req.body.info.campus);
@@ -113,6 +109,8 @@ router.post('/save',(req,res)=>{
         });
       }
     });
+  }else{
+    res.status(400).send("No sessionId");
   }
 });
 
@@ -125,49 +123,119 @@ router.post('/schema',(req,res)=>{
   });
 });
 
-router.post('/fetch',(req,res)=>{
-  var account = sessionTable.findBySId(req.body.sessionId);
-  // console.log(account);
-  // console.log(req.body);
-  const info = {
-    username : account.username,
-    year : req.body.year,
-    type : req.body.type,
-    campus : req.body.campus,
-    proName : req.body.name
-  }
-  // console.log(info);
-  if(account){
-    fetch(info,(files)=>{
-        if(files instanceof Array && !req.body.campus ){
-          // console.log(files);
-          res.render('manage/_render_select_button',{contents: files});
-        }else if(files instanceof Array && req.body.campus){
-          // console.log(files);
-          splitArrayIntoContext(files,(context)=>{
-            // console.log(context);
-            res.render('manage/_render_manage',{info:context});
-          });
-        }else if(files instanceof Object ){
-          objToNode(files,(context)=>{
-            res.render('manage/_edit',{info:context});
-          });
-        }
+
+router.get('/:username',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username
+    },(files)=>{
+      if(files instanceof Array ){
+        res.render('manage/_render_select_button',{contents: files});
+      }
     });
   }else{
-    res.status(400).send();
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
   }
-
 });
 
-router.post('/edit',(req,res)=>{
-  var account = sessionTable.findBySId(req.body.sessionId);
-  const info = {
-    username : account.username,
-    year : req.body.year,
-    type : req.body.type,
-    campus : req.body.campus,
-    proName : req.body.name
+router.get('/:username/:year',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(accout && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year
+    },(files)=>{
+      if(files instanceof Array){
+        res.render('manage/_render_select_button',{contents: files});
+      }
+    });
+  }else{
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+});
+
+router.get('/:username/:year/:type',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(accout && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type
+    },(files)=>{
+      if(files instanceof Array){
+        res.render('manage/_render_select_button',{contents: files});
+      }
+    });
+  }else{
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+});
+
+router.get('/:username/:year/:type/:campus',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(accout && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type,
+      campus : req.params.campus
+    },(files)=>{
+      if(files instanceof Array){
+        splitArrayIntoContext(files,(context)=>{
+          //console.log(context);
+          res.render('manage/_render_manage',{info:context});
+        });
+      }
+    });
+  }else {
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+});
+
+router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(accout && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type,
+      campus : req.params.campus,
+      proName : req.params.name
+    },(files)=>{
+      if(files instanceof Object){
+        objToNode(files,(context)=>{
+          res.render('manage/_edit',{info:context});
+        });
+      }
+    });
+  }else {
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
   }
   // console.log(info);
   fetch(info,(files)=>{
@@ -180,6 +248,64 @@ router.post('/edit',(req,res)=>{
     }
   });
 });
+
+
+
+// router.post('/fetch',(req,res)=>{
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   console.log(account);
+//   console.log(req.body);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus,
+//     proName : req.body.name
+//   }
+//   console.log(info);
+//   if(account){
+//     fetch(info,(files)=>{
+//         if(files instanceof Array && !req.body.campus ){
+//           console.log(files);
+//           res.render('manage/_render_select_button',{contents: files});
+//         }else if(files instanceof Array && req.body.campus){
+//           console.log(files);
+//           splitArrayIntoContext(files,(context)=>{
+//             console.log(context);
+//             res.render('manage/_render_manage',{info:context});
+//           });
+//         }else if(files instanceof Object ){
+//           objToNode(files,(context)=>{
+//             res.render('manage/_edit',{info:context});
+//           });
+//         }
+//     });
+//   }else{
+//     res.status(400).send();
+//   }
+
+// });
+
+// router.post('/edit',(req,res)=>{
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus,
+//     proName : req.body.name
+//   }
+//   console.log(info);
+//   fetch(info,(files)=>{
+//     //console.log(files);
+//     if(files instanceof Object){
+//       objToNode(files,(context)=>{
+//         //console.log(context);
+//         res.render('manage/_render_edit',{info:context});
+//       });
+//     }
+//   });
+// });
 
 router.post('/addContent',(req,res)=>{
   res.render('manage/_render_newEdit');
@@ -194,13 +320,18 @@ router.post('/delete',(req,res)=>{
   const name = req.body.info.name;
   const oldPath = pathGen(username,year,type,campus,name);
   const newPath = pathGenDeleteName(username,year,type,campus,name);
-  // console.log(oldPath);
-  // console.log(newPath);
-  fs.rename(oldPath,newPath,(err)=>{
-    if(err) console.log(err);
-    console.log(`rename completed with ${newPath}`);
-    res.status(200).send("OK");
-  });
+  console.log(oldPath);
+  console.log(newPath);
+  if(account){
+    fs.rename(oldPath,newPath,(err)=>{
+      if(err) console.log(err);
+      console.log(`rename completed with ${newPath}`);
+      res.status(200).send("OK");
+    });
+  }else{
+    res.status(400).send("No sessionId");
+  }
+  
 
 });
 
