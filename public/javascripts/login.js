@@ -50,7 +50,7 @@ login.addEventListener('submit', (event) => {
     .then( res => res.text() )
     .then(data => {
         //const error = login.querySelector( '.login__error' );
-        //console.log(data);
+        console.log(data);
         if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
