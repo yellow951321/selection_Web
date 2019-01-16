@@ -1,21 +1,20 @@
-extends layout
+extends ../../layout
 
 append head
-  include manage/_manage.pug
-  include manage/_edit.pug
-  include manage/_select.pug
   link(rel='stylesheet', href='/stylesheets/manage.css')
 
 append content
   //- header
   section#header.ui.top.fixed.menu.header
-    h1#title.title management
+    .title
+      #breadcrumb.ui.huge.breadcrumb
     .right.menu
-      button#add.ui.blue.right.floated.button.add 新增
-      button.add-content.ui.blue.floated.button 新增
-      button.save-content.ui.blue.right.floated.button 儲存
-      button.back.ui.blue.right.floated.button 返回
-      button.logout.ui.blue.right.floated.button 登出
+      block buttons
+      //- button.add.ui.blue.right.floated.button.add 新增
+      //- button.add-content.ui.blue.floated.button 新增
+      //- button.save-content.ui.blue.right.floated.button 儲存
+      //- button.back.ui.blue.right.floated.button 返回
+      //- button.logout.ui.blue.right.floated.button 登出
 
   //- popup addproject
   .ui.container
@@ -32,23 +31,11 @@ append content
         input.addForm__type(type='text', placeholder='Enter school type', name='type' required)
       .actions
         button.ui.black.deny.button(type='button') 取消
-        button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增                
+        button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增
 
-  //- content
   //- breadcrumb
   .ui.container.pusher
     #breadcrumb.ui.huge.breadcrumb
-  //- page select
-  #page-select.ui.container
-    .select__year
-    .select__type
-    .select__school
 
-  //- page management
-  #page-management.ui.container
-
-  //- page edit
-  #page-edit.ui.container
 
 append script
-  script(src='/javascripts/manage.js')

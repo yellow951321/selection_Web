@@ -2,3 +2,4 @@ node_modules/
 semantic/dist/
 db/config.js
 db/mongoose.shao.js
+db/config.yello.js

@@ -5,10 +5,6 @@ const fs = require('fs');
 
 var sessionTable = require('./session');
 
-router.get('/',(req,res)=>{
-  res.render('index',{title:'express'});
-});
-
 router.post('/add',(req,res)=>{
   const username = sessionTable.findBySId(req.body.sessionId).username;
   const pathWithoutName = pathGenWithoutName(username,req.body.info.year,req.body.info.type,req.body.info.campus);
@@ -21,7 +17,7 @@ router.post('/add',(req,res)=>{
         console.log('mkdir operation complete');
         fs.copyFile('data/projectSchema.json',path,(err)=>{
           if(err) console.log(err);
-          else  
+          else
             console.log("Mdir operation is completed");
             const info = {
               username : username,
@@ -32,8 +28,8 @@ router.post('/add',(req,res)=>{
             fetch(info,(files)=>{
               if(files instanceof Array && req.body.info.campus){
                 splitArrayIntoContext(files,(context)=>{
-                  console.log(context);
-                  res.render('manage/_render_manage',{info:context});
+                  // console.log(context);
+                  res.status(200).send( 'OK' );
                 });
               }
             });
@@ -45,7 +41,7 @@ router.post('/add',(req,res)=>{
                 fs.writeFile(path,JSON.stringify(data),(err)=>{
                   if(err) console.log(err);
                     console.log("save operation have been completed");
-                }); 
+                });
               }
             });
         });
@@ -53,7 +49,7 @@ router.post('/add',(req,res)=>{
     }else if(state){
       fs.copyFile('data/projectSchema.json',path,(err)=>{
         if(err) console.log(err);
-        else  
+        else
           console.log("Mdir operation is completed");
           const info = {
             username : username,
@@ -65,21 +61,19 @@ router.post('/add',(req,res)=>{
             if(files instanceof Array && req.body.info.campus){
               splitArrayIntoContext(files,(context)=>{
                 console.log(context);
-                res.render('manage/_render_manage',{info:context});
+                res.status(200).send( 'OK' );
               });
             }
           });
       });
     }
-    
-    
   });
   //res.render('manage/_render_manage',{info:[req.body.info]});
 });
 
 router.post('/save',(req,res)=>{
   const account = sessionTable.findBySId(req.body.sessionId);
-  console.log(req.body);
+  // console.log(req.body);
   if(account){
     const username = account.username;
     const year = req.body.info.year;
@@ -104,6 +98,7 @@ router.post('/save',(req,res)=>{
         });
       }else if(state){
         nodeToObj('data/projectSchema.json',data,(modData)=>{
+          // console.log(modData);
           fs.writeFile(pathWithName,JSON.stringify(modData),(err)=>{
             if(err) return console.log(err);
             console.log(`Save ${pathWithName} is completed`);
@@ -112,6 +107,8 @@ router.post('/save',(req,res)=>{
         });
       }
     });
+  }else{
+    res.status(400).send("No sessionId");
   }
 });
 
@@ -123,65 +120,197 @@ router.post('/schema',(req,res)=>{
     }
   });
 });
+router.get('/test',(req,res)=>{
 
-router.post('/fetch',(req,res)=>{
-  var account = sessionTable.findBySId(req.body.sessionId);
-  console.log(account);
-  console.log(req.body);
-  const info = {
-    username : account.username,
-    year : req.body.year,
-    type : req.body.type,
-    campus : req.body.campus,
-    proName : req.body.name
-  }
-  console.log(info);
-  if(account){
-    fetch(info,(files)=>{
-        if(files instanceof Array && !req.body.campus ){
-          console.log(files);
-          res.render('manage/_render_select_button',{contents: files});
-        }else if(files instanceof Array && req.body.campus){
-          console.log(files);
-          splitArrayIntoContext(files,(context)=>{
-            console.log(context);
-            res.render('manage/_render_manage',{info:context});
-          });
-        }else if(files instanceof Object ){
-          objToNode(files,(context)=>{
-            res.render('manage/_edit',{info:context});
-          });
-        }
+});
+
+router.get('/:username',(req,res)=>{
+  console.log( '123' );
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username
+    },(files)=>{
+      if(files instanceof Array ){
+        res.render('manage/select',{contents: files});
+      }
     });
   }else{
-    res.status(400).send();
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
   }
-
 });
 
-router.post('/edit',(req,res)=>{
-  var account = sessionTable.findBySId(req.body.sessionId);
-  const info = {
-    username : account.username,
-    year : req.body.year,
-    type : req.body.type,
-    campus : req.body.campus,
-    proName : req.body.name
+router.get('/:username/:year',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year
+    },(files)=>{
+      if(files instanceof Array){
+        res.render('manage/select',{contents: files});
+      }
+    });
+  }else{
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
   }
-  console.log(info);
-  fetch(info,(files)=>{
-    //console.log(files);
-    if(files instanceof Object){
-      objToNode(files,(context)=>{
-        //console.log(context);
-        res.render('manage/_render_edit',{info:context});
-      });
-    }
-  });
 });
+
+router.get('/:username/:year/:type',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type
+    },(files)=>{
+      if(files instanceof Array){
+        res.render('manage/select',{contents: files});
+      }
+    });
+  }else{
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+});
+
+router.get('/:username/:year/:type/:campus',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type,
+      campus : req.params.campus
+    },(files)=>{
+      if(files instanceof Array){
+        splitArrayIntoContext(files,(context)=>{
+          //console.log(context);
+          res.render('manage/manage',{info:context});
+        });
+      }
+    });
+  }else {
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+});
+
+router.get('/:username/:year/:type/:campus/:name',(req,res)=>{
+  var account = sessionTable.findBySId(req.query.sessionId);
+  if(account && account.username == req.params.username){
+    fetch({
+      username: account.username,
+      year : req.params.year,
+      type : req.params.type,
+      campus : req.params.campus,
+      proName : req.params.name
+    },(files)=>{
+      if(files instanceof Object){
+        objToNode(files,(context)=>{
+          console.log(context);
+          res.render('manage/edit',{info:context});
+        });
+      }
+    });
+  }else {
+    res.writeHead(403,{'Content-Type':'text/html'});
+    res.write('<h2>403 Forbidden </h2>');
+    res.write('<p>No session Id or your sessionId is expired</p>');
+    res.write('<p>Please redirect to the log page</p>');
+    res.write('<a href="http://localhost:11021/log">Click Here</a>');
+    res.send();
+  }
+  // console.log(info);
+  // fetch(info,(files)=>{
+  //   //console.log(files);
+  //   if(files instanceof Object){
+  //     objToNode(files,(context)=>{
+  //       // console.log(context);
+  //       res.render('manage/edit',{info:context});
+  //     });
+  //   }
+  // });
+});
+
+
+
+// router.post('/fetch',(req,res)=>{
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   console.log(account);
+//   console.log(req.body);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus,
+//     proName : req.body.name
+//   }
+//   console.log(info);
+//   if(account){
+//     fetch(info,(files)=>{
+//         if(files instanceof Array && !req.body.campus ){
+//           console.log(files);
+//           res.render('manage/_render_select_button',{contents: files});
+//         }else if(files instanceof Array && req.body.campus){
+//           console.log(files);
+//           splitArrayIntoContext(files,(context)=>{
+//             console.log(context);
+//             res.render('manage/_render_manage',{info:context});
+//           });
+//         }else if(files instanceof Object ){
+//           objToNode(files,(context)=>{
+//             res.render('manage/_edit',{info:context});
+//           });
+//         }
+//     });
+//   }else{
+//     res.status(400).send();
+//   }
+
+// });
+
+// router.post('/edit',(req,res)=>{
+//   var account = sessionTable.findBySId(req.body.sessionId);
+//   const info = {
+//     username : account.username,
+//     year : req.body.year,
+//     type : req.body.type,
+//     campus : req.body.campus,
+//     proName : req.body.name
+//   }
+//   console.log(info);
+//   fetch(info,(files)=>{
+//     //console.log(files);
+//     if(files instanceof Object){
+//       objToNode(files,(context)=>{
+//         //console.log(context);
+//         res.render('manage/_render_edit',{info:context});
+//       });
+//     }
+//   });
+// });
 
 router.post('/addContent',(req,res)=>{
-  res.render('manage/_render_newEdit');
+  res.render('manage/newEdit');
 });
 
 router.post('/delete',(req,res)=>{
@@ -195,11 +324,16 @@ router.post('/delete',(req,res)=>{
   const newPath = pathGenDeleteName(username,year,type,campus,name);
   console.log(oldPath);
   console.log(newPath);
-  fs.rename(oldPath,newPath,(err)=>{
-    if(err) console.log(err);
-    console.log(`rename completed with ${newPath}`);
-    res.status(200).send("OK");
-  });
+  if(account){
+    fs.rename(oldPath,newPath,(err)=>{
+      if(err) console.log(err);
+      console.log(`rename completed with ${newPath}`);
+      res.status(200).send("OK");
+    });
+  }else{
+    res.status(400).send("No sessionId");
+  }
+  
 
 });
 
@@ -220,7 +354,7 @@ function fetch(info,cb){
   const campus = info.campus ? `/${info.campus}` : '';
   const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : '';
   const path = 'data'+username+year+type+campus+proName;
-  console.log(path);
+  // console.log(path);
   if(proName != ""){
     fs.readFile(path,"utf-8",(err,data)=>{
       if(err) return console.log(err);
@@ -258,12 +392,12 @@ function splitArrayIntoContext(arr,cb){
 
 
 function objToNode(project,cb){
-  console.log(project);
+  // console.log(project);
   var context = [];
   for(dimension in project)
     for(item in project[dimension])
       for(detail in project[dimension][item]){
-        console.log(detail);
+        // console.log(detail);
         //console.log(detail.length > 0);
         if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
           for(content of project[dimension][item][detail]){
@@ -275,7 +409,7 @@ function objToNode(project,cb){
               t.page = {};
               t.page.start = "1";
               t.page.end = "1";
-              console.log("Adding");
+              // console.log("Adding");
               context.push(t);
           }
         }
@@ -289,10 +423,10 @@ function nodeToObj(path,body,cb){
     if(err) return console.log(err);
     if(data){
       data = JSON.parse(data);
-      console.log(body);
+      // console.log(body);
       if(body instanceof Array){
         for(con of body){
-          console.log(con);
+          // console.log(con);
           var item = new ContentSchema(con.page,con.content);
           data[con.dimension][con.item][con.detail].push(item);
         }
