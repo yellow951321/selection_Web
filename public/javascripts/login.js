@@ -54,11 +54,7 @@ login.addEventListener('submit', (event) => {
         if (data === 'OK') {
             console.log('Login success');
             //error.classList.add( 'login__error--hidden' );
-<<<<<<< HEAD
-            window.location = 'http://localhost:11021/man/'+ account.value;
-=======
             window.location = 'http://localhost:11021/man' + `/${account.value}?sessionId=${sessionId}`;
->>>>>>> e587658ff8146c80658b40efb61c2f2ba02c4aa8
         }
         else
         {
