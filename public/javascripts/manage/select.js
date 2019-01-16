@@ -149,3 +149,21 @@ addForm.addEventListener('submit', (event) => {
 
     $('.ui.modal').modal('hide');
 })
+
+// add event listener to the logout button
+header.querySelector( '.logout' ).addEventListener( 'click', () =>{
+    fetch( '/log/out', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        if( data === 'Log out')
+            window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}/log` );
+    })
+})
