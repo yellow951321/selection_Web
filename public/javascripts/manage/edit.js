@@ -50,9 +50,71 @@ const fetchSession = () => {
     }
 }
 
-    // add content button clicked
-
+    // handle add content button clicked
+const addContentClicked = () =>{
+    fetch( '/man/addContent', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId,
+            info: {
+                year: selectionNowYear,
+                type: selectionNowType,
+                campus: selectionNowSchool,
+                name: selectionNowProject,
+            }
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        const pageEdit = document.getElementById( 'page-edit' );
+        pageEdit.insertAdjacentHTML( 'beforeend', data );
+        //add event listener to dropdowns
+        pageEdit.querySelector( '.dimension' ).addEventListener( 'change', dimensionDropdownOnChanged );
+        pageEdit.querySelector( '.item' ).addEventListener( 'change', itemDropdownOnChanged );
+        $( 'select.dropdown' ).dropdown();
+    })
+}
     // handle save button clicked
+const saveContent = () =>{
+    const pageEdit = document.getElementById( 'page-edit' );
+    const childs = Array.from(pageEdit.children);
+    const contents = [];
+    childs.forEach((child)=>{
+        contents.push({
+            dimension: child.querySelector('div.dimension.ui.selection.dropdown').firstChild.value,
+            item: child.querySelector('div.item.ui.selection.dropdown').firstChild.value,
+            detail: child.querySelector('.detail').firstChild.value,
+            content: child.querySelector('.content').value,
+            page: {
+                start: child.querySelector('.page__start').value,
+                end: child.querySelector('.page__end').value
+            }
+        });
+    })
+    fetch( '/man/save', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId,
+            info: {
+                year: selectionNowYear,
+                type: selectionNowType,
+                campus: selectionNowSchool,
+                name: selectionNowProject
+            },
+            data: contents
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+    })
+}
 
     // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
@@ -87,34 +149,6 @@ const refreshBreadCrumb = () =>{
         <div class="divider"> / </div>
         <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${selectionNowProject}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
     `);
-}
-    // add content
-    // Edit > addButton
-const addContentClicked = () =>{
-    fetch( '/man/addContent', {
-        method: 'POST',
-        body: JSON.stringify({
-            sessionId: sessionId,
-            info: {
-                year: selectionNowYear,
-                type: selectionNowType,
-                campus: selectionNowSchool,
-                name: selectionNowProject,
-            }
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(res => res.text())
-    .then(data => {
-        const pageEdit = document.getElementById( 'page-edit' );
-        pageEdit.insertAdjacentHTML( 'beforeend', data );
-        //add event listener to dropdowns
-        pageEdit.querySelector( '.dimension' ).addEventListener( 'change', dimensionDropdownOnChanged );
-        pageEdit.querySelector( '.item' ).addEventListener( 'change', itemDropdownOnChanged );
-        $( 'select.dropdown' ).dropdown();
-    })
 }
 
     // dropdown on change
@@ -172,4 +206,8 @@ Array.from( document.getElementById( 'page-edit' ).querySelectorAll( 'form.ui.fo
 })
 
 // add event listener to the add content button
-header.querySelector( '.add-content' ).addEventListener( 'click', addContentClicked);
+header.querySelector( '.add-content' ).addEventListener( 'click', addContentClicked );
+
+// add event listener to the save button
+
+header.querySelector( '.save-content' ).addEventListener( 'click', saveContent );
