@@ -38,7 +38,6 @@ router.post('/in',(req,res)=>{
         sessionTable.push(SA);
         console.log(sessionTable+'at login.js:39');
         res.cookie('sessionId',sessionId);
-        res.cookie('path',doc.username);
         res.status(200).send("OK");
       }else {
         res.status(400).send(`No matched account named ${req.body.username}`);
@@ -52,6 +51,8 @@ router.post('/out',(req,res)=>{
   sessionTable = sessionTable.filter((account)=>{
     return account.sessionId != sid;
   });
+  res.cookie('sessionId',"");
+  res.cookie('path',"");
   res.status(200).send("Log out");
   console.log(`${req.body.username} log out`);
 });

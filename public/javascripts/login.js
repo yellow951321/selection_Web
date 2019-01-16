@@ -8,7 +8,7 @@ const signURL = '/signup';
 const fetchSession = () => {
     let sId = document.cookie.match(/sessionId=[^;]+/);
     console.log(sId);
-    if( sId !== undefined){
+    if( sId !== undefined && sId !== null){
         if( sId instanceof Array)
             sId = sId[0].substring(10);
         else
