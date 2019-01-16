@@ -3,20 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
-    "gulp": "gulp --gulpfile semantic/gulpfile.js build"
+    "start": "cross-env MODE=PRODUCTION PORT=3000 node app.js",
+    "s": "npm run start",
+    "develop": "cross-env MODE=DEVELOPMENT PORT=3000 nodemon app.js",
+    "d": "npm run develop",
+    "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
+    "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
+    "lb": "npm run lint:backend",
+    "lf": "npm run lint:frontend",
+    "l": "npm run lb && npm run lf"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.9",
+    "cross-env": "^5.2.0",
     "express": "~4.16.0",
-    "gulp": "^4.0.0",
-    "http-errors": "~1.6.2",
+    "express-session": "^1.15.6",
     "mongoose": "^5.4.3",
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11",
-    "semantic-ui": "^2.4.2",
     "uid-safe": "^2.1.5"
   },
   "devDependencies": {

@@ -1,10 +1,10 @@
 config = {
-  'mongodb':{
+  'mongodb': {
     'database': 'selection-web',
-    'host':'localhost:27017',
-    'user':'nober',
-    'password':'forever1404'
-  }
+    'host': 'localhost:27017',
+    'user': 'nober',
+    'password': 'forever1404',
+  },
 }
 
-module.exports = config;
+module.exports = config

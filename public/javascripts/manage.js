@@ -1,40 +1,40 @@
 // variables
-const pageSelect = document.getElementById('page-select');
-const pageManagement = document.getElementById('page-management');
-const pageEdit = document.getElementById('page-edit');
-const pageHeader = document.getElementById('header'); 
-const breadCrumb = document.getElementById('breadcrumb');
+const pageSelect = document.getElementById('page-select')
+const pageManagement = document.getElementById('page-management')
+const pageEdit = document.getElementById('page-edit')
+const pageHeader = document.getElementById('header') 
+const breadCrumb = document.getElementById('breadcrumb')
 
-let sessionId = '123';
-let userName = '使用者';
+let sessionId = '123'
+let userName = '使用者'
 
 // selection variable
-let selectionNowPage = 'start';
-let selectionNowYear = '';
-let selectionNowType = '';
-let selectionNowSchool = '';
-let selectionNowProject = '';
+let selectionNowPage = 'start'
+let selectionNowYear = ''
+let selectionNowType = ''
+let selectionNowSchool = ''
+let selectionNowProject = ''
 
-var schema = {};
+var schema = {}
 
 //init
 function init(){
-    pageHeader.querySelector('.add').style.display = 'block';
-    pageHeader.querySelector('.add-content').style.display = 'none';
-    pageHeader.querySelector('.save-content').style.display = 'none';
-    pageSelect.style.display = 'block';
-    pageSelect.querySelector('.select__year').style.display = 'block';
-    pageSelect.querySelector('.select__type').style.display = 'block';
-    pageEdit.style.display = 'none';
-    pageManagement.style.display = 'none';
+    pageHeader.querySelector('.add').style.display = 'block'
+    pageHeader.querySelector('.add-content').style.display = 'none'
+    pageHeader.querySelector('.save-content').style.display = 'none'
+    pageSelect.style.display = 'block'
+    pageSelect.querySelector('.select__year').style.display = 'block'
+    pageSelect.querySelector('.select__type').style.display = 'block'
+    pageEdit.style.display = 'none'
+    pageManagement.style.display = 'none'
 
-    selectionNowPage = 'start';
-    selectionNowYear = '';
-    selectionNowType = '';
-    selectionNowSchool = '';
-    selectionNowProject = '';
+    selectionNowPage = 'start'
+    selectionNowYear = ''
+    selectionNowType = ''
+    selectionNowSchool = ''
+    selectionNowProject = ''
 }
-init();
+init()
 
 //init > fetchdata and get sessionId
 
@@ -47,110 +47,110 @@ fetch( '/man/schema' , {
         'Content-Type': 'application/json'
     }
 })
-.then( res => res.json())
-.then( data => {
-    schema = data;
-})
+    .then( res => res.json())
+    .then( data => {
+        schema = data
+    })
 
 const fetchSession = () => {
-    let sId = document.cookie.match(/sessionId=[^;]+/);
-    console.log(sId);
+    let sId = document.cookie.match(/sessionId=[^;]+/)
+    console.log(sId)
     if( sId !== undefined){
         if( sId instanceof Array)
-            sId = sId[0].substring(10);
+            sId = sId[0].substring(10)
         else
-            sId = sId.substring(10);
-        return sId;
+            sId = sId.substring(10)
+        return sId
     }
 }
 
-sessionId = fetchSession();
+sessionId = fetchSession()
 
 const fetchUserName = () => {
-    let user = document.cookie.match(/path=[^;]+/);
-    console.log(user);
+    let user = document.cookie.match(/path=[^;]+/)
+    console.log(user)
     if( user !== undefined){
         if( user instanceof Array)
-            user = user[0].substring(5);
+            user = user[0].substring(5)
         else
-            user = user.substring(5);
-        return user;
+            user = user.substring(5)
+        return user
     }
 }
 
-userName = fetchUserName();
+userName = fetchUserName()
 
 const refreshBreadCrumb = () =>{
     while(breadCrumb.firstChild){
-        breadCrumb.removeChild(breadCrumb.firstChild);
+        breadCrumb.removeChild(breadCrumb.firstChild)
     }
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="section"> ${ userName } </div>
-    `);
+    `)
 
     if( selectionNowYear == '')
-        return;
+        return
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
         <div class="section"> ${ selectionNowYear } </div>
-    `);
+    `)
     if( selectionNowType == '')
-        return;
+        return
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
         <div class="section"> ${ selectionNowType } </div>
-    `);
+    `)
     if( selectionNowSchool == '')
-        return;
+        return
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
         <div class="section"> ${ selectionNowSchool } </div>
-    `);
+    `)
     if( selectionNowProject == '')
-        return;
+        return
     breadCrumb.insertAdjacentHTML( 'beforeend', `
         <div class="divider"> / </div>
         <div class="section"> ${ selectionNowProject } </div>
-    `);
+    `)
 }
-refreshBreadCrumb();
+refreshBreadCrumb()
 
 // dropdown
 function refreshDropdown(){
     $('select.dropdown')
         .dropdown()
-    ;
+    
 }
-refreshDropdown();
+refreshDropdown()
 
 // modal setting
 const addClicked = () => {
     $('.ui.modal')
-    .modal('show')
-    ;
-};
+        .modal('show')
+    
+}
 
-document.getElementById('add').addEventListener('click', addClicked);
+document.getElementById('add').addEventListener('click', addClicked)
 
 // adding project
 const addProjectClicked = (event) => {
     $('.ui.modal').modal({
-        onApprove : function(){return false;}
-    }).modal('show');
-};
+        onApprove : function(){return false}
+    }).modal('show')
+}
 
-document.getElementById('add-project').addEventListener('click', addProjectClicked);
+document.getElementById('add-project').addEventListener('click', addProjectClicked)
 
 //add event listener to Add button (for new project)
-const addForm = document.getElementById('addForm');
+const addForm = document.getElementById('addForm')
 addForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const reqURL = '/man/add';
-    const project = addForm.querySelector('.addForm__project');
-    const year = addForm.querySelector('.addForm__year');
-    const school = addForm.querySelector('.addForm__school');
-    const type = addForm.querySelector('.addForm__type');
+    const reqURL = '/man/add'
+    const project = addForm.querySelector('.addForm__project')
+    const year = addForm.querySelector('.addForm__year')
+    const school = addForm.querySelector('.addForm__school')
+    const type = addForm.querySelector('.addForm__type')
 
     fetch(reqURL, {
         method: 'POST',
@@ -167,25 +167,25 @@ addForm.addEventListener('submit', (event) => {
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => {
-        backClicked();
-    })
+        .then(res => res.text())
+        .then(data => {
+            backClicked()
+        })
 
-    $('.ui.modal').modal('hide');
+    $('.ui.modal').modal('hide')
 })
 
 // backButton
 const backClicked = () => {
     // empty the pages
-    const selectYear = pageSelect.querySelector('.select__year');
-    const selectType = pageSelect.querySelector('.select__type');
-    const selectSchool = pageSelect.querySelector('.select__school');
+    const selectYear = pageSelect.querySelector('.select__year')
+    const selectType = pageSelect.querySelector('.select__type')
+    const selectSchool = pageSelect.querySelector('.select__school')
 
-    const temp = [selectYear, selectType, selectSchool, pageManagement, pageEdit];
+    const temp = [selectYear, selectType, selectSchool, pageManagement, pageEdit]
     for( var x in temp){
         while(temp[x].firstChild){
-            temp[x].removeChild(temp[x].firstChild);
+            temp[x].removeChild(temp[x].firstChild)
         }
     }
     // fetch years 
@@ -196,21 +196,21 @@ const backClicked = () => {
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => {
-        init();
-        const yearBlock =pageSelect.querySelector('.select__year');
-        yearBlock.insertAdjacentHTML('beforeend', data);
-        const childs = yearBlock.children;
-        for(let i = 0; i < childs.length; i++){
-            childs[i].addEventListener('click' , butttonSelected);
-        }    
-        selectionNowPage = 'year'; 
-        refreshBreadCrumb();
-    })
+        .then(res => res.text())
+        .then(data => {
+            init()
+            const yearBlock =pageSelect.querySelector('.select__year')
+            yearBlock.insertAdjacentHTML('beforeend', data)
+            const childs = yearBlock.children
+            for(let i = 0; i < childs.length; i++){
+                childs[i].addEventListener('click' , butttonSelected)
+            }    
+            selectionNowPage = 'year' 
+            refreshBreadCrumb()
+        })
 }
 
-pageHeader.querySelector('.back').addEventListener('click', backClicked);
+pageHeader.querySelector('.back').addEventListener('click', backClicked)
 
 // logoutButton
 
@@ -222,13 +222,13 @@ const logoutClicked = () => {
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => {
-        window.location = window.location.href.substring( 0, window.location.href - 3) + 'log';
-    })
+        .then(res => res.text())
+        .then(data => {
+            window.location = window.location.href.substring( 0, window.location.href - 3) + 'log'
+        })
 }
 
-pageHeader.querySelector('.logout').addEventListener('click', logoutClicked);
+pageHeader.querySelector('.logout').addEventListener('click', logoutClicked)
 
 // variables for selection, manage, edit
 
@@ -239,24 +239,24 @@ pageHeader.querySelector('.logout').addEventListener('click', logoutClicked);
 // manage > variables
 const projectSelected = (event) => {
     //get the whole project node
-    const projectNode = event.target.parentNode.parentNode;
+    const projectNode = event.target.parentNode.parentNode
 
     // variables
-    const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
-    const year = projectNode.querySelector( '.manage__year ' ).innerHTML;
-    const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
-    const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
-    selectionNowProject = name;
-    selectionNowYear = year;
-    selectionNowSchool = school;
-    selectionNowType = type;
+    const name =  projectNode.querySelector( '.manage__name ' ).innerHTML
+    const year = projectNode.querySelector( '.manage__year ' ).innerHTML
+    const school = projectNode.querySelector( '.manage__school ' ).innerHTML
+    const type = projectNode.querySelector( '.manage__type ' ).innerHTML
+    selectionNowProject = name
+    selectionNowYear = year
+    selectionNowSchool = school
+    selectionNowType = type
 
     //change button and page
-    pageHeader.querySelector('.add').style.display = 'none';
-    pageHeader.querySelector('.add-content').style.display = 'block';
-    pageHeader.querySelector('.save-content').style.display = 'block';
-    pageManagement.style.display = 'none';
-    pageEdit.style.display = 'block';
+    pageHeader.querySelector('.add').style.display = 'none'
+    pageHeader.querySelector('.add-content').style.display = 'block'
+    pageHeader.querySelector('.save-content').style.display = 'block'
+    pageManagement.style.display = 'none'
+    pageEdit.style.display = 'block'
 
 
     fetch( 'man/edit', {
@@ -272,29 +272,29 @@ const projectSelected = (event) => {
             'Content-Type': 'application/json'
         }
     })
-    .then( res => res.text() )
-    .then( data => {
-        pageEdit.insertAdjacentHTML('beforeend', data);
-        const contentNodes = Array.from(pageEdit.querySelectorAll( 'form.ui.form.segment' ));
-        contentNodes.forEach( (node) => {
-            node.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged);
-            node.querySelector('.item').addEventListener('change', itemDropdownOnChanged);
-            refreshDropdown();
+        .then( res => res.text() )
+        .then( data => {
+            pageEdit.insertAdjacentHTML('beforeend', data)
+            const contentNodes = Array.from(pageEdit.querySelectorAll( 'form.ui.form.segment' ))
+            contentNodes.forEach( (node) => {
+                node.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged)
+                node.querySelector('.item').addEventListener('change', itemDropdownOnChanged)
+                refreshDropdown()
+            })
+            refreshBreadCrumb()
         })
-        refreshBreadCrumb();
-    })
 }
 
 const projectDeleted = (event) => {
     if( confirm( '確定要刪除嗎' ) ){
         //get the whole project node
-        const projectNode = event.target.parentNode.parentNode;
+        const projectNode = event.target.parentNode.parentNode
 
         // variables
-        const name =  projectNode.querySelector( '.manage__name ' ).innerHTML;
-        const year = projectNode.querySelector( '.manage__year ' ).innerHTML;
-        const school = projectNode.querySelector( '.manage__school ' ).innerHTML;
-        const type = projectNode.querySelector( '.manage__type ' ).innerHTML;
+        const name =  projectNode.querySelector( '.manage__name ' ).innerHTML
+        const year = projectNode.querySelector( '.manage__year ' ).innerHTML
+        const school = projectNode.querySelector( '.manage__school ' ).innerHTML
+        const type = projectNode.querySelector( '.manage__type ' ).innerHTML
 
 
         fetch( 'man/delete', {
@@ -312,11 +312,11 @@ const projectDeleted = (event) => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(res => res.text())
-        .then(data => {
-            pageManagement.removeChild( projectNode );
-            alert( '成功' );
-        });
+            .then(res => res.text())
+            .then(data => {
+                pageManagement.removeChild( projectNode )
+                alert( '成功' )
+            })
     }
 }
 
@@ -324,14 +324,14 @@ const projectDeleted = (event) => {
 
 // selection > fetch button
 const butttonSelected = (event) => {
-    event.preventDefault();
-    selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear;     
-    selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType;     
-    selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool;     
+    event.preventDefault()
+    selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear     
+    selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType     
+    selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool     
 
-    const yearBlock = pageSelect.querySelector('.select__year');
-    const typeBlock = pageSelect.querySelector('.select__type');
-    const schoolBlock = pageSelect.querySelector('.select__school');
+    const yearBlock = pageSelect.querySelector('.select__year')
+    const typeBlock = pageSelect.querySelector('.select__type')
+    const schoolBlock = pageSelect.querySelector('.select__school')
 
     fetch( 'man/fetch', {
         method: 'POST',
@@ -345,44 +345,44 @@ const butttonSelected = (event) => {
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => {
+        .then(res => res.text())
+        .then(data => {
         // change to type page
-        if( selectionNowPage === 'year'){
-            yearBlock.style.display = 'none';
-            typeBlock.insertAdjacentHTML('beforeend', data);
-            const childs = typeBlock.children;
-            for(let i = 0; i < childs.length; i++){
-                childs[i].addEventListener('click' , butttonSelected);
+            if( selectionNowPage === 'year'){
+                yearBlock.style.display = 'none'
+                typeBlock.insertAdjacentHTML('beforeend', data)
+                const childs = typeBlock.children
+                for(let i = 0; i < childs.length; i++){
+                    childs[i].addEventListener('click' , butttonSelected)
+                }
+                selectionNowPage = 'type'
+                refreshBreadCrumb()
             }
-            selectionNowPage = 'type';
-            refreshBreadCrumb();
-        }
-        // change to school page
-        else if ( selectionNowPage === 'type' ){
-            typeBlock.style.display = 'none';
-            schoolBlock.insertAdjacentHTML('beforeend', data);
-            const childs = schoolBlock.children;
-            for(let i = 0; i < childs.length; i++){
-                childs[i].addEventListener('click' , butttonSelected);
+            // change to school page
+            else if ( selectionNowPage === 'type' ){
+                typeBlock.style.display = 'none'
+                schoolBlock.insertAdjacentHTML('beforeend', data)
+                const childs = schoolBlock.children
+                for(let i = 0; i < childs.length; i++){
+                    childs[i].addEventListener('click' , butttonSelected)
+                }
+                selectionNowPage = 'school'
+                refreshBreadCrumb()
             }
-            selectionNowPage = 'school';
-            refreshBreadCrumb();
-        }
-        // show projects
-        else if ( selectionNowPage === 'school' ){
-            pageSelect.style.display = 'none';
-            pageManagement.style.display = 'block';
-            pageManagement.insertAdjacentHTML('beforeend', data);
-            const childs = pageManagement.children;
-            for(let i=0; i<childs.length; ++i){
-                childs[i].querySelector( '.edit' ).addEventListener( 'click', projectSelected);
-                childs[i].querySelector( '.delete' ).addEventListener( 'click', projectDeleted);
+            // show projects
+            else if ( selectionNowPage === 'school' ){
+                pageSelect.style.display = 'none'
+                pageManagement.style.display = 'block'
+                pageManagement.insertAdjacentHTML('beforeend', data)
+                const childs = pageManagement.children
+                for(let i=0; i<childs.length; ++i){
+                    childs[i].querySelector( '.edit' ).addEventListener( 'click', projectSelected)
+                    childs[i].querySelector( '.delete' ).addEventListener( 'click', projectDeleted)
+                }
+                pageHeader.querySelector('.add').style.display = 'block'
+                refreshBreadCrumb()
             }
-            pageHeader.querySelector('.add').style.display = 'block';
-            refreshBreadCrumb();
-        }
-    })
+        })
 }
 
 
@@ -393,33 +393,33 @@ fetch( 'man/fetch', {
         'Content-Type': 'application/json'
     }
 })
-.then(res => res.text())
-.then(data => {
-    const yearBlock =pageSelect.querySelector('.select__year');
-    yearBlock.insertAdjacentHTML('beforeend', data);
-    const childs = yearBlock.children;
-    for(let i = 0; i < childs.length; i++){
-        childs[i].addEventListener('click' , butttonSelected);
-    }    
-    selectionNowPage = 'year'; 
-})
+    .then(res => res.text())
+    .then(data => {
+        const yearBlock =pageSelect.querySelector('.select__year')
+        yearBlock.insertAdjacentHTML('beforeend', data)
+        const childs = yearBlock.children
+        for(let i = 0; i < childs.length; i++){
+            childs[i].addEventListener('click' , butttonSelected)
+        }    
+        selectionNowPage = 'year' 
+    })
 
 // Edit
 
 // Edit > dropdow
 
 const dimensionDropdownOnChanged = (event) => {
-    const editNode = event.target.parentNode.parentNode.parentNode;
-    const item = editNode.querySelector('div.item.ui.selection.dropdown').firstChild;
-    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild;
+    const editNode = event.target.parentNode.parentNode.parentNode
+    const item = editNode.querySelector('div.item.ui.selection.dropdown').firstChild
+    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild
     while(item.firstChild){
-        item.removeChild(item.firstChild);
+        item.removeChild(item.firstChild)
     }
     while(detail.firstChild){
-        detail.removeChild(detail.firstChild);
+        detail.removeChild(detail.firstChild)
     }
-    const defaultItem = Object.keys(schema[ event.target.value ])[0];
-    item.value = defaultItem;
+    const defaultItem = Object.keys(schema[ event.target.value ])[0]
+    item.value = defaultItem
     Object.keys(schema[ event.target.value ]).forEach( (name) => {
         item.insertAdjacentHTML( 'beforeend', `<option value = ${ name } > ${ name } </option>`)
     })
@@ -429,11 +429,11 @@ const dimensionDropdownOnChanged = (event) => {
 }
 
 const itemDropdownOnChanged = (event) => {
-    const editNode = event.target.parentNode.parentNode.parentNode;
-    const dimension = editNode.querySelector('div.dimension.ui.selection.dropdown').firstChild;
-    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild;
+    const editNode = event.target.parentNode.parentNode.parentNode
+    const dimension = editNode.querySelector('div.dimension.ui.selection.dropdown').firstChild
+    const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild
     while(detail.firstChild){
-        detail.removeChild(detail.firstChild);
+        detail.removeChild(detail.firstChild)
     }
     Object.keys(schema[ dimension.value ][ event.target.value ]).forEach( (name) => {
         detail.insertAdjacentHTML( 'beforeend', `<option value = ${ name } > ${ name } </option>`)
@@ -457,23 +457,23 @@ const addContent = () =>{
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => { 
-        pageEdit.insertAdjacentHTML('beforeend', data);
-        //add event listener to dropdowns
-        pageEdit.lastChild.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged);
-        pageEdit.lastChild.querySelector('.item').addEventListener('change', itemDropdownOnChanged);
-        refreshDropdown();
-    })
+        .then(res => res.text())
+        .then(data => { 
+            pageEdit.insertAdjacentHTML('beforeend', data)
+            //add event listener to dropdowns
+            pageEdit.lastChild.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged)
+            pageEdit.lastChild.querySelector('.item').addEventListener('change', itemDropdownOnChanged)
+            refreshDropdown()
+        })
 }
 
-pageHeader.querySelector('.add-content').addEventListener('click', addContent);
+pageHeader.querySelector('.add-content').addEventListener('click', addContent)
 
 // Edit > saveButton
 
 const saveContent = () =>{
-    const childs = Array.from(pageEdit.children);
-    const contents = [];
+    const childs = Array.from(pageEdit.children)
+    const contents = []
     childs.forEach((child)=>{
         contents.push({
             dimension: child.querySelector('div.dimension.ui.selection.dropdown').firstChild.value,
@@ -484,7 +484,7 @@ const saveContent = () =>{
                 start: child.querySelector('.page__start').value,
                 end: child.querySelector('.page__end').value
             }
-        });
+        })
     })
     fetch( 'man/save', {
         method: 'POST',
@@ -502,10 +502,10 @@ const saveContent = () =>{
             'Content-Type': 'application/json'
         }
     })
-    .then(res => res.text())
-    .then(data => { 
-        alert(data);
-    })
+        .then(res => res.text())
+        .then(data => { 
+            alert(data)
+        })
 }
 
-pageHeader.querySelector('.save-content').addEventListener('click', saveContent);
+pageHeader.querySelector('.save-content').addEventListener('click', saveContent)
