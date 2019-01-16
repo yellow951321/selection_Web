@@ -209,5 +209,22 @@ Array.from( document.getElementById( 'page-edit' ).querySelectorAll( 'form.ui.fo
 header.querySelector( '.add-content' ).addEventListener( 'click', addContentClicked );
 
 // add event listener to the save button
-
 header.querySelector( '.save-content' ).addEventListener( 'click', saveContent );
+
+// add event listener to the logout button
+header.querySelector( '.logout' ).addEventListener( 'click', () =>{
+    fetch( '/log/out', {
+        method: 'POST',
+        body: JSON.stringify({
+            sessionId: sessionId,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(data => {
+        if( data === 'Log out')
+            window.location.assign( `${window.location.protocol}//${window.location.hostname}:${window.location.port}/log` );
+    })
+})
