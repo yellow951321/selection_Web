@@ -1,9 +1,9 @@
 config = {
   'mongodb': {
-    'database': 'selection-web',
+    'database': 'test',
     'host': 'localhost:27017',
-    'user': 'nober',
-    'password': 'forever1404',
+    'user': '',
+    'password': '',
   },
 }
 

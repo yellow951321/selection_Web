@@ -6,6 +6,14 @@ const router = express.Router()
 const User = require('./../models/user')
 const sessionTable = require('./session')
 
+function SessionAccount(path, sessionId, username, password, expires){
+    this.path = path || '/'
+    this.sessionId = sessionId
+    this.password = password
+    this.username = username
+    this.expires = expires
+}
+
 router.get('/', (req, res)=>{
   res.render('login')
 })
@@ -53,15 +61,5 @@ router.post('/out', (req, res)=>{
   res.status(200).send('Log out')
   console.log(`${req.body.username} log out`)
 })
-
-
-function SessionAccount(path, sessionId, username, password, expires){
-  this.path = path || '/'
-  this.sessionId = sessionId
-  this.password = password
-  this.username = username
-  this.expires = expires
-}
-
 
 module.exports = router
