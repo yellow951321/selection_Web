@@ -5,15 +5,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 1,
     maxlength: 30,
-    trim: true
+    trim: true,
   },
   password: {
     type: String,
     required: true,
     minlength: 1,
     maxlength: 30,
-    trim: true
-  }
+    trim: true,
+  },
 })
 
 const User = mongoose.model('User', userSchema)

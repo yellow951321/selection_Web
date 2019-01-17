@@ -7,11 +7,11 @@ const User = require('./../models/user')
 const sessionTable = require('./session')
 
 function SessionAccount(path, sessionId, username, password, expires){
-    this.path = path || '/'
-    this.sessionId = sessionId
-    this.password = password
-    this.username = username
-    this.expires = expires
+  this.path = path || '/'
+  this.sessionId = sessionId
+  this.password = password
+  this.username = username
+  this.expires = expires
 }
 
 router.get('/', (req, res)=>{
@@ -31,7 +31,7 @@ router.post('/check', (req, res)=>{
 router.post('/in', (req, res)=>{
   User.findOne({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
   }, (err, doc)=>{
     if(err){
       console.log(err)

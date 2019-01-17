@@ -40,7 +40,7 @@ const fetchSession = () => {
 // add project button clicked
 const addButtonClicked = (event) => {
   $('.ui.modal').modal({
-    onApprove : function(){return false}
+    onApprove : function(){return false},
   }).modal('show')
 }
 
@@ -134,12 +134,12 @@ addForm.addEventListener('submit', (event) => {
         'year': year.value,
         'campus': school.value,
         'name': project.value,
-        'type': type.value
-      }
+        'type': type.value,
+      },
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -158,8 +158,8 @@ header.querySelector('.logout').addEventListener('click', () =>{
       sessionId: sessionId,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {

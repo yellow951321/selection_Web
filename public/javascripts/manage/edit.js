@@ -18,8 +18,8 @@ const fetchSchema = () => {
       'sessionId': sessionId,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -61,11 +61,11 @@ const addContentClicked = () =>{
         type: selectionNowType,
         campus: selectionNowSchool,
         name: selectionNowProject,
-      }
+      },
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -90,8 +90,8 @@ const saveContent = () =>{
       content: child.querySelector('.content').value,
       page: {
         start: child.querySelector('.page__start').value,
-        end: child.querySelector('.page__end').value
-      }
+        end: child.querySelector('.page__end').value,
+      },
     })
   })
   fetch('/man/save', {
@@ -102,13 +102,13 @@ const saveContent = () =>{
         year: selectionNowYear,
         type: selectionNowType,
         campus: selectionNowSchool,
-        name: selectionNowProject
+        name: selectionNowProject,
       },
-      data: contents
+      data: contents,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -219,8 +219,8 @@ header.querySelector('.logout').addEventListener('click', () =>{
       sessionId: sessionId,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {

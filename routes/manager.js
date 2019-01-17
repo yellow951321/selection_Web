@@ -12,7 +12,7 @@ router.post('/add', (req, res)=>{
   fs.stat(path, (err, state)=>{
     if(err){
       console.log(err)
-      fs.mkdir(pathWithoutName, {recursive:true}, (err)=>{
+      fs.mkdir(pathWithoutName, {recursive:true, }, (err)=>{
         if(err) console.log(err)
         console.log('mkdir operation complete')
         fs.copyFile('data/projectSchema.json', path, (err)=>{
@@ -85,7 +85,7 @@ router.post('/save', (req, res)=>{
     const path = pathGenWithoutName(username, year, type, campus)
     fs.stat(pathWithName, (err, state)=>{
       if(err){
-        fs.mkdir(path, {recursive: true}, (err)=>{
+        fs.mkdir(path, {recursive: true, }, (err)=>{
           if(err) return console.log(err)
           console.log(`make dir and files in ${path}`)
           nodeToObj('data/projectSchema.json', data, (modData)=>{
@@ -129,14 +129,14 @@ router.get('/:username', (req, res)=>{
   var account = sessionTable.findBySId(req.query.sessionId)
   if(account && account.username == req.params.username){
     fetch({
-      username: account.username
+      username: account.username,
     }, (files)=>{
       if(files instanceof Array){
-        res.render('manage/select', {contents: files})
+        res.render('manage/select', {contents: files, })
       }
     })
   }else{
-    res.writeHead(403, {'Content-Type':'text/html'})
+    res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
@@ -150,14 +150,14 @@ router.get('/:username/:year', (req, res)=>{
   if(account && account.username == req.params.username){
     fetch({
       username: account.username,
-      year : req.params.year
+      year : req.params.year,
     }, (files)=>{
       if(files instanceof Array){
-        res.render('manage/select', {contents: files})
+        res.render('manage/select', {contents: files, })
       }
     })
   }else{
-    res.writeHead(403, {'Content-Type':'text/html'})
+    res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
@@ -172,14 +172,14 @@ router.get('/:username/:year/:type', (req, res)=>{
     fetch({
       username: account.username,
       year : req.params.year,
-      type : req.params.type
+      type : req.params.type,
     }, (files)=>{
       if(files instanceof Array){
-        res.render('manage/select', {contents: files})
+        res.render('manage/select', {contents: files, })
       }
     })
   }else{
-    res.writeHead(403, {'Content-Type':'text/html'})
+    res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
@@ -195,17 +195,17 @@ router.get('/:username/:year/:type/:campus', (req, res)=>{
       username: account.username,
       year : req.params.year,
       type : req.params.type,
-      campus : req.params.campus
+      campus : req.params.campus,
     }, (files)=>{
       if(files instanceof Array){
         splitArrayIntoContext(files, (context)=>{
           //console.log(context);
-          res.render('manage/manage', {info:context})
+          res.render('manage/manage', {info:context, })
         })
       }
     })
   }else {
-    res.writeHead(403, {'Content-Type':'text/html'})
+    res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
@@ -222,17 +222,17 @@ router.get('/:username/:year/:type/:campus/:name', (req, res)=>{
       year : req.params.year,
       type : req.params.type,
       campus : req.params.campus,
-      proName : req.params.name
+      proName : req.params.name,
     }, (files)=>{
       if(files instanceof Object){
         objToNode(files, (context)=>{
           console.log(context)
-          res.render('manage/edit', {info:context})
+          res.render('manage/edit', {info:context, })
         })
       }
     })
   }else {
-    res.writeHead(403, {'Content-Type':'text/html'})
+    res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')

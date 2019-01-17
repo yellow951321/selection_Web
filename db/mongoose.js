@@ -5,13 +5,13 @@ mongoose.Promise = Promise
 
 if (isDevMode)
   mongoose.connect(`mongodb://${config.mongodb.host}/${config.mongodb.database}`, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
   })
 else
   mongoose.connect(`mongodb://${config.mongodb.user}:${config.mongodb.password}@${config.mongodb.host}/${config.mongodb.database}`, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
   })
 
 module.exports = {
-  mongoose
+  mongoose,
 }

@@ -48,5 +48,20 @@ module.exports = {
                 'after': true,
             }
         ],
+        'comma-dangle': [
+            'error',
+            'always',
+        ],
+        'comma-dangle': [
+            'error',
+            'always',
+        ],
+        'switch-colon-spacing': [
+            'error',
+            {
+                'after': true,
+                'before': false,
+            },
+        ],
     }
 };

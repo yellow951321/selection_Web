@@ -44,8 +44,8 @@ fetch('/man/schema', {
     'sessionId': sessionId,
   }),
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
   .then(res => res.json())
   .then(data => {
@@ -135,7 +135,7 @@ document.getElementById('add').addEventListener('click', addClicked)
 // adding project
 const addProjectClicked = (event) => {
   $('.ui.modal').modal({
-    onApprove : function(){return false}
+    onApprove : function(){return false},
   }).modal('show')
 }
 
@@ -160,12 +160,12 @@ addForm.addEventListener('submit', (event) => {
         'year': year.value,
         'campus': school.value,
         'name': project.value,
-        'type': type.value
-      }
+        'type': type.value,
+      },
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -182,7 +182,7 @@ const backClicked = () => {
   const selectType = pageSelect.querySelector('.select__type')
   const selectSchool = pageSelect.querySelector('.select__school')
 
-  const temp = [selectYear, selectType, selectSchool, pageManagement, pageEdit]
+  const temp = [selectYear, selectType, selectSchool, pageManagement, pageEdit, ]
   for(var x in temp){
     while(temp[x].firstChild){
       temp[x].removeChild(temp[x].firstChild)
@@ -191,10 +191,10 @@ const backClicked = () => {
   // fetch years 
   fetch('man/fetch', {
     method: 'POST',
-    body: JSON.stringify({sessionId: sessionId}),
+    body: JSON.stringify({sessionId: sessionId, }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -217,10 +217,10 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked)
 const logoutClicked = () => {
   fetch('log/out', {
     method: 'POST',
-    body: JSON.stringify({sessionId: sessionId}),
+    body: JSON.stringify({sessionId: sessionId, }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -266,11 +266,11 @@ const projectSelected = (event) => {
       name: name,
       year: year,
       type: type,
-      campus: school
+      campus: school,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -305,12 +305,12 @@ const projectDeleted = (event) => {
           name: name,
           year: year,
           type: type,
-          campus: school
-        }
+          campus: school,
+        },
       }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
       .then(res => res.text())
       .then(data => {
@@ -339,11 +339,11 @@ const butttonSelected = (event) => {
       sessionId: sessionId,
       year: selectionNowYear,
       type: selectionNowType,
-      campus: selectionNowSchool
+      campus: selectionNowSchool,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => {
@@ -388,10 +388,10 @@ const butttonSelected = (event) => {
 
 fetch('man/fetch', {
   method: 'POST',
-  body: JSON.stringify({sessionId: sessionId}),
+  body: JSON.stringify({sessionId: sessionId, }),
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
   .then(res => res.text())
   .then(data => {
@@ -451,11 +451,11 @@ const addContent = () =>{
         type: selectionNowType,
         campus: selectionNowSchool,
         name: selectionNowProject,
-      }    
+      },    
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => { 
@@ -482,8 +482,8 @@ const saveContent = () =>{
       content: child.querySelector('.content').value,
       page: {
         start: child.querySelector('.page__start').value,
-        end: child.querySelector('.page__end').value
-      }
+        end: child.querySelector('.page__end').value,
+      },
     })
   })
   fetch('man/save', {
@@ -494,13 +494,13 @@ const saveContent = () =>{
         year: selectionNowYear,
         type: selectionNowType,
         campus: selectionNowSchool,
-        name: selectionNowProject
+        name: selectionNowProject,
       },
-      data: contents
+      data: contents,
     }),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
     .then(res => res.text())
     .then(data => { 

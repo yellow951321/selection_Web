@@ -36,10 +36,10 @@ window.addEventListener('load', ()=>{
 
     fetch(reqURL, {
       method: 'POST',
-      body: JSON.stringify({ 'username': account.value, 'password': password.value }),
+      body: JSON.stringify({ 'username': account.value, 'password': password.value, }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
       .then(res => res.text())
       .then(data => {
@@ -73,10 +73,10 @@ window.addEventListener('load', ()=>{
         
     fetch(signURL, {
       method: 'POST',
-      body: JSON.stringify({ 'username': account.value, 'password': password.value }),
+      body: JSON.stringify({ 'username': account.value, 'password': password.value, }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
       .then(res => res.text())
       .then(data => {

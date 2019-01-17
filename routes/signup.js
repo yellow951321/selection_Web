@@ -14,13 +14,13 @@ router.post('/', (req, res)=>{
     console.log('enter')
     var user = new User({
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
     })
     console.log('Eeeee')
     user.save().then((doc)=>{
       console.log(doc)
       res.status(200).send('OK')
-      fs.mkdir('data/'+req.body.username, {recursive: true}, (err)=>{
+      fs.mkdir('data/'+req.body.username, {recursive: true, }, (err)=>{
         if(err) console.log(err)
         else 
           console.log('mkdir operation complete')
