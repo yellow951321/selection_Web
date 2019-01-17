@@ -17,6 +17,7 @@ router.get('/login', (req, res)=>{
 })
 
 router.post('/login', (req, res)=>{
+  console.log( '123' );
   User.findOne({
     username: req.body.username,
     password: req.body.password,

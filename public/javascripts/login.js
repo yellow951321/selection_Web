@@ -3,8 +3,8 @@ window.addEventListener('load', ()=>{
   const signupbutton = document.getElementById('signupbutton')
   const signup = document.getElementById('signup')
   const backbutton = document.getElementById('back')
-  const reqURL = '/log/in'
-  const signURL = '/signup'
+  const reqURL = '/auth/login'
+  const signURL = '/auth/signup'
 
   const fetchSession = () => {
     let sId = document.cookie.match(/sessionId=[^;]+/)
@@ -29,6 +29,7 @@ window.addEventListener('load', ()=>{
     document.getElementsByClassName('password2')[0].value= ''
   }
   login.addEventListener('submit', (event) => {
+    console.log( 'Im')
     event.preventDefault()
 
     const account = login.querySelector('.account')

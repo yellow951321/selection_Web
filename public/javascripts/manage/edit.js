@@ -197,7 +197,6 @@ refreshBreadCrumb()
 $('select.dropdown')
   .dropdown()
 
-
 // add event listener
 
 // add event listener to dropdowns

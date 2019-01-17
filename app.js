@@ -5,6 +5,7 @@ const logger = require('morgan')
 
 const config = require('./config')
 const auth = require('./routes/auth')
+const mongoose = require('./db/mongoose')
 const managerRouter = require('./routes/manager')
 const app = express()
 
@@ -98,12 +99,14 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use((req,res=>{
-  if(!req.session)
-    res.redirect('/login')
-}))
+
 
 app.use('/auth', auth)
 app.use('/man', managerRouter)
+
+app.use((req,res)=>{
+  if(!req.session)
+    res.redirect('/auth/login')
+})
 
 app.listen(config.port)

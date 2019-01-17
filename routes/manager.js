@@ -181,8 +181,9 @@ router.get('/:username/:year/:type', (req, res)=>{
       year : req.params.year,
       type : req.params.type,
     }, (files)=>{
+      console.log(files);
       if(files instanceof Array){
-        res.render('manage/select', {contents: files, })
+        res.render('manage/manage', {info: files, })
       }
     })
   }else{

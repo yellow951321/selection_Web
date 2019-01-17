@@ -4,7 +4,6 @@ let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
 let selectionNowSchool = ''
-let selectionNowProject = ''
 
 const addForm = document.getElementById('addForm')
 const breadCrumb = document.getElementById('breadcrumb')
@@ -21,8 +20,6 @@ const getCurrentPath = () => {
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
-  selectionNowProject = pathSplit[6] ? decodeURI(pathSplit[6]) : ''
-  console.log(userName)
 }
 
 // fetch session from cookies
@@ -57,11 +54,6 @@ const buttonSelected = (event) => {
     // type selected
     window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowType}`)
   }
-  else if (selectionNowSchool === ''){
-    selectionNowSchool = event.target.innerHTML
-    // school selected
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowSchool}`)
-  }
 }
 
 // refresh the breadcrumb (path on top of the nodes)
@@ -90,18 +82,17 @@ const refreshBreadCrumb = () =>{
         <div class="divider"> / </div>
         <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
     `)
-
-  if(selectionNowProject == '')
-    return
-  breadCrumb.insertAdjacentHTML('beforeend', `
-        <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}"> ${ selectionNowProject } </div>
-    `)
 }
 
 // init
 
+//refresh dropdwon in addForm
+$('select.dropdown')
+  .dropdown()
+
+// get currentpatg;
 getCurrentPath()
+
 //temporarily comment the fetchsession()
 //sessionId = fetchSession()
 // refreshBreadCrumb needs to execute after get current path and fetchSession
@@ -123,7 +114,6 @@ addForm.addEventListener('submit', (event) => {
   event.preventDefault()
 
   const reqURL = '/man/add'
-  const project = addForm.querySelector('.addForm__project')
   const year = addForm.querySelector('.addForm__year')
   const school = addForm.querySelector('.addForm__school')
   const type = addForm.querySelector('.addForm__type')
@@ -135,7 +125,6 @@ addForm.addEventListener('submit', (event) => {
       'info': {
         'year': year.value,
         'campus': school.value,
-        'name': project.value,
         'type': type.value,
       },
     }),
