@@ -1,0 +1,15 @@
+config = {
+  'database': {
+    'database': 'test',
+    'host': 'localhost:27017',
+    'user': '',
+    'password': '',
+  },
+  'server': {
+    'domain': 'localhost',
+    'port': 3000,
+    'secret': 'deepest and darkest secret',
+  }
+}
+
+module.exports = config

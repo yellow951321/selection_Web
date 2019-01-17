@@ -2,7 +2,14 @@ const express = require('express')
 const fs = require('fs')
 const User = require('./../models/user')
 
-const router = express.Router()
+const router = express.Router({
+  // case sensitive for route path
+  caseSensitive: true,
+  // parent path req.parmas take precedence over child path
+  mergeParams: false,
+  // fool proof route path
+  strict: false,
+})
 
 router.get('/', (req, res)=>{
   res.render('signup')
