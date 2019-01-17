@@ -3,7 +3,6 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const logger = require('morgan')
-const MongoStore = require('connect-mongo')(session)
 
 const config = require('./config')
 const mongodbConfig = require('./db/config')
@@ -54,10 +53,7 @@ app.use(session({
   proxy: false,
   secret: config.secret,
   resave : true,
-  saveUninitialized : true,
-  store: new MongoStore({
-    url: `mongodb://${mongodbConfig.mongodb.user}:${mongodbConfig.mongodb.password}@${mongodbConfig.mongodb.host}/${mongodbConfig.mongodb.database}`,
-  }),
+  saveUninitialized : true
 }))
 app.use('/static', express.static(path.join(__dirname, 'public'), {
   // 404 for request dot files
