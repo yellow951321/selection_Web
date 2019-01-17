@@ -3,10 +3,9 @@ const router = express.Router()
 const pug = require('pug')
 const fs = require('fs')
 
-var sessionTable = require('./session')
+
 
 router.post('/add', (req, res)=>{
-  const username = sessionTable.findBySId(req.body.sessionId).username
   const pathWithoutName = pathGenWithoutName(username, req.body.info.year, req.body.info.type, req.body.info.campus)
   const path = pathGen(username, req.body.info.year, req.body.info.type, req.body.info.campus, req.body.info.name)
   fs.stat(path, (err, state)=>{
@@ -238,75 +237,8 @@ router.get('/:username/:year/:type/:campus/:name', (req, res)=>{
     res.write('<a href="http://localhost:11021/log">Click Here</a>')
     res.send()
   }
-  // console.log(info);
-  // fetch(info,(files)=>{
-  //   //console.log(files);
-  //   if(files instanceof Object){
-  //     objToNode(files,(context)=>{
-  //       // console.log(context);
-  //       res.render('manage/edit',{info:context});
-  //     });
-  //   }
-  // });
 })
 
-
-
-// router.post('/fetch',(req,res)=>{
-//   var account = sessionTable.findBySId(req.body.sessionId);
-//   console.log(account);
-//   console.log(req.body);
-//   const info = {
-//     username : account.username,
-//     year : req.body.year,
-//     type : req.body.type,
-//     campus : req.body.campus,
-//     proName : req.body.name
-//   }
-//   console.log(info);
-//   if(account){
-//     fetch(info,(files)=>{
-//         if(files instanceof Array && !req.body.campus ){
-//           console.log(files);
-//           res.render('manage/_render_select_button',{contents: files});
-//         }else if(files instanceof Array && req.body.campus){
-//           console.log(files);
-//           splitArrayIntoContext(files,(context)=>{
-//             console.log(context);
-//             res.render('manage/_render_manage',{info:context});
-//           });
-//         }else if(files instanceof Object ){
-//           objToNode(files,(context)=>{
-//             res.render('manage/_edit',{info:context});
-//           });
-//         }
-//     });
-//   }else{
-//     res.status(400).send();
-//   }
-
-// });
-
-// router.post('/edit',(req,res)=>{
-//   var account = sessionTable.findBySId(req.body.sessionId);
-//   const info = {
-//     username : account.username,
-//     year : req.body.year,
-//     type : req.body.type,
-//     campus : req.body.campus,
-//     proName : req.body.name
-//   }
-//   console.log(info);
-//   fetch(info,(files)=>{
-//     //console.log(files);
-//     if(files instanceof Object){
-//       objToNode(files,(context)=>{
-//         //console.log(context);
-//         res.render('manage/_render_edit',{info:context});
-//       });
-//     }
-//   });
-// });
 
 router.post('/addContent', (req, res)=>{
   res.render('manage/newEdit')
@@ -332,7 +264,6 @@ router.post('/delete', (req, res)=>{
   }else{
     res.status(400).send('No sessionId')
   }
-  
 
 })
 

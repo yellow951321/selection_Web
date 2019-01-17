@@ -71,7 +71,7 @@ window.addEventListener('load', ()=>{
     const password = signup.querySelector('.password2')
     console.log(account.value)
     console.log(password.value)
-        
+
     fetch(signURL, {
       method: 'POST',
       body: JSON.stringify({ 'username': account.value, 'password': password.value, }),

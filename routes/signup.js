@@ -22,7 +22,7 @@ router.post('/', (req, res)=>{
       res.status(200).send('OK')
       fs.mkdir('data/'+req.body.username, {recursive: true, }, (err)=>{
         if(err) console.log(err)
-        else 
+        else
           console.log('mkdir operation complete')
       })
     }, (e)=>{

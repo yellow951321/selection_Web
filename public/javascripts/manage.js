@@ -2,7 +2,7 @@
 const pageSelect = document.getElementById('page-select')
 const pageManagement = document.getElementById('page-management')
 const pageEdit = document.getElementById('page-edit')
-const pageHeader = document.getElementById('header') 
+const pageHeader = document.getElementById('header')
 const breadCrumb = document.getElementById('breadcrumb')
 
 let sessionId = '123'
@@ -120,7 +120,6 @@ refreshBreadCrumb()
 function refreshDropdown(){
   $('select.dropdown')
     .dropdown()
-    
 }
 refreshDropdown()
 
@@ -128,7 +127,6 @@ refreshDropdown()
 const addClicked = () => {
   $('.ui.modal')
     .modal('show')
-    
 }
 
 document.getElementById('add').addEventListener('click', addClicked)
@@ -189,7 +187,7 @@ const backClicked = () => {
       temp[x].removeChild(temp[x].firstChild)
     }
   }
-  // fetch years 
+  // fetch years
   fetch('man/fetch', {
     method: 'POST',
     body: JSON.stringify({sessionId: sessionId, }),
@@ -205,8 +203,8 @@ const backClicked = () => {
       const childs = yearBlock.children
       for(let i = 0; i < childs.length; i++){
         childs[i].addEventListener('click', butttonSelected)
-      }    
-      selectionNowPage = 'year' 
+      }
+      selectionNowPage = 'year'
       refreshBreadCrumb()
     })
 }
@@ -326,9 +324,9 @@ const projectDeleted = (event) => {
 // selection > fetch button
 const butttonSelected = (event) => {
   event.preventDefault()
-  selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear     
-  selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType     
-  selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool     
+  selectionNowYear = selectionNowPage === 'year' ? event.target.innerHTML : selectionNowYear
+  selectionNowType = selectionNowPage === 'type' ? event.target.innerHTML : selectionNowType
+  selectionNowSchool = selectionNowPage === 'school' ? event.target.innerHTML : selectionNowSchool
 
   const yearBlock = pageSelect.querySelector('.select__year')
   const typeBlock = pageSelect.querySelector('.select__type')
@@ -401,8 +399,8 @@ fetch('man/fetch', {
     const childs = yearBlock.children
     for(let i = 0; i < childs.length; i++){
       childs[i].addEventListener('click', butttonSelected)
-    }    
-    selectionNowPage = 'year' 
+    }
+    selectionNowPage = 'year'
   })
 
 // Edit
@@ -446,20 +444,20 @@ const addContent = () =>{
   fetch('man/addContent', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId, 
+      sessionId: sessionId,
       info: {
         year: selectionNowYear,
         type: selectionNowType,
         campus: selectionNowSchool,
         name: selectionNowProject,
-      },    
+      },
     }),
     headers: {
       'Content-Type': 'application/json',
     },
   })
     .then(res => res.text())
-    .then(data => { 
+    .then(data => {
       pageEdit.insertAdjacentHTML('beforeend', data)
       //add event listener to dropdowns
       pageEdit.lastChild.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged)
@@ -490,7 +488,7 @@ const saveContent = () =>{
   fetch('man/save', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId, 
+      sessionId: sessionId,
       info: {
         year: selectionNowYear,
         type: selectionNowType,
@@ -504,7 +502,7 @@ const saveContent = () =>{
     },
   })
     .then(res => res.text())
-    .then(data => { 
+    .then(data => {
       alert(data)
     })
 }
