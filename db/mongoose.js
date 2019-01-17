@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 const config = require('./config')
 const isDevMode = process.env.MODE == 'DEVELOPMENT'
-const needAuth = false;
+const needAuth = false
 //mongoose.Promise = Promise
 
 if (isDevMode && !needAuth){

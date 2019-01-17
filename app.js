@@ -46,8 +46,8 @@ app.use(express.urlencoded({
     'multipart/form-data',
     'text/html',
     'application/xhtml+xml',
-    'application/xml'
-  ]
+    'application/xml',
+  ],
 }))
 
 app.use(session({
@@ -98,7 +98,7 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use((req,res=>{
+app.use((req, res=>{
   if(!req.session)
     res.redirect('/login')
 }))
