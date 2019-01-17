@@ -15,3 +15,11 @@ body {
 /*.ui form {
     align-content: center;
 }*/
+
+#hide, #wrong {
+    visibility: hidden;
+}
+
+#signup {
+    display: none;
+}
