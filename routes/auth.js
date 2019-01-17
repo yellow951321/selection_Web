@@ -1,5 +1,6 @@
-const express = require('express')
 const fs = require('fs')
+const express = require('express')
+
 const User = require('./../models/user')
 
 const router = express.Router({
@@ -11,11 +12,44 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/', (req, res)=>{
+router.get('/login', (req, res)=>{
+  res.render('login')
+})
+
+router.post('/login', (req, res)=>{
+  User.findOne({
+    username: req.body.username,
+    password: req.body.password,
+  }, (err, doc)=>{
+    if(err){
+      console.log(err)
+      return res.status(400).send('Error occurs in login.js at 24')
+    }
+    if(doc){
+      //res.cookie('sessionId', sessionId)
+      req.session.username = doc.username
+      req.session.password = doc.password
+      //console.log(req.session);
+      res.status(200).send('OK')
+    }else {
+      res.status(400).send(`No matched account named ${req.body.username}`)
+    }
+  })
+})
+
+router.post('/logout', (req, res)=>{
+  delete req.session.username
+  delete req.session.password
+  res.status(200).send('Log out')
+  //console.log(`${req.body.username} log out`)
+})
+
+
+router.get('/signup', (req, res)=>{
   res.render('signup')
 })
 
-router.post('/', (req, res)=>{
+router.post('/signup', (req, res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>', 'gi')
   if(!rMatch.test(req.body.username) && !rMatch.test(req.body.password)){
     console.log('enter')

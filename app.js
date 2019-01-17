@@ -1,14 +1,10 @@
 const express = require('express')
 const path = require('path')
-const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const logger = require('morgan')
 
 const config = require('./config')
-const mongodbConfig = require('./db/config')
-const mongoose = require('./db/mongoose')
-const loginRouter = require('./routes/login')
-const signupRouter = require('./routes/signup')
+const auth = require('./routes/auth')
 const managerRouter = require('./routes/manager')
 const app = express()
 
@@ -33,8 +29,27 @@ app.use(express.json({
   // supported MIME type
   type: 'application/json',
 }))
-app.use(express.urlencoded({extended: false, }))
-app.use(cookieParser())
+
+// url encode middleware
+app.use(express.urlencoded({
+  // use qs library to parse URL-encoded data
+  extended: true,
+  // request body can be compressed
+  inflate: true,
+  // maximum body size
+  limit: '5GB',
+  // maximum number of query parameters
+  parameterLimit: 1000,
+  // supportted MIME type
+  type: [
+    'application/x-www-form-urlencoded',
+    'multipart/form-data',
+    'text/html',
+    'application/xhtml+xml',
+    'application/xml'
+  ]
+}))
+
 app.use(session({
   cookie: {
     path: '/',
@@ -52,9 +67,12 @@ app.use(session({
   name: 'reddeadredemption',
   proxy: false,
   secret: config.secret,
-  resave : true,
-  saveUninitialized : true
+  resave : false,
+  rolling: true,
+  saveUninitialized : false,
+  unset: 'destroy',
 }))
+
 app.use('/static', express.static(path.join(__dirname, 'public'), {
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -80,13 +98,12 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use('/log', loginRouter)
-app.use('/signup', signupRouter)
-app.use('/man', managerRouter)
+app.use((req,res=>{
+  if(!req.session)
+    res.redirect('/login')
+}))
 
-app.get('/', (req, res)=>{
-  // if no session
-  res.redirect('/log')
-})
+app.use('/auth', auth)
+app.use('/man', managerRouter)
 
 app.listen(config.port)
