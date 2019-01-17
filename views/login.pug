@@ -5,30 +5,30 @@ append head
   link(rel='stylesheet', href='/static/stylesheets/login.css')
 
 append content
-  div(class="ui center aligned container")
-    form(class="ui form", method='POST', id='login')
+  .ui.center.aligned.container
+    form#login.ui.form(method='POST')
         h1 LOGIN
-        div(class="field")
-          label(class="interface") account:
-          input(type='text', name='account', class='account', style='width:300px;height:40px;', value='', placeholder="account", minlength="3", maxlength="25")
-        div(class="field")
-          label(class="interface") password:
-          div(class="ui left pointing red basic label", id="hide") Password Wrong
-          input(type='password', name='password', class='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
-          div(class="ui left pointing red basic label", id="wrong") Password Wrong
-        button(class="ui primary button", type = 'submit', style='width:100px;height:40px;') login
-        button(class="ui button", type = 'button', id='signupbutton', style='width:100px;height:40px;') sign up
+        .field
+          label.interface account:
+          input.account(type='text', name='account', style='width:300px;height:40px;', value='', placeholder="account", minlength="3", maxlength="25")
+        .field
+          label.interface password:
+          #hide.ui.left.pointing.red.basic.label Password Wrong
+          input.password(type='password', name='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
+          #wrong.ui.left.pointing.red.basic.label Password Wrong
+        button.ui.primary.button(type='submit', style='width:100px;height:40px;') login
+        button#signupbutton.ui.button(type='button', style='width:100px;height:40px;') sign up
 
-    form(class="ui form", method='POST', id='signup')
+    form#signup.ui.form(method='POST')
         h1 SIGN UP
-        div(class="field")
-          label(class="interface") account:
-          input(type='text', name='account', class='account2', style='width:300px;height:40px;', value='', placeholder="account", minlength="3", maxlength="25")
-        div(class="field")
-          label(class="interface") password:
-          input(type='password', name='password', class='password2', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
-        button(class="ui secondary button", type='submit', style='width:100px;height:40px;') Confirm
-        button(class="ui button", id='back', type='button', style='width:100px;height:40px;') Back
+        .field
+          label.interface account:
+          input.account2(type='text', name='account', style='width:300px;height:40px;', value='', placeholder="account", minlength="3", maxlength="25")
+        .field
+          label.interface password:
+          input.password2(type='password', name='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
+        button.ui.secondary.button(type='submit', style='width:100px;height:40px;') Confirm
+        button#back.ui.button(type='button', style='width:100px;height:40px;') Back
 
 append script
   script(src='/static/javascripts/login.js')
