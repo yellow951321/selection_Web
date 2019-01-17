@@ -42,7 +42,10 @@ router.post('/in', (req, res)=>{
       const SA = new SessionAccount('/', sessionId, doc.username, doc.password, 0000000)
       sessionTable.push(SA)
       console.log(sessionTable+'at login.js:39')
-      res.cookie('sessionId', sessionId)
+      //res.cookie('sessionId', sessionId)
+      req.session.username = doc.username
+      req.session.password = doc.password
+      //console.log(req.session);
       res.status(200).send('OK')
     }else {
       res.status(400).send(`No matched account named ${req.body.username}`)
@@ -51,15 +54,10 @@ router.post('/in', (req, res)=>{
 })
 
 router.post('/out', (req, res)=>{
-  const sid = req.body.sessionId
-  //const username  = req.body.username;
-  sessionTable = sessionTable.filter((account)=>{
-    return account.sessionId != sid
-  })
-  res.cookie('sessionId', '')
-  res.cookie('path', '')
+  delete req.session.username
+  delete req.session.password
   res.status(200).send('Log out')
-  console.log(`${req.body.username} log out`)
+  //console.log(`${req.body.username} log out`)
 })
 
 module.exports = router

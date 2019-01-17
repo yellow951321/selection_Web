@@ -22,6 +22,7 @@ const getCurrentPath = () => {
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
   selectionNowProject = pathSplit[6] ? decodeURI(pathSplit[6]) : ''
+  console.log(userName)
 }
 
 // fetch session from cookies
@@ -49,59 +50,60 @@ const buttonSelected = (event) => {
   // determine current folder
   if(selectionNowYear === ''){
     selectionNowYear = event.target.innerHTML
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowYear}?sessionId=${sessionId}`)
+    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowYear}`)
   }
   else if (selectionNowType === ''){
     selectionNowType = event.target.innerHTML
     // type selected
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowType}?sessionId=${sessionId}`)
+    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowType}`)
   }
   else if (selectionNowSchool === ''){
     selectionNowSchool = event.target.innerHTML
     // school selected
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowSchool}?sessionId=${sessionId}`)
+    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${selectionNowSchool}`)
   }
 }
 
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}?sessionId=${sessionId}"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}"> ${ userName } </div>
     `)
 
   if(selectionNowYear == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}"> ${ selectionNowYear } </div>
     `)
 
   if(selectionNowType == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
     `)
 
   if(selectionNowSchool == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
     `)
 
   if(selectionNowProject == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}"> ${ selectionNowProject } </div>
     `)
 }
 
 // init
 
 getCurrentPath()
-sessionId = fetchSession()
+//temporarily comment the fetchsession()
+//sessionId = fetchSession()
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
 
@@ -144,7 +146,7 @@ addForm.addEventListener('submit', (event) => {
     .then(res => res.text())
     .then(data => {
       if(data === 'OK')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}?sessionId=${sessionId}`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}`)
     })
 
   $('.ui.modal').modal('hide')

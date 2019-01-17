@@ -57,7 +57,7 @@ const editDeleteButtonClicked = (event) => {
 
   if(event.target.innerHTML === '編輯'){
     // redirect to the target folder
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${name}?sessionId=${sessionId}`)
+    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${name}`)
   }
   else if(event.target.innerHTML === '刪除'){
     if(confirm('確定要刪除嗎')){
@@ -124,7 +124,8 @@ const refreshBreadCrumb = () =>{
 // init
 
 getCurrentPath()
-sessionId = fetchSession()
+//temporarily comment the fetchsession()
+//sessionId = fetchSession()
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
 
@@ -172,7 +173,7 @@ addForm.addEventListener('submit', (event) => {
   })
     .then(res => res.text())
     .then(data => {
-      window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}?sessionId=${sessionId}`)
+      window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}`)
     })
 
   $('.ui.modal').modal('hide')

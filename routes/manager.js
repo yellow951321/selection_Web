@@ -125,11 +125,14 @@ router.get('/test', (req, res)=>{
 })
 
 router.get('/:username', (req, res)=>{
-  console.log('123')
-  var account = sessionTable.findBySId(req.query.sessionId)
-  if(account && account.username == req.params.username){
+  //sessionId
+  console.log(req.session.id)
+  //session cookie
+  console.log(req.session)
+
+  if(req.session.username && req.session.password){
     fetch({
-      username: account.username,
+      username: req.session.username,
     }, (files)=>{
       if(files instanceof Array){
         res.render('manage/select', {contents: files, })
@@ -146,10 +149,9 @@ router.get('/:username', (req, res)=>{
 })
 
 router.get('/:username/:year', (req, res)=>{
-  var account = sessionTable.findBySId(req.query.sessionId)
-  if(account && account.username == req.params.username){
+  if(req.session.username && req.session.password){
     fetch({
-      username: account.username,
+      username: req.session.username,
       year : req.params.year,
     }, (files)=>{
       if(files instanceof Array){
@@ -167,10 +169,9 @@ router.get('/:username/:year', (req, res)=>{
 })
 
 router.get('/:username/:year/:type', (req, res)=>{
-  var account = sessionTable.findBySId(req.query.sessionId)
-  if(account && account.username == req.params.username){
+  if(req.session.username && req.session.password){
     fetch({
-      username: account.username,
+      username: req.session.username,
       year : req.params.year,
       type : req.params.type,
     }, (files)=>{
@@ -189,10 +190,9 @@ router.get('/:username/:year/:type', (req, res)=>{
 })
 
 router.get('/:username/:year/:type/:campus', (req, res)=>{
-  var account = sessionTable.findBySId(req.query.sessionId)
-  if(account && account.username == req.params.username){
+  if(req.session.username && req.session.password){
     fetch({
-      username: account.username,
+      username: req.session.username,
       year : req.params.year,
       type : req.params.type,
       campus : req.params.campus,
@@ -215,10 +215,9 @@ router.get('/:username/:year/:type/:campus', (req, res)=>{
 })
 
 router.get('/:username/:year/:type/:campus/:name', (req, res)=>{
-  var account = sessionTable.findBySId(req.query.sessionId)
-  if(account && account.username == req.params.username){
+  if(req.session.username && req.session.password){
     fetch({
-      username: account.username,
+      username: req.session.username,
       year : req.params.year,
       type : req.params.type,
       campus : req.params.campus,

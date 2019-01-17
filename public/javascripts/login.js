@@ -45,11 +45,12 @@ window.addEventListener('load', ()=>{
       .then(data => {
         //const error = login.querySelector( '.login__error' );
         console.log(data)
-        let sessionId = fetchSession()
+        //temporarily comment the fetchsession()
+        //let sessionId = fetchSession()
         if (data === 'OK') {
           console.log('Login success')
           //error.classList.add( 'login__error--hidden' );
-          window.location = 'http://localhost:11021/man' + `/${account.value}?sessionId=${sessionId}`
+          window.location = 'http://localhost:3000/man' + `/${account.value}`
         }
         else
         {

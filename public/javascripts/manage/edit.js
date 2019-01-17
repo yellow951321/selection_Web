@@ -189,7 +189,8 @@ const itemDropdownOnChanged = (event) => {
 // init
 fetchSchema()
 getCurrentPath()
-sessionId = fetchSession()
+//temporarily comment the fetchsession();
+//sessionId = fetchSession()
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
 // refresh dropdown

@@ -3,8 +3,11 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const logger = require('morgan')
+const MongoStore = require('connect-mongo')(session)
 
 const config = require('./config')
+const mongodbConfig = require('./db/config')
+const mongoose = require('./db/mongoose')
 const loginRouter = require('./routes/login')
 const signupRouter = require('./routes/signup')
 const managerRouter = require('./routes/manager')
@@ -34,7 +37,27 @@ app.use(express.json({
 app.use(express.urlencoded({extended: false, }))
 app.use(cookieParser())
 app.use(session({
+  cookie: {
+    path: '/',
+    httpOnly: !isDevMode,
+    domain: config.domain,
+    expires: new Date(Date.now() + 1000*60*60*24*7),
+    maxAge: 1000*60*60*24*7,
+    sameSite: true,
+    /**
+     * @todo add https
+     */
+    // secure: isDevMode,
+
+  },
+  name: 'reddeadredemption',
+  proxy: false,
   secret: config.secret,
+  resave : true,
+  saveUninitialized : true,
+  store: new MongoStore({
+    url: `mongodb://${mongodbConfig.mongodb.user}:${mongodbConfig.mongodb.password}@${mongodbConfig.mongodb.host}/${mongodbConfig.mongodb.database}`,
+  }),
 }))
 app.use('/static', express.static(path.join(__dirname, 'public'), {
   // 404 for request dot files
@@ -42,7 +65,7 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   // file hash
   etag: true,
   // handle missing extension for static file
-  extensions: ['css', 'js'],
+  extensions: ['css', 'js', ],
   // when 404, pass handle to other middleware
   fallthrough: true,
   // static file can be cached
@@ -56,7 +79,7 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res,path,stat){
+  setHeaders(res, path, stat){
     res.set('x-timestamp', Date.now())
   },
 }))

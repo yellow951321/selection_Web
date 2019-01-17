@@ -64,7 +64,8 @@ const fetchSession = () => {
   }
 }
 
-sessionId = fetchSession()
+//temporarily comment the fetchSession();
+//sessionId = fetchSession()
 
 const fetchUserName = () => {
   let user = document.cookie.match(/path=[^;]+/)
