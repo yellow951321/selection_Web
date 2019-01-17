@@ -17,6 +17,7 @@ router.get('/login', (req, res)=>{
 })
 
 router.post('/login', (req, res)=>{
+  console.log(req.body)
   User.findOne({
     username: req.body.username,
     password: req.body.password,
@@ -27,19 +28,18 @@ router.post('/login', (req, res)=>{
     }
     if(doc){
       //res.cookie('sessionId', sessionId)
-      req.session.username = doc.username
-      req.session.password = doc.password
+      req.session.userId = doc.id
       //console.log(req.session);
-      res.status(200).send('OK')
+      res.status(200).send(doc.id)
     }else {
-      res.status(400).send(`No matched account named ${req.body.username}`)
+      console.log(doc)
+      res.status(400).send(`No matched account named ${req.body.id}`)
     }
   })
 })
 
 router.post('/logout', (req, res)=>{
-  delete req.session.username
-  delete req.session.password
+  delete req.session.userId
   res.status(200).send('Log out')
   //console.log(`${req.body.username} log out`)
 })
@@ -51,25 +51,32 @@ router.get('/signup', (req, res)=>{
 
 router.post('/signup', (req, res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>', 'gi')
-  if(!rMatch.test(req.body.username) && !rMatch.test(req.body.password)){
+  if(!rMatch.test(req.body.id) && !rMatch.test(req.body.password)){
     console.log('enter')
-    var user = new User({
-      username: req.body.username,
-      password: req.body.password,
-    })
-    console.log('Eeeee')
-    user.save().then((doc)=>{
-      console.log(doc)
-      res.status(200).send('OK')
-      fs.mkdir('data/'+req.body.username, {recursive: true, }, (err)=>{
-        if(err) console.log(err)
-        else
-          console.log('mkdir operation complete')
-      })
-    }, (e)=>{
-      console.log(e)
-      res.status(400).send(e)
-    })
+    var id;
+    User.countDocuments({},(err,num)=>{
+      if(err) console.log(err);
+        id = num +1;
+        console.log(id);
+
+        var user = new User({
+          username: req.body.id,
+          password: req.body.password,
+          id: id
+        })
+        user.save().then((doc)=>{
+          console.log(doc)
+          res.status(200).send('OK')
+          fs.mkdir('data/'+req.body.id, {recursive: true, }, (err)=>{
+            if(err) console.log(err)
+            else
+              console.log('mkdir operation complete')
+          })
+        }, (e)=>{
+          console.log(e)
+          res.status(400).send(e)
+        })
+    });
   }
 })
 

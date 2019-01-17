@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     trim: true,
   },
+  id: {
+    type: String,
+    require: true,
+    trim: 30
+  }
 })
 
 const User = mongoose.model('User', userSchema)

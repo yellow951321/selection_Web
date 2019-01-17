@@ -181,7 +181,7 @@ addForm.addEventListener('submit', (event) => {
 
 // add event listener to the logout button
 header.querySelector('.logout').addEventListener('click', () =>{
-  fetch('/log/out', {
+  fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,
@@ -193,6 +193,6 @@ header.querySelector('.logout').addEventListener('click', () =>{
     .then(res => res.text())
     .then(data => {
       if(data === 'Log out')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/log`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
     })
 })

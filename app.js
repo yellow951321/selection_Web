@@ -6,6 +6,7 @@ const logger = require('morgan')
 const config = require('./config')
 const auth = require('./routes/auth')
 const managerRouter = require('./routes/manager')
+const mongoose = require('./db/mongoose')
 const app = express()
 
 const isDevMode = process.env.MODE == 'DEVELOPMENT'
@@ -54,7 +55,7 @@ app.use(session({
   cookie: {
     path: '/',
     httpOnly: !isDevMode,
-    domain: config.domain,
+    domain: config.server.domain,
     expires: new Date(Date.now() + 1000*60*60*24*7),
     maxAge: 1000*60*60*24*7,
     sameSite: true,
@@ -66,7 +67,7 @@ app.use(session({
   },
   name: 'reddeadredemption',
   proxy: false,
-  secret: config.secret,
+  secret: config.server.secret,
   resave : false,
   rolling: true,
   saveUninitialized : false,
@@ -98,12 +99,15 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use((req, res=>{
-  if(!req.session)
-    res.redirect('/login')
-}))
 
 app.use('/auth', auth)
 app.use('/man', managerRouter)
 
-app.listen(config.port)
+app.use((req, res,next)=>{
+  if(!req.session)
+    res.redirect('/login')
+  else
+    next()
+})
+
+app.listen(config.server.port)

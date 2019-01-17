@@ -214,7 +214,7 @@ pageHeader.querySelector('.back').addEventListener('click', backClicked)
 // logoutButton
 
 const logoutClicked = () => {
-  fetch('log/out', {
+  fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({sessionId: sessionId, }),
     headers: {
@@ -223,7 +223,7 @@ const logoutClicked = () => {
   })
     .then(res => res.text())
     .then(data => {
-      window.location = window.location.href.substring(0, window.location.href - 3) + 'log'
+      window.location = window.location.href.substring(0, window.location.href - 3) + 'auth/login'
     })
 }
 

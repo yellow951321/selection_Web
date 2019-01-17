@@ -3,8 +3,8 @@ window.addEventListener('load', ()=>{
   const signupbutton = document.getElementById('signupbutton')
   const signup = document.getElementById('signup')
   const backbutton = document.getElementById('back')
-  const reqURL = '/log/in'
-  const signURL = '/signup'
+  const reqURL = '/auth/login'
+  const signURL = '/auth/signup'
 
   const fetchSession = () => {
     let sId = document.cookie.match(/sessionId=[^;]+/)
@@ -47,10 +47,10 @@ window.addEventListener('load', ()=>{
         console.log(data)
         //temporarily comment the fetchsession()
         //let sessionId = fetchSession()
-        if (data === 'OK') {
+        if (data) {
           console.log('Login success')
           //error.classList.add( 'login__error--hidden' );
-          window.location = 'http://localhost:3000/man' + `/${account.value}`
+          window.location = 'http://localhost:3000/man' + `/${data}`
         }
         else
         {
