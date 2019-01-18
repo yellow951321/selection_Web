@@ -14,8 +14,8 @@ const User = require('./../models/user')
 
 
 router.post('/add', (req, res)=>{
-  const pathWithoutName = pathGenWithoutName(username, req.body.info.year, req.body.info.type, req.body.info.campus)
-  const path = pathGen(username, req.body.info.year, req.body.info.type, req.body.info.campus, req.body.info.name)
+  const pathWithoutName = pathGenWithoutName(req.body.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+  const path = pathGen(req.body.username, req.body.info.year, req.body.info.type, req.body.info.campus, req.body.info.name)
   fs.stat(path, (err, state)=>{
     if(err){
       console.log(err)
@@ -158,7 +158,7 @@ router.get('/:userId', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
@@ -186,7 +186,7 @@ router.get('/:userId/:year', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
@@ -205,7 +205,7 @@ router.get('/:userId/:year/:type', (req, res)=>{
           type : req.params.type
         }, (files)=>{
           if(files instanceof Array){
-            res.render('manage/select', {contents: files, })
+            res.render('manage/manager', {info: files, })
           }
         })
       }
@@ -215,12 +215,12 @@ router.get('/:userId/:year/:type', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
 
-router.get('/:username/:year/:type/:campus', (req, res)=>{
+router.get('/:userId/:year/:type/:campus', (req, res)=>{
   if(req.session.userId){
     User.findOne({
       id: req.session.userId
@@ -235,7 +235,7 @@ router.get('/:username/:year/:type/:campus', (req, res)=>{
           campus : req.params.campus
         }, (files)=>{
           if(files instanceof Array){
-            res.render('manage/select', {contents: files, })
+            res.render('manage/manager', {info: files})
           }
         })
       }
@@ -245,7 +245,7 @@ router.get('/:username/:year/:type/:campus', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
@@ -291,15 +291,17 @@ function fetch(info, cb){
   const username = info.username ? `/${info.username}`: ''
   const year = info.year ? `/${info.year}` : ''
   const type = info.type ? `/${info.type}` : ''
-  const campus = info.campus ? `/${info.campus}` : ''
-  const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : ''
-  const path = 'data'+username+year+type+campus+proName
+  const campus = info.campus ? `/${info.year +'_'+info.type+'_'+info.campus+'.json'}` : ''
+  const path = 'data'+username+year+type+campus
+  const dimension = info.dimension
+  const item = info.item
+  const detail = info.detail
   // console.log(path);
-  if(proName != ''){
+  if(campus != ''){
     fs.readFile(path, 'utf-8', (err, data)=>{
       if(err) return console.log(err)
       if(data){
-        cb(JSON.parse(data))
+        cb(JSON.parse({dimension: dimension,item: item, detail: detail},data))
       }
     })
   }else{
@@ -331,30 +333,23 @@ function splitArrayIntoContext(arr, cb){
 }
 
 
-function objToNode(project, cb){
+function objToNode(range,project, cb){
   // console.log(project);
   var context = []
-  for(dimension in project)
-    for(item in project[dimension])
-      for(detail in project[dimension][item]){
-        // console.log(detail);
-        //console.log(detail.length > 0);
-        if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
-          for(content of project[dimension][item][detail]){
-            let t = {}
-            t.dimension = dimension
-            t.item = item
-            t.detail = detail
-            t.content = content.paragraph
-            t.page = {}
-            t.page.start = '1'
-            t.page.end = '1'
-            // console.log("Adding");
-            context.push(t)
-          }
-        }
-      }
+  if(project[range.dimension][range.item][range.detail]instanceof Array && project[range.dimension][range.item][range.detail].length > 0){
+    for(content of project[range.dimension][range.item][range.detail]){
+      let t = {};
+      t.dimension = dimension
+      t.item = item
+      t.detail = detail
+      t.context = content.paragraph
+      t.page = {}
+      t.page.start = content.page[0]
+      t.page.end = content.page[1]
 
+      context.push(t)
+    }
+  }
   cb(context)
 }
 
