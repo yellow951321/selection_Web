@@ -4,7 +4,11 @@ let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
 let selectionNowSchool = ''
-let selectionNowProject = ''
+
+let selecteddimension = ''
+let selecteditem = ''
+let selecteddetail = ''
+
 let schema = {}
 const breadCrumb = document.getElementById('breadcrumb')
 const header = document.getElementById('header')
@@ -35,24 +39,11 @@ const getCurrentPath = () => {
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
-  selectionNowProject = pathSplit[6] ? decodeURI(pathSplit[6]) : ''
-}
-
-// fetch session from cookies
-const fetchSession = () => {
-  let sId = document.cookie.match(/sessionId=[^;]+/)
-  if(sId !== undefined){
-    if(sId instanceof Array)
-      sId = sId[0].substring(10)
-    else
-      sId = sId.substring(10)
-    return sId
-  }
 }
 
 // handle add content button clicked
 const addContentClicked = () =>{
-  fetch('/man/addContent', {
+  fetch('/man/content/add', {
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,
@@ -60,7 +51,6 @@ const addContentClicked = () =>{
         year: selectionNowYear,
         type: selectionNowType,
         campus: selectionNowSchool,
-        name: selectionNowProject,
       },
     }),
     headers: {
@@ -70,49 +60,9 @@ const addContentClicked = () =>{
     .then(res => res.text())
     .then(data => {
       const pageEdit = document.getElementById('page-edit')
-      pageEdit.insertAdjacentHTML('beforeend', data)
-      //add event listener to dropdowns
-      pageEdit.querySelector('.dimension').addEventListener('change', dimensionDropdownOnChanged)
-      pageEdit.querySelector('.item').addEventListener('change', itemDropdownOnChanged)
-      $('select.dropdown').dropdown()
-    })
-}
-// handle save button clicked
-const saveContent = () =>{
-  const pageEdit = document.getElementById('page-edit')
-  const childs = Array.from(pageEdit.children)
-  const contents = []
-  childs.forEach((child)=>{
-    contents.push({
-      dimension: child.querySelector('div.dimension.ui.selection.dropdown').firstChild.value,
-      item: child.querySelector('div.item.ui.selection.dropdown').firstChild.value,
-      detail: child.querySelector('.detail').firstChild.value,
-      content: child.querySelector('.content').value,
-      page: {
-        start: child.querySelector('.page__start').value,
-        end: child.querySelector('.page__end').value,
-      },
-    })
-  })
-  fetch('/man/save', {
-    method: 'POST',
-    body: JSON.stringify({
-      sessionId: sessionId,
-      info: {
-        year: selectionNowYear,
-        type: selectionNowType,
-        campus: selectionNowSchool,
-        name: selectionNowProject,
-      },
-      data: contents,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then(res => res.text())
-    .then(data => {
-      alert(data)
+			pageEdit.insertAdjacentHTML('beforeend', data)
+			pageEdit.lastChild.querySelector( '.save' ).addEventListener( 'click', saveContent);
+    	pageEdit.lastChild.querySelector( '.delete' ).addEventListener( 'click', deleteContent);
     })
 }
 
@@ -142,28 +92,20 @@ const refreshBreadCrumb = () =>{
         <div class="divider"> / </div>
         <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
     `)
-
-  if(selectionNowProject == '')
-    return
-  breadCrumb.insertAdjacentHTML('beforeend', `
-        <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${selectionNowProject}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
-    `)
 }
 
 // dropdown on change
 // dropdown dimension on change
 const dimensionDropdownOnChanged = (event) => {
   const editNode = event.target.parentNode.parentNode.parentNode
-  const item = editNode.querySelector('div.item.ui.selection.dropdown').firstChild
-  const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild
+  const item = editNode.querySelector('.filter__item').firstChild
+  const detail = editNode.querySelector('.filter__detail').firstChild
   while(item.firstChild){
     item.removeChild(item.firstChild)
   }
   while(detail.firstChild){
     detail.removeChild(detail.firstChild)
-  }
-  schema[event.target.value]
+	}
   const defaultItem = Object.keys(schema[event.target.value])[0]
   item.value = defaultItem
   Object.keys(schema[event.target.value]).forEach((name) => {
@@ -176,8 +118,8 @@ const dimensionDropdownOnChanged = (event) => {
 // dropndown item on change
 const itemDropdownOnChanged = (event) => {
   const editNode = event.target.parentNode.parentNode.parentNode
-  const dimension = editNode.querySelector('div.dimension.ui.selection.dropdown').firstChild
-  const detail = editNode.querySelector('div.detail.ui.selection.dropdown').firstChild
+  const dimension = editNode.querySelector('.filter__dimension').firstChild
+  const detail = editNode.querySelector('.filter__detail').firstChild
   while(detail.firstChild){
     detail.removeChild(detail.firstChild)
   }
@@ -186,11 +128,94 @@ const itemDropdownOnChanged = (event) => {
   })
 }
 
+// handle choice clicked
+const filter = (event) => {
+	const pageEdit = document.getElementById( 'page-edit' );
+	const dimension = pageEdit.querySelector( '.filter.filter__dimension' );
+	const item = pageEdit.querySelector( '.filter.filter__item' );
+	const detail = pageEdit.querySelector( '.filter.filter__detail' );
+
+	fetch( '/man/content/filter', {
+		method: 'POST',
+		body: JSON.stringify({
+			sessionId: sessionId,
+				info: {
+					year: selectionNowYear,
+					type: selectionNowType,
+					campus: selectionNowSchool,
+					dimension: dimension,
+					item: item,
+					detail: detail
+				}
+		})
+	})
+}
+
+// handle save button clicked
+const saveContent = () => {
+  fetch('/man/content/save', {
+    method: 'POST',
+    body: JSON.stringify({
+      sessionId: sessionId,
+      info: {
+				year: selectionNowYear,
+				type: selectionNowType,
+				campus: selectionNowSchool,
+				dimension: dimension,
+				item: item,
+				detail: detail
+			},
+			title: title,
+      data: contents,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.text())
+    .then(data => {
+      alert(data)
+    })
+}
+
+// handle delete button clicked
+const deleteContent = (event) =>{
+	event.preventDefault();
+	const node = event.target.parentNode.parentNode.parentNode.parentNode;
+	const startPage = node.querySelector( '.page__start' ).value;
+	const endPage = node.querySelector( '.page__end' ).value;
+	const title = node.querySelector( '.title' ).value;
+	const content = node.querySelector( '.content' ).value;
+	console.log(startPage);
+	console.log(endPage);
+	console.log(title);
+	console.log(content);
+	// fetch('/man/content/delete', {
+  //   method: 'POST',
+  //   body: JSON.stringify({
+  //     sessionId: sessionId,
+  //     info: {
+  //       year: selectionNowYear,
+  //       type: selectionNowType,
+	// 			campus: selectionNowSchool,
+	// 			topic: ,
+  //     },
+  //     data: contents,
+  //   }),
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then(res => res.text())
+  //   .then(data => {
+  //     alert(data)
+  //   })
+}
+
 // init
 fetchSchema()
 getCurrentPath()
-//temporarily comment the fetchsession();
-//sessionId = fetchSession()
+
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
 // refresh dropdown
@@ -201,19 +226,16 @@ $('select.dropdown')
 
 // add event listener to dropdowns
 Array.from(document.getElementById('page-edit').querySelectorAll('form.ui.form.segment')).forEach((node) =>{
-  node.querySelector('.dimension.ui.selection.dropdown').firstChild.addEventListener('change', dimensionDropdownOnChanged)
-  node.querySelector('.item.ui.selection.dropdown').firstChild.addEventListener('change', itemDropdownOnChanged)
+  node.querySelector('.filter__dimension').firstChild.addEventListener('change', dimensionDropdownOnChanged)
+  node.querySelector('.filter__item').firstChild.addEventListener('change', itemDropdownOnChanged)
 })
 
 // add event listener to the add content button
-header.querySelector('.add-content').addEventListener('click', addContentClicked)
-
-// add event listener to the save button
-header.querySelector('.save-content').addEventListener('click', saveContent)
+document.querySelector('.add-content').addEventListener('click', addContentClicked)
 
 // add event listener to the logout button
 header.querySelector('.logout').addEventListener('click', () =>{
-  fetch('/log/out', {
+  fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,
@@ -225,6 +247,6 @@ header.querySelector('.logout').addEventListener('click', () =>{
     .then(res => res.text())
     .then(data => {
       if(data === 'Log out')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/log`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
     })
 })

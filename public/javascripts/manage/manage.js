@@ -1,10 +1,9 @@
 // variables
+let userId = 0
 let userName = 'User'
 let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
-let selectionNowSchool = ''
-let selectionNowProject = ''
 
 const addForm = document.getElementById('addForm')
 const breadCrumb = document.getElementById('breadcrumb')
@@ -17,24 +16,9 @@ const getCurrentPath = () => {
   let pathSplit = window.location.pathname
   pathSplit = pathSplit.split('/')
 
-  userName = pathSplit[2]
+  userId = pathSplit[2]
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
-  selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
-  selectionNowProject = pathSplit[6] ? decodeURI(pathSplit[6]) : ''
-}
-
-// fetch session from cookies
-const fetchSession = () => {
-  let sId = document.cookie.match(/sessionId=[^;]+/)
-  console.log(sId)
-  if(sId !== undefined){
-    if(sId instanceof Array)
-      sId = sId[0].substring(10)
-    else
-      sId = sId.substring(10)
-    return sId
-  }
 }
 
 // add project button clicked
@@ -50,26 +34,22 @@ const editDeleteButtonClicked = (event) => {
   const projectNode = event.target.parentNode.parentNode
 
   // variables
-  const name = projectNode.querySelector('.manage__name ').innerHTML
-  const year = projectNode.querySelector('.manage__year ').innerHTML
   const school = projectNode.querySelector('.manage__school ').innerHTML
-  const type = projectNode.querySelector('.manage__type ').innerHTML
 
   if(event.target.innerHTML === '編輯'){
     // redirect to the target folder
-    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${name}`)
+    window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}${window.location.pathname}/${school}`)
   }
   else if(event.target.innerHTML === '刪除'){
     if(confirm('確定要刪除嗎')){
 
-      fetch('man/delete', {
+      fetch('/man/delete', {
         method: 'POST',
         body: JSON.stringify({
           sessionId: sessionId,
           info: {
-            name: name,
-            year: year,
-            type: type,
+            year: selectionNowYear,
+            type: selectionNowType,
             campus: school,
           },
         }),
@@ -89,35 +69,21 @@ const editDeleteButtonClicked = (event) => {
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}?sessionId=${sessionId}"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}?sessionId=${sessionId}"> ${ userId } </div>
     `)
 
   if(selectionNowYear == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
     `)
 
   if(selectionNowType == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
-    `)
-
-  if(selectionNowSchool == '')
-    return
-  breadCrumb.insertAdjacentHTML('beforeend', `
-        <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
-    `)
-
-  if(selectionNowProject == '')
-    return
-  breadCrumb.insertAdjacentHTML('beforeend', `
-        <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}/${sele}?sessionId=${sessionId}"> ${ selectionNowProject } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
     `)
 }
 
@@ -131,10 +97,8 @@ refreshBreadCrumb()
 
 // add event listener
 
-console.log(document.getElementById('page-management').querySelector('.edit'))
 // add event listener to the edit and delete button
 Array.from(document.getElementById('page-management').querySelectorAll('.edit')).forEach((button) =>{
-  console.log(button)
   button.addEventListener('click', editDeleteButtonClicked)
 })
 
@@ -162,9 +126,8 @@ addForm.addEventListener('submit', (event) => {
       'sessionId': sessionId,
       'info': {
         'year': year.value,
-        'campus': school.value,
-        'name': project.value,
         'type': type.value,
+        'campus': school.value,
       },
     }),
     headers: {
@@ -173,7 +136,7 @@ addForm.addEventListener('submit', (event) => {
   })
     .then(res => res.text())
     .then(data => {
-      window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}`)
+      window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}`)
     })
 
   $('.ui.modal').modal('hide')
@@ -181,7 +144,7 @@ addForm.addEventListener('submit', (event) => {
 
 // add event listener to the logout button
 header.querySelector('.logout').addEventListener('click', () =>{
-  fetch('/log/out', {
+  fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,
@@ -193,6 +156,6 @@ header.querySelector('.logout').addEventListener('click', () =>{
     .then(res => res.text())
     .then(data => {
       if(data === 'Log out')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/log`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
     })
 })

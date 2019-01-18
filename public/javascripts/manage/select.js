@@ -1,9 +1,9 @@
 // variables
+let userId = 0
 let userName = 'User'
 let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
-let selectionNowSchool = ''
 
 const addForm = document.getElementById('addForm')
 const breadCrumb = document.getElementById('breadcrumb')
@@ -16,23 +16,10 @@ const getCurrentPath = () => {
   let pathSplit = window.location.pathname
   pathSplit = pathSplit.split('/')
 
-  userName = pathSplit[2]
+  userId = pathSplit[2]
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
-}
-
-// fetch session from cookies
-const fetchSession = () => {
-  let sId = document.cookie.match(/sessionId=[^;]+/)
-  console.log(sId)
-  if(sId !== undefined){
-    if(sId instanceof Array)
-      sId = sId[0].substring(10)
-    else
-      sId = sId.substring(10)
-    return sId
-  }
 }
 
 // add project button clicked
@@ -59,28 +46,28 @@ const buttonSelected = (event) => {
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}"> ${ userId } </div>
     `)
 
   if(selectionNowYear == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}"> ${ selectionNowYear } </div>
     `)
 
   if(selectionNowType == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
     `)
 
   if(selectionNowSchool == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
     `)
 }
 
@@ -135,7 +122,7 @@ addForm.addEventListener('submit', (event) => {
     .then(res => res.text())
     .then(data => {
       if(data === 'OK')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${year.value}/${type.value}/${school.value}`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}/${school.value}`)
     })
 
   $('.ui.modal').modal('hide')
@@ -143,7 +130,7 @@ addForm.addEventListener('submit', (event) => {
 
 // add event listener to the logout button
 header.querySelector('.logout').addEventListener('click', () =>{
-  fetch('/log/out', {
+  fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,
@@ -155,6 +142,6 @@ header.querySelector('.logout').addEventListener('click', () =>{
     .then(res => res.text())
     .then(data => {
       if(data === 'Log out')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/log`)
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
     })
 })

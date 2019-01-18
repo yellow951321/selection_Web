@@ -1,5 +1,13 @@
 module.exports = {
-  domain: 'localhost',
-  port: 3000,
-  secret: 'deepest and darkest secret',
+  'database': {
+    'name': 'selection-web',
+    'host': 'localhost:27017',
+    'user': '',
+    'password': '',
+  },
+  'server':{
+    'domain': 'localhost',
+    'port': 3000,
+    'secret': 'deepest and darkest secret',
+  }
 }

@@ -47,15 +47,15 @@ app.use(express.urlencoded({
     'multipart/form-data',
     'text/html',
     'application/xhtml+xml',
-    'application/xml'
-  ]
+    'application/xml',
+  ],
 }))
 
 app.use(session({
   cookie: {
     path: '/',
     httpOnly: !isDevMode,
-    domain: config.domain,
+    domain: config.server.domain,
     expires: new Date(Date.now() + 1000*60*60*24*7),
     maxAge: 1000*60*60*24*7,
     sameSite: true,
@@ -67,7 +67,7 @@ app.use(session({
   },
   name: 'reddeadredemption',
   proxy: false,
-  secret: config.secret,
+  secret: config.server.secret,
   resave : false,
   rolling: true,
   saveUninitialized : false,
@@ -100,13 +100,14 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
 }))
 
 
-
 app.use('/auth', auth)
 app.use('/man', managerRouter)
 
-app.use((req,res)=>{
+app.use((req, res,next)=>{
   if(!req.session)
-    res.redirect('/auth/login')
+    res.redirect('/login')
+  else
+    next()
 })
 
-app.listen(config.port)
+app.listen(config.server.port)

@@ -10,6 +10,7 @@ const router = express.Router({
 const pug = require('pug')
 const fs = require('fs')
 
+const User = require('./../models/user')
 
 
 router.post('/add', (req, res)=>{
@@ -130,18 +131,26 @@ router.get('/test', (req, res)=>{
 
 })
 
-router.get('/:username', (req, res)=>{
+router.get('/:userId', (req, res)=>{
   //sessionId
   console.log(req.session.id)
   //session cookie
   console.log(req.session)
 
-  if(req.session.username && req.session.password){
-    fetch({
-      username: req.session.username,
-    }, (files)=>{
-      if(files instanceof Array){
-        res.render('manage/select', {contents: files, })
+  if(req.session.userId){
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) console.log(err)
+      if(doc){
+        console.log(doc)
+        fetch({
+          username: doc.username,
+        }, (files)=>{
+          if(files instanceof Array){
+            res.render('manage/select', {contents: files, })
+          }
+        })
       }
     })
   }else{
@@ -154,14 +163,22 @@ router.get('/:username', (req, res)=>{
   }
 })
 
-router.get('/:username/:year', (req, res)=>{
-  if(req.session.username && req.session.password){
-    fetch({
-      username: req.session.username,
-      year : req.params.year,
-    }, (files)=>{
-      if(files instanceof Array){
-        res.render('manage/select', {contents: files, })
+router.get('/:userId/:year', (req, res)=>{
+  if(req.session.userId){
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) console.log(err)
+      if(doc){
+        console.log(doc)
+        fetch({
+          username: doc.username,
+          year: req.params.year
+        }, (files)=>{
+          if(files instanceof Array){
+            res.render('manage/select', {contents: files, })
+          }
+        })
       }
     })
   }else{
@@ -174,16 +191,23 @@ router.get('/:username/:year', (req, res)=>{
   }
 })
 
-router.get('/:username/:year/:type', (req, res)=>{
-  if(req.session.username && req.session.password){
-    fetch({
-      username: req.session.username,
-      year : req.params.year,
-      type : req.params.type,
-    }, (files)=>{
-      console.log(files);
-      if(files instanceof Array){
-        res.render('manage/manage', {info: files, })
+router.get('/:userId/:year/:type', (req, res)=>{
+  if(req.session.userId){
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) console.log(err)
+      if(doc){
+        console.log(doc)
+        fetch({
+          username: doc.username,
+          year: req.params.year,
+          type : req.params.type
+        }, (files)=>{
+          if(files instanceof Array){
+            res.render('manage/manage', {info: files, })
+          }
+        })
       }
     })
   }else{
@@ -197,47 +221,28 @@ router.get('/:username/:year/:type', (req, res)=>{
 })
 
 router.get('/:username/:year/:type/:campus', (req, res)=>{
-  if(req.session.username && req.session.password){
-    fetch({
-      username: req.session.username,
-      year : req.params.year,
-      type : req.params.type,
-      campus : req.params.campus,
-    }, (files)=>{
-      if(files instanceof Array){
-        splitArrayIntoContext(files, (context)=>{
-          //console.log(context);
-          res.render('manage/manage', {info:context, })
-        })
-      }
-    })
-  }else {
-    res.writeHead(403, {'Content-Type':'text/html', })
-    res.write('<h2>403 Forbidden </h2>')
-    res.write('<p>No session Id or your sessionId is expired</p>')
-    res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
-    res.send()
+  if(req.session.userId){
+  //   User.findOne({
+  //     id: req.session.userId
+  //   },(err,doc)=>{
+  //     if(err) console.log(err)
+  //     if(doc){
+  //       console.log(doc)
+  //       fetch({
+  //         username: doc.username,
+  //         year: req.params.year,
+  //         type : req.params.type,
+  //         campus : req.params.campus
+  //       }, (files)=>{
+  //         if(files instanceof Array){
+  //           res.render('manage/select', {contents: files, })
+  //         }
+  //       })
+  //     }
+  // })
+    res.render( 'manage/edit' );
   }
-})
-
-router.get('/:username/:year/:type/:campus/:name', (req, res)=>{
-  if(req.session.username && req.session.password){
-    fetch({
-      username: req.session.username,
-      year : req.params.year,
-      type : req.params.type,
-      campus : req.params.campus,
-      proName : req.params.name,
-    }, (files)=>{
-      if(files instanceof Object){
-        objToNode(files, (context)=>{
-          console.log(context)
-          res.render('manage/edit', {info:context, })
-        })
-      }
-    })
-  }else {
+  else{
     res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
@@ -253,8 +258,7 @@ router.post('/addContent', (req, res)=>{
 })
 
 router.post('/delete', (req, res)=>{
-  const account = sessionTable.findBySId(req.body.sessionId)
-  const username = account ? account.username : 'nober'
+  const username = req.session.username
   const year = req.body.info.year
   const type = req.body.info.type
   const campus = req.body.info.campus

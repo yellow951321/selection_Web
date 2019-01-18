@@ -2,17 +2,37 @@ extends component/layout
 
 //- append buttons in the header
 append buttons
-  button.add-content.ui.blue.floated.button 新增
-  button.save-content.ui.blue.right.floated.button 儲存
   button.logout.ui.blue.right.floated.button 登出
 
 append content
   //- content
   //- page edit
-  include mixins/_edit.pug
+  include mixins/_objects.pug
   #page-edit.ui.container.pusher
-    for x in info
-      +edit(x)
+    form.ui.form.segment.filter
+      .four.fields
+        .field
+          label 構面
+          select.filter.filter__dimension.ui.selection.dropdown
+            each val, index in schema
+              if index != '年度' && index != '學校' && index != '類型'
+                option(value=index)=index
+        .field
+          label 項目
+          select.filter.filter__item.ui.selection.dropdown
+            each val, index in schema[ '教學' ]
+              option(value=index)=index
+        .field
+          label 詳細資料
+          select.filter.filter__detail.ui.selection.dropdown
+            each val, index in schema[ '教學' ][ '強化教學品質' ]
+              option(value=index)=index
+        .field
+          .ui.container.center.aligned(style='padding-top: 1rem')
+            button.ui.button.choice 選擇
+
+  .ui.container.center.aligned
+    button.add-content.ui.blue.button 新增
 
 append script
   script(src='/static/javascripts/manage/edit.js')
