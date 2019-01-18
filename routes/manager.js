@@ -253,7 +253,7 @@ router.get('/:username/:year/:type/:campus', (req, res)=>{
 })
 
 
-router.post('/addContent', (req, res)=>{
+router.post('/content/add', (req, res)=>{
   res.render('manage/newEdit')
 })
 

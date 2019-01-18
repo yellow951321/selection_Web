@@ -139,15 +139,22 @@ const filter = (event) => {
 		method: 'POST',
 		body: JSON.stringify({
 			sessionId: sessionId,
-				info: {
-					year: selectionNowYear,
-					type: selectionNowType,
-					campus: selectionNowSchool,
-					dimension: dimension,
-					item: item,
-					detail: detail
-				}
+			info: {
+				year: selectionNowYear,
+				type: selectionNowType,
+				campus: selectionNowSchool,
+				dimension: dimension,
+				item: item,
+				detail: detail
+			},
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		})
+	})
+	.then(res => res.text())
+	.then(data => {
+		pageEdit.insertAdjacentHTML( 'beforeend', data );
 	})
 }
 
