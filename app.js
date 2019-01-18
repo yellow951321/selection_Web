@@ -5,8 +5,8 @@ const logger = require('morgan')
 
 const config = require('./config')
 const auth = require('./routes/auth')
-const managerRouter = require('./routes/manager')
 const mongoose = require('./db/mongoose')
+const managerRouter = require('./routes/manager')
 const app = express()
 
 const isDevMode = process.env.MODE == 'DEVELOPMENT'

@@ -205,7 +205,7 @@ router.get('/:userId/:year/:type', (req, res)=>{
           type : req.params.type
         }, (files)=>{
           if(files instanceof Array){
-            res.render('manage/manager', {info: files, })
+            res.render('manage/manage', {info: files, })
           }
         })
       }
@@ -235,7 +235,7 @@ router.get('/:userId/:year/:type/:campus', (req, res)=>{
           campus : req.params.campus
         }, (files)=>{
           if(files instanceof Array){
-            res.render('manage/manager', {info: files})
+            res.render('manage/edit')
           }
         })
       }

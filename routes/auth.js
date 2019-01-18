@@ -60,7 +60,7 @@ router.post('/signup', (req, res)=>{
         console.log(id);
 
         var user = new User({
-          username: req.body.id,
+          username: req.body.username,
           password: req.body.password,
           id: id
         })

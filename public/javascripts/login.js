@@ -29,6 +29,7 @@ window.addEventListener('load', ()=>{
     document.getElementsByClassName('password2')[0].value= ''
   }
   login.addEventListener('submit', (event) => {
+    console.log( 'Im')
     event.preventDefault()
 
     const account = login.querySelector('.account')
