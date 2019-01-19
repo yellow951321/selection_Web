@@ -169,7 +169,28 @@ router.post('/content/save', (req, res)=>{
 })
 
 router.post('/content/add', (req, res)=>{
-  res.render('manage/newEdit')
+  var path,pathWithoutCampus
+  if(req.session.userId){
+    findUsernameAsync(User,req.session.userId)
+    .then((doc)=>{
+      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+      path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+      return checkFileAsync(path,pathWithoutCampus)
+    })
+    .then(()=>{
+      return new Promise((res,rej)=>{
+        fs.readFile(path,(err,data)=>{
+          if(err) rej(err)
+          else
+            res(JSON.parse(data))
+        })
+      })
+    })
+    .then((data)=>{
+      let length =  data[req.body.info.dimension][req.body.info.item][req.body.info.detail].length
+      res.render('manage/newEdit',{index:length})
+    })
+  }
 })
 
 router.post('/content/filter',(req,res)=>{
@@ -483,13 +504,14 @@ function objToNode(range,project,cb){
   // console.log(project);
   var context = []
   if(project[range.dimension][range.item][range.detail] instanceof Array && project[range.dimension][range.item][range.detail].length > 0){
-    for(content of project[range.dimension][range.item][range.detail]){
+    for(const [index,content] of project[range.dimension][range.item][range.detail].entries()){
       let t = {};
       t.content = content.paragraph
       t.title = content.title
       t.page = {}
       t.page.start = content.page[0]
       t.page.end = content.page[1]
+      t.index = index
 
       context.push(t)
     }
