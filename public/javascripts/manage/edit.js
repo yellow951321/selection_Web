@@ -52,6 +52,9 @@ const addContentClicked = () =>{
         year: selectionNowYear,
         type: selectionNowType,
         campus: selectionNowSchool,
+				dimension: selecteddimension,
+				item: selecteditem,
+				detail: selecteddetail
       },
     }),
     headers: {
