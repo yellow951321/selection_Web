@@ -49,13 +49,6 @@ function findUsernameAsync(col,id){
     })
   })
 }
-
-// frontend get the name of user
-router.post('/name', (req,res) => {
-  // 幫我回傳user name 回來 我會傳給你 ID
-  res.status(200).send( 'nober' );
-})
-
 router.post('/add', (req, res)=>{
   var pathWithoutCampus,path
   console.log(req.body)
@@ -129,7 +122,8 @@ router.post('/content/save', (req, res)=>{
               nodeToObj(pathWithCampus,
                 {dimension: dimension,
                   item : item,
-                  detail: detail
+                  detail: detail,
+                  index: req.body.index
                 },{
                   page: req.body.page,
                   title: req.body.title,
@@ -187,8 +181,13 @@ router.post('/content/add', (req, res)=>{
       })
     })
     .then((data)=>{
-      let length =  data[req.body.info.dimension][req.body.info.item][req.body.info.detail].length
+      let t = new ContentSchema({start:1,end:1},'','')
+      data[req.body.info.dimension][req.body.info.item][req.body.info.detail].push(t)
+      let length =  data[req.body.info.dimension][req.body.info.item][req.body.info.detail].length - 1
       res.render('manage/newEdit',{index:length})
+      fs.writeFile(path,JSON.stringify(data),(err)=>{
+        if(err) console.log(err)
+      })
     })
   }
 })
@@ -298,8 +297,10 @@ router.post('/name',(req,res)=>{
         console.log(err)
         res.status(400).send()
       }
-      if(doc)
+      if(doc){
+        console.log(doc.username)
         res.status(200).send(doc.username)
+      }
     })
   }
 })
@@ -524,7 +525,10 @@ function nodeToObj(path,info,body,cb){
       // console.log(body);
       if(body instanceof Object){
         let t = new ContentSchema(body.page,body.data,body.title);
-        data[info.dimension][info.item][info.detail].push(t)
+        var arr = data[info.dimension][info.item][info.detail]
+        if(arr instanceof Array && arr.length != info.index){
+          arr[info.index] = t
+        }
       }
       cb(data)
     }

@@ -99,7 +99,6 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-
 app.use('/auth', auth)
 app.use('/man', managerRouter)
 

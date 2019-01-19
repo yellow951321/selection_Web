@@ -18,30 +18,33 @@ router.get('/login', (req, res)=>{
 
 router.post('/login', (req, res)=>{
   console.log(req.body)
-  User.findOne({
-    username: req.body.username,
-    password: req.body.password,
-  }, (err, doc)=>{
-    if(err){
-      console.log(err)
-      return res.status(400).send('Error occurs in login.js at 24')
-    }
-    if(doc){
-      //res.cookie('sessionId', sessionId)
-      req.session.userId = doc.id
-      //console.log(req.session);
-      res.status(200).send(doc.id)
-    }else {
-      console.log(doc)
-      res.status(400).send(`No matched account named ${req.body.id}`)
-    }
+  new Promise((resolve, reject) => {
+    User.findOne({
+      username: req.body.username,
+      password: req.body.password,
+    }, (err, doc)=>{
+      if(err){
+        reject(new Error('Error occurs in login.js at 24'))
+      }
+      if(doc){
+        resolve(doc)
+      }else {
+        reject(new Error(`No matched account named ${req.body.id}`))
+      }
+    })
+  })
+  .then((doc)=>{
+    req.session.userId = doc.id
+    res.status(200).send(doc.id)
+  })
+  .catch(err=>{
+    return res.status(400).send(err.message)
   })
 })
 
 router.post('/logout', (req, res)=>{
-  delete req.session.userId
+  req.session = null
   res.status(200).send('Log out')
-  //console.log(`${req.body.username} log out`)
 })
 
 
