@@ -1,5 +1,5 @@
 include _objects.pug
-mixin newEdit()
+mixin newEdit(index)
 	form.ui.form.segment
 		.four.fields
 			.three.wide.field
@@ -22,6 +22,7 @@ mixin newEdit()
 		.field
 			label 內容
 			textarea.content(name="", rows="5")
+		input.node-index(type='hidden' value=index)
 
 
 mixin edit(info)
@@ -35,7 +36,7 @@ mixin edit(info)
 					.eight.wide.field
 						label 結束頁面
 						input.page__end(type='number' value=info[ 'page'][ 'end' ])
-			.nines.wide.field
+			.nine.wide.field
 				label 標題
 				input.title(value=info[ 'title' ])
 			.one.wide.field
@@ -47,3 +48,4 @@ mixin edit(info)
 		.field
 			label 內容
 			textarea.content(name="", rows="5")=info[ 'content' ]
+		input.node-index(type='hidden' value=info[ 'index' ])

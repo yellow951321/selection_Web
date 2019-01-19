@@ -158,7 +158,11 @@ const filter = (event) => {
 	.then(data => {
 		selecteddimension = dimension;
 		selecteditem = item;
-		selecteddetail = detail;
+    selecteddetail = detail;
+    // remove children of pageEdit except for first child
+    while( pageEdit.firstChild !== pageEdit.lastChild){
+      pageEdit.removeChild(pageEdit.lastChild)
+    }
 		pageEdit.insertAdjacentHTML( 'beforeend', data );
 		document.getElementById('footer').style.display = 'block';
 		pageEdit.querySelectorAll('.save').forEach( (button)=> {
@@ -179,6 +183,7 @@ const saveContent = (event) => {
 	const endPage = node.querySelector( '.page__end' ).value;
 	const title = node.querySelector( '.title' ).value;
 	const content = node.querySelector( '.content' ).value;
+  const index = node.querySelector( '.node-index').value;
 
 	fetch('/man/content/save', {
     method: 'POST',
@@ -195,7 +200,8 @@ const saveContent = (event) => {
 			page: {
 				start: startPage,
 				end: endPage
-			},
+      },
+      index: index,
 			title: title,
       data: content,
     }),
@@ -215,12 +221,9 @@ const deleteContent = (event) =>{
 	const node = event.target.parentNode.parentNode.parentNode.parentNode;
 	const startPage = node.querySelector( '.page__start' ).value;
 	const endPage = node.querySelector( '.page__end' ).value;
-	const title = node.querySelector( '.title' ).value;
-	const content = node.querySelector( '.content' ).value;
-	// console.log(startPage);
-	// console.log(endPage);
-	// console.log(title);
-	// console.log(content);
+  const title = node.querySelector( '.title' ).value;
+  const index = node.querySelector( '.node-index').value;
+
 	fetch('/man/content/delete', {
     method: 'POST',
     body: JSON.stringify({
@@ -233,7 +236,7 @@ const deleteContent = (event) =>{
 				item: selecteditem,
 				detail: selecteddetail
       },
-			title: title
+      index: index
     }),
     headers: {
       'Content-Type': 'application/json',
