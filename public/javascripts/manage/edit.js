@@ -30,6 +30,22 @@ const fetchSchema = () => {
       schema = data
     })
 }
+
+const fetchUserName = () => {
+  fetch('/man/name', {
+    method: 'POST',
+    body: JSON.stringify({
+      'sessionId': sessionId,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => res.text())
+  .then(data => {
+    userName = data
+  })
+}
 // get current path through url
 const getCurrentPath = () => {
   let pathSplit = window.location.pathname
@@ -253,8 +269,9 @@ const deleteContent = (event) =>{
 }
 
 // init
-fetchSchema()
-getCurrentPath()
+fetchSchema();
+fetchUserName();
+getCurrentPath();
 
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
