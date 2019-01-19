@@ -247,6 +247,7 @@ const deleteContent = (event) =>{
   })
     .then(res => res.text())
     .then(data => {
+      node.parentNode.removeChild(node);
       alert(data)
     })
 }

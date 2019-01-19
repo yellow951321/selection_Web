@@ -241,60 +241,42 @@ router.post('/content/filter',(req,res)=>{
 })
 
 router.post('/content/delete',(req,res)=>{
-  if(req.sesssion.id){
-    User.findOne({
-      id: req.session.id
-    },(err,doc)=>{
-      return new Promise((res,rej)=>{
-        if(err) rej(err)
-        if(doc){
-          const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-          const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-          res(pathWithoutCampus,path)
-        }
-      })
-    })
-    .then((pathWithoutCampus,path)=>{
-        return checkFileAsync(path,pathWithoutCampus)
+  var path,pathWithoutCampus
+  if(req.session.userId){
+    findUsernameAsync(User,req.session.userId)
+    .then((doc)=>{
+      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+      path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+      return checkFileAsync(path,pathWithoutCampus)
     })
     .then(()=>{
       return new Promise((res,rej)=>{
         fs.readFile(path,(err,data)=>{
           if(err) rej(err)
-          if(data){
+          if(data)
             res(JSON.parse(data))
-          }
         })
       })
     })
     .then((data)=>{
-      return new Prommise((res,rej)=>{
-        let deleteObj = data[req.body.info.dimension][req.body.info.item][req.body.info.detail]
-        if(deleteObj instanceof Array){
-          deleteObj = deleteObj.filter((element)=>{
-            return  element.title != req.body.data.title && element.paragraph != req.body.data.content
-          })
-          res(data)
+      let deleteObj = data[req.body.info.dimension][req.body.info.item][req.body.info.detail]
+      if(deleteObj instanceof Array){
+        data[req.body.info.dimension][req.body.info.item][req.body.info.detail] = deleteObj.filter((element,index)=>{
+          return index != req.body.index
+        })
+      }
+      //console.log(deleteObj)
+      fs.writeFile(path,JSON.stringify(data),(err)=>{
+        if(err)
+          throw err
+        else{
+          res.status(200).send('OK')
+          console.log('Deletion operation has been finished')
         }
       })
     })
-    .then((modData)=>{
-      return new Promise((res,rej)=>{
-        fs.writeFile(path,JSON.stringify(modData),(err)=>{
-          if(err)
-            rej(err)
-          else
-            res()
-        })
-      })
-    })
-    .then(()=>{
-      res.status(200).send('OK')
-      console.log('Deletetion operation has been finished')
-    })
     .catch((err)=>{
-      if(err)
-        console.log(err)
+      if(err) console.log(err)
     })
   }
 })
