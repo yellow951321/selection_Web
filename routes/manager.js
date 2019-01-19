@@ -13,77 +13,84 @@ const fs = require('fs')
 const User = require('./../models/user')
 
 function checkFileAsync(pathWithCampus,path){
+  console.log(path)
+  console.log(pathWithCampus)
   return new Promise((res,rej)=>{
     fs.stat(pathWithCampus,(err,state)=>{
       if(err){
         fs.mkdir(path,{recursive: true},(err)=>{
-          if(err)
+          if(err){
+            console.log('No file making file')
             rej(err)
-          else
+          }
+          else{
+            console.log('No file making file')
             res(true)
+          }
         })
       }
-      else
+      else{
+        console.log('Having file resolve file')
         res(state)
+      }
+    })
+  })
+}
+
+function findUsernameAsync(col,id){
+  return new Promise((res,rej)=>{
+    col.findOne({
+      id: id
+    },(err,doc)=>{
+      if(err) rej(err)
+      if(doc){
+        res(doc)
+      }
     })
   })
 }
 
 
 router.post('/add', (req, res)=>{
-  User.findOne({
-    id : req.body.id
-  },(err,doc)=>{
-    return new Promise((res,rej)=>{
+  var pathWithoutCampus,path
+  console.log(req.body)
+  if(req.session.userId){
+    findUsernameAsync(User,req.session.userId)
+    .then((doc)=>{
+      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,'普通大學')
+      path = pathGen(doc.username,req.body.info.year,'普通大學',req.body.info.campus)
+    })
+    .then(()=>{
+      return checkFileAsync(path,pathWithoutCampus)
+    })
+    .then(()=>{
+      fs.copyFile('data/projectSchema.json',path,(err)=>{
+        if(err) throw err
+      })
+    })
+    .then(()=>{
+      fs.readFile(path,(err,data)=>{
+        if(err) throw err
+        if(data){
+          data = JSON.parse(data)
+          data['年度'] = req.body.info.year
+          return data
+        }
+      })
+    })
+    .then((modData)=>{
+      fs.writeFile(path,JSON.stringify(modData),(err)=>{
+        if(err) throw err
+        else
+          res.render('')
+          console.log('Add operation is finished')
+      })
+    })
+    .catch((err)=>{
       if(err)
-        rej(err)
-      else{
-        const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-        const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-        res(pathWithoutCampus,path)
-      }
+        console.log(err)
     })
-  })
-  .then((pathWithoutCampus,path)=>{
-    return checkFileAsync(path,pathWithoutCampus)
-  })
-  .then(()=>{
-    return new Promise((res,rej)=>{
-      fs.copyFile('data/projectSchema',path,(err)=>{
-        if(err)
-          rej(err)
-        else{
-          res()
-        }
-      })
-    })
-  })
-  .then(()=>{
-    return new Promise((res,rej)=>{
-     fs.readFile(path,(err,data)=>{
-       if(err) rej(err)
-       if(data){
-         data = JSON.parse(data)
-         data['年度'] = req.body.info.year
-         res(data)
-       }
-     })
-    })
-  })
-  .then((data)=>{
-    return new Promise((res,rej)=>{
-      fs.writeFile(path,JSON.stringify(data),(err)=>{
-        if(err) rej(err)
-        else{
-          res.status(200).send('OK')
-          console.log('Add project has been completed')
-        }
-      })
-    })
-  })
-  .catch((err)=>{
-    console.log(err)
-  })
+  }
   //res.render('manage/_render_manage',{info:[req.body.info]});
 })
 
@@ -381,32 +388,22 @@ router.get('/:userId/:year/:type/:campus', (req, res)=>{
 
 router.post('/delete', (req, res)=>{
   if(req.session.id){
-    User.findOne({
-      id: req.session.id
-    },(err,doc)=>{
-      return new Promise((res,rej)=>{
-        if(err) rej(err)
-        if(doc){
-          const oldPath = pathGen(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
-          const newPath = pathGenDeleteName(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
-          res(oldPath,newPath)
+    findUsernameAsync(User,req.session.id)
+    .then((doc)=>{
+      if(doc){
+        const oldPath = pathGen(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+        const newPath = pathGenDeleteName(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+        return {oldPath: oldPath,newPath: newPath}
+      }
+    })
+    .then((obj)=>{
+      fs.rename(obj.oldPath,obj.newPath,(err)=>{
+        if(err) throw err
+        else {
+          res.status(200).send('OK')
         }
       })
-    })
-    .then((oldPath,newPath)=>{
-      return new Promise((res,rej)=>{
-        fs.rename(oldPath,newPath,(err)=>{
-          if(err)
-            rej(err)
-          else
-            res()
-        })
-      })
-    })
-    .then(()=>{
-      res.status(200).send('OK')
-    })
-    .catch((err)=>{
+    }).catch((err)=>{
       if(err)
         console.log(err)
     })

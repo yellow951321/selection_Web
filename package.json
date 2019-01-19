@@ -13,7 +13,9 @@
     "lf": "npm run lint:frontend",
     "l": "npm run lb && npm run lf",
     "preset": "cp db/config.js.default db/config.js",
-    "p": "npm run preset"
+    "p": "npm run preset",
+    "dNode":"cross-env MODE=DEVELOPMENT node app.js",
+    "dn": "npm run dNode"
   },
   "dependencies": {
     "connect-mongo": "^2.0.3",

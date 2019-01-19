@@ -104,7 +104,6 @@ addForm.addEventListener('submit', (event) => {
   const year = addForm.querySelector('.addForm__year')
   const school = addForm.querySelector('.addForm__school')
   const type = addForm.querySelector('.addForm__type')
-
   fetch(reqURL, {
     method: 'POST',
     body: JSON.stringify({
