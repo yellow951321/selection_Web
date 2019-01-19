@@ -43,6 +43,7 @@ const getCurrentPath = () => {
 
 // handle add content button clicked
 const addContentClicked = () =>{
+	event.preventDefault();
   fetch('/man/content/add', {
     method: 'POST',
     body: JSON.stringify({
@@ -130,35 +131,17 @@ const itemDropdownOnChanged = (event) => {
 
 // handle choice clicked
 const filter = (event) => {
+	event.preventDefault();
 	const pageEdit = document.getElementById( 'page-edit' );
-	const dimension = pageEdit.querySelector( '.filter.filter__dimension' );
-	const item = pageEdit.querySelector( '.filter.filter__item' );
-	const detail = pageEdit.querySelector( '.filter.filter__detail' );
+	const dimension = pageEdit.querySelector( '.filter.filter__dimension' ).firstChild.value;
+	const item = pageEdit.querySelector( '.filter.filter__item' ).firstChild.value;
+	const detail = pageEdit.querySelector( '.filter.filter__detail' ).firstChild.value;
 
 	fetch( '/man/content/filter', {
 		method: 'POST',
 		body: JSON.stringify({
 			sessionId: sessionId,
-				info: {
-					year: selectionNowYear,
-					type: selectionNowType,
-					campus: selectionNowSchool,
-					dimension: dimension,
-					item: item,
-					detail: detail
-				}
-		})
-	})
-}
-
-// handle save button clicked
-const saveContent = (event) => {
-  event.preventDefault()
-  fetch('/man/content/save', {
-    method: 'POST',
-    body: JSON.stringify({
-      sessionId: sessionId,
-      info: {
+			info: {
 				year: selectionNowYear,
 				type: selectionNowType,
 				campus: selectionNowSchool,
@@ -166,8 +149,60 @@ const saveContent = (event) => {
 				item: item,
 				detail: detail
 			},
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+	})
+	.then(res => res.text())
+	.then(data => {
+		selecteddimension = dimension;
+		selecteditem = item;
+		selecteddetail = detail;
+		pageEdit.insertAdjacentHTML( 'beforeend', data );
+		document.getElementById('footer').style.display = 'block';
+		pageEdit.querySelectorAll('.save').forEach( (button)=> {
+			button.addEventListener( 'click', saveContent);
+		})
+		pageEdit.querySelectorAll('.delete').forEach( (button)=> {
+			button.addEventListener( 'click', deleteContent);
+		})
+	})
+}
+
+// handle save button clicked
+const saveContent = (event) => {
+<<<<<<< HEAD
+  event.preventDefault()
+  fetch('/man/content/save', {
+=======
+	event.preventDefault();
+
+	const node = event.target.parentNode.parentNode.parentNode.parentNode;
+	const startPage = node.querySelector( '.page__start' ).value;
+	const endPage = node.querySelector( '.page__end' ).value;
+	const title = node.querySelector( '.title' ).value;
+	const content = node.querySelector( '.content' ).value;
+
+	fetch('/man/content/save', {
+>>>>>>> 1d3ab8741c6518c0cdbdf158aa905da97fb3f6d2
+    method: 'POST',
+    body: JSON.stringify({
+      sessionId: sessionId,
+      info: {
+				year: selectionNowYear,
+				type: selectionNowType,
+				campus: selectionNowSchool,
+				dimension: selecteddimension,
+				item: selecteditem,
+				detail: selecteddetail
+			},
+			page: {
+				start: startPage,
+				end: endPage
+			},
 			title: title,
-      data: contents,
+      data: content,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -187,30 +222,32 @@ const deleteContent = (event) =>{
 	const endPage = node.querySelector( '.page__end' ).value;
 	const title = node.querySelector( '.title' ).value;
 	const content = node.querySelector( '.content' ).value;
-	console.log(startPage);
-	console.log(endPage);
-	console.log(title);
-	console.log(content);
-	// fetch('/man/content/delete', {
-  //   method: 'POST',
-  //   body: JSON.stringify({
-  //     sessionId: sessionId,
-  //     info: {
-  //       year: selectionNowYear,
-  //       type: selectionNowType,
-	// 			campus: selectionNowSchool,
-	// 			topic: ,
-  //     },
-  //     data: contents,
-  //   }),
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // })
-  //   .then(res => res.text())
-  //   .then(data => {
-  //     alert(data)
-  //   })
+	// console.log(startPage);
+	// console.log(endPage);
+	// console.log(title);
+	// console.log(content);
+	fetch('/man/content/delete', {
+    method: 'POST',
+    body: JSON.stringify({
+      sessionId: sessionId,
+      info: {
+        year: selectionNowYear,
+        type: selectionNowType,
+				campus: selectionNowSchool,
+				dimension: selecteddimension,
+				item: selecteditem,
+				detail: selecteddetail
+      },
+			title: title
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.text())
+    .then(data => {
+      alert(data)
+    })
 }
 
 // init
@@ -233,6 +270,9 @@ Array.from(document.getElementById('page-edit').querySelectorAll('form.ui.form.s
 
 // add event listener to the add content button
 document.querySelector('.add-content').addEventListener('click', addContentClicked)
+
+// add event listener to the choice content button
+document.getElementById('page-edit').querySelector('.filter').addEventListener('submit', filter);
 
 // add event listener to the logout button
 header.querySelector('.logout').addEventListener('click', () =>{

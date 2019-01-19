@@ -50,8 +50,14 @@ function findUsernameAsync(col,id){
   })
 }
 
+// frontend get the name of user
+router.post('/name', (req,res) => {
+  // 幫我回傳user name 回來 我會傳給你 ID
+  res.status(200).send( 'nober' );
+})
 
 router.post('/add', (req, res)=>{
+<<<<<<< HEAD
   var pathWithoutCampus,path
   console.log(req.body)
   if(req.session.userId){
@@ -97,6 +103,49 @@ router.post('/add', (req, res)=>{
     })
   }
   //res.render('manage/_render_manage',{info:[req.body.info]});
+=======
+  // var pathWithoutCampus,path
+  // console.log(req.body)
+  // if(req.session.userId){
+  //   findUsernameAsync(User,req.session.userId)
+  //   .then((doc)=>{
+  //     pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,'普通大學')
+  //     path = pathGen(doc.username,req.body.info.year,'普通大學',req.body.info.campus)
+  //   })
+  //   .then(()=>{
+  //     return checkFileAsync(path,pathWithoutCampus)
+  //   })
+  //   .then(()=>{
+  //     fs.copyFile('data/projectSchema.json',path,(err)=>{
+  //       if(err) throw err
+  //     })
+  //   })
+  //   .then(()=>{
+  //     fs.readFile(path,(err,data)=>{
+  //       if(err) throw err
+  //       if(data){
+  //         data = JSON.parse(data)
+  //         data['年度'] = req.body.info.year
+  //         return data
+  //       }
+  //     })
+  //   })
+  //   .then((modData)=>{
+  //     fs.writeFile(path,JSON.stringify(modData),(err)=>{
+  //       if(err) throw err
+  //       else
+  //         res.render('')
+  //         console.log('Add operation is finished')
+  //     })
+  //   })
+  //   .catch((err)=>{
+  //     if(err)
+  //       console.log(err)
+  //   })
+  // }
+  // res 給我正確或者是錯誤就好了 我會自己重新get到目標資料夾
+  res.send( 'OK' );
+>>>>>>> 1d3ab8741c6518c0cdbdf158aa905da97fb3f6d2
 })
 
 
@@ -165,46 +214,58 @@ router.post('/content/add', (req, res)=>{
 })
 
 router.post('/content/filter',(req,res)=>{
-  if(req.session.id){
-    User.findOne({
-      id: req.session.id
-    },(err,doc)=>{
-      return new Promise((res,rej)=>{
-        if(err)
-          rej(err)
-        else{
-          const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-          const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-          res(pathWithoutCampus,path)
+  // if(req.session.id){
+  //   User.findOne({
+  //     id: req.session.id
+  //   },(err,doc)=>{
+  //     return new Promise((res,rej)=>{
+  //       if(err)
+  //         rej(err)
+  //       else{
+  //         const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+  //         const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+  //         res(pathWithoutCampus,path)
+  //       }
+  //     })
+  //   })
+  //   .then((pathWithoutCampus,path)=>{
+  //     return checkFileAsync(path,pathWithoutCampus)
+  //   })
+  //   .then(()=>{
+  //     return new Promise((res,rej)=>{
+  //       fs.readFile(path,(err,data)=>{
+  //         if(err) rej(err)
+  //         else
+  //           res(JSON.parse(data))
+  //       })
+  //     })
+  //   })
+  //   .then((data)=>{
+  //     objToNode({
+  //       dimension : req.body.info.dimension,
+  //       item : req.body.info.item,
+  //       detail : req.body.info.detail
+  //     },data,(context)=>{
+  //       res.render(context);
+  //     })
+  //   })
+  //   .catch((err)=>{
+  //     if(err)
+  //       console.log(err)
+  //   })
+  // }
+  res.render( 'manage/filter', {
+    contents: [
+        {
+          page: {
+            start: '2',
+            end: '3'
+          },
+          title: '我是測試',
+          content: '我是測試內容'
         }
-      })
-    })
-    .then((pathWithoutCampus,path)=>{
-      return checkFileAsync(path,pathWithoutCampus)
-    })
-    .then(()=>{
-      return new Promise((res,rej)=>{
-        fs.readFile(path,(err,data)=>{
-          if(err) rej(err)
-          else
-            res(JSON.parse(data))
-        })
-      })
-    })
-    .then((data)=>{
-      objToNode({
-        dimension : req.body.info.dimension,
-        item : req.body.info.item,
-        detail : req.body.info.detail
-      },data,(context)=>{
-        res.render(context);
-      })
-    })
-    .catch((err)=>{
-      if(err)
-        console.log(err)
-    })
-  }
+      ]
+  })
 })
 
 router.post('/content/delete',(req,res)=>{
@@ -388,7 +449,6 @@ router.get('/:userId/:year/:type/:campus', (req, res)=>{
     res.send()
   }
 })
-
 
 
 router.post('/delete', (req, res)=>{
