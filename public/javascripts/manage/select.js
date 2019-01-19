@@ -1,7 +1,6 @@
 // variables
 let userId = 0
 let userName = 'User'
-let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
 
@@ -20,6 +19,28 @@ const getCurrentPath = () => {
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
+}
+
+// fetch user name
+const fetchUserName = () => {
+  fetch('/man/name', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => res.text())
+  .then(data => {
+    userName = data
+    // get curent path
+    getCurrentPath()
+
+    // refreshBreadCrumb needs to execute after get current path and fetchSession
+    refreshBreadCrumb()
+  })
 }
 
 // add project button clicked
@@ -46,7 +67,7 @@ const buttonSelected = (event) => {
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}"> ${ userId } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}"> ${ userName } </div>
     `)
 
   if(selectionNowYear == '')
@@ -77,13 +98,8 @@ const refreshBreadCrumb = () =>{
 $('select.dropdown')
   .dropdown()
 
-// get currentpatg;
-getCurrentPath()
-
-//temporarily comment the fetchsession()
-//sessionId = fetchSession()
-// refreshBreadCrumb needs to execute after get current path and fetchSession
-refreshBreadCrumb()
+// fetch user name, get the current path and refresh the breadcrumb
+fetchUserName()
 
 // add event listener
 
@@ -133,7 +149,7 @@ header.querySelector('.logout').addEventListener('click', () =>{
   fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId
     }),
     headers: {
       'Content-Type': 'application/json',

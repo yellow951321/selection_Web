@@ -1,6 +1,6 @@
 // variables
 let userName = 'User'
-let sessionId = ''
+let userId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
 let selectionNowSchool = ''
@@ -19,7 +19,7 @@ const fetchSchema = () => {
   fetch('/man/schema', {
     method: 'POST',
     body: JSON.stringify({
-      'sessionId': sessionId,
+      'id': userId
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -31,11 +31,12 @@ const fetchSchema = () => {
     })
 }
 
+// fetch user name
 const fetchUserName = () => {
   fetch('/man/name', {
     method: 'POST',
     body: JSON.stringify({
-      'sessionId': sessionId,
+      'id': userId
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -44,14 +45,20 @@ const fetchUserName = () => {
   .then(res => res.text())
   .then(data => {
     userName = data
+    // get curent path
+    getCurrentPath()
+
+    // refreshBreadCrumb needs to execute after get current path
+    refreshBreadCrumb()
   })
 }
+
 // get current path through url
 const getCurrentPath = () => {
   let pathSplit = window.location.pathname
   pathSplit = pathSplit.split('/')
 
-  userName = pathSplit[2]
+  userId = pathSplit[2]
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
   selectionNowSchool = pathSplit[5] ? decodeURI(pathSplit[5]) : ''
@@ -63,7 +70,7 @@ const addContentClicked = () =>{
   fetch('/man/content/add', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId,
       info: {
         year: selectionNowYear,
         type: selectionNowType,
@@ -89,28 +96,28 @@ const addContentClicked = () =>{
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}?sessionId=${sessionId}"> ${ userName } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}"> ${ userName } </div>
     `)
 
   if(selectionNowYear == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}"> ${ selectionNowYear } </div>
     `)
 
   if(selectionNowType == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
     `)
 
   if(selectionNowSchool == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}?sessionId=${sessionId}"> ${ selectionNowSchool } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
     `)
 }
 
@@ -159,7 +166,7 @@ const filter = (event) => {
 	fetch( '/man/content/filter', {
 		method: 'POST',
 		body: JSON.stringify({
-			sessionId: sessionId,
+      'id': userId,
 			info: {
 				year: selectionNowYear,
 				type: selectionNowType,
@@ -207,7 +214,7 @@ const saveContent = (event) => {
 	fetch('/man/content/save', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId,
       info: {
 				year: selectionNowYear,
 				type: selectionNowType,
@@ -246,7 +253,7 @@ const deleteContent = (event) =>{
 	fetch('/man/content/delete', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId,
       info: {
         year: selectionNowYear,
         type: selectionNowType,
@@ -270,11 +277,10 @@ const deleteContent = (event) =>{
 
 // init
 fetchSchema();
-fetchUserName();
-getCurrentPath();
 
-// refreshBreadCrumb needs to execute after get current path and fetchSession
-refreshBreadCrumb()
+// fetch user name, get the current path and refresh the breadcrumb
+fetchUserName()
+
 // refresh dropdown
 $('select.dropdown')
   .dropdown()
@@ -298,7 +304,7 @@ header.querySelector('.logout').addEventListener('click', () =>{
   fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId
     }),
     headers: {
       'Content-Type': 'application/json',

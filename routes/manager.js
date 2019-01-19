@@ -289,7 +289,7 @@ router.post('/schema', (req, res)=>{
   })
 })
 
-router.posr('/name',(req,res)=>{
+router.post('/name',(req,res)=>{
   if(req.session.userId){
     User.findOne({
       id: req.session.userId

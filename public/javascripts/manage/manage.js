@@ -1,7 +1,6 @@
 // variables
 let userId = 0
 let userName = 'User'
-let sessionId = ''
 let selectionNowYear = ''
 let selectionNowType = ''
 
@@ -19,6 +18,28 @@ const getCurrentPath = () => {
   userId = pathSplit[2]
   selectionNowYear = pathSplit[3] ? decodeURI(pathSplit[3]) : ''
   selectionNowType = pathSplit[4] ? decodeURI(pathSplit[4]) : ''
+}
+
+// fetch user name
+const fetchUserName = () => {
+  fetch('/man/name', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => res.text())
+  .then(data => {
+    userName = data
+    // get curent path
+    getCurrentPath()
+
+    // refreshBreadCrumb needs to execute after get current path 
+    refreshBreadCrumb()
+  })
 }
 
 // add project button clicked
@@ -46,7 +67,7 @@ const editDeleteButtonClicked = (event) => {
       fetch('/man/delete', {
         method: 'POST',
         body: JSON.stringify({
-          sessionId: sessionId,
+          'id': userId,
           info: {
             year: selectionNowYear,
             type: selectionNowType,
@@ -70,34 +91,32 @@ const editDeleteButtonClicked = (event) => {
 // refresh the breadcrumb (path on top of the nodes)
 const refreshBreadCrumb = () =>{
   breadCrumb.insertAdjacentHTML('beforeend', `
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}?sessionId=${sessionId}"> ${ userId } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}"> ${ userName } </div>
     `)
 
   if(selectionNowYear == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}?sessionId=${sessionId}"> ${ selectionNowYear } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}"> ${ selectionNowYear } </div>
     `)
 
   if(selectionNowType == '')
     return
   breadCrumb.insertAdjacentHTML('beforeend', `
         <div class="divider"> / </div>
-        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}/${selectionNowType}?sessionId=${sessionId}"> ${ selectionNowType } </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
     `)
 }
 
 // init
 
-getCurrentPath()
+// fetch user name, get the current path and refresh the breadcrumb
+fetchUserName()
 
 //refresh dropdwon in addForm
 $('select.dropdown')
   .dropdown()
-
-// refreshBreadCrumb needs to execute after get current path and fetchSession
-refreshBreadCrumb()
 
 // add event listener
 
@@ -126,7 +145,7 @@ addForm.addEventListener('submit', (event) => {
   fetch(reqURL, {
     method: 'POST',
     body: JSON.stringify({
-      'sessionId': sessionId,
+      'id': userId,
       'info': {
         'year': year.value,
         'type': type.value,
@@ -151,7 +170,7 @@ header.querySelector('.logout').addEventListener('click', () =>{
   fetch('/auth/logout', {
     method: 'POST',
     body: JSON.stringify({
-      sessionId: sessionId,
+      'id': userId,
     }),
     headers: {
       'Content-Type': 'application/json',
