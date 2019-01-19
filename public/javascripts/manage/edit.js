@@ -148,11 +148,11 @@ const filter = (event) => {
 				dimension: dimension,
 				item: item,
 				detail: detail
-			},
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
+			}
+		}),
+    headers: {
+      'Content-Type': 'application/json',
+    }
 	})
 	.then(res => res.text())
 	.then(data => {

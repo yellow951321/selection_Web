@@ -106,7 +106,7 @@ router.post('/add', (req, res)=>{
 
 
 router.post('/content/save', (req, res)=>{
-  console.log(req.body + "request in here");
+  console.log(req.body);
   if(req.session.userId){
     User.findOne({
       id: req.session.userId
@@ -120,9 +120,8 @@ router.post('/content/save', (req, res)=>{
         const dimension = req.body.info.dimension
         const item = req.body.info.item
         const detail = req.body.info.detail
-        const pathWithCampus = PathGen(username,year,type,campus)
-        const path = pathGenWithoutCampus(username,year,type)
-
+        const pathWithCampus = pathGen(doc.username,year,type,campus)
+        const path = pathGenWithoutCampus(doc.username,year,type)
         checkFileAsync(pathWithCampus,path)
         .then((state)=>{
           if(state)
@@ -131,7 +130,11 @@ router.post('/content/save', (req, res)=>{
                 {dimension: dimension,
                   item : item,
                   detail: detail
-                },data,(modData)=>{
+                },{
+                  page: req.body.page,
+                  title: req.body.title,
+                  data: req.body.data
+                },(modData)=>{
                 if(modData)
                   res(modData)
                 else
@@ -170,58 +173,50 @@ router.post('/content/add', (req, res)=>{
 })
 
 router.post('/content/filter',(req,res)=>{
-  // if(req.session.id){
-  //   User.findOne({
-  //     id: req.session.id
-  //   },(err,doc)=>{
-  //     return new Promise((res,rej)=>{
-  //       if(err)
-  //         rej(err)
-  //       else{
-  //         const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-  //         const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-  //         res(pathWithoutCampus,path)
+  var pathWithoutCampus,path
+  console.log(req.body)
+  if(req.session.userId){
+    findUsernameAsync(User,req.session.userId)
+    .then((doc)=>{
+      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+      path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+      return checkFileAsync(path,pathWithoutCampus)
+    })
+    .then(()=>{
+      return new Promise((res,rej)=>{
+        fs.readFile(path,(err,data)=>{
+          if(err) rej(err)
+          else
+            res(JSON.parse(data))
+        })
+      })
+    })
+    .then((data)=>{
+      objToNode({
+        dimension : req.body.info.dimension,
+        item : req.body.info.item,
+        detail : req.body.info.detail
+      },data,(context)=>{
+        res.render('manage/filter',{contents: context});
+      })
+    })
+    .catch((err)=>{
+      if(err)
+        console.log(err)
+    })
+  }
+  // res.render( 'manage/filter', {
+  //   contents: [
+  //       {
+  //         page: {
+  //           start: '2',
+  //           end: '3'
+  //         },
+  //         title: '我是測試',
+  //         content: '我是測試內容'
   //       }
-  //     })
-  //   })
-  //   .then((pathWithoutCampus,path)=>{
-  //     return checkFileAsync(path,pathWithoutCampus)
-  //   })
-  //   .then(()=>{
-  //     return new Promise((res,rej)=>{
-  //       fs.readFile(path,(err,data)=>{
-  //         if(err) rej(err)
-  //         else
-  //           res(JSON.parse(data))
-  //       })
-  //     })
-  //   })
-  //   .then((data)=>{
-  //     objToNode({
-  //       dimension : req.body.info.dimension,
-  //       item : req.body.info.item,
-  //       detail : req.body.info.detail
-  //     },data,(context)=>{
-  //       res.render(context);
-  //     })
-  //   })
-  //   .catch((err)=>{
-  //     if(err)
-  //       console.log(err)
-  //   })
-  // }
-  res.render( 'manage/filter', {
-    contents: [
-        {
-          page: {
-            start: '2',
-            end: '3'
-          },
-          title: '我是測試',
-          content: '我是測試內容'
-        }
-      ]
-  })
+  //     ]
+  // })
 })
 
 router.post('/content/delete',(req,res)=>{
@@ -490,10 +485,8 @@ function objToNode(range,project,cb){
   if(project[range.dimension][range.item][range.detail] instanceof Array && project[range.dimension][range.item][range.detail].length > 0){
     for(content of project[range.dimension][range.item][range.detail]){
       let t = {};
-      t.dimension = dimension
-      t.item = item
-      t.detail = detail
-      t.context = content.paragraph
+      t.content = content.paragraph
+      t.title = content.title
       t.page = {}
       t.page.start = content.page[0]
       t.page.end = content.page[1]
@@ -511,7 +504,7 @@ function nodeToObj(path,info,body,cb){
       data = JSON.parse(data)
       // console.log(body);
       if(body instanceof Object){
-        let t = new ContentSchema(body.page,body.content,body.title);
+        let t = new ContentSchema(body.page,body.data,body.title);
         data[info.dimension][info.item][info.detail].push(t)
       }
       cb(data)
