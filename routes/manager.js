@@ -289,6 +289,21 @@ router.post('/schema', (req, res)=>{
   })
 })
 
+router.posr('/name',(req,res)=>{
+  if(req.session.userId){
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) {
+        console.log(err)
+        res.status(400).send()
+      }
+      if(doc)
+        res.status(200).send(doc.username)
+    })
+  }
+})
+
 router.get('/:userId', (req, res)=>{
   //sessionId
   console.log(req.session.id)
