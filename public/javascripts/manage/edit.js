@@ -172,10 +172,6 @@ const filter = (event) => {
 
 // handle save button clicked
 const saveContent = (event) => {
-<<<<<<< HEAD
-  event.preventDefault()
-  fetch('/man/content/save', {
-=======
 	event.preventDefault();
 
 	const node = event.target.parentNode.parentNode.parentNode.parentNode;
@@ -185,7 +181,6 @@ const saveContent = (event) => {
 	const content = node.querySelector( '.content' ).value;
 
 	fetch('/man/content/save', {
->>>>>>> 1d3ab8741c6518c0cdbdf158aa905da97fb3f6d2
     method: 'POST',
     body: JSON.stringify({
       sessionId: sessionId,

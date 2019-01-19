@@ -57,7 +57,6 @@ router.post('/name', (req,res) => {
 })
 
 router.post('/add', (req, res)=>{
-<<<<<<< HEAD
   var pathWithoutCampus,path
   console.log(req.body)
   if(req.session.userId){
@@ -103,49 +102,6 @@ router.post('/add', (req, res)=>{
     })
   }
   //res.render('manage/_render_manage',{info:[req.body.info]});
-=======
-  // var pathWithoutCampus,path
-  // console.log(req.body)
-  // if(req.session.userId){
-  //   findUsernameAsync(User,req.session.userId)
-  //   .then((doc)=>{
-  //     pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,'普通大學')
-  //     path = pathGen(doc.username,req.body.info.year,'普通大學',req.body.info.campus)
-  //   })
-  //   .then(()=>{
-  //     return checkFileAsync(path,pathWithoutCampus)
-  //   })
-  //   .then(()=>{
-  //     fs.copyFile('data/projectSchema.json',path,(err)=>{
-  //       if(err) throw err
-  //     })
-  //   })
-  //   .then(()=>{
-  //     fs.readFile(path,(err,data)=>{
-  //       if(err) throw err
-  //       if(data){
-  //         data = JSON.parse(data)
-  //         data['年度'] = req.body.info.year
-  //         return data
-  //       }
-  //     })
-  //   })
-  //   .then((modData)=>{
-  //     fs.writeFile(path,JSON.stringify(modData),(err)=>{
-  //       if(err) throw err
-  //       else
-  //         res.render('')
-  //         console.log('Add operation is finished')
-  //     })
-  //   })
-  //   .catch((err)=>{
-  //     if(err)
-  //       console.log(err)
-  //   })
-  // }
-  // res 給我正確或者是錯誤就好了 我會自己重新get到目標資料夾
-  res.send( 'OK' );
->>>>>>> 1d3ab8741c6518c0cdbdf158aa905da97fb3f6d2
 })
 
 
