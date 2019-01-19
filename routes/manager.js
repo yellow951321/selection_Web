@@ -12,113 +12,272 @@ const fs = require('fs')
 
 const User = require('./../models/user')
 
-
-router.post('/add', (req, res)=>{
-  const pathWithoutName = pathGenWithoutName(username, req.body.info.year, req.body.info.type, req.body.info.campus)
-  const path = pathGen(username, req.body.info.year, req.body.info.type, req.body.info.campus, req.body.info.name)
-  fs.stat(path, (err, state)=>{
-    if(err){
-      console.log(err)
-      fs.mkdir(pathWithoutName, {recursive:true, }, (err)=>{
-        if(err) console.log(err)
-        console.log('mkdir operation complete')
-        fs.copyFile('data/projectSchema.json', path, (err)=>{
-          if(err) console.log(err)
-          else
-            console.log('Mdir operation is completed')
-          const info = {
-            username : username,
-            year : req.body.info.year,
-            type : req.body.info.type,
-            campus : req.body.info.campus,
+function checkFileAsync(pathWithCampus,path){
+  console.log(path)
+  console.log(pathWithCampus)
+  return new Promise((res,rej)=>{
+    fs.stat(pathWithCampus,(err,state)=>{
+      if(err){
+        fs.mkdir(path,{recursive: true},(err)=>{
+          if(err){
+            console.log('No file making file')
+            rej(err)
           }
-          fetch(info, (files)=>{
-            if(files instanceof Array && req.body.info.campus){
-              splitArrayIntoContext(files, (context)=>{
-                // console.log(context);
-                res.status(200).send('OK')
-              })
-            }
-          })
-          fs.readFile(path, (err, data)=>{
-            if(err) console.log(err)
-            if(data){
-              data = JSON.parse(data)
-              data['年度'] = req.body.info.year
-              fs.writeFile(path, JSON.stringify(data), (err)=>{
-                if(err) console.log(err)
-                console.log('save operation have been completed')
-              })
-            }
-          })
-        })
-      })
-    }else if(state){
-      fs.copyFile('data/projectSchema.json', path, (err)=>{
-        if(err) console.log(err)
-        else
-          console.log('Mdir operation is completed')
-        const info = {
-          username : username,
-          year : req.body.info.year,
-          type : req.body.info.type,
-          campus : req.body.info.campus,
-        }
-        fetch(info, (files)=>{
-          if(files instanceof Array && req.body.info.campus){
-            splitArrayIntoContext(files, (context)=>{
-              console.log(context)
-              res.status(200).send('OK')
-            })
+          else{
+            console.log('No file making file')
+            res(true)
           }
         })
-      })
-    }
+      }
+      else{
+        console.log('Having file resolve file')
+        res(state)
+      }
+    })
   })
-  //res.render('manage/_render_manage',{info:[req.body.info]});
+}
+
+function findUsernameAsync(col,id){
+  return new Promise((res,rej)=>{
+    col.findOne({
+      id: id
+    },(err,doc)=>{
+      if(err) rej(err)
+      if(doc){
+        res(doc)
+      }
+    })
+  })
+}
+
+// frontend get the name of user
+router.post('/name', (req,res) => {
+  // 幫我回傳user name 回來 我會傳給你 ID
+  res.status(200).send( 'nober' );
 })
 
-router.post('/save', (req, res)=>{
-  const account = sessionTable.findBySId(req.body.sessionId)
+router.post('/add', (req, res)=>{
+  // var pathWithoutCampus,path
+  // console.log(req.body)
+  // if(req.session.userId){
+  //   findUsernameAsync(User,req.session.userId)
+  //   .then((doc)=>{
+  //     pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,'普通大學')
+  //     path = pathGen(doc.username,req.body.info.year,'普通大學',req.body.info.campus)
+  //   })
+  //   .then(()=>{
+  //     return checkFileAsync(path,pathWithoutCampus)
+  //   })
+  //   .then(()=>{
+  //     fs.copyFile('data/projectSchema.json',path,(err)=>{
+  //       if(err) throw err
+  //     })
+  //   })
+  //   .then(()=>{
+  //     fs.readFile(path,(err,data)=>{
+  //       if(err) throw err
+  //       if(data){
+  //         data = JSON.parse(data)
+  //         data['年度'] = req.body.info.year
+  //         return data
+  //       }
+  //     })
+  //   })
+  //   .then((modData)=>{
+  //     fs.writeFile(path,JSON.stringify(modData),(err)=>{
+  //       if(err) throw err
+  //       else
+  //         res.render('')
+  //         console.log('Add operation is finished')
+  //     })
+  //   })
+  //   .catch((err)=>{
+  //     if(err)
+  //       console.log(err)
+  //   })
+  // }
+  // res 給我正確或者是錯誤就好了 我會自己重新get到目標資料夾
+  res.send( 'OK' );
+})
+
+
+router.post('/content/save', (req, res)=>{
   // console.log(req.body);
-  if(account){
-    const username = account.username
-    const year = req.body.info.year
-    const type = req.body.info.type
-    const campus = req.body.info.campus
-    const name = req.body.info.name
-    const data = req.body.data
-    const pathWithName = pathGen(username, year, type, campus, name)
-    const path = pathGenWithoutName(username, year, type, campus)
-    fs.stat(pathWithName, (err, state)=>{
-      if(err){
-        fs.mkdir(path, {recursive: true, }, (err)=>{
-          if(err) return console.log(err)
-          console.log(`make dir and files in ${path}`)
-          nodeToObj('data/projectSchema.json', data, (modData)=>{
-            fs.writeFile(pathWithName, JSON.stringify(modData), (err)=>{
-              if(err) return console.log(err)
-              console.log(`Save ${pathWithName} is completed`)
-              return res.status(200).send('OK')
+  if(req.session.userId){
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) res.status(400)
+      if(doc){
+        const year = req.body.info.year
+        const type = req.body.info.type
+        const campus = req.body.info.campus
+        const data = req.body.data
+        const dimension = req.body.info.dimension
+        const item = req.body.info.item
+        const detail = req.body.info.detail
+        const pathWithCampus = PathGen(username,year,type,campus)
+        const path = pathGenWithoutCampus(username,year,type)
+
+        checkFileAsync(pathWithCampus,path)
+        .then((state)=>{
+          if(state)
+            return new Promise((res,rej)=>{
+              nodeToObj(pathWithCampus,
+                {dimension: dimension,
+                  item : item,
+                  detail: detail
+                },data,(modData)=>{
+                if(modData)
+                  res(modData)
+                else
+                  rej(new Error('the nodeToObj function make mistake'))
+              })
+            })
+        })
+        .then((modData)=>{
+          return new Promise((res,rej)=>{
+            fs.writeFile(pathWithCampus,JSON.stringify(modData),(err)=>{
+              if(err)
+                rej(err)
+              else
+                res()
             })
           })
         })
-      }else if(state){
-        nodeToObj('data/projectSchema.json', data, (modData)=>{
-          // console.log(modData);
-          fs.writeFile(pathWithName, JSON.stringify(modData), (err)=>{
-            if(err) return console.log(err)
-            console.log(`Save ${pathWithName} is completed`)
-            return res.status(200).send('OK')
-          })
+        .then(()=>{
+          console.log(`Save ${pathWithCampus} is completed`)
+          res.status(200).send('OK')
+        })
+        .catch((err)=>{
+          if(err)
+            console.log(err)
         })
       }
     })
+
   }else{
     res.status(400).send('No sessionId')
   }
 })
 
+router.post('/content/add', (req, res)=>{
+  res.render('manage/newEdit')
+})
+
+router.post('/content/filter',(req,res)=>{
+  // if(req.session.id){
+  //   User.findOne({
+  //     id: req.session.id
+  //   },(err,doc)=>{
+  //     return new Promise((res,rej)=>{
+  //       if(err)
+  //         rej(err)
+  //       else{
+  //         const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+  //         const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+  //         res(pathWithoutCampus,path)
+  //       }
+  //     })
+  //   })
+  //   .then((pathWithoutCampus,path)=>{
+  //     return checkFileAsync(path,pathWithoutCampus)
+  //   })
+  //   .then(()=>{
+  //     return new Promise((res,rej)=>{
+  //       fs.readFile(path,(err,data)=>{
+  //         if(err) rej(err)
+  //         else
+  //           res(JSON.parse(data))
+  //       })
+  //     })
+  //   })
+  //   .then((data)=>{
+  //     objToNode({
+  //       dimension : req.body.info.dimension,
+  //       item : req.body.info.item,
+  //       detail : req.body.info.detail
+  //     },data,(context)=>{
+  //       res.render(context);
+  //     })
+  //   })
+  //   .catch((err)=>{
+  //     if(err)
+  //       console.log(err)
+  //   })
+  // }
+  res.render( 'manage/filter', {
+    contents: [
+        {
+          page: {
+            start: '2',
+            end: '3'
+          },
+          title: '我是測試',
+          content: '我是測試內容'
+        }
+      ]
+  })
+})
+
+router.post('/content/delete',(req,res)=>{
+  if(req.sesssion.id){
+    User.findOne({
+      id: req.session.id
+    },(err,doc)=>{
+      return new Promise((res,rej)=>{
+        if(err) rej(err)
+        if(doc){
+          const pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+          const path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+          res(pathWithoutCampus,path)
+        }
+      })
+    })
+    .then((pathWithoutCampus,path)=>{
+        return checkFileAsync(path,pathWithoutCampus)
+    })
+    .then(()=>{
+      return new Promise((res,rej)=>{
+        fs.readFile(path,(err,data)=>{
+          if(err) rej(err)
+          if(data){
+            res(JSON.parse(data))
+          }
+        })
+      })
+    })
+    .then((data)=>{
+      return new Prommise((res,rej)=>{
+        let deleteObj = data[req.body.info.dimension][req.body.info.item][req.body.info.detail]
+        if(deleteObj instanceof Array){
+          deleteObj = deleteObj.filter((element)=>{
+            return  element.title != req.body.data.title && element.paragraph != req.body.data.content
+          })
+          res(data)
+        }
+      })
+    })
+    .then((modData)=>{
+      return new Promise((res,rej)=>{
+        fs.writeFile(path,JSON.stringify(modData),(err)=>{
+          if(err)
+            rej(err)
+          else
+            res()
+        })
+      })
+    })
+    .then(()=>{
+      res.status(200).send('OK')
+      console.log('Deletetion operation has been finished')
+    })
+    .catch((err)=>{
+      if(err)
+        console.log(err)
+    })
+  }
+})
 router.post('/schema', (req, res)=>{
   fs.readFile('data/projectSchema.json', (err, data)=>{
     if(err) return console.log(err)
@@ -126,9 +285,6 @@ router.post('/schema', (req, res)=>{
       res.status(200).send(data)
     }
   })
-})
-router.get('/test', (req, res)=>{
-
 })
 
 router.get('/:userId', (req, res)=>{
@@ -158,7 +314,7 @@ router.get('/:userId', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
@@ -186,7 +342,7 @@ router.get('/:userId/:year', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
@@ -205,7 +361,10 @@ router.get('/:userId/:year/:type', (req, res)=>{
           type : req.params.type
         }, (files)=>{
           if(files instanceof Array){
-            res.render('manage/manage', {info: files, })
+            splitArrayIntoContext(files,(context)=>{
+              console.log(context);
+              res.render('manage/manage',{info:context})
+            })
           }
         })
       }
@@ -215,93 +374,84 @@ router.get('/:userId/:year/:type', (req, res)=>{
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
 
-router.get('/:username/:year/:type/:campus', (req, res)=>{
+router.get('/:userId/:year/:type/:campus', (req, res)=>{
+  console.log(req.session.userId);
   if(req.session.userId){
-  //   User.findOne({
-  //     id: req.session.userId
-  //   },(err,doc)=>{
-  //     if(err) console.log(err)
-  //     if(doc){
-  //       console.log(doc)
-  //       fetch({
-  //         username: doc.username,
-  //         year: req.params.year,
-  //         type : req.params.type,
-  //         campus : req.params.campus
-  //       }, (files)=>{
-  //         if(files instanceof Array){
-  //           res.render('manage/select', {contents: files, })
-  //         }
-  //       })
-  //     }
-  // })
-    res.render( 'manage/edit' );
-  }
-  else{
+    User.findOne({
+      id: req.session.userId
+    },(err,doc)=>{
+      if(err) {
+        console.log(err)
+        res.status(400).send('Error occured')
+      }
+      if(doc)
+        res.render('manage/edit')
+    })
+  }else{
     res.writeHead(403, {'Content-Type':'text/html', })
     res.write('<h2>403 Forbidden </h2>')
     res.write('<p>No session Id or your sessionId is expired</p>')
     res.write('<p>Please redirect to the log page</p>')
-    res.write('<a href="http://localhost:11021/log">Click Here</a>')
+    res.write('<a href="http://localhost:3000/auth/login">Click Here</a>')
     res.send()
   }
 })
 
 
-router.post('/content/add', (req, res)=>{
-  res.render('manage/newEdit')
-})
-
 router.post('/delete', (req, res)=>{
-  const username = req.session.username
-  const year = req.body.info.year
-  const type = req.body.info.type
-  const campus = req.body.info.campus
-  const name = req.body.info.name
-  const oldPath = pathGen(username, year, type, campus, name)
-  const newPath = pathGenDeleteName(username, year, type, campus, name)
-  console.log(oldPath)
-  console.log(newPath)
-  if(account){
-    fs.rename(oldPath, newPath, (err)=>{
-      if(err) console.log(err)
-      console.log(`rename completed with ${newPath}`)
-      res.status(200).send('OK')
+  if(req.session.id){
+    findUsernameAsync(User,req.session.id)
+    .then((doc)=>{
+      if(doc){
+        const oldPath = pathGen(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+        const newPath = pathGenDeleteName(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+        return {oldPath: oldPath,newPath: newPath}
+      }
     })
-  }else{
-    res.status(400).send('No sessionId')
+    .then((obj)=>{
+      fs.rename(obj.oldPath,obj.newPath,(err)=>{
+        if(err) throw err
+        else {
+          res.status(200).send('OK')
+        }
+      })
+    }).catch((err)=>{
+      if(err)
+        console.log(err)
+    })
   }
-
 })
 
-function pathGen(username, year, type, campus, name){
-  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'.json'
+function pathGen(username, year, type, campus){
+  return 'data/'+username+'/'+year+'/'+type+'/'+year+'_'+type+'_'+campus+'.json'
 }
-function pathGenWithoutName(username, year, type, campus){
-  return 'data/'+username+'/'+year+'/'+type+'/'+campus
+function pathGenWithoutCampus(username, year, type){
+  return 'data/'+username+'/'+year+'/'+type
 }
 
-function pathGenDeleteName(username, year, type, campus, name){
-  return 'data/'+username+'/'+year+'/'+type+'/'+campus+'/'+year+'_'+type+'_'+campus+'_'+name+'_'+'d'+'.json'
+function pathGenDeleteName(username, year, type, campus){
+  return 'data/'+username+'/'+year+'/'+type+'/'+year+'_'+type+'_'+campus+'_'+'d'+'.json'
 }
 function fetch(info, cb){
   const username = info.username ? `/${info.username}`: ''
   const year = info.year ? `/${info.year}` : ''
   const type = info.type ? `/${info.type}` : ''
-  const campus = info.campus ? `/${info.campus}` : ''
-  const proName = info.proName ? `/${info.year +'_'+info.type+'_'+info.campus+'_'+info.proName+'.json'}` : ''
-  const path = 'data'+username+year+type+campus+proName
+  const campus = info.campus ? `/${info.year +'_'+info.type+'_'+info.campus+'.json'}` : ''
+  const path = 'data'+username+year+type+campus
+  const dimension = info.dimension
+  const item = info.item
+  const detail = info.detail
   // console.log(path);
-  if(proName != ''){
+  if(campus != ''){
     fs.readFile(path, 'utf-8', (err, data)=>{
       if(err) return console.log(err)
       if(data){
-        cb(JSON.parse(data))
+        cb({dimension: dimension,item: item, detail: detail},JSON.parse(data))
       }
     })
   }else{
@@ -319,13 +469,10 @@ function fetch(info, cb){
 function splitArrayIntoContext(arr, cb){
   var temp = []
   for(name of arr){
-    let t = {}
+    let t;
     var content = name.split('_')
-    if(content.length <= 4){
-      t.year = content[0]
-      t.type = content[1]
-      t.campus = content[2]
-      t.name = content[3].match(/[^.]+/)[0]
+    if(content.length <= 3){
+      t = content[2].match(/[^.]+/)[0]
       temp.push(t)
     }
   }
@@ -333,65 +480,51 @@ function splitArrayIntoContext(arr, cb){
 }
 
 
-function objToNode(project, cb){
+function objToNode(range,project,cb){
   // console.log(project);
   var context = []
-  for(dimension in project)
-    for(item in project[dimension])
-      for(detail in project[dimension][item]){
-        // console.log(detail);
-        //console.log(detail.length > 0);
-        if(project[dimension][item][detail] instanceof Array && project[dimension][item][detail].length > 0){
-          for(content of project[dimension][item][detail]){
-            let t = {}
-            t.dimension = dimension
-            t.item = item
-            t.detail = detail
-            t.content = content.paragraph
-            t.page = {}
-            t.page.start = '1'
-            t.page.end = '1'
-            // console.log("Adding");
-            context.push(t)
-          }
-        }
-      }
+  if(project[range.dimension][range.item][range.detail] instanceof Array && project[range.dimension][range.item][range.detail].length > 0){
+    for(content of project[range.dimension][range.item][range.detail]){
+      let t = {};
+      t.dimension = dimension
+      t.item = item
+      t.detail = detail
+      t.context = content.paragraph
+      t.page = {}
+      t.page.start = content.page[0]
+      t.page.end = content.page[1]
 
+      context.push(t)
+    }
+  }
   cb(context)
 }
 
-function nodeToObj(path, body, cb){
+function nodeToObj(path,info,body,cb){
   fs.readFile(path, 'utf-8', (err, data)=>{
     if(err) return console.log(err)
     if(data){
       data = JSON.parse(data)
       // console.log(body);
-      if(body instanceof Array){
-        for(con of body){
-          // console.log(con);
-          var item = new ContentSchema(con.page, con.content)
-          data[con.dimension][con.item][con.detail].push(item)
-        }
+      if(body instanceof Object){
+        let t = new ContentSchema(body.page,body.content,body.title);
+        data[info.dimension][info.item][info.detail].push(t)
       }
       cb(data)
     }
   })
-
-
-
-
 }
 
 
 
 
-function ContentSchema(page, paragraph){
+function ContentSchema(page, paragraph,title){
   if(page.start && page.end){
     this.page = []
     this.page[0] = page.start
     this.page[1] = page.end
   }
   this.paragraph = paragraph ? paragraph : ''
-  this.title = ''
+  this.title = title ? title : ''
 }
 module.exports= router

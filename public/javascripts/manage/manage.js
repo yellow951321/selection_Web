@@ -59,8 +59,9 @@ const editDeleteButtonClicked = (event) => {
       })
         .then(res => res.text())
         .then(data => {
-          projectNode.parentNode.removeChild(projectNode)
-          alert('成功')
+          if(data === 'OK')
+            projectNode.parentNode.removeChild(projectNode)
+            alert('成功')
         })
     }
   }
@@ -90,8 +91,11 @@ const refreshBreadCrumb = () =>{
 // init
 
 getCurrentPath()
-//temporarily comment the fetchsession()
-//sessionId = fetchSession()
+
+//refresh dropdwon in addForm
+$('select.dropdown')
+  .dropdown()
+
 // refreshBreadCrumb needs to execute after get current path and fetchSession
 refreshBreadCrumb()
 
@@ -115,10 +119,9 @@ addForm.addEventListener('submit', (event) => {
   event.preventDefault()
 
   const reqURL = '/man/add'
-  const project = addForm.querySelector('.addForm__project')
   const year = addForm.querySelector('.addForm__year')
   const school = addForm.querySelector('.addForm__school')
-  const type = addForm.querySelector('.addForm__type')
+  const type = addForm.querySelector('.addForm__type').firstChild
 
   fetch(reqURL, {
     method: 'POST',
@@ -136,7 +139,8 @@ addForm.addEventListener('submit', (event) => {
   })
     .then(res => res.text())
     .then(data => {
-      window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}`)
+      if( data === 'OK')
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}`);
     })
 
   $('.ui.modal').modal('hide')

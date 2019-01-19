@@ -103,7 +103,7 @@ addForm.addEventListener('submit', (event) => {
   const reqURL = '/man/add'
   const year = addForm.querySelector('.addForm__year')
   const school = addForm.querySelector('.addForm__school')
-  const type = addForm.querySelector('.addForm__type')
+  const type = addForm.querySelector('.addForm__type').firstChild
 
   fetch(reqURL, {
     method: 'POST',
@@ -111,8 +111,8 @@ addForm.addEventListener('submit', (event) => {
       'sessionId': sessionId,
       'info': {
         'year': year.value,
-        'campus': school.value,
         'type': type.value,
+        'campus': school.value,
       },
     }),
     headers: {
@@ -121,8 +121,8 @@ addForm.addEventListener('submit', (event) => {
   })
     .then(res => res.text())
     .then(data => {
-      if(data === 'OK')
-        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}/${school.value}`)
+      if( data === 'OK')
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userId}/${year.value}/${type.value}`);
     })
 
   $('.ui.modal').modal('hide')
