@@ -69,21 +69,26 @@ router.post('/add', (req, res)=>{
       })
     })
     .then(()=>{
-      fs.readFile(path,(err,data)=>{
-        if(err) throw err
-        if(data){
-          data = JSON.parse(data)
-          data['年度'] = req.body.info.year
-          return data
-        }
+      return new Promise((res,rej)=>{
+        fs.readFile(path,(err,data)=>{
+          if(err) rej(err)
+          if(data){
+            data = JSON.parse(data)
+            data['年度'] = req.body.info.year
+            res(data)
+          }
+        })
       })
     })
     .then((modData)=>{
+      console.log(modData + 'in here')
       fs.writeFile(path,JSON.stringify(modData),(err)=>{
         if(err) throw err
-        else
-          res.render('')
+        else{
+          //res.render('')
+          res.send('OK')
           console.log('Add operation is finished')
+        }
       })
     })
     .catch((err)=>{
@@ -96,7 +101,7 @@ router.post('/add', (req, res)=>{
 
 
 router.post('/content/save', (req, res)=>{
-  // console.log(req.body);
+  console.log(req.body + "request in here");
   if(req.session.userId){
     User.findOne({
       id: req.session.userId

@@ -152,7 +152,8 @@ const filter = (event) => {
 }
 
 // handle save button clicked
-const saveContent = () => {
+const saveContent = (event) => {
+  event.preventDefault()
   fetch('/man/content/save', {
     method: 'POST',
     body: JSON.stringify({
