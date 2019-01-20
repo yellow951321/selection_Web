@@ -1,5 +1,4 @@
 extends component/layout
-include mixins/_select.pug
 
 //- append buttons in the header
 append buttons
@@ -7,6 +6,7 @@ append buttons
   button.logout.ui.blue.right.floated.button 登出
 
 append content
+  include mixins/_select.pug
   //- content
   //- page select
   #page-select.ui.container.pusher

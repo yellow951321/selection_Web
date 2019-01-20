@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const fs = require('fs')
 const userSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -20,6 +21,7 @@ const userSchema = new mongoose.Schema({
     trim: 30
   }
 })
+
 
 const User = mongoose.model('User', userSchema)
 
