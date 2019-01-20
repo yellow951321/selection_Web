@@ -190,7 +190,8 @@ const filter = (event) => {
       pageEdit.removeChild(pageEdit.lastChild)
     }
 		pageEdit.insertAdjacentHTML( 'beforeend', data );
-		document.getElementById('footer').style.display = 'block';
+		document.getElementById('footer').classList.remove('hidden');
+		document.getElementById('footer').classList.remove('transition');
 		pageEdit.querySelectorAll('.save').forEach( (button)=> {
 			button.addEventListener( 'click', saveContent);
 		})
