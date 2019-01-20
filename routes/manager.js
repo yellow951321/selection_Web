@@ -162,10 +162,27 @@ router.get('/:userId', async (req, res)=>{
       username : doc.username
     })
 
-    // @todo add empty files view
-    res.render('manage/select',{contents: files})
+    if(files.length === 0){
+      // if years is undefined, year.pug will render a empty files view
+      res.render('manage/year',{
+        GLOBAL:{
+          id: req.params.userId,
+          user: '1234'
+        }
+      })
+    }
+    else{
+      res.render('manage/year',{
+        GLOBAL:{
+          years: files,
+          id: req.params.userId,
+          user: '1234'
+        }
+      })
+    }
   }
   catch (err) {
+    console.log(err)
     res.status(403).send(`
     <h2>403 Forbidden </h2>
     <p>No session Id or your sessionId is expired</p>
@@ -195,7 +212,14 @@ router.get('/:userId/:year',async (req, res)=>{
       username: doc.username,
       year : req.params.year
     })
-    res.render('manage/select',{contents: files})
+    res.render('manage/type',{
+      GLOBAL: {
+        types: files,
+        id: req.params.userId,
+        user: '1234',
+        year: req.params.year
+      }
+    })
   }
   catch (err) {
     res.status(403).send(`
@@ -231,9 +255,16 @@ router.get('/:userId/:year/:type', async (req, res)=>{
     // @todo remove dependency
     const context = splitArrayIntoContext(files)
 
-    res.render('manage/manage',{info:context})
-  }
-  catch (err){
+    res.render('manage/campus',{
+      GLOBAL: {
+        campuses:context,
+        id: req.params.userId,
+        user: '1234',
+        year: req.params.year,
+        type: req.params.type
+      }
+    })
+  }catch (err){
     res.status(403).send(`
     <h2>403 Forbidden </h2>
     <p>No session Id or your sessionId is expired</p>
@@ -247,7 +278,14 @@ router.get('/:userId/:year/:type/:campus', async (req, res)=>{
   try{
     if(!req.session.userId) //Check session
       throw new Error('unauthorized request')
-    res.render('manage/edit')
+    res.render('manage/edit',{
+      GLOBAL: {
+        id: req.params.userId,
+        user: '1234',
+        year: req.params.year,
+        campus: req.params.campus
+      }
+    })
   }
   catch (err) {
     res.status(403).send(`
@@ -275,8 +313,8 @@ router.post('/add', (req, res)=>{
   if(req.session.userId){
     findUsernameAsync(User,req.session.userId)
     .then((doc)=>{
-      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-      path = pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+      pathWithoutCampus = pathGenWithoutCampus(doc.username,req.body.year,req.body.type)
+      path = pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
     })
     .then(()=>{
       return checkFileAsync(path,pathWithoutCampus)
@@ -292,7 +330,7 @@ router.post('/add', (req, res)=>{
           if(err) rej(err)
           if(data){
             data = JSON.parse(data)
-            data['年度'] = req.body.info.year
+            data['年度'] = req.body.year
             res(data)
           }
         })
@@ -304,7 +342,7 @@ router.post('/add', (req, res)=>{
         if(err) throw err
         else{
           //res.render('')
-          res.send('OK')
+          res.redirect(`/man/${req.body.id}/${req.body.year}/${req.body.type}/${req.body.campus}`)
           console.log('Add operation is finished')
         }
       })
@@ -324,8 +362,8 @@ router.post('/delete', (req, res)=>{
     findUsernameAsync(User,req.session.userId)
     .then((doc)=>{
       if(doc){
-        const oldPath = pathGen(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
-        const newPath = pathGenDeleteName(doc.username, req.body.info.year, req.body.info.type, req.body.info.campus)
+        const oldPath = pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
+        const newPath = pathGenDeleteName(doc.username, req.body.year, req.body.type, req.body.campus)
         return {oldPath: oldPath,newPath: newPath}
       }
     })
@@ -333,7 +371,7 @@ router.post('/delete', (req, res)=>{
       fs.rename(obj.oldPath,obj.newPath,(err)=>{
         if(err) throw err
         else {
-          res.status(200).send('OK')
+          res.status(200).redirect(`/man/${req.session.userId}/${req.body.year}/${req.body.type}`)
         }
       })
     }).catch((err)=>{
@@ -368,7 +406,11 @@ router.post('/content/filter',(req,res)=>{
         item : req.body.info.item,
         detail : req.body.info.detail
       },data,(context)=>{
-        res.render('manage/filter',{contents: context});
+        res.render('manage/component/filter',{
+          GLOBAL:{
+            contents: context
+          }
+        });
       })
     })
     .catch((err)=>{
@@ -401,7 +443,11 @@ router.post('/content/add', (req, res)=>{
       let t = new ContentSchema({start:1,end:1},'','')
       data[req.body.info.dimension][req.body.info.item][req.body.info.detail].push(t)
       let length =  data[req.body.info.dimension][req.body.info.item][req.body.info.detail].length - 1
-      res.render('manage/newEdit',{index:length})
+      res.render('manage/component/newEdit',{
+        GLOBAL:{
+          index:length
+        }
+      })
       fs.writeFile(path,JSON.stringify(data),(err)=>{
         if(err) console.log(err)
       })

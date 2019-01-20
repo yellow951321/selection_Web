@@ -1,0 +1,17 @@
+extends component/layout
+
+//- append buttons in the header
+append buttons
+  a.add.ui.item 新增
+
+append content
+  //- content
+  //- page select
+  #page-select.ui.container.pusher
+    for val in GLOBAL['types']
+      a.ui.fluid.big.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${val}`)=val
+
+append buttons
+
+append script
+  script(src='/static/javascripts/manage/type.js')

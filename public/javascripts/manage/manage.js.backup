@@ -37,7 +37,7 @@ const fetchUserName = () => {
     // get curent path
     getCurrentPath()
 
-    // refreshBreadCrumb needs to execute after get current path 
+    // refreshBreadCrumb needs to execute after get current path
     refreshBreadCrumb()
   })
 }

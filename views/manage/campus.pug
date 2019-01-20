@@ -1,0 +1,16 @@
+extends component/layout
+
+//- append buttons in the header
+append buttons
+  a.add.ui.item 新增
+
+append content
+  include mixins/_renderCampus.pug
+  //- content
+  //- page management
+  #page-management.ui.container.pusher
+    for val in GLOBAL['campuses']
+      +renderCampus(val)
+
+append script
+  script(src='/static/javascripts/manage/campus.js')

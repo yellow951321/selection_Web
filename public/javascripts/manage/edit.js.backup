@@ -10,6 +10,7 @@ let selecteditem = ''
 let selecteddetail = ''
 
 let schema = {}
+const breadCrumb = document.getElementById('breadcrumb')
 const header = document.getElementById('header')
 
 // variables > functions
@@ -30,6 +31,28 @@ const fetchSchema = () => {
     })
 }
 
+// fetch user name
+const fetchUserName = () => {
+  fetch('/man/name', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => res.text())
+  .then(data => {
+    userName = data
+    // get curent path
+    getCurrentPath()
+
+    // refreshBreadCrumb needs to execute after get current path
+    refreshBreadCrumb()
+  })
+}
+
 // get current path through url
 const getCurrentPath = () => {
   let pathSplit = window.location.pathname
@@ -43,9 +66,8 @@ const getCurrentPath = () => {
 
 // handle add content button clicked
 const addContentClicked = () =>{
-  event.preventDefault();
-  getCurrentPath()
-  fetch(`/man/${userId}/content/add`, {
+	event.preventDefault();
+  fetch('/man/content/add', {
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
@@ -69,6 +91,34 @@ const addContentClicked = () =>{
 			pageEdit.lastChild.querySelector( '.save' ).addEventListener( 'click', saveContent);
     	pageEdit.lastChild.querySelector( '.delete' ).addEventListener( 'click', deleteContent);
     })
+}
+
+// refresh the breadcrumb (path on top of the nodes)
+const refreshBreadCrumb = () =>{
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}"> ${ userName } </div>
+    `)
+
+  if(selectionNowYear == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}"> ${ selectionNowYear } </div>
+    `)
+
+  if(selectionNowType == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
+    `)
+
+  if(selectionNowSchool == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
+    `)
 }
 
 // dropdown on change
@@ -112,8 +162,8 @@ const filter = (event) => {
 	const dimension = pageEdit.querySelector( '.filter.filter__dimension' ).firstChild.value;
 	const item = pageEdit.querySelector( '.filter.filter__item' ).firstChild.value;
 	const detail = pageEdit.querySelector( '.filter.filter__detail' ).firstChild.value;
-  getCurrentPath()
-	fetch( `/man/${userId}/content/filter`, {
+
+	fetch( '/man/content/filter', {
 		method: 'POST',
 		body: JSON.stringify({
       'id': userId,
@@ -162,7 +212,7 @@ const saveContent = (event) => {
 	const content = node.querySelector( '.content' ).value;
   const index = node.querySelector( '.node-index').value;
 
-	fetch(`/man/${userId}/content/save`, {
+	fetch('/man/content/save', {
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
@@ -202,8 +252,7 @@ const deleteContent = (event) =>{
     const title = node.querySelector( '.title' ).value;
     const index = node.querySelector( '.node-index').value;
 
-    getCurrentPath()
-    fetch(`/man/${userId}/content/delete`, {
+    fetch('/man/content/delete', {
       method: 'POST',
       body: JSON.stringify({
         'id': userId,
@@ -233,7 +282,7 @@ const deleteContent = (event) =>{
 fetchSchema();
 
 // fetch user name, get the current path and refresh the breadcrumb
-//fetchUserName()
+fetchUserName()
 
 // refresh dropdown
 $('select.dropdown')
@@ -252,3 +301,21 @@ document.querySelector('.add-content').addEventListener('click', addContentClick
 
 // add event listener to the choice content button
 document.getElementById('page-edit').querySelector('.filter').addEventListener('submit', filter);
+
+// add event listener to the logout button
+header.querySelector('.logout').addEventListener('click', () =>{
+  fetch('/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.text())
+    .then(data => {
+      if(data === 'Log out')
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
+    })
+})

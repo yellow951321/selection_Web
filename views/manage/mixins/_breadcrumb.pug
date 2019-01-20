@@ -1,0 +1,12 @@
+.breadcrumb
+	.ui.huge.breadcrumb
+		a.section(href=`/man/${GLOBAL['user']}`)=GLOBAL[ 'user' ]
+		if GLOBAL[ 'year' ]
+			.divider /
+			a.section(href=`/man/${GLOBAL['user']}/${GLOBAL['year']}`)=GLOBAL[ 'year' ]
+		if GLOBAL[ 'type' ]
+			.divider /
+			a.section(href=`/man/${GLOBAL['user']}/${GLOBAL['year']}/${GLOBAL['type']}`)=GLOBAL[ 'type' ]
+		if GLOBAL[ 'campus' ]
+			.divider /
+			a.section(href=`/man/${GLOBAL['user']}/${GLOBAL['year']}/${GLOBAL['type']}/${GLOBAL['campus']}`)=GLOBAL[ 'campus' ]
