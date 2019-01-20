@@ -71,20 +71,6 @@ function ContentSchema(page,paragraph,title){
   this.title = title ? title : ''
 }
 
-const findUsernameAsync = async (model,userId)=>{
-  const doc = await new Promise((res,rej)=>{
-    model.findOne({
-      id : userId
-    },(err,doc)=>{
-      if(err) rej(err)
-      if(doc){
-        res(doc)
-      }
-    })
-  })
-  return doc
-}
-
 const checkFileAsync = async (path,pathWithoutCampus)=>{
   try{
     const state = await new Promise((res,rej)=>{
@@ -115,7 +101,6 @@ module.exports = {
   splitArrayIntoContext,
   objToNode,
   nodeToObj,
-  findUsernameAsync,
   checkFileAsync,
   ContentSchema
 }

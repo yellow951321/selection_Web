@@ -8,15 +8,15 @@ const router = express.Router({
   strict: false,
 })
 const fs = require('fs')
-const User = require('../../../models/User/user')
+const User = require('../../../models/User/schema')
 const OP = require('./fileOp')
 const {Schema} = require('./../../../config')
 
 router.post('/add',async (req,res)=>{
   try{
     const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-    const path = OP.pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.year,req.body.type)
+    const path = OP.pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
 
     const isExist = await OP.checkFileAsync(path,pathWithoutCampus)
 
@@ -32,9 +32,9 @@ router.post('/add',async (req,res)=>{
             if(err) rej(err)
             if(data){
               data = JSON.parse(data)
-              data['年度'] = req.body.info.year
-              data['學校'] = req.body.info.campus
-              data['類型'] = req.body.info.type
+              data['年度'] = req.body.year
+              data['學校'] = req.body.campus
+              data['類型'] = req.body.type
               res(data)
             }
           })
@@ -44,7 +44,7 @@ router.post('/add',async (req,res)=>{
       if(err) throw err
     })
 
-    res.send('OK')
+    res.redirect(`/man/${req.session.userId}/${req.body.year}/${req.body.type}/${req.body.campus}`)
     console.log('Add operation is finished')
 
   }
@@ -57,13 +57,13 @@ router.post('/add',async (req,res)=>{
 router.post('/delete',async (req,res)=>{
   try{
     const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const oldPath = OP.pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-    const newPath = OP.pathGenDeleteName(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+    const oldPath = OP.pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
+    const newPath = OP.pathGenDeleteName(doc.username,req.body.year,req.body.type,req.body.campus)
 
     await fs.rename(oldPath,newPath,(err)=>{
       if(err) throw err
     })
-    res.status(200).send('OK')
+    res.redirect(`/man/${req.session.userId}/${req.body.year}/${req.body.type}`)
   }
   catch (err){
     console.log(err)

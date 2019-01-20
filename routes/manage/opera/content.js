@@ -8,14 +8,15 @@ const router = express.Router({
   strict: false,
 })
 const fs = require('fs')
-const User = require('./../../../models/User/user')
+const User = require('../../../models/User/schema')
+const {findUsernameAsync} = require('../../../models/User/op')
 const OP = require('./fileOp')
 
 router.post('/filter',async (req,res)=>{
   try{
-    const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-    const path = OP.pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+    const doc = await findUsernameAsync(User,req.session.userId)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.year,req.body.type)
+    const path = OP.pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
 
     const isExist = await OP.checkFileAsync(path,pathWithoutCampus)
 
@@ -23,12 +24,16 @@ router.post('/filter',async (req,res)=>{
      var data =  fs.readFileSync(path,'utf-8')
       data = JSON.parse(data)
       const context = OP.objToNode({
-        dimension : req.body.info.dimension,
-        item : req.body.info.item,
-        detail : req.body.info.detail
+        dimension : req.body.dimension,
+        item : req.body.item,
+        detail : req.body.detail
       },data)
 
-      res.render('manage/filter',{contents :context})
+      res.render('manage/component/filter',{
+        GLOBAL :{
+          contents : context
+        }
+      })
   }
   catch (err){
     console.log(err)
@@ -38,9 +43,9 @@ router.post('/filter',async (req,res)=>{
 
 router.post('/add',async (req,res)=>{
   try{
-    const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
-    const path = OP.pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
+    const doc = await findUsernameAsync(User,req.session.userId)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.year,req.body.type)
+    const path = OP.pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
 
     const isExist = await OP.checkFileAsync(path,pathWithoutCampus)
 
@@ -49,14 +54,18 @@ router.post('/add',async (req,res)=>{
         data = JSON.parse(data)
 
     let t = new OP.ContentSchema({start:1,end:1},'','')
-    data[req.body.info.dimension][req.body.info.item][req.body.info.detail].push(t)
-    let length = data[req.body.info.dimension][req.body.info.item][req.body.info.detail].length-1
+    data[req.body.dimension][req.body.item][req.body.detail].push(t)
+    let length = data[req.body.dimension][req.body.item][req.body.detail].length-1
     console.log(length)
     await fs.writeFile(path,JSON.stringify(data,null,2),(err)=>{
       if(err) throw err
     })
 
-    res.render('manage/newEdit',{index : length})
+    res.render('manage/component/newEdit',{
+      GLOBAL : {
+        index : length
+      }
+    })
   }
   catch (err){
     console.log(err)
@@ -66,13 +75,13 @@ router.post('/add',async (req,res)=>{
 
 router.post('/save',async (req,res)=>{
   try{
-    const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const year = req.body.info.year
-    const type = req.body.info.type
-    const campus = req.body.info.campus
-    const dimension = req.body.info.dimension
-    const item = req.body.info.item
-    const detail = req.body.info.detail
+    const doc = await findUsernameAsync(User,req.session.userId)
+    const year = req.body.year
+    const type = req.body.type
+    const campus = req.body.campus
+    const dimension = req.body.dimension
+    const item = req.body.item
+    const detail = req.body.detail
     const index = req.body.index
     const path = OP.pathGen(doc.username,year,type,campus)
     const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,year,type)
@@ -104,21 +113,21 @@ router.post('/save',async (req,res)=>{
   }
 })
 
-router.post('delete',async (req,res)=>{
+router.post('/delete',async (req,res)=>{
   try{
-    const doc = await OP.findUsernameAsync(User,req.session.userId)
-    const path = OP.pathGen(doc.username,req.body.info.year,req.body.info.type,req.body.info.campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.info.year,req.body.info.type)
+    const doc = await findUsernameAsync(User,req.session.userId)
+    const path = OP.pathGen(doc.username,req.body.year,req.body.type,req.body.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username,req.body.year,req.body.type)
 
-    const isExist = await checkFileAsync(path,pathWithoutCampus)
+    const isExist = await OP.checkFileAsync(path,pathWithoutCampus)
 
     if(isExist)
       var data =  fs.readFileSync(path,'utf-8')
       data = JSON.parse(data)
 
-    let deleteObj = data[req.body.info.dimension][req.body.info.item][req.body.info.detail]
-    if(deletObj instanceof Array){
-      data[req.body.info.dimension][req.body.info.item][req.body.info.detail] = deleteObj.filter((element,index)=>{
+    let deleteObj = data[req.body.dimension][req.body.item][req.body.detail]
+    if(deleteObj instanceof Array){
+      data[req.body.dimension][req.body.item][req.body.detail] = deleteObj.filter((element,index)=>{
         return index != req.body.index
       })
     }

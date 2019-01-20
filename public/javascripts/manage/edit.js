@@ -49,14 +49,12 @@ const addContentClicked = () =>{
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
-      info: {
-        year: selectionNowYear,
-        type: selectionNowType,
-        campus: selectionNowSchool,
-				dimension: selecteddimension,
-				item: selecteditem,
-				detail: selecteddetail
-      },
+      year: selectionNowYear,
+      type: selectionNowType,
+      campus: selectionNowSchool,
+      dimension: selecteddimension,
+      item: selecteditem,
+      detail: selecteddetail
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -117,14 +115,12 @@ const filter = (event) => {
 		method: 'POST',
 		body: JSON.stringify({
       'id': userId,
-			info: {
-				year: selectionNowYear,
-				type: selectionNowType,
-				campus: selectionNowSchool,
-				dimension: dimension,
-				item: item,
-				detail: detail
-			}
+      year: selectionNowYear,
+      type: selectionNowType,
+      campus: selectionNowSchool,
+      dimension: dimension,
+      item: item,
+      detail: detail
 		}),
     headers: {
       'Content-Type': 'application/json',
@@ -166,15 +162,13 @@ const saveContent = (event) => {
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
-      info: {
-				year: selectionNowYear,
-				type: selectionNowType,
-				campus: selectionNowSchool,
-				dimension: selecteddimension,
-				item: selecteditem,
-				detail: selecteddetail
-			},
-			page: {
+      year: selectionNowYear,
+      type: selectionNowType,
+      campus: selectionNowSchool,
+      dimension: selecteddimension,
+      item: selecteditem,
+      detail: selecteddetail,
+      page: {
 				start: startPage,
 				end: endPage
       },
@@ -207,14 +201,12 @@ const deleteContent = (event) =>{
       method: 'POST',
       body: JSON.stringify({
         'id': userId,
-        info: {
-          year: selectionNowYear,
-          type: selectionNowType,
-          campus: selectionNowSchool,
-          dimension: selecteddimension,
-          item: selecteditem,
-          detail: selecteddetail
-        },
+        year: selectionNowYear,
+        type: selectionNowType,
+        campus: selectionNowSchool,
+        dimension: selecteddimension,
+        item: selecteditem,
+        detail: selecteddetail,
         index: index
       }),
       headers: {

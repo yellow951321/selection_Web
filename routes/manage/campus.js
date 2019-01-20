@@ -8,14 +8,14 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('./../../models/User/user')
-const {getCampus} = require('./../../models/User/op')
+const User = require('../../models/User/schema')
+const {getCampus} = require('../../models/User/op')
 
 function splitArrayIntoContext(arr){
-  var temp = []
-  for(name of arr){
+  let temp = []
+  for(let name of arr){
     let t;
-    var content = name.split('_')
+    let content = name.split('_')
     if(content.length <= 3){
       t = content[2].match(/[^.]+/)[0]
       temp.push(t)
@@ -29,34 +29,42 @@ router.get('/',async (req,res)=>{
     if(!req.session.userId)
       throw new Error('unauthorized request')
 
-    const doc = await new Promise((resolve,reject)=>{
+    const user = await new Promise((resolve,reject)=>{
       User.findOne({
         id: req.session.userId
-      },(err,doc)=>{
+      },(err,user)=>{
         if(err) reject(err)
-        if(doc){
-          resolve(doc)
+        if(user){
+          resolve(user)
         }
       })
     })
     const files = await getCampus({
-      username: doc.username,
-      year : req.session.year,
-      type : req.session.type
+      username: user.username,
+      year : res.locals.year,
+      type : res.locals.type
     })
 
     // @todo remove dependency
     const context = splitArrayIntoContext(files)
 
-    res.render('manage/manage',{info:context})
+    res.render('manage/campus',{
+      GLOBAL : {
+        campuses : context,
+        id : req.session.userId,
+        user : user.username,
+        year : res.locals.year,
+        type : res.locals.type
+      }
+    })
   }
   catch (err){
-    res.status(403).send(`
-    <h2>403 Forbidden </h2>
-    <p>No session Id or your sessionId is expired</p>
-    <p>Please redirect to the log page</p>
-    <a href="http://localhost:3000/auth/login">Click Here</a>
-    `)
+    res.status(403).render('error',{
+      message : err,
+      error: {
+        status: err.status
+      }
+    })
   }
 })
 

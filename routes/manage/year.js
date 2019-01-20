@@ -8,34 +8,49 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('./../../models/User/user')
-const {getYear} = require('./../../models/User/op')
+const User = require('../../models/User/schema')
+const {getYear} = require('../../models/User/op')
 
 router.get('/',async (req,res)=>{
   try{
-    const doc = await new Promise((resolve,reject)=>{
+    const user = await new Promise((resolve,reject)=>{
       User.findOne({
         id: req.session.userId
-      },(err,doc)=>{
+      },(err,user)=>{
         if(err)
           reject(err)
-        if(doc){
-          resolve(doc)
+        if(user){
+          resolve(user)
         }
       })
     })
     const files = await getYear({
-      username : doc.username
+      username : user.username
     })
-    res.render('manage/select',{contents: files})
+    //if years is undefined ,year.pug will render a empty files view
+    if(files.length === 0)
+      res.render('manage/year',{
+        GLOBAL : {
+          id :req.session.userId,
+          user : user.username
+        }
+      })
+    else
+      res.render('manage/year',{
+        GLOBAL:{
+          years : files,
+          id: req.session.userId,
+          user : user.username
+        }
+      })
   }
   catch (err){
-    res.status(403).send(`
-    <h2>403 Forbidden </h2>
-    <p>No session Id or your sessionId is expired</p>
-    <p>Please redirect to the log page</p>
-    <a href="http://localhost:3000/auth/login">Click Here</a>
-    `)
+    res.status(403).render('error',{
+      message : err,
+      error: {
+        status: err.status
+      }
+    })
   }
 })
 

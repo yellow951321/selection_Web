@@ -1,5 +1,5 @@
 mixin renderCampus(campus)
-  form.ui.segment.center.aligned.grid(action='/man/delete', method='POST')
+  form.ui.segment.center.aligned.grid(action=`/man/${GLOBAL.id}/file/delete`, method='POST')
     p.eight.wide.column=campus
     .three.wide.column
       a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus}`) 編輯

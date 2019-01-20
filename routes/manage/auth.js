@@ -8,12 +8,12 @@ const router = express.Router({
   strict: false,
 })
 
-const YearRouter = require('./year')
-const TypeRouter = require('./type')
-const CampusRouter = require('./campus')
-const ProjectRouter = require('./project')
-const FileRouter = require('./opera/file')
-const ContentRouter = require('./opera/content')
+const yearRouter = require('./year')
+const typeRouter = require('./type')
+const campusRouter = require('./campus')
+const projectRouter = require('./project')
+const fileRouter = require('./opera/file')
+const contentRouter = require('./opera/content')
 
 router.use('/:userId',(req,res,next)=>{
   if(req.session && req.session.userId == req.params.userId){
@@ -23,37 +23,37 @@ router.use('/:userId',(req,res,next)=>{
   }
 })
 
-router.use('/:userId/file',FileRouter)
-router.use('/:userId/content',ContentRouter)
+router.use('/:userId/file',fileRouter)
+router.use('/:userId/content',contentRouter)
 
-router.use('/:userId/:year/:type/:campus',ProjectRouter)
-
-router.use('/:userId/:year/:type',(req,res,next)=>{
-  req.session.year = req.params.year
-  req.session.type = req.params.type
-  if(req.session.campus)
-    req.session.campus = null
+router.use('/:userId/:year/:type/:campus',
+(req,res,next)=>{
+  res.locals.year = req.params.year
+  res.locals.type = req.params.type
+  res.locals.campus = req.params.campus
   next()
-},CampusRouter)
+},
+projectRouter)
 
-router.use('/:userId/:year',(req,res,next)=>{
-  req.session.year = req.params.year
-  if(req.session.type)
-    req.session.type = null
-  if(req.session.campus)
-    req.session.campus = null
-  console.log(req.session)
+router.use('/:userId/:year/:type',
+(req,res,next)=>{
+  res.locals.year = req.params.year
+  res.locals.type = req.params.type
   next()
-},TypeRouter)
+},
+campusRouter)
 
-router.use('/:userId',(req,res,next)=>{
-  if(req.session.year)
-    req.session.year = null
-  if(req.session.type)
-    req.session.type = null
-  if(req.session.campus)
-    req.session.campus = null
+router.use('/:userId/:year',
+(req,res,next)=>{
+  res.locals.year = req.params.year
   next()
-},YearRouter)
+},
+typeRouter)
+
+router.use('/:userId',
+(req,res,next)=>{
+  next()
+},
+yearRouter)
 
 module.exports = router

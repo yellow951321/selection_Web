@@ -1,7 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 
-const User = require('../models/User/user')
+const User = require('../models/User/schema')
 
 const router = express.Router({
   // case sensitive for route path

@@ -8,17 +8,29 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/',(req,res)=>{
+const OP = require('../../models/User/op')
+
+router.get('/',async (req,res)=>{
   try{
-    res.render('manage/edit')
+
+    const doc = await OP.findUsernameAsync(User,req.session.userId)
+    res.render('manage/edit',{
+      GLOBAL : {
+        id : req.session.userId,
+        user : doc.username,
+        year : res.locals.year,
+        type : res.locals.type,
+        campus : res.locals.campus
+      }
+    })
   }
   catch (err){
-    res.status(403).send(`
-    <h2>403 Forbidden </h2>
-    <p>No session Id or your sessionId is expired</p>
-    <p>Please redirect to the log page</p>
-    <a href="http://localhost:3000/auth/login">Click Here</a>
-    `)
+    res.status(403).render('error',{
+      message : err,
+      error: {
+        status: err.status
+      }
+    })
   }
 })
 

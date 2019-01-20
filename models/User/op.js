@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const User = require('./schema')
 const getYear = async (info)=>{
   if(!info.username)
     throw new Error('no username provided')
@@ -40,23 +40,23 @@ const getCampus = async (info)=>{
   return files
 }
 
-const getProject = async (info)=>{
-  if(!info.username || !info.year || !info.type || !info.campus)
-    throw new Error('No username or year or type or campus')
-  const path = `data/${info.username}/${info.year}/${info.type}/${info.campus}`
-  const files = await new Promise((res,rej)=>{
-    fs.readFile(path,'utf-8',(err,data)=>{
+const findUsernameAsync = async (userId)=>{
+  const doc = await new Promise((res,rej)=>{
+    model.findOne({
+      id : userId
+    },(err,doc)=>{
       if(err) rej(err)
-      res(JSON.parse(data))
+      if(doc){
+        res(doc)
+      }
     })
   })
-  return files
-}
-const Fetch = {
-  getYear: getYear,
-  getCampusType : getCampusType,
-  getCampus : getCampus,
-  getProject : getProject
+  return doc
 }
 
-module.exports = Fetch
+module.exports = {
+  getYear,
+  getCampusType,
+  getCampus,
+  findUsernameAsync,
+}
