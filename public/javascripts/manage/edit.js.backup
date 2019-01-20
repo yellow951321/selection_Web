@@ -10,6 +10,7 @@ let selecteditem = ''
 let selecteddetail = ''
 
 let schema = {}
+const breadCrumb = document.getElementById('breadcrumb')
 const header = document.getElementById('header')
 
 // variables > functions
@@ -28,6 +29,28 @@ const fetchSchema = () => {
     .then(data => {
       schema = data
     })
+}
+
+// fetch user name
+const fetchUserName = () => {
+  fetch('/man/name', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(res => res.text())
+  .then(data => {
+    userName = data
+    // get curent path
+    getCurrentPath()
+
+    // refreshBreadCrumb needs to execute after get current path
+    refreshBreadCrumb()
+  })
 }
 
 // get current path through url
@@ -68,6 +91,34 @@ const addContentClicked = () =>{
 			pageEdit.lastChild.querySelector( '.save' ).addEventListener( 'click', saveContent);
     	pageEdit.lastChild.querySelector( '.delete' ).addEventListener( 'click', deleteContent);
     })
+}
+
+// refresh the breadcrumb (path on top of the nodes)
+const refreshBreadCrumb = () =>{
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}"> ${ userName } </div>
+    `)
+
+  if(selectionNowYear == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}"> ${ selectionNowYear } </div>
+    `)
+
+  if(selectionNowType == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}"> ${ selectionNowType } </div>
+    `)
+
+  if(selectionNowSchool == '')
+    return
+  breadCrumb.insertAdjacentHTML('beforeend', `
+        <div class="divider"> / </div>
+        <a class="section" href = "${window.location.protocol}//${window.location.hostname}:${window.location.port}/man/${userName}/${selectionNowYear}/${selectionNowType}/${selectionNowSchool}"> ${ selectionNowSchool } </div>
+    `)
 }
 
 // dropdown on change
@@ -229,7 +280,9 @@ const deleteContent = (event) =>{
 
 // init
 fetchSchema();
-getCurrentPath();
+
+// fetch user name, get the current path and refresh the breadcrumb
+fetchUserName()
 
 // refresh dropdown
 $('select.dropdown')
@@ -248,3 +301,21 @@ document.querySelector('.add-content').addEventListener('click', addContentClick
 
 // add event listener to the choice content button
 document.getElementById('page-edit').querySelector('.filter').addEventListener('submit', filter);
+
+// add event listener to the logout button
+header.querySelector('.logout').addEventListener('click', () =>{
+  fetch('/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({
+      'id': userId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.text())
+    .then(data => {
+      if(data === 'Log out')
+        window.location.assign(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/auth/login`)
+    })
+})

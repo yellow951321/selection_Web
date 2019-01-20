@@ -42,9 +42,9 @@ router.post('/login', (req, res)=>{
   })
 })
 
-router.post('/logout', (req, res)=>{
+router.get('/logout', (req, res)=>{
   req.session = null
-  res.status(200).send('Log out')
+  res.status(200).redirect('/auth/login')
 })
 
 router.get('/signup', (req, res)=>{

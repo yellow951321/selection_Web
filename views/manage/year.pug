@@ -1,0 +1,19 @@
+extends component/layout
+
+//- append buttons in the header
+append buttons
+  a.add.ui.item 新增
+
+append content
+  //- content
+  //- page select
+  #page-select.ui.container.pusher
+    if GLOBAL['years']
+      for val in GLOBAL['years']
+        a.ui.fluid.big.button(href=`/man/${GLOBAL['id']}/${val}`)=val
+    else
+      .ui.center.aligned.container
+        div 請點擊右上角新增來新增專案
+
+append script
+  script(src='/static/javascripts/manage/year.js')

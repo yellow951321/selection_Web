@@ -1,0 +1,11 @@
+mixin renderCampus(campus)
+  form.ui.segment.center.aligned.grid(action='/man/delete', method='POST')
+    p.eight.wide.column=campus
+    .three.wide.column
+      a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus}`) 編輯
+    .three.wide.column
+      input.ui.button.two.wide.column(type='submit', value='刪除')
+
+    input(type='hidden', name='year', value=GLOBAL['year'])
+    input(type='hidden', name='type', value=GLOBAL['type'])
+    input(type='hidden', name='campus', value=campus)
