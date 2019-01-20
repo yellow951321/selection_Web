@@ -245,35 +245,37 @@ const saveContent = (event) => {
 // handle delete button clicked
 const deleteContent = (event) =>{
 	event.preventDefault();
-	const node = event.target.parentNode.parentNode.parentNode.parentNode;
-	const startPage = node.querySelector( '.page__start' ).value;
-	const endPage = node.querySelector( '.page__end' ).value;
-  const title = node.querySelector( '.title' ).value;
-  const index = node.querySelector( '.node-index').value;
+  if(confirm('確定要刪除嗎')){
+    const node = event.target.parentNode.parentNode.parentNode.parentNode;
+    const startPage = node.querySelector( '.page__start' ).value;
+    const endPage = node.querySelector( '.page__end' ).value;
+    const title = node.querySelector( '.title' ).value;
+    const index = node.querySelector( '.node-index').value;
 
-	fetch('/man/content/delete', {
-    method: 'POST',
-    body: JSON.stringify({
-      'id': userId,
-      info: {
-        year: selectionNowYear,
-        type: selectionNowType,
-				campus: selectionNowSchool,
-				dimension: selecteddimension,
-				item: selecteditem,
-				detail: selecteddetail
+    fetch('/man/content/delete', {
+      method: 'POST',
+      body: JSON.stringify({
+        'id': userId,
+        info: {
+          year: selectionNowYear,
+          type: selectionNowType,
+          campus: selectionNowSchool,
+          dimension: selecteddimension,
+          item: selecteditem,
+          detail: selecteddetail
+        },
+        index: index
+      }),
+      headers: {
+        'Content-Type': 'application/json',
       },
-      index: index
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then(res => res.text())
-    .then(data => {
-      node.parentNode.removeChild(node);
-      alert(data)
     })
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('page-edit').querySelector('.choice').click();
+        alert(data)
+      })
+  }
 }
 
 // init

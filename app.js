@@ -69,7 +69,7 @@ app.use(session({
   proxy: false,
   secret: config.server.secret,
   resave : false,
-  rolling: true,
+  rolling: false,
   saveUninitialized : false,
   unset: 'destroy',
 }))
@@ -98,7 +98,6 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
     res.set('x-timestamp', Date.now())
   },
 }))
-
 
 app.use('/auth', auth)
 app.use('/man', managerRouter)

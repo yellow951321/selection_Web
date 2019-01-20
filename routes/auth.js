@@ -1,7 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 
-const User = require('./../models/user')
+const User = require('../models/User/user')
 
 const router = express.Router({
   // case sensitive for route path
@@ -18,32 +18,34 @@ router.get('/login', (req, res)=>{
 
 router.post('/login', (req, res)=>{
   console.log(req.body)
-  User.findOne({
-    username: req.body.username,
-    password: req.body.password,
-  }, (err, doc)=>{
-    if(err){
-      console.log(err)
-      return res.status(400).send('Error occurs in login.js at 24')
-    }
-    if(doc){
-      //res.cookie('sessionId', sessionId)
-      req.session.userId = doc.id
-      //console.log(req.session);
-      res.status(200).send(doc.id)
-    }else {
-      console.log(doc)
-      res.status(400).send(`No matched account named ${req.body.id}`)
-    }
+  new Promise((resolve, reject) => {
+    User.findOne({
+      username: req.body.username,
+      password: req.body.password,
+    }, (err, doc)=>{
+      if(err){
+        reject(new Error(`Database error: ${err}`))
+      }
+      if(doc){
+        resolve(doc)
+      }else {
+        reject(new Error(`No matched account named ${req.body.id}`))
+      }
+    })
+  })
+  .then((doc)=>{
+    req.session.userId = doc.id
+    res.redirect(`/man/${doc.id}`)
+  })
+  .catch(err=>{
+    return res.status(400).send(err.message)
   })
 })
 
 router.post('/logout', (req, res)=>{
-  delete req.session.userId
+  req.session = null
   res.status(200).send('Log out')
-  //console.log(`${req.body.username} log out`)
 })
-
 
 router.get('/signup', (req, res)=>{
   res.render('signup')
@@ -51,32 +53,33 @@ router.get('/signup', (req, res)=>{
 
 router.post('/signup', (req, res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>', 'gi')
-  if(!rMatch.test(req.body.id) && !rMatch.test(req.body.password)){
-    console.log('enter')
-    var id;
-    User.countDocuments({},(err,num)=>{
-      if(err) console.log(err);
-        id = num +1;
-        console.log(id);
-
-        var user = new User({
-          username: req.body.username,
-          password: req.body.password,
-          id: id
-        })
-        user.save().then((doc)=>{
-          console.log(doc)
-          res.status(200).send('OK')
-          fs.mkdir('data/'+req.body.id, {recursive: true, }, (err)=>{
-            if(err) console.log(err)
-            else
-              console.log('mkdir operation complete')
-          })
-        }, (e)=>{
-          console.log(e)
-          res.status(400).send(e)
-        })
-    });
+  if(!rMatch.test(req.body.username) && !rMatch.test(req.body.password)){
+    new Promise((resolve,reject)=>{
+      User.countDocuments({},(err,num)=>{
+        if(err) reject(err)
+        else{
+          resolve(num+1)
+        }
+      })
+    })
+    .then((id)=>{
+      var user = new User({
+        username: req.body.username,
+        password: req.body.password,
+        id: id
+      })
+      return user.save()
+    })
+    .then(()=>{
+      res.status(200).send('OK')
+      fs.mkdir('data/'+req.body.username, {recursive: true, }, (err)=>{
+        if(err) throw err
+        console.log('mkdir operation complete')
+      })
+    })
+    .catch((err)=>{
+      res.status(400).send(err)
+    })
   }
 })
 

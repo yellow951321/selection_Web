@@ -38,7 +38,7 @@ const fetchUserName = () => {
     // get curent path
     getCurrentPath()
 
-    // refreshBreadCrumb needs to execute after get current path and fetchSession
+    // refreshBreadCrumb needs to execute after get current path 
     refreshBreadCrumb()
   })
 }
@@ -124,7 +124,7 @@ addForm.addEventListener('submit', (event) => {
   fetch(reqURL, {
     method: 'POST',
     body: JSON.stringify({
-      'sessionId': sessionId,
+      'id': userId,
       'info': {
         'year': year.value,
         'type': type.value,
