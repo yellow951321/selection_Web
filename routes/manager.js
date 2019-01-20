@@ -190,7 +190,7 @@ router.get('/:userId/:year',async (req, res)=>{
         }
       })
     })
-    //get files under user/year
+    //get files under user/year folder
     const files = await UserOp.getCampusType({
       username: doc.username,
       year : req.params.year
@@ -228,10 +228,12 @@ router.get('/:userId/:year/:type', async (req, res)=>{
       type : req.params.type
     })
 
+    // @todo remove dependency
     const context = splitArrayIntoContext(files)
 
     res.render('manage/manage',{info:context})
-  }catch (err){
+  }
+  catch (err){
     res.status(403).send(`
     <h2>403 Forbidden </h2>
     <p>No session Id or your sessionId is expired</p>
@@ -245,24 +247,6 @@ router.get('/:userId/:year/:type/:campus', async (req, res)=>{
   try{
     if(!req.session.userId) //Check session
       throw new Error('unauthorized request')
-    //get user information assign to doc
-    const doc = await new Promise((resolve,reject)=>{
-      User.findOne({
-        id : req.session.userId
-      },(err,doc)=>{
-        if(err) reject(err)
-        if(doc){
-          resolve(doc)
-        }
-      })
-    })
-    //get files under user/year
-    const files = await UserOp.getCampusType({
-      username: doc.username,
-      year : req.params.year,
-      type : req.params.type,
-      campus : req.params.campus
-    })
     res.render('manage/edit')
   }
   catch (err) {

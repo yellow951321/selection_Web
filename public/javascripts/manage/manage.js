@@ -63,8 +63,8 @@ const editDeleteButtonClicked = (event) => {
   }
   else if(event.target.innerHTML === '刪除'){
     if(confirm('確定要刪除嗎')){
-
-      fetch('/man/delete', {
+      getCurrentPath()
+      fetch(`/man/${userId}/file/delete`, {
         method: 'POST',
         body: JSON.stringify({
           'id': userId,
@@ -112,7 +112,7 @@ const refreshBreadCrumb = () =>{
 // init
 
 // fetch user name, get the current path and refresh the breadcrumb
-fetchUserName()
+//fetchUserName()
 
 //refresh dropdwon in addForm
 $('select.dropdown')

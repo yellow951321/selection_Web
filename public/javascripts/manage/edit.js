@@ -66,8 +66,9 @@ const getCurrentPath = () => {
 
 // handle add content button clicked
 const addContentClicked = () =>{
-	event.preventDefault();
-  fetch('/man/content/add', {
+  event.preventDefault();
+  getCurrentPath()
+  fetch(`/man/${userId}/content/add`, {
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
@@ -162,8 +163,8 @@ const filter = (event) => {
 	const dimension = pageEdit.querySelector( '.filter.filter__dimension' ).firstChild.value;
 	const item = pageEdit.querySelector( '.filter.filter__item' ).firstChild.value;
 	const detail = pageEdit.querySelector( '.filter.filter__detail' ).firstChild.value;
-
-	fetch( '/man/content/filter', {
+  getCurrentPath()
+	fetch( `/man/${userId}/content/filter`, {
 		method: 'POST',
 		body: JSON.stringify({
       'id': userId,
@@ -211,7 +212,7 @@ const saveContent = (event) => {
 	const content = node.querySelector( '.content' ).value;
   const index = node.querySelector( '.node-index').value;
 
-	fetch('/man/content/save', {
+	fetch(`/man/${userId}/content/save`, {
     method: 'POST',
     body: JSON.stringify({
       'id': userId,
@@ -251,7 +252,8 @@ const deleteContent = (event) =>{
     const title = node.querySelector( '.title' ).value;
     const index = node.querySelector( '.node-index').value;
 
-    fetch('/man/content/delete', {
+    getCurrentPath()
+    fetch(`/man/${userId}/content/delete`, {
       method: 'POST',
       body: JSON.stringify({
         'id': userId,
@@ -281,7 +283,7 @@ const deleteContent = (event) =>{
 fetchSchema();
 
 // fetch user name, get the current path and refresh the breadcrumb
-fetchUserName()
+//fetchUserName()
 
 // refresh dropdown
 $('select.dropdown')

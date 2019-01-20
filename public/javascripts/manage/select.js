@@ -99,7 +99,7 @@ $('select.dropdown')
   .dropdown()
 
 // fetch user name, get the current path and refresh the breadcrumb
-fetchUserName()
+//fetchUserName()
 
 // add event listener
 
@@ -115,8 +115,8 @@ header.querySelector('.add').addEventListener('click', addButtonClicked)
 // when addform submit rederect to the new project location
 addForm.addEventListener('submit', (event) => {
   event.preventDefault()
-
-  const reqURL = '/man/add'
+  getCurrentPath()
+  const reqURL = `/man/${userId}/file/add`
   const year = addForm.querySelector('.addForm__year')
   const school = addForm.querySelector('.addForm__school')
   const type = addForm.querySelector('.addForm__type').firstChild
