@@ -9,12 +9,12 @@ const router = express.Router({
 })
 
 const User = require('../../models/User/schema')
-const {getCampus} = require('../../models/User/op')
+const {getCampus, } = require('../../models/User/op')
 
 function splitArrayIntoContext(arr){
   let temp = []
   for(let name of arr){
-    let t;
+    let t
     let content = name.split('_')
     if(content.length <= 3){
       t = content[2].match(/[^.]+/)[0]
@@ -24,15 +24,15 @@ function splitArrayIntoContext(arr){
   return temp
 }
 
-router.get('/',async (req,res)=>{
+router.get('/', async(req, res)=>{
   try{
     if(!req.session.userId)
       throw new Error('unauthorized request')
 
-    const user = await new Promise((resolve,reject)=>{
+    const user = await new Promise((resolve, reject)=>{
       User.findOne({
-        id: req.session.userId
-      },(err,user)=>{
+        id: req.session.userId,
+      }, (err, user)=>{
         if(err) reject(err)
         if(user){
           resolve(user)
@@ -42,28 +42,28 @@ router.get('/',async (req,res)=>{
     const files = await getCampus({
       username: user.username,
       year : res.locals.year,
-      type : res.locals.type
+      type : res.locals.type,
     })
 
     // @todo remove dependency
     const context = splitArrayIntoContext(files)
 
-    res.render('manage/campus',{
+    res.render('manage/campus', {
       GLOBAL : {
         campuses : context,
         id : req.session.userId,
         user : user.username,
         year : res.locals.year,
-        type : res.locals.type
-      }
+        type : res.locals.type,
+      },
     })
   }
   catch (err){
-    res.status(403).render('error',{
+    res.status(403).render('error', {
       message : err,
       error: {
-        status: err.status
-      }
+        status: err.status,
+      },
     })
   }
 })

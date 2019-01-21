@@ -9,14 +9,14 @@ const router = express.Router({
 })
 
 const User = require('../../models/User/schema')
-const {getYear} = require('../../models/User/op')
+const {getYear, } = require('../../models/User/op')
 
-router.get('/',async (req,res)=>{
+router.get('/', async(req, res)=>{
   try{
-    const user = await new Promise((resolve,reject)=>{
+    const user = await new Promise((resolve, reject)=>{
       User.findOne({
-        id: req.session.userId
-      },(err,user)=>{
+        id: req.session.userId,
+      }, (err, user)=>{
         if(err)
           reject(err)
         if(user){
@@ -25,31 +25,31 @@ router.get('/',async (req,res)=>{
       })
     })
     const files = await getYear({
-      username : user.username
+      username : user.username,
     })
     //if years is undefined ,year.pug will render a empty files view
     if(files.length === 0)
-      res.render('manage/year',{
+      res.render('manage/year', {
         GLOBAL : {
           id :req.session.userId,
-          user : user.username
-        }
+          user : user.username,
+        },
       })
     else
-      res.render('manage/year',{
+      res.render('manage/year', {
         GLOBAL:{
           years : files,
           id: req.session.userId,
-          user : user.username
-        }
+          user : user.username,
+        },
       })
   }
   catch (err){
-    res.status(403).render('error',{
+    res.status(403).render('error', {
       message : err,
       error: {
-        status: err.status
-      }
+        status: err.status,
+      },
     })
   }
 })

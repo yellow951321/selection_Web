@@ -8,15 +8,15 @@ const router = express.Router({
   strict: false,
 })
 const User = require('../../models/User/schema')
-const {getCampusType} = require('../../models/User/op')
+const {getCampusType, } = require('../../models/User/op')
 
-router.get('/',async (req,res)=>{
+router.get('/', async(req, res)=>{
   try{
     //get user information assign to user
-    const user = await new Promise((resolve,reject)=>{
+    const user = await new Promise((resolve, reject)=>{
       User.findOne({
-        id : req.session.userId
-      },(err,user)=>{
+        id : req.session.userId,
+      }, (err, user)=>{
         if(err) reject(err)
         if(user){
           resolve(user)
@@ -26,23 +26,23 @@ router.get('/',async (req,res)=>{
     //get files under user/year folder
     const files = await getCampusType({
       username: user.username,
-      year : res.locals.year
+      year : res.locals.year,
     })
-    res.render('manage/type',{
+    res.render('manage/type', {
       GLOBAL: {
         types : files,
         id : req.session.userId,
         user : user.username,
-        year : res.locals.year
-      }
+        year : res.locals.year,
+      },
     })
   }
   catch (err) {
-    res.status(403).render('error',{
+    res.status(403).render('error', {
       message : err,
       error: {
-        status: err.status
-      }
+        status: err.status,
+      },
     })
   }
 })

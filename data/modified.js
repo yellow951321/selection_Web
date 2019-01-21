@@ -24,7 +24,7 @@ fs.readFile('107_普通大學_中山醫學大學.json', (err, data)=>{
         }
   }
   console.log(data)
-  fs.writeFile('107_普通大學_中山醫學大學.json', JSON.stringify(data,null,2), (err)=>{
+  fs.writeFile('107_普通大學_中山醫學大學.json', JSON.stringify(data, null, 2), (err)=>{
     if(err) console.log(err)
   })
 })

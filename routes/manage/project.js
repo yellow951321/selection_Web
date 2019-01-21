@@ -10,30 +10,28 @@ const router = express.Router({
 
 const OP = require('../../models/User/op')
 
-router.get('/',async (req,res)=>{
+router.get('/', async(req, res)=>{
   try{
 
-    const doc = await OP.findUsernameAsync(User,req.session.userId)
-    res.render('manage/edit',{
+    const doc = await OP.findUsernameAsync(req.session.userId)
+    res.render('manage/edit', {
       GLOBAL : {
         id : req.session.userId,
         user : doc.username,
         year : res.locals.year,
         type : res.locals.type,
-        campus : res.locals.campus
-      }
+        campus : res.locals.campus,
+      },
     })
   }
   catch (err){
-    res.status(403).render('error',{
+    res.status(403).render('error', {
       message : err,
       error: {
-        status: err.status
-      }
+        status: err.status,
+      },
     })
   }
 })
-
-
 
 module.exports = router

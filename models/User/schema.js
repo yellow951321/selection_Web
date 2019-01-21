@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
   id: {
     type: String,
     require: true,
-    trim: 30
-  }
+    trim: 30,
+  },
 })
 
 

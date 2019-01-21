@@ -1,14 +1,14 @@
 const fs = require('fs')
 
-const pathGen = (username,year,type,campus)=>{
+const pathGen = (username, year, type, campus)=>{
   return `data/${username}/${year}/${type}/${year}_${type}_${campus}.json`
 }
 
-const pathGenWithoutCampus = (username,year,type)=>{
+const pathGenWithoutCampus = (username, year, type)=>{
   return `data/${username}/${year}/${type}`
 }
 
-const pathGenDeleteName = (username,year,type,campus)=>{
+const pathGenDeleteName = (username, year, type, campus)=>{
   return `data/${username}/${year}/${type}/${year}_${type}_${campus}_d.json`
 }
 
@@ -17,7 +17,7 @@ const splitArrayIntoContext = (arr)=>{
   for(name of arr){
     let temp
     var context = name.split('_')
-    if(msContentScript.length <= 3){
+    if(context.length <= 3){
       t = content[2].match(/[^.]+/)[0]
       temp.push(t)
     }
@@ -25,11 +25,11 @@ const splitArrayIntoContext = (arr)=>{
   return temp
 }
 
-const objToNode = (range,project)=>{
+const objToNode = (range, project)=>{
   var context = []
   if(project[range.dimension][range.item][range.detail] instanceof Array && project[range.dimension][range.item][range.detail].length > 0){
-    for(const [index,content] of project[range.dimension][range.item][range.detail].entries()){
-      let t = {};
+    for(const [index, content, ] of project[range.dimension][range.item][range.detail].entries()){
+      let t = {}
       t.content = content.paragraph
       t.title = content.title
       t.page = {}
@@ -43,9 +43,9 @@ const objToNode = (range,project)=>{
   return context
 }
 
-const nodeToObj = async (path,info,body)=>{
-  const data = await new Promise((res,rej)=>{
-    fs.readFile(path,'utf-8',(err,data)=>{
+const nodeToObj = async(path, info, body)=>{
+  const data = await new Promise((res, rej)=>{
+    fs.readFile(path, 'utf-8', (err, data)=>{
       if(err) rej(err)
       if(data){
         data = JSON.parse(data)
@@ -54,14 +54,14 @@ const nodeToObj = async (path,info,body)=>{
     })
   })
   if(body instanceof Object){
-    let t = new ContentSchema(body.page,body.data,body.title);
+    let t = new ContentSchema(body.page, body.data, body.title)
     let arr = data[info.dimension][info.item][info.detail]
     arr[info.index] = t
   }
   return data
 }
 
-function ContentSchema(page,paragraph,title){
+function ContentSchema(page, paragraph, title){
   if(page.start && page.end){
     this.page = []
     this.page[0] = page.start
@@ -71,21 +71,21 @@ function ContentSchema(page,paragraph,title){
   this.title = title ? title : ''
 }
 
-const checkFileAsync = async (path,pathWithoutCampus)=>{
+const checkFileAsync = async(path, pathWithoutCampus)=>{
   try{
-    const state = await new Promise((res,rej)=>{
-      fs.stat(path,(err,state)=>{
+    const state = await new Promise((res, rej)=>{
+      fs.stat(path, (err, state)=>{
         if(err)
           rej(err)
         if(state)
           res(true)
       })
     })
-    return state
+    return state && true
   }
   catch (err){
-    const signal = await new Promise((res,rej)=>{
-      fs.mkdir(pathWithoutCampus,{recursive: true},(err)=>{
+    const signal = await new Promise((res, rej)=>{
+      fs.mkdir(pathWithoutCampus, {recursive: true, }, (err)=>{
         if(err) rej(new Error(err))
         res(true)
       })
@@ -102,5 +102,5 @@ module.exports = {
   objToNode,
   nodeToObj,
   checkFileAsync,
-  ContentSchema
+  ContentSchema,
 }
