@@ -11,12 +11,12 @@ const fs = require('fs')
 const {findUsernameAsync, } = require('../../../models/User/op')
 const OP = require('./fileOp')
 
-router.post('/filter', async(req, res)=>{
+router.get('/filter', async(req, res)=>{
   try{
     const doc = await findUsernameAsync(req.session.userId)
     // @todo remove dependency
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.body.year, req.body.type)
-    const path = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.query.year, req.query.type)
+    const path = OP.pathGen(doc.username, req.query.year, req.query.type, req.query.campus)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -25,9 +25,9 @@ router.post('/filter', async(req, res)=>{
       data = JSON.parse(data)
 
       const context = OP.objToNode({
-        dimension : req.body.dimension,
-        item : req.body.item,
-        detail : req.body.detail,
+        dimension : req.query.dimension,
+        item : req.query.item,
+        detail : req.query.detail,
       }, data)
 
       res.render('manage/component/filter', {
@@ -134,7 +134,7 @@ router.post('/save', async(req, res)=>{
   }
 })
 
-router.post('/delete', async(req, res)=>{
+router.delete('/delete', async(req, res)=>{
   try{
     const doc = await findUsernameAsync(req.session.userId)
     const path = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)

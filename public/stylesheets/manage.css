@@ -2,6 +2,7 @@
     margin-top: 1rem;
     margin-left: 3rem;
     margin-bottom: 1rem;
+    line-height: 80%;
 }
 
 .ui.button {
@@ -26,6 +27,17 @@
 }
 .segment p{
     font-size: 1.1rem;
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.save-message {
+    z-index: 101;
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    opacity: 0;
 }
 
 .add-content {
@@ -34,4 +46,8 @@
 
 .choice {
     padding-top: 0.1rem;
+}
+
+.choice-block {
+    padding-top: 1rem;
 }

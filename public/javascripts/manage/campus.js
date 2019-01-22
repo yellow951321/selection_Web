@@ -3,7 +3,7 @@ const header = document.getElementById('header')
 
 // add project button clicked
 const addButtonClicked = (event) => {
-  $('.ui.modal').modal({
+  $('#addForm').modal({
     onApprove : function(){return false},
   }).modal('show')
 }

@@ -29,7 +29,7 @@ router.post('/login', (req, res)=>{
       if(doc){
         resolve(doc)
       }else {
-        reject(new Error(`No matched account named ${req.body.id}`))
+        reject(new Error(`帳號或密碼錯誤`))
       }
     })
   })
@@ -38,7 +38,7 @@ router.post('/login', (req, res)=>{
       res.redirect(`/man/${doc.id}`)
     })
     .catch(err=>{
-      return res.status(400).send(err.message)
+      return res.status(400).render('login', {error:err.message})
     })
 })
 
