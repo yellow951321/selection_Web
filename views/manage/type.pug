@@ -5,6 +5,24 @@ append buttons
   a.add.ui.item 新增
 
 append content
+  //- popup addproject
+  .ui.container
+    form#addForm.ui.form.modal(action=`/man/${GLOBAL.id}/file/add`, method='POST')
+      h4.header 新增計畫
+      .content.field
+        label(for='year') 年份
+        input(type='number', min='0', max='300', step='1',value='108', name='year', required)
+        label(for='project') 學校類型
+        //- todo filter option
+        select.ui.selection.dropdown(type='text', placeholder='選擇學校類型', name='type', required)
+          option(value='普通大學') 普通大學
+          option(value='科技大學') 科技大學
+        label(for='campus') 學校
+        input(type='text', placeholder='Enter school Name', name='campus', required)
+      .actions
+        button.ui.black.deny.button(type='button') 取消
+        button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增
+
   //- content
   //- page select
   #page-select.ui.container.pusher

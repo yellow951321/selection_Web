@@ -1,33 +1,48 @@
 extends component/layout
 
 append content
+  //- popup addproject
+  .ui.container
+    #delete.ui.small.modal
+      .header 確定要刪除嗎
+      .content
+        p 確定要刪除這筆資料嗎
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 刪除
+
   //- content
   //- page edit
-  include mixins/_objects.pug
-  #page-edit.ui.container.pusher
-    form.ui.form.segment.filter
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-filter.ui.container.pusher
+    .ui.form.segment.filter
       .four.fields
         .field
           label 構面
           select.filter.filter__dimension.ui.selection.dropdown
-            each val, index in schema
-              if index != '年度' && index != '學校' && index != '類型'
-                option(value=index)=index
+            option(value='教學') 教學
+            option(value='研究') 研究
+            option(value='產學') 產學
+            option(value='社會責任') 社會責任
+            option(value='大學治理及公共性') 大學治理及公共性
         .field
           label 項目
           select.filter.filter__item.ui.selection.dropdown
-            each val, index in schema[ '教學' ]
-              option(value=index)=index
         .field
           label 詳細資料
           select.filter.filter__detail.ui.selection.dropdown
-            each val, index in schema[ '教學' ][ '強化教學品質' ]
-              option(value=index)=index
         .field
-          .ui.container.center.aligned(style='padding-top: 1rem')
-            button.ui.button.choice 選擇
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+
+  #page-edit.ui.container
+
 
   #footer.ui.container.center.aligned.transition.hidden
+    .ui.floating.message.transition.hidden
+      p 尚未新增任何資料
     button.add-content.ui.blue.button 新增
 
 append script
