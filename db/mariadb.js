@@ -10,7 +10,7 @@ const sequelize = new Sequelize(`${config.database.name}`,`${config.database.use
   // Disable inserting undefined values as NULL
   //-default: false
   omitNull: true,
-  // a flag for using a natice library or not
+  // a flag for using a native library or not
   //-default: false
   native: true,
 

@@ -1,7 +1,4 @@
 const schema = {
-  '年度':'10',
-  '學校':'',
-  '類型':'',
   '教學':{
     '強化教學品質':{
       '推廣創新教學模式':[],
@@ -323,6 +320,3 @@ const schema = {
     },
   },
 }
-
-// if(module)
-//   module.exports = schema

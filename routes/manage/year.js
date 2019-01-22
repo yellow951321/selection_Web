@@ -21,8 +21,8 @@ router.get('/', async (req, res)=>{
 
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
+
+    let {dataValues} = user
 
     const files = await getYear({
       username : dataValues.user_name,

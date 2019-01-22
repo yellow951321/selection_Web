@@ -168,11 +168,11 @@ router.delete('/delete', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
 
-    const path = OP.pathGen(dataValuse.user_name, req.body.year, req.body.type, req.body.campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValuse.user_name, req.body.year, req.body.type)
+    let {dataValues} = user
+
+    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -197,6 +197,7 @@ router.delete('/delete', async(req, res)=>{
     console.log('Deletion operation has been finished')
   }
   catch (err){
+    console.log(err.message)
     res.status(409).render('error', {
       message : err,
       error: {
