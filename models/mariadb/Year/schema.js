@@ -9,7 +9,7 @@ const yearSchema = {
     autoIncrement:true
   },
   year:{
-    type: Sequelize.INTEGER(32).UNSIGNED,
+    type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false
   },
   user_id:{

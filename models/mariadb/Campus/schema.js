@@ -35,6 +35,6 @@ const campusSchema = {
 //   paranoid: true
 // }
 
-const User = sequelize.define('types',campusSchema)
+const User = sequelize.define('campuses',campusSchema)
 
 module.exports = User
