@@ -1,9 +1,10 @@
 module.exports = {
   'database': {
-    'name': 'selection-web',
-    'host': 'localhost:27017',
-    'user': '',
-    'password': '',
+    'name': 'sinica',
+    'host': '140.116.245.105',
+    'port': 33060,
+    'user': 'nober',
+    'password': '123',
   },
   'server':{
     'domain': 'localhost',

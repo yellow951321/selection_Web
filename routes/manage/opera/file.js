@@ -8,15 +8,24 @@ const router = express.Router({
   strict: false,
 })
 const fs = require('fs')
-const {findUsernameAsync} = require('../../../models/User/op')
+const User = require('../../../models/mariadb/User/schema')
 const OP = require('./fileOp')
 const {Schema} = require('./../../../config')
 
 router.post('/add', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.body.year, req.body.type)
-    const path = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
+
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
+    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -64,11 +73,18 @@ router.post('/add', async(req, res)=>{
 
 router.post('/delete', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
-    const oldPath = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
-    const newPath = OP.pathGenDeleteName(doc.username, req.body.year, req.body.type, req.body.campus)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
+    const oldPath = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
+    const newPath = OP.pathGenDeleteName(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
 
-    // @todo finished
     await new Promise((resolve,reject)=>{
       fs.rename(oldPath, newPath, (err)=>{
         if(err) reject(err)

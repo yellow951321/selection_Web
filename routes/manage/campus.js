@@ -8,8 +8,8 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/User/schema')
-const {getCampus, } = require('../../models/User/op')
+const User = require('../../models/mariadb/User/schema')
+const {getCampus, } = require('../../models/mariadb/User/op')
 
 function splitArrayIntoContext(arr){
   let temp = []
@@ -26,21 +26,18 @@ function splitArrayIntoContext(arr){
 
 router.get('/', async(req, res)=>{
   try{
-    if(!req.session.userId)
-      throw new Error('unauthorized request')
-
-    const user = await new Promise((resolve, reject)=>{
-      User.findOne({
-        id: req.session.userId,
-      }, (err, user)=>{
-        if(err) reject(err)
-        if(user){
-          resolve(user)
+    const user = await User.findOne({
+        where:{
+          user_id: req.session.userId,
         }
-      })
     })
+
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
     const files = await getCampus({
-      username: user.username,
+      username: dataValues.user_name,
       year : res.locals.year,
       type : res.locals.type,
     })
@@ -52,7 +49,7 @@ router.get('/', async(req, res)=>{
       GLOBAL : {
         campuses : context,
         id : req.session.userId,
-        user : user.username,
+        user : dataValues.user_name,
         year : res.locals.year,
         type : res.locals.type,
       },

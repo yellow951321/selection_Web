@@ -8,15 +8,23 @@ const router = express.Router({
   strict: false,
 })
 const fs = require('fs')
-const {findUsernameAsync, } = require('../../../models/User/op')
+const User = require('../../../models/mariadb/User/schema')
 const OP = require('./fileOp')
 
 router.get('/filter', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
     // @todo remove dependency
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.query.year, req.query.type)
-    const path = OP.pathGen(doc.username, req.query.year, req.query.type, req.query.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.query.year, req.query.type)
+    const path = OP.pathGen(dataValues.user_name, req.query.year, req.query.type, req.query.campus)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -49,9 +57,17 @@ router.get('/filter', async(req, res)=>{
 
 router.post('/add', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.body.year, req.body.type)
-    const path = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
+    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -89,7 +105,16 @@ router.post('/add', async(req, res)=>{
 
 router.post('/save', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
+
     const year = req.body.year
     const type = req.body.type
     const campus = req.body.campus
@@ -97,8 +122,8 @@ router.post('/save', async(req, res)=>{
     const item = req.body.item
     const detail = req.body.detail
     const index = req.body.index
-    const path = OP.pathGen(doc.username, year, type, campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, year, type)
+    const path = OP.pathGen(dataValues.user_name, year, type, campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, year, type)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 
@@ -136,9 +161,18 @@ router.post('/save', async(req, res)=>{
 
 router.delete('/delete', async(req, res)=>{
   try{
-    const doc = await findUsernameAsync(req.session.userId)
-    const path = OP.pathGen(doc.username, req.body.year, req.body.type, req.body.campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(doc.username, req.body.year, req.body.type)
+    const user = await User.findOne({
+      where:{
+        user_id:req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues} = user
+
+    const path = OP.pathGen(dataValuse.user_name, req.body.year, req.body.type, req.body.campus)
+    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValuse.user_name, req.body.year, req.body.type)
 
     const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
 

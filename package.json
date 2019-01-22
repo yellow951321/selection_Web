@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env MODE=PRODUCTION node app.js",
     "s": "npm run start",
-    "develop": "cross-env MODE=DEVELOPMENT nodemon app.js",
+    "develop": "cross-env MODE=DEVELOPMENT nodemon app.mariadb.js",
     "d": "npm run develop",
     "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
     "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
@@ -14,8 +14,7 @@
     "l": "npm run lb && npm run lf",
     "preset": "cp db/config.js.default db/config.js",
     "p": "npm run preset",
-    "dNode":"cross-env MODE=DEVELOPMENT node app.js",
-    "dn": "npm run dNode"
+    "dNode": "cross-env MODE=DEVELOPMENT node app.js"
   },
   "dependencies": {
     "connect-mongo": "^2.0.3",
@@ -25,7 +24,9 @@
     "express-session": "^1.15.6",
     "mongoose": "^5.4.3",
     "morgan": "~1.9.0",
-    "pug": "2.0.0-beta11"
+    "mysql2": "^1.6.4",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^4.42.0"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

@@ -50,10 +50,6 @@ router.use('/:userId/:year',
   },
   typeRouter)
 
-router.use('/:userId',
-  (req, res, next)=>{
-    next()
-  },
-  yearRouter)
+router.use('/:userId',yearRouter)
 
 module.exports = router
