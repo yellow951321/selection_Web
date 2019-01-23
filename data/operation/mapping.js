@@ -1,7 +1,7 @@
 const map = {
 	"type": [
 		"普通大學",
-		"科技大學"
+		"技專院校"
 	],
 	"campus": {
 		"0": [
@@ -448,4 +448,40 @@ const map = {
 	]
 }
 
-module.exports = map;
+const getFromWord = (map,consult)=>{
+	if(consult.campus){
+		var type = getFromWord(map,{type:consult.type}).toString()
+		return map['campus'][type].indexOf(consult.campus)
+	}else{
+		for(let prop in consult){
+			//console.log(consult)
+			if(prop == 'type' || 'dimension' || 'item' || 'detail'){
+				//console.log(consult[prop])
+				//console.log(map[prop])
+				return map[prop].indexOf(consult[prop])
+			}
+		}
+	}
+}
+
+
+const getFromNum = (map,consult)=>{
+	if(consult.campus){
+		return map['campus'][consult.type][consult.campus]
+	}else{
+		for(let prop in consult){
+			if(prop == 'type' || 'dimension' || 'item' || 'detail'){
+				return map[prop][consult[prop]]
+			}
+		}
+	}
+}
+
+
+
+
+module.exports = {
+	map,
+	getFromWord,
+	getFromNum
+};
