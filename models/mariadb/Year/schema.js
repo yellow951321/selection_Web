@@ -1,5 +1,6 @@
 const sequelize = require('../../../db/mariadb')
 const Sequelize = require('sequelize')
+const User = require('../User/schema')
 const yearSchema = {
   year_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
