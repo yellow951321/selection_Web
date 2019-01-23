@@ -1,5 +1,6 @@
 const sequelize = require('../../../db/mariadb')
 const Sequelize = require('sequelize')
+const Campus = require('../Campus/schema')
 const dimensionSchema = {
   dimension_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -15,6 +16,13 @@ const dimensionSchema = {
   },
   campus_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
+    references:{
+      // This is a reference to another model
+      model: Campus,
+
+      // This is the column name of the referenced model
+      key: 'campus_id'
+    },
     allowNull: false
   }
 }
@@ -35,6 +43,6 @@ const dimensionSchema = {
 //   paranoid: true
 // }
 
-const User = sequelize.define('dimensions',dimensionSchema)
+const Dimension = sequelize.define('dimensions',dimensionSchema)
 
-module.exports = User
+module.exports = Dimension

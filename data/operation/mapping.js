@@ -1,6 +1,6 @@
 const map = {
 	"type": [
-		"普通大學",
+		"大學",
 		"技專院校"
 	],
 	"campus": {
@@ -171,7 +171,7 @@ const map = {
 		"研究",
 		"產學",
 		"社會責任",
-		"大學治理及公共性"
+		"大學治理與公共性"
 	],
 	"item": [
 		"強化教學品質",
@@ -466,7 +466,7 @@ const getFromWord = (map,consult)=>{
 
 
 const getFromNum = (map,consult)=>{
-	if(consult.campus){
+	if(consult.campus !== undefined){
 		return map['campus'][consult.type][consult.campus]
 	}else{
 		for(let prop in consult){

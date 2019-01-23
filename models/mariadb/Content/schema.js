@@ -1,5 +1,6 @@
 const sequelize = require('../../../db/mariadb')
 const Sequelize = require('sequelize')
+const Detail = require('../Detail/schema')
 const contentSchema = {
   content_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -7,6 +8,14 @@ const contentSchema = {
     primaryKey: true,
     autoIncrement: true,
     unique: true,
+  },
+  content_start:{
+    type: Sequelize.INTEGER(32).UNSIGNED,
+    allowNull: false
+  },
+  content_end:{
+    type: Sequelize.INTEGER(32).UNSIGNED,
+    allowNull: false
   },
   content_title:{
     type: Sequelize.STRING(45),
@@ -18,6 +27,13 @@ const contentSchema = {
   },
   detail_id: {
     type: Sequelize.INTEGER(32).UNSIGNED,
+    references:{
+      // This is a reference to another model
+      model: Detail,
+
+      // This is the column name of the referenced model
+      key: 'deatil_id'
+    },
     allowNull: false,
   }
 }
@@ -38,6 +54,6 @@ const contentSchema = {
 //   paranoid: true
 // }
 
-const User = sequelize.define('contents',campusSchema)
+const Content = sequelize.define('contents',contentSchema)
 
-module.exports = User
+module.exports = Content

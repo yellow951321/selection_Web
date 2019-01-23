@@ -16,17 +16,17 @@ describe('mapping test',()=>{
 
     expect(getFromWord(map,{
       campus: '中原大學',
-      type: '普通大學'
+      type: '大學'
     })).to.equal(0)
 
     expect(getFromWord(map,{
       campus: '國立東華大學',
-      type: '普通大學'
+      type: '大學'
     })).to.equal(3)
 
     expect(getFromWord(map,{
       campus: '元智大學',
-      type: '普通大學'
+      type: '大學'
     })).to.equal(15)
 
     expect(getFromWord(map,{
