@@ -17,6 +17,7 @@ const contentRouter = require('./opera/content')
 
 router.use('/:userId', (req, res, next)=>{
   if(req.session && req.session.userId == req.params.userId){
+    console.log(req.session)
     next()
   }else{
     res.redirect('/auth/login')
