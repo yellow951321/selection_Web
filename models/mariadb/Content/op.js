@@ -1,7 +1,7 @@
 const Content = require('./schema')
 
 function InsertContentByDetailId(detail_id, start, end, title, content){
-    return new Promise( (res,rej) => {
+    return new Promise( (res, rej) => {
         Content.create({
             content_start: start,
             content_end: end,
@@ -17,7 +17,7 @@ function InsertContentByDetailId(detail_id, start, end, title, content){
 }
 
 function updateContentById(content_id, start, end, title, content){
-    return new Promise( (res,rej) => {
+    return new Promise ( async (res,rej) => {
         Content.findOne({
             where: {
                 content_id: content_id
