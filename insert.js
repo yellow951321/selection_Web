@@ -1,6 +1,6 @@
 const { map,getFromWord,getFromNum } = require('./data/operation/mapping');
-const { insertYearByUserId } = require('./models/mariadb/Year/op')
-const { insertCampusByYearId } = require('./models/mariadb/Campus/op')
+const { insertYearByUserId, findAllCampusbyYearId } = require('./models/mariadb/Year/op')
+const { insertCampusByYearId, deleteCampus} = require('./models/mariadb/Campus/op')
 const { insertDimensionByCampusId } = require('./models/mariadb/Dimension/op')
 const { insertItemByDimensionId } = require('./models/mariadb/Item/op')
 const { insertDetailByItemId } = require('./models/mariadb/Detail/op')
@@ -10,15 +10,18 @@ const User = require('./models/mariadb/User/schema');
 
 const hihi = async () =>{
     try{
-        let files = await new Promise(( res,rej ) =>fs.readdir(`${__dirname}/data/大學/1`, (err, file) => {
-            if(err) return rej(err)
-            return res(file)
-        }))
+        // let files = await new Promise(( res,rej ) =>fs.readdir(`${__dirname}/data/大學/1`, (err, file) => {
+        //     if(err) return rej(err)
+        //     return res(file)
+        // }))
 
-        files = files.map(val => `${__dirname}/data/大學/1/${val}`)
-        for(let val of files){
-            await insertdata(val, '123456')
-        }
+        // files = files.map(val => `${__dirname}/data/大學/1/${val}`)
+        // for(let val of files){
+        //     await insertdata(val, '123456')
+        // }
+
+        let output = await deleteCampus(19)
+        console.log(output)
     }
     catch(err){
         console.log(err.message)

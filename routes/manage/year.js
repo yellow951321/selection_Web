@@ -9,6 +9,7 @@ const router = express.Router({
 })
 
 const User = require('../../models/mariadb/User/schema')
+const { map } = require('../../data/operation/mapping')
 const { findYearAll } = require('../../models/mariadb/Year/op')
 
 router.get('/', async (req, res)=>{
@@ -33,6 +34,7 @@ router.get('/', async (req, res)=>{
         GLOBAL : {
           id :req.session.userId,
           user : dataValues.user_name,
+          map: map.campus
         },
       })
     else
@@ -41,6 +43,7 @@ router.get('/', async (req, res)=>{
           years : files,
           id: req.session.userId,
           user : dataValues.user_name,
+          map: map.campus
         },
       })
   }

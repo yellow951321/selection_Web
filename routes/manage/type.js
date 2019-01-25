@@ -40,6 +40,7 @@ router.get('/', async(req, res)=>{
         id : req.session.userId,
         user : dataValues.user_name,
         year : res.locals.year,
+        map: map.campus,
       },
     })
   }

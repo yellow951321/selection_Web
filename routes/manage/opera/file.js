@@ -10,8 +10,8 @@ const router = express.Router({
 const User = require('../../../models/mariadb/User/schema')
 const {Schema} = require('./../../../config')
 const { map,getFromWord,getFromNum } = require('../../../data/operation/mapping');
-const { insertYearByUserId } = require('../../../models/mariadb/Year/op')
-const { insertCampusByYearId } = require('../../../models/mariadb/Campus/op')
+const { findYear, findYearAll, insertYearByUserId } = require('../../../models/mariadb/Year/op')
+const { deleteCampus, findCampus, insertCampusByYearId } = require('../../../models/mariadb/Campus/op')
 
 
 router.post('/add', async(req, res)=>{
@@ -45,7 +45,7 @@ router.post('/add', async(req, res)=>{
   }
 })
 
-router.post('/delete', async(req, res)=>{
+router.delete('/delete', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
@@ -54,21 +54,13 @@ router.post('/delete', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
-    const oldPath = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
-    const newPath = OP.pathGenDeleteName(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
 
-    await new Promise((resolve,reject)=>{
-      fs.rename(oldPath, newPath, (err)=>{
-        if(err) reject(err)
-        resolve()
-      })
-    })
-
-    res.redirect(`/man/${req.session.userId}/${req.body.year}/${req.body.type}`)
+    console.log(req.body.campus_id)
+    await deleteCampus(req.body.campus_id)
+    res.status(200).send('OK')
   }
   catch (err){
+    console.log(err)
     res.status(409).render('error', {
       message : err,
       error: {

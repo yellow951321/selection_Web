@@ -14,9 +14,9 @@ const OP = require('./fileOp')
 const { map,getFromWord,getFromNum } = require('../../../data/operation/mapping');
 const { findYear } = require('../../../models/mariadb/Year/op')
 const { findCampus } = require('../../../models/mariadb/Campus/op')
-const { findDimension } = require('../../../models/mariadb/Dimension/op')
-const { findItem } = require('../../../models/mariadb/Item/op')
-const { findDetail } = require('../../../models/mariadb/Detail/op')
+const { insertDimensionByCampusId, findDimension } = require('../../../models/mariadb/Dimension/op')
+const { insertItemByDimensionId, findItem } = require('../../../models/mariadb/Item/op')
+const { insertDetailByItemId, findDetail} = require('../../../models/mariadb/Detail/op')
 const { findContentAll ,insertContentByDetailId, updateContentById, deleteContentById} = require('../../../models/mariadb/Content/op')
 
 router.get('/filter', async(req, res)=>{
@@ -31,9 +31,9 @@ router.get('/filter', async(req, res)=>{
 
     let year_id =      (await findYear(req.session.userId, req.query.year)).year_id
     let campus_id =    (await findCampus(year_id, getFromWord(map, {campus: req.query.campus, type: req.query.type}), getFromWord(map, {type: req.query.type}))).campus_id
-    let dimension_id = (await findDimension(campus_id, getFromWord(map, {dimension: req.query.dimension}))).dimension_id;
-    let item_id =      (await findItem(dimension_id, getFromWord(map, {item: req.query.item}))).item_id;
-    let detail_id =    (await findDetail(item_id, getFromWord(map, {detail: req.query.detail}))).detail_id;
+    let dimension_id = (await insertDimensionByCampusId(campus_id, getFromWord(map, {dimension: req.query.dimension}))).dimension_id;
+    let item_id =      (await insertItemByDimensionId(dimension_id, getFromWord(map, {item: req.query.item}))).item_id;
+    let detail_id =    (await insertDetailByItemId(item_id, getFromWord(map, {detail: req.query.detail}))).detail_id;
 
     let context = await findContentAll(detail_id);
     context = context.map(val => {

@@ -12,19 +12,6 @@ const User = require('../../models/mariadb/User/schema')
 const { map, getFromNum, getFromWord} = require('../../data/operation/mapping')
 const { findCampusByType } = require('../../models/mariadb/Campus/op')
 
-// function splitArrayIntoContext(arr){
-//   let temp = []
-//   for(let name of arr){
-//     let t
-//     let content = name.split('_')
-//     if(content.length <= 3){
-//       t = content[2].match(/[^.]+/)[0]
-//       temp.push(t)
-//     }
-//   }
-//   return temp
-// }
-
 router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
@@ -40,7 +27,7 @@ router.get('/', async(req, res)=>{
 
     let context = await findCampusByType(res.locals.year_id, res.locals.type_id)
 
-    context = context.map(val => getFromNum(map, { campus: val.campus_name, type: res.locals.type_id}))
+    context = context.map(val => [ getFromNum(map, { campus: val.campus_name, type: res.locals.type_id}), val.campus_id] )
     res.render('manage/campus', {
       GLOBAL : {
         campuses : context,
@@ -48,6 +35,7 @@ router.get('/', async(req, res)=>{
         user : dataValues.user_name,
         year : res.locals.year,
         type : getFromNum(map, {type: res.locals.type_id}),
+        map: map.campus,
       },
     })
   }
