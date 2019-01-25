@@ -4,7 +4,7 @@ const { insertCampusByYearId } = require('./models/mariadb/Campus/op')
 const { insertDimensionByCampusId } = require('./models/mariadb/Dimension/op')
 const { insertItemByDimensionId } = require('./models/mariadb/Item/op')
 const { insertDetailByItemId } = require('./models/mariadb/Detail/op')
-const { InsertContentByDetailId, updateContentById} = require('./models/mariadb/Content/op')
+const { insertContentByDetailId, updateContentById} = require('./models/mariadb/Content/op')
 const fs = require('fs');
 const User = require('./models/mariadb/User/schema');
 
@@ -52,9 +52,7 @@ async function insertdata(path, username){
     try{
         let originData = await readSchema(path);
         let user = await findUserByName(username)
-
         let year = await insertYearByUserId(user.user_id, originData['年度'])
-
         let campus = await insertCampusByYearId(year.year_id, getFromWord(map,{
             campus: originData['學校'],
             type: originData['類型']
@@ -97,7 +95,7 @@ async function insertdata(path, username){
                                 detail: det
                             }))
                         }
-                        // await InsertContentByDetailId(detail.detail_id, cont['page'][0], cont['page'][1], cont['title'], cont['paragraph'])
+                        // await insertContentByDetailId(detail.detail_id, cont['page'][0], cont['page'][1], cont['title'], cont['paragraph'])
                     }
                 }
             }

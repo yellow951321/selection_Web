@@ -8,7 +8,8 @@ const router = express.Router({
   strict: false,
 })
 const User = require('../../models/mariadb/User/schema')
-const {getCampusType, } = require('../../models/mariadb/User/op')
+const { map, getFromNum, getFromWord} = require('../../data/operation/mapping')
+const { findCampusByType } = require('../../models/mariadb/Campus/op')
 
 router.get('/', async(req, res)=>{
   try{
@@ -23,11 +24,16 @@ router.get('/', async(req, res)=>{
     else
       var {dataValues} = user
 
-    //get files under user/year folder
-    const files = await getCampusType({
-      username: dataValues.user_name,
-      year : res.locals.year,
-    })
+    let files = []
+    // check if there's 普通大學 in the database
+    let checkType = await findCampusByType(res.locals.year_id, '0')
+    if(checkType.length !== 0)
+      files.push(getFromNum(map, {type: '0'}))
+
+    // check if there's 技職學校 in the database
+    checkType = await findCampusByType(res.locals.year_id, '1')
+    if(checkType.length !== 0)
+      files.push(getFromNum(map, {type: '1'}))
     res.render('manage/type', {
       GLOBAL: {
         types : files,

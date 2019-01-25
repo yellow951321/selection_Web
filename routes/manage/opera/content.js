@@ -11,6 +11,14 @@ const fs = require('fs')
 const User = require('../../../models/mariadb/User/schema')
 const OP = require('./fileOp')
 
+const { map,getFromWord,getFromNum } = require('../../../data/operation/mapping');
+const { findYear } = require('../../../models/mariadb/Year/op')
+const { findCampus } = require('../../../models/mariadb/Campus/op')
+const { findDimension } = require('../../../models/mariadb/Dimension/op')
+const { findItem } = require('../../../models/mariadb/Item/op')
+const { findDetail } = require('../../../models/mariadb/Detail/op')
+const { findContentAll ,insertContentByDetailId, updateContentById, deleteContentById} = require('../../../models/mariadb/Content/op')
+
 router.get('/filter', async(req, res)=>{
   try{
     const user = await User.findOne({
@@ -20,30 +28,31 @@ router.get('/filter', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
-    // @todo remove dependency
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.query.year, req.query.type)
-    const path = OP.pathGen(dataValues.user_name, req.query.year, req.query.type, req.query.campus)
 
-    const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
+    let year_id =      (await findYear(req.session.userId, req.query.year)).year_id
+    let campus_id =    (await findCampus(year_id, getFromWord(map, {campus: req.query.campus, type: req.query.type}), getFromWord(map, {type: req.query.type}))).campus_id
+    let dimension_id = (await findDimension(campus_id, getFromWord(map, {dimension: req.query.dimension}))).dimension_id;
+    let item_id =      (await findItem(dimension_id, getFromWord(map, {item: req.query.item}))).item_id;
+    let detail_id =    (await findDetail(item_id, getFromWord(map, {detail: req.query.detail}))).detail_id;
 
-    if(isExist){
-      let data = fs.readFileSync(path, 'utf-8')
-      data = JSON.parse(data)
-
-      const context = OP.objToNode({
-        dimension : req.query.dimension,
-        item : req.query.item,
-        detail : req.query.detail,
-      }, data)
-
-      res.render('manage/component/filter', {
-        GLOBAL :{
-          contents : context,
+    let context = await findContentAll(detail_id);
+    context = context.map(val => {
+      return {
+        page: {
+          start: val.content_start,
+          end: val.content_end
         },
-      })
-    }
+        title: val.content_title,
+        content: val.content_content,
+        index: val.content_id
+      }
+    })
+
+    res.render('manage/component/filter', {
+      GLOBAL :{
+        contents : context,
+      },
+    })
   }
   catch (err){
     res.status(409).render('error', {
@@ -64,34 +73,19 @@ router.post('/add', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
-    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
 
-    const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
+    let year_id =      (await findYear(req.session.userId, req.body.year)).year_id
+    let campus_id =    (await findCampus(year_id, getFromWord(map, {campus: req.body.campus, type: req.body.type}), getFromWord(map, {type: req.body.type}))).campus_id
+    let dimension_id = (await findDimension(campus_id, getFromWord(map, {dimension: req.body.dimension}))).dimension_id;
+    let item_id =      (await findItem(dimension_id, getFromWord(map, {item: req.body.item}))).item_id;
+    let detail_id =    (await findDetail(item_id, getFromWord(map, {detail: req.body.detail}))).detail_id;
 
-    if(isExist){
-      var data = fs.readFileSync(path, 'utf-8')
-      data = JSON.parse(data)
-
-      let t = new OP.ContentSchema({start:1, end:1, }, '', '')
-      data[req.body.dimension][req.body.item][req.body.detail].push(t)
-      let length = data[req.body.dimension][req.body.item][req.body.detail].length-1
-
-      await new Promise((resolve,reject)=>{
-        fs.writeFile(path, JSON.stringify(data, null, 2), (err)=>{
-          if(err) reject(err)
-          resolve()
-        })
-      })
-
-      res.render('manage/component/newEdit', {
-        GLOBAL : {
-          index : length,
-        },
-      })
-    }
+    let content = await insertContentByDetailId(detail_id, 1, 1, '', '')
+    res.render('manage/component/newEdit', {
+      GLOBAL : {
+        index : content.content_id,
+      },
+    })
   }
   catch (err){
     res.status(409).render('error', {
@@ -115,38 +109,8 @@ router.post('/save', async(req, res)=>{
     else
       var {dataValues} = user
 
-    const year = req.body.year
-    const type = req.body.type
-    const campus = req.body.campus
-    const dimension = req.body.dimension
-    const item = req.body.item
-    const detail = req.body.detail
-    const index = req.body.index
-    const path = OP.pathGen(dataValues.user_name, year, type, campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, year, type)
+    await updateContentById(req.body.content_id, req.body.page.start, req.body.page.end, req.body.title, req.body.content)
 
-    const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
-
-    if(isExist){
-        var modData = await OP.nodeToObj(path,
-          {
-            dimension :dimension,
-            item : item,
-            detail : detail,
-            index : index,
-          }, {
-            page : req.body.page,
-            title : req.body.title,
-            data : req.body.data,
-          })
-
-      await new Promise((resolve,reject)=>{
-        fs.writeFile(path, JSON.stringify(modData, null, 2), (err)=>{
-          if(err) reject(err)
-          resolve()
-        })
-      })
-    }
     res.status(200).send('OK')
   }
   catch (err){
@@ -169,31 +133,9 @@ router.delete('/delete', async(req, res)=>{
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
 
-    let {dataValues} = user
+    let message = await deleteContentById(req.body.content_id)
 
-    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
-
-    const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
-
-    if(isExist)
-      var data = fs.readFileSync(path, 'utf-8')
-    data = JSON.parse(data)
-
-    let deleteObj = data[req.body.dimension][req.body.item][req.body.detail]
-    if(deleteObj instanceof Array){
-      data[req.body.dimension][req.body.item][req.body.detail] = deleteObj.filter((element, index)=>{
-        return index != req.body.index
-      })
-    }
-
-    await new Promise((resolve,reject)=>{
-      fs.writeFile(path, JSON.stringify(data, null, 2), (err)=>{
-        if(err) reject(err)
-        resolve()
-      })
-    })
-    res.status(200).send('OK')
+    res.status(200).send(message)
     console.log('Deletion operation has been finished')
   }
   catch (err){

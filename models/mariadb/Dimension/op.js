@@ -11,7 +11,7 @@ function findDimension(campus_id, dimension){
         .then(data => res(data))
         .catch(err => rej(err))
     })
-    .then(data => {return  data})
+    .then(data => {return data})
     .catch(err => {throw err})
 }
 

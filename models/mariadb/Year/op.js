@@ -15,7 +15,7 @@ function findYear(user_id, year){
     .catch(err => {throw err})
 }
 
-function findYear(user_id){
+function findYearAll(user_id){
     return new Promise((res,rej) => {
         Year.findAll({
             where: {
@@ -47,5 +47,6 @@ function insertYearByUserId(user_id, inputYear){
 
 module.exports ={
     findYear,
+    findYearAll,
     insertYearByUserId,
 }

@@ -7,10 +7,12 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const fs = require('fs')
 const User = require('../../../models/mariadb/User/schema')
-const OP = require('./fileOp')
 const {Schema} = require('./../../../config')
+const { map,getFromWord,getFromNum } = require('../../../data/operation/mapping');
+const { insertYearByUserId } = require('../../../models/mariadb/Year/op')
+const { insertCampusByYearId } = require('../../../models/mariadb/Campus/op')
+
 
 router.post('/add', async(req, res)=>{
   try{
@@ -21,43 +23,15 @@ router.post('/add', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    else
-      var {dataValues} = user
 
-    const pathWithoutCampus = OP.pathGenWithoutCampus(dataValues.user_name, req.body.year, req.body.type)
-    const path = OP.pathGen(dataValues.user_name, req.body.year, req.body.type, req.body.campus)
+    let year = await insertYearByUserId(user.user_id, req.body.year)
+    let type = getFromNum(map,{type: req.body.type})
+    let campus = await insertCampusByYearId(year.year_id, getFromWord(map,{
+        campus: req.body.campus,
+        type: type
+    }), req.body.type)
 
-    const isExist = await OP.checkFileAsync(path, pathWithoutCampus)
-
-    if(isExist)
-      await new Promise((res, rej)=>{
-        fs.copyFile(Schema, path, (err)=>{
-          if(err) rej(err)
-          else res()
-        })
-      })
-    // @todo remove dependency
-    const data = await new Promise((res, rej)=>{
-      fs.readFile(path, (err, data)=>{
-        if(err) rej(err)
-        if(data){
-          data = JSON.parse(data)
-          data['年度'] = req.body.year
-          data['學校'] = req.body.campus
-          data['類型'] = req.body.type
-          res(data)
-        }
-      })
-    })
-
-    await new Promise((resolve,reject)=>{
-      fs.writeFile(path, JSON.stringify(data, null, 2), (err)=>{
-        if(err) reject(err)
-        resolve()
-      })
-    })
-
-    res.redirect(`/man/${req.session.userId}/${req.body.year}/${req.body.type}/${req.body.campus}`)
+    res.redirect(`/man/${req.session.userId}/${req.body.year}/${type}/${req.body.campus}`)
     console.log('Add operation is finished')
 
   }

@@ -9,20 +9,21 @@ const router = express.Router({
 })
 
 const User = require('../../models/mariadb/User/schema')
-const {getCampus, } = require('../../models/mariadb/User/op')
+const { map, getFromNum, getFromWord} = require('../../data/operation/mapping')
+const { findCampusByType } = require('../../models/mariadb/Campus/op')
 
-function splitArrayIntoContext(arr){
-  let temp = []
-  for(let name of arr){
-    let t
-    let content = name.split('_')
-    if(content.length <= 3){
-      t = content[2].match(/[^.]+/)[0]
-      temp.push(t)
-    }
-  }
-  return temp
-}
+// function splitArrayIntoContext(arr){
+//   let temp = []
+//   for(let name of arr){
+//     let t
+//     let content = name.split('_')
+//     if(content.length <= 3){
+//       t = content[2].match(/[^.]+/)[0]
+//       temp.push(t)
+//     }
+//   }
+//   return temp
+// }
 
 router.get('/', async(req, res)=>{
   try{
@@ -36,22 +37,17 @@ router.get('/', async(req, res)=>{
       throw new Error(`No userId ${req.session.userId}`)
     else
       var {dataValues} = user
-    const files = await getCampus({
-      username: dataValues.user_name,
-      year : res.locals.year,
-      type : res.locals.type,
-    })
 
-    // @todo remove dependency
-    const context = splitArrayIntoContext(files)
+    let context = await findCampusByType(res.locals.year_id, res.locals.type_id)
 
+    context = context.map(val => getFromNum(map, { campus: val.campus_name, type: res.locals.type_id}))
     res.render('manage/campus', {
       GLOBAL : {
         campuses : context,
         id : req.session.userId,
         user : dataValues.user_name,
         year : res.locals.year,
-        type : res.locals.type,
+        type : getFromNum(map, {type: res.locals.type_id}),
       },
     })
   }
