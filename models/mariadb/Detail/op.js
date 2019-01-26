@@ -15,6 +15,14 @@ function findDetail(item_id, detail){
     .catch(err => {throw err})
 }
 
+function findDetailAll(item_id){
+  return Detail.findAll({
+    where:{
+      item_id: item_id
+    }
+  })
+}
+
 function insertDetailByItemId(item_id, inputDetail){
   return new Promise(async(res, rej) => {
     let outputDetail = await findDetail(item_id, inputDetail)
@@ -33,5 +41,6 @@ function insertDetailByItemId(item_id, inputDetail){
 
 module.exports ={
   findDetail,
+  findDetailAll,
   insertDetailByItemId,
 }

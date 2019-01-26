@@ -14,7 +14,7 @@ const campusRouter = require('./campus')
 const projectRouter = require('./project')
 const fileRouter = require('./opera/file')
 const contentRouter = require('./opera/content')
-
+const d3Router = require('./opera/graph')
 
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
 const { findYear, } = require('../../models/mariadb/Year/op')
@@ -59,5 +59,7 @@ router.use('/:userId/:year/:type/:campus',
     next()
   },
   projectRouter)
+
+router.use('/:userId/:year/:type/:campus/graph',d3Router)
 
 module.exports = router

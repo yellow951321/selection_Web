@@ -15,6 +15,14 @@ function findDimension(campus_id, dimension){
     .catch(err => {throw err})
 }
 
+function findDimensionAll(campus_id){
+  return Dimension.findAll({
+    where:{
+      campus_id: campus_id
+    }
+  })
+}
+
 function insertDimensionByCampusId(campus_id, inputDimension){
   return new Promise(async(res, rej) => {
     let outputDimension = await findDimension(campus_id, inputDimension)
@@ -34,5 +42,6 @@ function insertDimensionByCampusId(campus_id, inputDimension){
 
 module.exports ={
   findDimension,
+  findDimensionAll,
   insertDimensionByCampusId,
 }

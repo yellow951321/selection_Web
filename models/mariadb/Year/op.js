@@ -39,6 +39,7 @@ function insertYearByUserId(user_id, inputYear){
     .catch(err => {throw err})
 }
 
+
 module.exports ={
   findYear,
   findYearAll,
