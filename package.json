@@ -5,14 +5,14 @@
   "scripts": {
     "start": "cross-env MODE=PRODUCTION node app.js",
     "s": "npm run start",
-    "develop": "cross-env MODE=DEVELOPMENT nodemon app.mariadb.js",
+    "develop": "cross-env MODE=DEVELOPMENT nodemon app.js",
     "d": "npm run develop",
     "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
     "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
     "lb": "npm run lint:backend",
     "lf": "npm run lint:frontend",
     "l": "npm run lb && npm run lf",
-    "preset": "cp db/config.js.default db/config.js",
+    "preset": "cp config.js.default config.js",
     "p": "npm run preset",
     "dNode": "cross-env MODE=DEVELOPMENT node app.js"
   },

@@ -1,7 +1,8 @@
-config = {
+const config = {
   'database': {
-    'database': 'test',
-    'host': 'localhost:27017',
+    'database': 'sinica',
+    'host': '',
+    'port': 3306,
     'user': '',
     'password': '',
   },

@@ -16,13 +16,13 @@ router.get('/login', (req, res)=>{
   res.render('login')
 })
 
-router.post('/login', async (req, res)=>{
-   try{
+router.post('/login', async(req, res)=>{
+  try{
     const doc = await User.findOne({
       where:{
         user_name: req.body.username,
         password: req.body.password,
-      }
+      },
     })
 
     if(doc != null){
@@ -34,7 +34,7 @@ router.post('/login', async (req, res)=>{
   }
   catch(err){
     console.log(err.message)
-    res.status(400).render('login',{error: err.message})
+    res.status(400).render('login', {error: err.message, })
   }
 })
 
@@ -47,7 +47,7 @@ router.get('/signup', (req, res)=>{
   res.render('signup')
 })
 
-router.post('/signup', async (req, res)=>{
+router.post('/signup', async(req, res)=>{
   var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>', 'gi')
   try{
     if(rMatch.test(req.body.username) || rMatch.test(req.body.password))
@@ -55,14 +55,14 @@ router.post('/signup', async (req, res)=>{
 
     const promise = await User.create({
       user_name : req.body.username,
-      password: req.body.password
+      password: req.body.password,
     })
 
     if(promise){
-      await new Promise((resolve,reject)=>{
-          fs.mkdir(`data/${req.body.username}`,{recursive: true},(err)=>{
-            if(err) reject(err)
-            resolve(true)
+      await new Promise((resolve, reject)=>{
+        fs.mkdir(`data/${req.body.username}`, {recursive: true, }, (err)=>{
+          if(err) reject(err)
+          resolve(true)
         })
       })
     }
@@ -71,7 +71,7 @@ router.post('/signup', async (req, res)=>{
   }
   catch (err){
     console.log(err)
-    res.status(400).render('signup',{error:err.message})
+    res.status(400).render('signup', {error:err.message, })
   }
 })
 

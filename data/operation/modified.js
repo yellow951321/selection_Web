@@ -1,9 +1,9 @@
 const fs = require('fs')
 
 
-const readdir = async ()=>{
-  const files = await new Promise((res,rej)=>{
-    fs.readdir('root/',(err,files)=>{
+const readdir = async()=>{
+  const files = await new Promise((res, rej)=>{
+    fs.readdir('root/', (err, files)=>{
       if(err) rej(err)
       res(files)
     })
@@ -12,8 +12,8 @@ const readdir = async ()=>{
   var pathCol = []
   if(files instanceof Array){
     for(let num of files){
-      const campuses = await new Promise((res,rej)=>{
-        fs.readdir(`root/${num}`,(err,files)=>{
+      const campuses = await new Promise((res, rej)=>{
+        fs.readdir(`root/${num}`, (err, files)=>{
           if(err) rej(err)
           res(files)
         })
@@ -30,11 +30,11 @@ const readdir = async ()=>{
 
 const readdirStep = async(path)=>{
   try{
-    const files = await new Promise((res,rej)=>{
-        fs.readdir(path,(err,files)=>{
-          if(err) rej(err)
-          res(files)
-        })
+    const files = await new Promise((res, rej)=>{
+      fs.readdir(path, (err, files)=>{
+        if(err) rej(err)
+        res(files)
+      })
     })
     var pathCol = []
     files.forEach((ele)=>{
@@ -48,19 +48,19 @@ const readdirStep = async(path)=>{
   }
 }
 
-const lint = async (path)=>{
+const lint = async(path)=>{
   const pathCol = await readdirStep(path)
   if(!(pathCol instanceof Array))
     throw new Error('pathCol is not a array')
-    pathCol.forEach((ele)=>{
-      mod(ele)
-    })
+  pathCol.forEach((ele)=>{
+    mod(ele)
+  })
 }
 
-const mod = async (path)=>{
+const mod = async(path)=>{
   try{
-    const data = await new Promise((res,rej)=>{
-      fs.readFile(path,(err,data)=>{
+    const data = await new Promise((res, rej)=>{
+      fs.readFile(path, (err, data)=>{
         if(err) rej(err)
         console.log(path)
         data = JSON.parse(data)
@@ -68,7 +68,7 @@ const mod = async (path)=>{
       })
     })
 
-    await new Promise((res,rej)=>{
+    await new Promise((res, rej)=>{
       for(dimension in data)
         for(item in data[dimension])
           for(detail in data[dimension][item]){
@@ -87,7 +87,7 @@ const mod = async (path)=>{
           }
       res()
     })
-    fs.writeFile(path,JSON.stringify(data,null,2),(err)=>{
+    fs.writeFile(path, JSON.stringify(data, null, 2), (err)=>{
       if(err) console.log(err)
       console.log(`${path} finished`)
     })

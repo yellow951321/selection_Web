@@ -63,4 +63,4 @@ typings/
 .vscode
 *.swp
 package-lock.json
-db/config.js
+config.js

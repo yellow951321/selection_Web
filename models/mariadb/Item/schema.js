@@ -12,7 +12,7 @@ const ItemSchema = {
   item_name:{
     type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   dimension_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -21,10 +21,10 @@ const ItemSchema = {
       model: Dimension,
 
       // This is the column name of the referenced model
-      key: 'dimenion_id'
+      key: 'dimenion_id',
     },
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 // use for some setting but ignored
@@ -43,6 +43,6 @@ const ItemSchema = {
 //   paranoid: true
 // }
 
-const Item = sequelize.define('items',ItemSchema)
+const Item = sequelize.define('items', ItemSchema)
 
 module.exports = Item

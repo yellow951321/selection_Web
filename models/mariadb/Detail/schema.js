@@ -13,7 +13,7 @@ const detailSchema = {
   detail_name:{
     type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   item_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -22,10 +22,10 @@ const detailSchema = {
       model: Item,
 
       // This is the column name of the referenced model
-      key: 'item_id'
+      key: 'item_id',
     },
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 // use for some setting but ignored
@@ -44,6 +44,6 @@ const detailSchema = {
 //   paranoid: true
 // }
 
-const Detail = sequelize.define('details',detailSchema)
+const Detail = sequelize.define('details', detailSchema)
 
 module.exports = Detail

@@ -1,29 +1,29 @@
 const fs = require('fs')
 
-var arr = [];
-const readCampus = async ()=>{
+var arr = []
+const readCampus = async()=>{
   try{
-    const rootF = await new Promise((res,rej)=>{
-      fs.readdir('root/',(err,files)=>{
+    const rootF = await new Promise((res, rej)=>{
+      fs.readdir('root/', (err, files)=>{
         if(err) rej(err)
         res(files)
       })
     })
 
-    const rootF2 = await new Promise((res,rej)=>{
-      fs.readdir('root2/',(err,files)=>{
+    const rootF2 = await new Promise((res, rej)=>{
+      fs.readdir('root2/', (err, files)=>{
         if(err) rej(err)
         res(files)
       })
     })
 
     if(rootF instanceof Array && rootF2 instanceof Array){
-      const [universities,collages] = await Promise.all([
-        (async ()=>{
+      const [universities, collages, ] = await Promise.all([
+        (async()=>{
           var arr = []
           for(let name of rootF2){
-            await new Promise((res,rej)=>{
-              fs.readdir('root2/'+name,(err,names)=>{
+            await new Promise((res, rej)=>{
+              fs.readdir('root2/'+name, (err, names)=>{
                 if(err) rej(err)
                 names.forEach((e)=>{
                   e = e.split('.')
@@ -35,11 +35,11 @@ const readCampus = async ()=>{
           }
           return arr
         })(),
-        (async ()=>{
+        (async()=>{
           var arr = []
           for(let name of rootF){
-            await new Promise((res,rej)=>{
-              fs.readdir('root/'+name,(err,names)=>{
+            await new Promise((res, rej)=>{
+              fs.readdir('root/'+name, (err, names)=>{
                 if(err) rej(err)
                 names.forEach((e)=>{
                   e = e.split('.')
@@ -50,15 +50,15 @@ const readCampus = async ()=>{
             })
           }
           return arr
-        })()
+        })(),
       ])
       console.log(universities)
       console.log(collages)
       var campus = {
         0: universities,
-        1: collages
+        1: collages,
       }
-      fs.writeFile('result.json',JSON.stringify(campus,null,2),(err)=>{
+      fs.writeFile('result.json', JSON.stringify(campus, null, 2), (err)=>{
         if(err) console.log(err)
       })
     }

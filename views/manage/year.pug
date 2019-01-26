@@ -11,20 +11,19 @@ append content
       h4.header 新增計畫
       .content.field
         label(for='year') 年份
-        input(type='number', min='0', max='300', step='1',value='108', name='year', required)
+        input(type='number', min='90', max='300', step='1', value='108', name='year', required)
         label(for='project') 學校類型
         select.type-dropdown.ui.selection.dropdown(type='text', placeholder='選擇學校類型', name='type', required)
           option(value='0') 大學
           option(value='1') 技職學校
         label(for='campus') 學校
         select.campus-dropdown.ui.selection.dropdown(type='text', placeholder='Enter school Name', name='campus', required)
-
         .normal.ui.transition.hidden
           each val in GLOBAL['map']['0']
-            option(value= val)=val
+            option(value=val)=val
         .others.ui.transition.hidden
           each val in GLOBAL['map']['1']
-            option(value= val)=val
+            option(value=val)=val
 
       .actions
         button.ui.black.deny.button(type='button') 取消
@@ -33,7 +32,7 @@ append content
   //- content
   //- page select
   #page-select.ui.container.pusher
-    if GLOBAL['years']
+    if GLOBAL['years'].length
       for val in GLOBAL['years']
         a.ui.fluid.big.button(href=`/man/${GLOBAL['id']}/${val}`)=val
     else
