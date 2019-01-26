@@ -11,11 +11,11 @@ const contentSchema = {
   },
   content_start:{
     type: Sequelize.INTEGER(32).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   content_end:{
     type: Sequelize.INTEGER(32).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   content_title:{
     type: Sequelize.STRING(45),
@@ -23,7 +23,7 @@ const contentSchema = {
   },
   content_content:{
     type: Sequelize.STRING(1000),
-    allowNull: false
+    allowNull: false,
   },
   detail_id: {
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -32,10 +32,10 @@ const contentSchema = {
       model: Detail,
 
       // This is the column name of the referenced model
-      key: 'deatil_id'
+      key: 'deatil_id',
     },
     allowNull: false,
-  }
+  },
 }
 
 // use for some setting but ignored
@@ -54,6 +54,6 @@ const contentSchema = {
 //   paranoid: true
 // }
 
-const Content = sequelize.define('contents',contentSchema)
+const Content = sequelize.define('contents', contentSchema)
 
 module.exports = Content

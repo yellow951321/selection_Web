@@ -12,7 +12,7 @@ const campusSchema = {
   campus_name:{
     type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   campus_type:{
     type: Sequelize.TINYINT(1).UNSIGNED.ZEROFILL,
@@ -25,10 +25,10 @@ const campusSchema = {
       model: Year,
 
       // This is the column name of the referenced model
-      key: 'year_id'
+      key: 'year_id',
     },
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 // use for some setting but ignored
@@ -47,6 +47,6 @@ const campusSchema = {
 //   paranoid: true
 // }
 
-const Campus = sequelize.define('campuses',campusSchema)
+const Campus = sequelize.define('campuses', campusSchema)
 
 module.exports = Campus

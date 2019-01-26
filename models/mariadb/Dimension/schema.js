@@ -12,7 +12,7 @@ const dimensionSchema = {
   dimension_name:{
     type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   campus_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -21,10 +21,10 @@ const dimensionSchema = {
       model: Campus,
 
       // This is the column name of the referenced model
-      key: 'campus_id'
+      key: 'campus_id',
     },
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 // use for some setting but ignored
@@ -43,6 +43,6 @@ const dimensionSchema = {
 //   paranoid: true
 // }
 
-const Dimension = sequelize.define('dimensions',dimensionSchema)
+const Dimension = sequelize.define('dimensions', dimensionSchema)
 
 module.exports = Dimension

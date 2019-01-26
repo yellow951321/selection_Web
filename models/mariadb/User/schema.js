@@ -11,12 +11,12 @@ const userSchema = {
   user_name:{
     type: Sequelize.STRING(20),
     allowNull: false,
-    unique: true
+    unique: true,
   },
   password:{
     type: Sequelize.STRING(20),
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 // use for some setting but ignored
@@ -35,6 +35,6 @@ const userSchema = {
   paranoid: true
 }*/
 
-const User = sequelize.define('users',userSchema)
+const User = sequelize.define('users', userSchema)
 
 module.exports = User

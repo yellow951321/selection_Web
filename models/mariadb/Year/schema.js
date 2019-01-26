@@ -7,11 +7,11 @@ const yearSchema = {
     allowNull: false,
     primaryKey: true,
     unique: true,
-    autoIncrement:true
+    autoIncrement:true,
   },
   year:{
     type: Sequelize.INTEGER(10).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   user_id:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -20,12 +20,12 @@ const yearSchema = {
       model: User,
 
       // This is the column name of the referenced model
-      key: 'user_id'
+      key: 'user_id',
     },
     allowNull: false,
-  }
+  },
 }
 
-const Year = sequelize.define('years',yearSchema)
+const Year = sequelize.define('years', yearSchema)
 
 module.exports = Year

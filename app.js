@@ -5,12 +5,22 @@ const logger = require('morgan')
 
 const config = require('./config')
 const auth = require('./routes/auth')
-const mongoose = require('./db/mongoose')
-//const managerRouter = require('./routes/manager')
+const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
 const app = express()
 
 const isDevMode = process.env.MODE == 'DEVELOPMENT'
+
+
+//test the connection of sequelize
+sequelize
+  .authenticate()
+  .then(()=>{
+    console.log('Connection has been established successfully')
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database', err)
+  })
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))

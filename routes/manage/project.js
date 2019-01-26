@@ -14,14 +14,14 @@ router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id:req.session.userId
-      }
+        user_id:req.session.userId,
+      },
     })
 
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
     else
-      var {dataValues} = user
+      var {dataValues, } = user
 
     res.render('manage/edit', {
       GLOBAL : {
