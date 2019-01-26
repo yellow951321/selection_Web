@@ -174,26 +174,25 @@ class Filter{
       const title = editNode.querySelector('.title').value
       const content = editNode.querySelector('.content').value
       // @TODO save by id
-      const index = editNode.querySelector('.node-index').value
+      const content_id = editNode.querySelector('.node-index').value
 
       fetch(`/man/${that.selected.userId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
           id: that.selected.userId,
-          year: that.selected.year,
-          type: that.selected.type,
-          campus: that.selected.school,
-          dimension: that.selectedDimension,
-          item: that.selectedItem,
-          detail: that.selectedDetail,
+          // year: that.selected.year,
+          // type: that.selected.type,
+          // campus: that.selected.school,
+          // dimension: that.selectedDimension,
+          // item: that.selectedItem,
+          // detail: that.selectedDetail,
           page: {
             start: startPage,
             end: endPage,
           },
-          // @TODO change to id
-          index: index,
+          content_id: content_id,
           title: title,
-          data: content,
+          content: content,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -235,20 +234,12 @@ class Filter{
   static deleteContent(that, editNode){
     return () =>{
       // @TODO delete by id
-      const index = editNode.querySelector('.node-index').value
+      const content_id = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
       fetch(`/man/${that.selected.userId}/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
-          // @TODO change to userId
-          year: that.selected.year,
-          type: that.selected.type,
-          campus: that.selected.school,
-          dimension: that.selectedDimension,
-          item: that.selectedItem,
-          detail: that.selectedDetail,
-          // @TODO change to id
-          index: index,
+          content_id: content_id,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -256,8 +247,7 @@ class Filter{
       })
       .then(res => res.text())
       .then(data => {
-        pageFilter.querySelector('.filter.filter__choice').click()
-        // @TODO removSe dependency
+        editNode.parentNode.removeChild(editNode)
         $('#delete').modal({
           onApprove : function(){return false},
         }).modal('hide')

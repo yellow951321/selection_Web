@@ -479,9 +479,10 @@ const getFromNum = (map,consult)=>{
 
 
 
-
-module.exports = {
-	map,
-	getFromWord,
-	getFromNum
-};
+if(module){
+	module.exports = {
+		map,
+		getFromWord,
+		getFromNum
+	};
+}

@@ -1,7 +1,19 @@
 const Content = require('./schema')
 
-function InsertContentByDetailId(detail_id, start, end, title, content){
+function findContentAll(detail_id){
     return new Promise( (res,rej) => {
+        Content.findAll({
+            where: {detail_id: detail_id}
+        })
+        .then(data => res(data))
+        .catch(err => rej(err))
+    })
+    .then(data => {return data})
+    .catch(err => {throw err})
+}
+
+function insertContentByDetailId(detail_id, start, end, title, content){
+    return new Promise( (res, rej) => {
         Content.create({
             content_start: start,
             content_end: end,
@@ -17,7 +29,7 @@ function InsertContentByDetailId(detail_id, start, end, title, content){
 }
 
 function updateContentById(content_id, start, end, title, content){
-    return new Promise( (res,rej) => {
+    return new Promise ( async (res,rej) => {
         Content.findOne({
             where: {
                 content_id: content_id
@@ -39,7 +51,27 @@ function updateContentById(content_id, start, end, title, content){
     .catch(err => {throw err})
 }
 
+function deleteContentById(content_id){
+    return new Promise ( async (res,rej) => {
+        Content.findOne({
+            where: {
+                content_id: content_id
+            }
+        })
+        .then(data => {
+            data.destroy()
+            console.log('after deletion')
+            res('OK')
+        })
+        .catch(err => rej(err))
+    })
+    .then(data => {return data})
+    .catch(err => {throw err})
+}
+
 module.exports = {
-    InsertContentByDetailId,
-    updateContentById
+    findContentAll,
+    insertContentByDetailId,
+    updateContentById,
+    deleteContentById
 }
