@@ -52,6 +52,14 @@ router.use('/:userId/:year/:type',
   },
   campusRouter)
 
+router.use('/:userId/:year/:type/:campus/graph',
+  async (req, res, next)=>{
+    res.locals.campus = req.params.campus
+    res.locals.campus_id = (await findCampus(res.locals.year_id, getFromWord(map, {campus: req.params.campus, type: req.params.type, }), res.locals.type_id)).campus_id
+    next()
+  },
+  d3Router)
+
 router.use('/:userId/:year/:type/:campus',
   async(req, res, next)=>{
     res.locals.campus = req.params.campus
@@ -60,7 +68,6 @@ router.use('/:userId/:year/:type/:campus',
   },
   projectRouter)
 
-router.use('/:userId/:year/:type/:campus/graph',d3Router)
 
 
 module.exports = router

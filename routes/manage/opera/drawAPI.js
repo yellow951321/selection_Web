@@ -1,5 +1,6 @@
 var d3 = require('d3')
 const {findParentByDetail, } = require('../../../data/operation/draw')
+const {map, getFromWord, } = require('../../../data/operation/mapping')
 function wrap(text, width) {
   text.each(function() {
     var text = d3.select(this),
@@ -72,8 +73,8 @@ const drawBarChart = (dom,data,info)=>{
   .enter().append('a')
     .attr("href", d=>{
       try{
-        const result = findParentByDetail(d.detail)
-        return `/man/${info.id}/content/${info.year}/${info.type}/${info.campus}/${result.dimension}/${result.item}/${d.detail}`
+        const detail_num = getFromWord(map,{detail: d.detail})
+        return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${detail_num}`
       }
       catch(err){
         console.log(err)

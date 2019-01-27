@@ -448,6 +448,9 @@ const map = {
   ],
 }
 
+
+const fs = require('fs')
+
 const getFromWord = (map, consult)=>{
   if(consult.campus){
     let type = getFromWord(map, {type:consult.type, }).toString()
@@ -474,10 +477,35 @@ const getFromNum = (map, consult)=>{
   }
 }
 
+const findParentByDetail = (target_detail)=>{
+  var data = fs.readFileSync('data/projectSchema.json','utf-8')
+
+  data = JSON.parse(data)
+  let result
+  for(let dimension in data){
+    if(dimension != "學校" || "年度" || "類型"){
+      for(let item in data[dimension]){
+        for(let detail in data[dimension][item]){
+          if(detail === target_detail){
+            result = {
+              dimension: dimension,
+              item: item,
+              detail: target_detail
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return result
+}
+
 if(module){
   module.exports = {
     map,
     getFromWord,
     getFromNum,
+    findParentByDetail
   }
 }

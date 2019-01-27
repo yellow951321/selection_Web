@@ -7,14 +7,18 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const OP = require('../../../data/operation/draw')
-const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
-const drawBarChart = require('./drawAPI')
 const pug = require('pug')
 const jsdom = require('jsdom')
+const { JSDOM } = jsdom
 const fs = require('fs')
 const User = require('../../../models/mariadb/User/schema')
-const { JSDOM } = jsdom
+
+const OP = require('../../../data/operation/draw')
+const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
+const { findYear, findYearById, } = require('../../../models/mariadb/Year/op')
+const { findCampus, findCampusById, } = require('../../../models/mariadb/Campus/op')
+const drawBarChart = require('./drawAPI')
+
 
 
 router.get('/',async (req,res)=>{
@@ -34,7 +38,7 @@ router.get('/',async (req,res)=>{
 
     const dataSet = OP.convertToJson(result_word,{json: false})
 
-    console.log(dataSet)
+    // console.log(dataSet)
     var fn = pug.compileFile(`views/playground.pug`)
     const type = getFromNum(map,{type: res.locals.type_id})
     var html = fn({
@@ -47,23 +51,31 @@ router.get('/',async (req,res)=>{
         campus: res.locals.campus
       }
     })
-    console.log('In here')
+    // console.log('In here')
     const { document } = (new JSDOM(html)).window
     // draw the graph
     // const data = JSON.parse(fs.readFileSync('public/data/test.json'))
 
+    const { year } = (await findYearById(res.locals.year_id)).dataValues
+
+    console.log(res.locals.campus_id)
+    const { campus_name } =  (await findCampusById(res.locals.campus_id)).dataValues
+    const campus_word = getFromNum(map,{campus: campus_name, type: res.locals.type_id})
     drawBarChart(document.querySelector('body'),dataSet,{
-      year: res.locals.year_id,
-      type: res.locals.type_id,
-      campus: res.locals.campus_id,
+      year: year,
+      year_id : res.locals.year_id,
+      type: type,
+      campus: campus_word,
       id: req.session.userId
     })
     res.send(document.querySelector('html').innerHTML)
   }
   catch(err){
-
+    console.log(err)
   }
 
 })
+
+
 
 module.exports = router
