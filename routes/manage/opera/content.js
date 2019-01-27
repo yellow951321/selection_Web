@@ -168,7 +168,7 @@ router.get('/:year/:type/:campus/:dimension/:item/:detail_word',async (req,res)=
     let { year } = (await findYearById(req.params.year)).dataValues
 
     let { campus_name } = (await findCampusById(req.params.campus)).dataValues
-    let campus_word = getFromNum({campus: campus_name, type: req.params.type})
+    let campus_word = getFromNum(map, {campus: campus_name, type: req.params.type})
 
     res.render('manage/edit',{
       GLOBAL :{

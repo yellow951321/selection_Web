@@ -3,6 +3,7 @@ const header = document.getElementById('header')
 const footer = document.getElementById('footer')
 const pageEdit = document.getElementById('page-edit')
 const pageFilter = document.getElementById('page-filter')
+const reserved = pageFilter.querySelector('.reserved')
 
 class Filter{
   constructor(){
@@ -299,4 +300,19 @@ footer.querySelector('.add-content').addEventListener('click', Filter.addContent
 pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.filter(filter))
 
 // initialize dropdown
+// pageFilter.querySelector('[data-value="研究"]').click()
 pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'));
+
+// if reserved exsists,which means this page was rendered by clicking the graph
+// we need to filter the reserved dimension, item, and detail
+if(reserved.querySelector('.reserved__dimension') !== null){
+  let dim = reserved.querySelector('.reserved__dimension').innerHTML
+  let itm = reserved.querySelector('.reserved__itm').innerHTML
+  let det = reserved.querySelector('.reserved__det').innerHTML
+
+  pageFilter.querySelector(`[data-value="${dim}"]`).click()
+  pageFilter.querySelector(`[data-value="${itm}"]`).click()
+  pageFilter.querySelector(`[data-value="${det}"]`).click()
+
+  pageFilter.querySelector('.filter.filter__choice').click()
+}
