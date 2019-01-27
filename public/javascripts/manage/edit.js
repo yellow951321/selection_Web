@@ -307,12 +307,20 @@ pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(n
 // we need to filter the reserved dimension, item, and detail
 if(reserved.querySelector('.reserved__dimension') !== null){
   let dim = reserved.querySelector('.reserved__dimension').innerHTML
-  let itm = reserved.querySelector('.reserved__itm').innerHTML
-  let det = reserved.querySelector('.reserved__det').innerHTML
+  let itm = reserved.querySelector('.reserved__item').innerHTML
+  let det = reserved.querySelector('.reserved__detail').innerHTML
 
-  pageFilter.querySelector(`[data-value="${dim}"]`).click()
-  pageFilter.querySelector(`[data-value="${itm}"]`).click()
-  pageFilter.querySelector(`[data-value="${det}"]`).click()
-
-  pageFilter.querySelector('.filter.filter__choice').click()
+  new Promise( (res,rej) => {
+    pageFilter.querySelector(`[data-value="${dim}"]`).click()
+    res();
+  })
+  .then(() => {
+    pageFilter.querySelector(`[data-value="${itm}"]`).click()
+  })
+  .then(() => {
+    pageFilter.querySelector(`[data-value="${det}"]`).click()
+  })
+  .then(()=> {
+    pageFilter.querySelector('.filter.filter__choice').click()
+  })
 }

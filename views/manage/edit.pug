@@ -36,10 +36,10 @@ append content
         .field
           .ui.container.center.aligned.choice-block
             button.ui.button.filter.filter__choice 選擇
-    .reserved
+    .reserved.ui.transition.hidden
       if GLOBAL['dimension']
         .reserved__dimension=GLOBAL['dimension']
-        .rederved__item=GLOBAL['item']
+        .reserved__item=GLOBAL['item']
         .reserved__detail=GLOBAL['detail']
 
   #page-edit.ui.container
