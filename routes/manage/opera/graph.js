@@ -47,17 +47,16 @@ router.get('/',async (req,res)=>{
         campus: res.locals.campus
       }
     })
-
-    const { window } = (new JSDOM(html))
+    console.log('In here')
+    const { document } = (new JSDOM(html)).window
     // draw the graph
     // const data = JSON.parse(fs.readFileSync('public/data/test.json'))
 
-    drawBarChart(window.document.querySelector('body'),dataSet,{
-      year: res.locals.year,
-      type: type,
-      campus: res.locals.campus,
-      id: req.session.userId,
-      window: window
+    drawBarChart(document.querySelector('body'),dataSet,{
+      year: res.locals.year_id,
+      type: res.locals.type_id,
+      campus: res.locals.campus_id,
+      id: req.session.userId
     })
     res.send(document.querySelector('html').innerHTML)
   }

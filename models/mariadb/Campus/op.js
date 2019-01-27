@@ -46,6 +46,14 @@ function findCampusByType(year_id, inputType){
     .catch(err => {throw err})
 }
 
+function findCampusById(campus_id){
+  return Campus.findOne({
+    where:{
+      campus_id: campus_id
+    }
+  })
+}
+
 function deleteCampus(campus_id){
   return new Promise((res, rej) => {
     // record the yearid
@@ -110,6 +118,7 @@ module.exports ={
   findCampus,
   findCampusAll,
   findCampusByType,
+  findCampusById,
   insertCampusByYearId,
   deleteCampus,
 }

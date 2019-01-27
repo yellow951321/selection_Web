@@ -1,5 +1,5 @@
 var d3 = require('d3')
-
+const {findParentByDetail, } = require('../../../data/operation/draw')
 function wrap(text, width) {
   text.each(function() {
     var text = d3.select(this),
@@ -54,7 +54,7 @@ const drawBarChart = (dom,data,info)=>{
     .attr("class", "title")
     .attr("x", x(data[0].name))
     .attr("y", -20)
-    .text("Why Are We Leaving Facebook?");
+    .text(info.campus);
 
   svg.append("g")
     .attr("class", "x axis")
@@ -67,15 +67,25 @@ const drawBarChart = (dom,data,info)=>{
     .attr("class", "y axis")
     .call(yAxis);
 
-  svg.selectAll(".bar")
+  const bar = svg.selectAll(".bar")
     .data(data)
-  .enter().append("rect")
+  .enter().append('a')
+    .attr("href", d=>{
+      try{
+        const result = findParentByDetail(d.detail)
+        return `/man/${info.id}/content/${info.year}/${info.type}/${info.campus}/${result.dimension}/${result.item}/${d.detail}`
+      }
+      catch(err){
+        console.log(err)
+      }
+    })
+    .append('rect')
     .attr("class", "bar")
     .attr("x", (d)=> x(d.detail) )
     .attr("width", x.bandwidth())
     .attr("y", d => y(d.value))
     .attr("height",d => height - y(d.value) )
-    .on('mouseover',()=>console.log('Fuck you'))
+    // .on('click',()=>info.window.location=`/
     // .on('click',()=>info.window.location=`/man/${info.id}/${info.year}/${info.type}/${info.campus}`);
 }
 

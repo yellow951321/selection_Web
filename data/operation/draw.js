@@ -118,7 +118,30 @@ const convertToJson = (obj,flag)=>{
   }else{
     return result
   }
+}
 
+const findParentByDetail = (target_detail)=>{
+    var data = fs.readFileSync('data/projectSchema.json','utf-8')
+
+    data = JSON.parse(data)
+    let result
+    for(let dimension in data){
+      if(dimension != "學校" || "年度" || "類型"){
+        for(let item in data[dimension]){
+          for(let detail in data[dimension][item]){
+            if(detail === target_detail){
+              result = {
+                dimension: dimension,
+                item: item,
+                detail: target_detail
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return result
 }
 
 const test = async ()=>{
@@ -138,5 +161,6 @@ module.exports = {
   findAllCampusIdWithRespectUser,
   countAllDetailRespectToCampusId,
   convertToWord,
-  convertToJson
+  convertToJson,
+  findParentByDetail
 }
