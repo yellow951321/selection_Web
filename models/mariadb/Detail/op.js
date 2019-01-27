@@ -11,6 +11,14 @@ function findDetail(item_id, detail){
     .catch(err => {throw err})
 }
 
+function findDetailAll(item_id){
+  return Detail.findAll({
+    where:{
+      item_id: item_id
+    }
+  })
+}
+
 function insertDetailByItemId(item_id, inputDetail){
   return async() => {
     try{
@@ -32,5 +40,6 @@ function insertDetailByItemId(item_id, inputDetail){
 
 module.exports ={
   findDetail,
+  findDetailAll,
   insertDetailByItemId,
 }

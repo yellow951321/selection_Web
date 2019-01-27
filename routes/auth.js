@@ -26,6 +26,7 @@ router.post('/login', async(req, res)=>{
     })
 
     if(doc != null){
+      //console.log(doc)
       req.session.userId = doc.dataValues.user_id
       res.redirect(`/man/${req.session.userId}`)
     }else{

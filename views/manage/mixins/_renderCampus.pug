@@ -3,6 +3,7 @@ mixin renderCampus(campus)
     p.eight.wide.column=campus[0]
     .three.wide.column
       a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus[0]}`) 編輯
+      a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus[0]}/graph`) 圖表
     .three.wide.column
       input.ui.button.two.wide.column(type='submit', value='刪除')
 

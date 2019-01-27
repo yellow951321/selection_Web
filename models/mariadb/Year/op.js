@@ -19,6 +19,14 @@ function findYearAll(user_id){
   })
 }
 
+function findYearById(year_id){
+  return Year.findOne({
+    where:{
+      year_id: year_id
+    }
+  })
+}
+
 function insertYearByUserId(user_id, inputYear){
   return async(res, rej) => {
     try{
@@ -38,8 +46,10 @@ function insertYearByUserId(user_id, inputYear){
   }
 }
 
+
 module.exports ={
   findYear,
   findYearAll,
+  findYearById,
   insertYearByUserId,
 }

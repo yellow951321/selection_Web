@@ -11,6 +11,13 @@ function findItem(dimension_id, item){
     .catch(err => {throw err})
 }
 
+function findItemAll(dimension_id){
+  return Item.findAll({
+    where:{
+      dimension_id : dimension_id
+    }
+  })
+}
 function insertItemByDimensionId(dimension_id, inputItem){
   return async() => {
     try{
@@ -32,5 +39,6 @@ function insertItemByDimensionId(dimension_id, inputItem){
 
 module.exports ={
   findItem,
+  findItemAll,
   insertItemByDimensionId,
 }

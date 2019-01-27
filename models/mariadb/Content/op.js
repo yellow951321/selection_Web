@@ -20,6 +20,14 @@ function insertContentByDetailId(detail_id, start, end, title, content){
     .catch(err => {throw err})
 }
 
+function countContentByDetailId(detail_id){
+  return Content.count({
+    where:{
+      detail_id: detail_id
+    }
+  })
+}
+
 function updateContentById(content_id, start, end, title, content){
   return Content.findOne({
       where: {
@@ -53,6 +61,7 @@ function deleteContentById(content_id){
 module.exports = {
   findContentAll,
   insertContentByDetailId,
+  countContentByDetailId,
   updateContentById,
   deleteContentById,
 }

@@ -12,8 +12,8 @@ const User = require('../../../models/mariadb/User/schema')
 const OP = require('./fileOp')
 
 const { map, getFromWord, getFromNum, } = require('../../../data/operation/mapping')
-const { findYear, } = require('../../../models/mariadb/Year/op')
-const { findCampus, } = require('../../../models/mariadb/Campus/op')
+const { findYear, findYearById, } = require('../../../models/mariadb/Year/op')
+const { findCampus, findCampusById, } = require('../../../models/mariadb/Campus/op')
 const { insertDimensionByCampusId, findDimension, } = require('../../../models/mariadb/Dimension/op')
 const { insertItemByDimensionId, findItem, } = require('../../../models/mariadb/Item/op')
 const { insertDetailByItemId, findDetail, } = require('../../../models/mariadb/Detail/op')
@@ -140,6 +140,50 @@ router.delete('/delete', async(req, res)=>{
   }
   catch (err){
     console.log(err.message)
+    res.status(409).render('error', {
+      message : err,
+      error: {
+        status: err.status,
+      },
+    })
+  }
+})
+
+router.get('/:year/:type/:campus/:dimension/:item/:detail_word',async (req,res)=>{
+  try{
+    const user = await User.findOne({
+      where:{
+        user_id: req.session.userId
+      }
+    })
+    if(user == null)
+      throw new Error(`No userId ${req.session.userId}`)
+    else
+      var {dataValues, } = user
+
+    // let dimension_id = (await findDimension(req.params.campus, getFromWord(map, {dimension: req.params.dimension, }))).dimension_id
+    // let item_id = (await findItem(dimension_id, getFromWord(map, {item: req.params.item, }))).item_id
+    // let detail_id = (await findDetail(item_id, getFromWord(map, {detail: req.params.detail_word, }))).detail_id
+
+    let { year } = (await findYearById(req.params.year)).dataValues
+
+    let { campus_name } = (await findCampusById(req.params.campus)).dataValues
+    let campus_word = getFromNum({campus: campus_name, type: req.params.type})
+
+    res.render('manage/edit',{
+      GLOBAL :{
+        id : req.session.userId,
+        user : dataValues.user_name,
+        year : year,
+        type : res.locals.type,
+        campus : campus_word,
+        dimension : req.params.dimension,
+        item : req.params.item,
+        detail : req.params.detail
+      }
+    })
+  }
+  catch(err){
     res.status(409).render('error', {
       message : err,
       error: {

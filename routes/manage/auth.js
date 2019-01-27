@@ -14,7 +14,7 @@ const campusRouter = require('./campus')
 const projectRouter = require('./project')
 const fileRouter = require('./opera/file')
 const contentRouter = require('./opera/content')
-
+const d3Router = require('./opera/graph')
 
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
 const { findYear, } = require('../../models/mariadb/Year/op')
@@ -22,6 +22,7 @@ const { findCampus, } = require('../../models/mariadb/Campus/op')
 
 router.use('/:userId', (req, res, next)=>{
   if(req.session && req.session.userId == req.params.userId){
+    console.log(req.session)
     next()
   }else{
     res.redirect('/auth/login')
@@ -58,5 +59,8 @@ router.use('/:userId/:year/:type/:campus',
     next()
   },
   projectRouter)
+
+router.use('/:userId/:year/:type/:campus/graph',d3Router)
+
 
 module.exports = router
