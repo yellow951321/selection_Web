@@ -18,12 +18,12 @@ router.post('/add', async(req, res)=>{
     /**
      * @todo year, type, campus validation
      */
-    let year = await insertYearByUserId(req.session.userId, req.body.year)
+    let year = await insertYearByUserId(req.session.userId, req.body.year)()
     let type = getFromNum(map, {type: req.body.type, })
     let campus = await insertCampusByYearId(year.year_id, getFromWord(map, {
       campus: req.body.campus,
       type: type,
-    }), req.body.type)
+    }), req.body.type)()
 
     res.redirect(`/man/${req.session.userId}/${req.body.year}/${type}/${req.body.campus}`)
     console.log('Add operation is finished')
@@ -49,8 +49,7 @@ router.delete('/delete', async(req, res)=>{
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
 
-    console.log(req.body.campus_id)
-    await deleteCampus(req.body.campus_id)
+    await deleteCampus(req.body.campus_id)()
     res.status(200).send('OK')
   }
   catch (err){

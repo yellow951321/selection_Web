@@ -36,9 +36,13 @@ append content
         .field
           .ui.container.center.aligned.choice-block
             button.ui.button.filter.filter__choice 選擇
+    .reserved.ui.transition.hidden
+      if GLOBAL['dimension']
+        .reserved__dimension=GLOBAL['dimension']
+        .reserved__item=GLOBAL['item']
+        .reserved__detail=GLOBAL['detail']
 
   #page-edit.ui.container
-
 
   #footer.ui.container.center.aligned.transition.hidden
     .ui.floating.message.transition.hidden

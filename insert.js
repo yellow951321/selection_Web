@@ -55,11 +55,11 @@ async function insertdata(path, username){
   try{
     let originData = await readSchema(path)
     let user = await findUserByName(username)
-    let year = await insertYearByUserId(user.user_id, originData['年度'])
+    let year = await insertYearByUserId(user.user_id, originData['年度'])()
     let campus = await insertCampusByYearId(year.year_id, getFromWord(map, {
       campus: originData['學校'],
       type: originData['類型'],
-    }), map['type'].indexOf(originData['類型']))
+    }), map['type'].indexOf(originData['類型']))()
 
     for(let dim of Reflect.ownKeys(originData)){
       if(dim == '年度'||dim =='學校'||dim =='類型'){
@@ -90,13 +90,19 @@ async function insertdata(path, username){
             if(originData[dim][itm][det].indexOf(cont) == 0){
               dimension = await insertDimensionByCampusId(campus.campus_id, getFromWord(map, {
                 dimension: dim,
-              }))
+              }))()
               item = await insertItemByDimensionId(dimension.dimension_id, getFromWord(map, {
                 item: itm,
-              }))
+              }))()
               detail = await insertDetailByItemId(item.item_id, getFromWord(map, {
                 detail: det,
-              }))
+              }))()
+            }
+            if(cont['page'][0] === null){
+              cont['page'][0] = '1'
+            }
+            if(cont['page'][1] === null){
+              cont['page'][1] = cont['page']['0']
             }
             // await insertContentByDetailId(detail.detail_id, cont['page'][0], cont['page'][1], cont['title'], cont['paragraph'])
           }
