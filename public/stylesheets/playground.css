@@ -8,11 +8,11 @@
 }
 
 .title {
-  font: bold 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: bold 30px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .axis {
-  font: 10px sans-serif;
+  font: 12px sans-serif;
 }
 
 .axis path,
@@ -24,4 +24,13 @@
 
 .x.axis path {
   display: none;
+}
+
+svg {
+  max-width: 90%;
+  width: inherit;
+}
+
+g {
+  width: 100%;
 }

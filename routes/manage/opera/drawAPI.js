@@ -33,11 +33,11 @@ const drawBarChart = (dom,data,info)=>{
   .range([0, width])
   .round(.1,.3)
   .paddingInner(.5)
-  .paddingOuter(.1)
+  .paddingOuter(.05)
 
   var y = d3.scaleLinear()
   .domain([0,d3.max(data, (d) => d.value)])
-  .range([height, 0]);
+  .range([height-200, 0]);
 
   var xAxis = d3.axisBottom(x)
 
@@ -46,8 +46,10 @@ const drawBarChart = (dom,data,info)=>{
   .tickFormat(d => d+'筆')
 
   var svg = d3.select(dom).append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
+  .attr("height" , height + margin.top + margin.bottom)
+  .attr("width" , width + margin.left + margin.right)
+  .attr("preserveAspectRatio" , "xMidyMid")
+  .attr("viewBox" , [0, 0, width, height].join(" "))
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -59,7 +61,7 @@ const drawBarChart = (dom,data,info)=>{
 
   svg.append("g")
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + (height-5) + ")")
+    .attr("transform", "translate(0," + (height-205) + ")")
     .call(xAxis)
   .selectAll(".tick text")
     .call(wrap, x.bandwidth())
@@ -83,9 +85,9 @@ const drawBarChart = (dom,data,info)=>{
     .append('rect')
     .attr("class", "bar")
     .attr("x", (d)=> x(d.detail) )
-    .attr("width", x.bandwidth())
+    .attr("width", x.bandwidth() )
     .attr("y", d => y(d.value))
-    .attr("height",d => height - y(d.value) )
+    .attr("height",d => height-200 - y(d.value) )
     // .on('click',()=>info.window.location=`/
     // .on('click',()=>info.window.location=`/man/${info.id}/${info.year}/${info.type}/${info.campus}`);
 }
