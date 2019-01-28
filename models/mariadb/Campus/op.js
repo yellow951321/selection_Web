@@ -88,7 +88,7 @@ function insertCampusByYearId(year_id, inputCampus, inputType){
       if(outputCampus !== null){
         return outputCampus
       }
-      Campus.create({
+      await Campus.create({
         campus_type: inputType,
         campus_name: inputCampus,
         year_id: year_id,

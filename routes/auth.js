@@ -13,7 +13,10 @@ const router = express.Router({
 })
 
 router.get('/login', (req, res)=>{
-  res.render('login')
+  if(req.session && req.session.userId)
+    res.redirect(`/man/${req.session.userId}`)
+  else
+    res.render('login')
 })
 
 router.post('/login', async(req, res)=>{

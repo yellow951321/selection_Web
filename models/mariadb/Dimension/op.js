@@ -26,12 +26,13 @@ function insertDimensionByCampusId(campus_id, inputDimension){
       if(outputDimension !== null){
         return outputDimension
       }
-      Dimension.create({
+      let output = await Dimension.create({
         dimension_name: inputDimension,
         campus_id: campus_id,
       })
       .then(data => {return data})
       .catch(err => {throw err})
+      return output;
     }
     catch(err){
       throw err

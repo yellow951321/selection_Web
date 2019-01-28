@@ -110,7 +110,8 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use('/auth', auth)
+
+app.use('/auth',auth)
 app.use('/man', AuthRouter)
 //app.use('/',AuthRouter)
 app.use((req, res, next)=>{
