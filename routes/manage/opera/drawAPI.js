@@ -33,7 +33,7 @@ const drawBarChart = (dom,data,info)=>{
   .range([0, width])
   .round(.1,.3)
   .paddingInner(.5)
-  .paddingOuter(.05)
+  .paddingOuter(.1)
 
   var y = d3.scaleLinear()
   .domain([0,d3.max(data, (d) => d.value)])
