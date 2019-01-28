@@ -116,7 +116,9 @@ app.use('/man', AuthRouter)
 //app.use('/',AuthRouter)
 app.use((req, res, next)=>{
   if(!req.session)
-    res.redirect('/login')
+    res.redirect('/auth/login')
+  else if(req.session && req.session.userId)
+    res.redirect(`/man/${req.session.userId}`)
   else
     next()
 })
