@@ -3,7 +3,7 @@ const path = require('path')
 const session = require('express-session')
 const logger = require('morgan')
 
-const config = require('./db/config')
+const config = require('./config')
 const auth = require('./routes/auth')
 const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
