@@ -7,6 +7,7 @@ const config = require('./config')
 const auth = require('./routes/auth')
 const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
+const apiRouter = require('./apis/apiRouter')
 const app = express()
 
 const isDevMode = process.env.MODE == 'DEVELOPMENT'
@@ -113,6 +114,7 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
 
 app.use('/auth',auth)
 app.use('/man', AuthRouter)
+app.use('/apis',apiRouter)
 //app.use('/',AuthRouter)
 app.use((req, res, next)=>{
   if(!req.session.userId){
