@@ -3,16 +3,21 @@
   fill: steelblue;
 }
 
+.label {
+  font: 30px sans-serif;
+  text-anchor: end;
+}
+
 .bar:hover {
   fill: brown;
 }
 
 .title {
-  font: bold 30px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: bold 40px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .axis {
-  font: 12px sans-serif;
+  font: 30px sans-serif;
 }
 
 .axis path,
@@ -29,6 +34,7 @@
 svg {
   max-width: 90%;
   width: inherit;
+  overflow: scroll;
 }
 
 g {
