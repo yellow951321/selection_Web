@@ -1,6 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 const config = require('../config')
+const uniqueFilename = require('unique-filename')
 const OpDimension = require('../models/mariadb/Dimension/op')
 const OpItem = require('../models/mariadb/Item/op')
 const OpDetail = require('../models/mariadb/Detail/op')
@@ -17,12 +18,19 @@ const router = express.Router({
     strict: false,
 })
 
+//@TODO change to send header only
 router.get('/:campus_id/:campus_name', async (req, res)=>{
     try{
         let campus_id = req.params.campus_id
-        let filename = `${req.params.campus_name}.csv`
-        const csvWriter = await createCsvWriter({
-            path: filename,
+        // create tmp directory
+        let tmpDir = '/tmp/selection_Web'
+        if(!fs.existsSync(tmpDir))
+            fs.mkdirSync(tmpDir)
+        let filePath = `${uniqueFilename(tmpDir)}`
+
+        // setup csvWriter
+        const csvWriter = createCsvWriter({
+            path: filePath,
             header: [
                 {id: 'dimension', title: '構面'},
                 {id: 'item', title: '推動項目'},
@@ -31,13 +39,14 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
                 {id: 'content', title: '內容'},
             ]
         })
-        await new Promise(async (res,rej)=>{
-            let data = []
-            let dimensions = await OpDimension.findDimensionAll(campus_id).map(d => d.dataValues)
 
-            for(let {dimension_id,dimension_name} of dimensions){
-              const items = await OpItem.findItemAll(dimension_id).map(d => d.dataValues)
-              for(let {item_id,item_name} of items){
+        // write in the tmp output file
+        let data = []
+        let dimensions = await OpDimension.findDimensionAll(campus_id).map(d => d.dataValues)
+
+        for(let {dimension_id,dimension_name} of dimensions){
+            const items = await OpItem.findItemAll(dimension_id).map(d => d.dataValues)
+            for(let {item_id,item_name} of items){
                 const details = await OpDetail.findDetailAll(item_id).map(d => d.dataValues)
                 for(let {detail_id,detail_name} of details){
                     const contents = await OpContent.findContentAll(detail_id).map(d => d.dataValues)
@@ -51,28 +60,28 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
                         })
                     }
                 }
-              }
             }
-            await csvWriter.writeRecords(data)
-            res()
-        })
+        }
+        await csvWriter.writeRecords(data)
 
-        var options = {
-            root: config.path,
+        let options = {
+            //@TODO change the temp file to the global /tmp file
+            // and create a temp file for this app (if it's doesn't exist)
+            root: '/',
             dotfiles: 'deny',
             headers: {
                 'content-type': 'text/html',
-                'Content-Disposition': `attachment;filename=${encodeURIComponent(filename)}`
+                'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campus_name)}.csv`
             }
         };
-        await res.sendFile(filename, options, function(err){
+        res.sendFile(filePath, options, function(err){
             if(err){
                 throw err
             }
             else{
-                console.log('success')
-                fs.unlink(`${config.path}/${filename}`, function(err){
-                    console.log(err)
+                fs.unlink(filePath, function(err){
+                    if(err)
+                        throw err
                 })
             }
         })
