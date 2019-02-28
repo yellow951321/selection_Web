@@ -181,10 +181,10 @@ const drawBarChart = (dom,data,info)=>{
   var svg = d3.select(dom).append("svg")
   .attr("height" , height + margin.top + margin.bottom)
   .attr("width" , width + margin.left + margin.right)
-  // .attr("preserveAspectRatio" , "xMidyMid")
-  .attr("viewBox" , [-300, 200, width, height].join(" "))
+  .attr("preserveAspectRatio" , "xMidYMin")
+  .attr("viewBox" , [-400, 0, width, height].join(" "))
   .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  .attr("transform", "translate(" + (margin.left) +  "," + margin.top + ")");
 
   svg.append("text")
     .attr("class", "title")
