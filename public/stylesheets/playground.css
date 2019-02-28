@@ -32,9 +32,8 @@
 }
 
 svg {
-  max-width: 100%;
-  width: 90%;
   overflow: auto!important;
+
 }
 
 g {

@@ -181,10 +181,10 @@ const drawBarChart = (dom,data,info)=>{
   var svg = d3.select(dom).append("svg")
   .attr("height" , height + margin.top + margin.bottom)
   .attr("width" , width + margin.left + margin.right)
-  .attr("preserveAspectRatio" , "xMidYMin")
-  .attr("viewBox" , [-400, 0, width, height].join(" "))
+  // .attr("preserveAspectRatio" , "xMidYMin")
+  // .attr("viewBox" , [-400, 0, width, height].join(" "))
   .append("g")
-  .attr("transform", "translate(" + (margin.left) +  "," + margin.top + ")");
+  .attr("transform", "translate(" + (margin.left+300) +  "," + margin.top + ")");
 
   svg.append("text")
     .attr("class", "title")
@@ -228,10 +228,15 @@ const drawBarChart = (dom,data,info)=>{
   .append("text")
   .attr("class","label")
   .attr("x", d => x(d.value) - 3)
-  .attr("y", d=> y(d.detail) + 0.5)
+  .attr("y", d => y(d.detail) + 0.5)
   .attr("fill","white")
   .attr("dy", ".7em")
-  .text(d => d.value)
+  .text(d => {
+    if(d.value == 0)
+      return ""
+    else
+      return d.value
+  })
     // .on('click',()=>info.window.location=`/
     // .on('click',()=>info.window.location=`/man/${info.id}/${info.year}/${info.type}/${info.campus}`);
 }
