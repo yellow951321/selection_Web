@@ -1,12 +1,11 @@
 const fs = require('fs')
 const express = require('express')
-const config = require('../config')
 const uniqueFilename = require('unique-filename')
 const OpDimension = require('../models/mariadb/Dimension/op')
 const OpItem = require('../models/mariadb/Item/op')
 const OpDetail = require('../models/mariadb/Detail/op')
 const OpContent = require('../models/mariadb/Content/op')
-const {map,getFromWord,getFromNum} = require('../data/operation/mapping')
+const {map,getFromNum} = require('../data/operation/mapping')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 const router = express.Router({
@@ -26,7 +25,8 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
         let tmpDir = '/tmp/selection_Web'
         if(!fs.existsSync(tmpDir))
             fs.mkdirSync(tmpDir)
-        let filePath = `${uniqueFilename(tmpDir)}`
+        // create a random unique filename
+        let filePath = uniqueFilename(tmpDir)
 
         // setup csvWriter
         const csvWriter = createCsvWriter({
@@ -64,6 +64,7 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
         }
         await csvWriter.writeRecords(data)
 
+        // send requested output file
         let options = {
             //@TODO change the temp file to the global /tmp file
             // and create a temp file for this app (if it's doesn't exist)
