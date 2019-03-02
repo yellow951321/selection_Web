@@ -25,7 +25,7 @@ function insertDetailByItemId(item_id, inputDetail){
       let outputDetail = await findDetail(item_id, inputDetail)
       if(outputDetail !== null)
         return outputDetail
-      Detail.create({
+      return Detail.create({
         detail_name: inputDetail,
         item_id: item_id,
       })

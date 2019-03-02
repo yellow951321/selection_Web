@@ -110,12 +110,16 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
-app.use('/auth', auth)
+
+app.use('/auth',auth)
 app.use('/man', AuthRouter)
 //app.use('/',AuthRouter)
 app.use((req, res, next)=>{
-  if(!req.session)
-    res.redirect('/login')
+  if(!req.session.userId){
+    res.redirect('/auth/login')
+  }
+  else if(req.session && req.session.userId)
+    res.redirect(`/man/${req.session.userId}`)
   else
     next()
 })

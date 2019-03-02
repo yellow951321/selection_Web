@@ -24,7 +24,7 @@ function insertItemByDimensionId(dimension_id, inputItem){
       let outputItem = await findItem(dimension_id, inputItem)
       if(outputItem !== null)
         return outputItem
-      Item.create({
+      return Item.create({
         item_name: inputItem,
         dimension_id: dimension_id,
       })

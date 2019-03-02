@@ -28,16 +28,16 @@ function findYearById(year_id){
 }
 
 function insertYearByUserId(user_id, inputYear){
-  return async(res, rej) => {
+  return async() => {
     try{
       let outputYear = await findYear(user_id, inputYear)
       if(outputYear !== null)
         return outputYear
-      Year.create({
+      return Year.create({
         year: inputYear,
         user_id: user_id,
       })
-      .then(data => {return data})
+      .then(data => { console.log('created');return data})
       .catch(err => {throw err})
     }
     catch(err){
