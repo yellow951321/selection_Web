@@ -11,7 +11,6 @@ const addButtonClicked = (event) => {
 
 // handle dropdown on change
 const yearDropdownOnChange = (event) => {
-  console.log(event.target)
   const campusesDropDown = event.target.parentNode.parentNode.querySelector('.campus-dropdown').firstChild
   if(event.target.value == '0'){
     // find the innerHTML of .normal
