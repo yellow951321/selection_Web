@@ -1,11 +1,11 @@
 const fs = require('fs')
 const express = require('express')
 const uniqueFilename = require('unique-filename')
-const OpDimension = require('../models/mariadb/Dimension/op')
-const OpItem = require('../models/mariadb/Item/op')
-const OpDetail = require('../models/mariadb/Detail/op')
-const OpContent = require('../models/mariadb/Content/op')
-const {map,getFromNum} = require('../data/operation/mapping')
+const OpDimension = require('../../../models/mariadb/Dimension/op')
+const OpItem = require('../../../models/mariadb/Item/op')
+const OpDetail = require('../../../models/mariadb/Detail/op')
+const OpContent = require('../../../models/mariadb/Content/op')
+const {map,getFromNum} = require('../../../data/operation/mapping')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 const router = express.Router({
@@ -66,12 +66,10 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
 
         // send requested output file
         let options = {
-            //@TODO change the temp file to the global /tmp file
-            // and create a temp file for this app (if it's doesn't exist)
             root: '/',
             dotfiles: 'deny',
             headers: {
-                'content-type': 'text/html',
+                'content-type': 'text/csv',
                 'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campus_name)}.csv`
             }
         };

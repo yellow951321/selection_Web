@@ -1,5 +1,4 @@
 const express = require('express')
-const downloadCsv = require('./downloadCsv')
 const router = express.Router({
     // case sensitive for route path
     caseSensitive: true,
@@ -8,7 +7,5 @@ const router = express.Router({
     // fool proof route path
     strict: false,
 })
-
-router.use('/downloadCsv', downloadCsv)
 
 module.exports = router
