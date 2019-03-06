@@ -14,6 +14,7 @@ const campusRouter = require('./campus')
 const projectRouter = require('./project')
 const fileRouter = require('./opera/file')
 const contentRouter = require('./opera/content')
+const downloadCsvRouter = require('./opera/downloadCsv')
 const d3Router = require('./opera/graph')
 
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
@@ -31,7 +32,7 @@ router.use('/:userId', (req, res, next)=>{
 
 router.use('/:userId/file', fileRouter)
 router.use('/:userId/content', contentRouter)
-
+router.use('/:userId/downloadCsv', downloadCsvRouter)
 
 router.use('/:userId', yearRouter)
 
