@@ -1,10 +1,10 @@
 mixin renderCampus(campus)
   form.node.ui.segment.center.aligned.grid(action=`/man/${GLOBAL.id}/file/delete`, method='POST')
-    p.eight.wide.column=campus[0]
-    .three.wide.column
+    p.seven.wide.column=campus[0]
+    .seven.wide.column
       a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus[0]}`) 編輯
       a.ui.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${campus[0]}/graph`) 圖表
-    .three.wide.column
+      a.ui.button(href=`/man/${GLOBAL['id']}/downloadCsv/${campus[1]}/${campus[0]}`) 下載
       input.ui.button.two.wide.column(type='submit', value='刪除')
 
     input.campus_id(type='hidden', name='campus_id', value=campus[1])

@@ -10,7 +10,8 @@ const config = {
     'domain': 'localhost',
     'port': 3000,
     'secret': 'deepest and darkest secret',
-  }
+  },
+  'path': ''
 }
 
 module.exports = config
