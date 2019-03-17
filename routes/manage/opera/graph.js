@@ -77,7 +77,16 @@ const drawBarChart = require('./drawAPI')
 // })
 router.get('/all',async (req,res)=>{
   try{
-    console.log('I Got it')
+    const user = await User.findOne({
+      where: {
+        user_id: req.session.userId
+      }
+    })
+
+    if( user == null)
+      throw new Error(`No User Id named ${req.session.userId}`)
+    else
+      var {dataValues, } = user
     var data = {
       "教學": {
         "強化教學品質": {
