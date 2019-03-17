@@ -79,9 +79,7 @@ function retrieveAllData() {
     type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
     campus: pathSplit[5] ? decodeURI(pathSplit[5]) : ''
   }
-  console.log(selected)
   // query parameter for GET
-  console.log('Enter')
   let parameters = {
     id: selected.userId,
     year: selected.year,
@@ -138,26 +136,19 @@ const zippedData = (data) => {
 
 
 const drawBarChart = (data,info)=>{
-  var margin              = {top: 80, right: 180, bottom: 80, left: 180},
-      width               = 1000 - margin.left - margin.right,
+  var margin              = {top: 80,
+                             right: window.document.body.offsetWidth*0.17,
+                             bottom: 80,
+                             left: window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.25 : window.document.body.offsetWidth*0.35},
+      width               = window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.4 : window.document.body.offsetWidth*0.3,
       height              = 3000 - margin.top - margin.bottom,
-      barHeight           = 20,
-      aspectGroupHeight   = Object.keys(data).length,
-      keypointGroupHeight = Object.keys(data).map(aspect=>{
-        return  Object.keys(data[aspect]).length
-      }),
-      methodGroupHeight   = 2,
-
   // zipped the data as array
-      {zipData, aspectLable, keypointLable, methodLable}   = zippedData(data),
-      spaceForLabels      = 150,
-      gapBetweenGroup     = 10
-
-  console.log(zipData)
+      {zipData, aspectLable, keypointLable, methodLable}   = zippedData(data)
+  // console.log(zipData)
   // define the scale of x
   var x = d3.scaleLinear()
   .domain([0,d3.max(zipData, d => d.value[1] )])
-  .range([0, window.innerWidth]);
+  .range([0, width]);
 
   var y_aspect = d3.scaleBand()
       .domain(aspectLable)
@@ -177,7 +168,7 @@ const drawBarChart = (data,info)=>{
   var y_bar = d3.scaleBand()
       .domain(["self","overview"])
       .rangeRound([0,y_method.bandwidth()])
-      .padding(0.025)
+      .padding(0.05)
 
   var xAxis = d3.axisBottom(x)
       .ticks(10)
@@ -187,24 +178,20 @@ const drawBarChart = (data,info)=>{
   var svg = d3.select(".page-svg").append("svg")
   .attr("height" , height + margin.top + margin.bottom)
   .attr("width" , width + margin.left + margin.right)
-  // .attr("preserveAspectRatio" , "xMidYMin")
-  // .attr("viewBox" , [-400, 0, width, height].join(" "))
+  // .attr("transform", `translate`)
   .append("g")
-  .attr("transform", "translate(" + (margin.left+300) +  "," + margin.top + ")");
-
+  .attr("transform", "translate(" + (margin.left) +  "," + margin.top + ")");
 
   svg.append("g")
     .attr("class", "y axis")
     .call(yAxis)
   .selectAll(".tick text")
 
-  const bar = svg
-    .append("g")
+  var bar = svg.append("g")
     .selectAll("g")
     .data(zipData)
     .join("g")
       .attr("transform", d => {
-        console.log(d)
         return `translate(0,${y_aspect(d.aspect)})`})
     .join("g")
       .attr("transform", d => `translate(0,${y_keypoint(d.keypoint)})`)
@@ -217,18 +204,32 @@ const drawBarChart = (data,info)=>{
         .attr("href", d=>{
           return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.method}`
         })
-      .append('rect')
-        .attr("fill", (d,i) => {
-          if(i%2 == 0)
-            return "orange"
-          else
-            return "blue"
-        })
-        .attr("class", "bar")
-        .attr("x", 0)
-        .attr("y", d => y_bar(d.method))
-        .attr("width", d => x(d.value))
-        .attr("height", y_bar.bandwidth())
+
+  bar.append('rect')
+  .attr("fill", (d,i) => {
+    if(i%2 == 0)
+      return "orange"
+    else
+      return "blue"
+  })
+  .attr("class", "bar")
+  .attr("x", 0)
+  .attr("y", d => y_bar(d.method))
+  .attr("width", d => x(d.value))
+  .attr("height", y_bar.bandwidth())
+
+  bar.append('text')
+    .attr("fill" , "white")
+    .attr("x", 3)
+    .attr("y" , d => {
+      console.log(y_bar.bandwidth())
+      return y_bar(d.method) + y_bar.bandwidth()/1.5 })
+    .text(d =>{
+      if(d.value == 0)
+        return ""
+      else
+        return d.value
+    })
 }
 
 $('select.dropdown')
