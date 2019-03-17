@@ -21,60 +21,119 @@ const drawBarChart = require('./drawAPI')
 
 
 
-router.get('/',async (req,res)=>{
+// router.get('/',async (req,res)=>{
+//   try{
+//   const user = await User.findOne({
+//     where:{
+//       user_id: req.session.userId
+//     }
+//   })
+//   if(user == null)
+//     throw new Error(`No userId ${req.session.userId}`)
+//   else
+//     var {dataValues, } = user
+//   const result = await OP.countAllDetailRespectToCampusId(res.locals.campus_id)
+
+//   const result_word = OP.convertToWord(result)
+
+//   const dataSet = OP.convertToJson(result_word,{json: false})
+
+//   // console.log(dataSet)
+//   var fn = pug.compileFile(`views/playground.pug`)
+//   const type = getFromNum(map,{type: res.locals.type_id})
+//   var html = fn({
+//     title: res.locals.campus,
+//     GLOBAL:{
+//       id: req.session.userId,
+//       user: dataValues.user_name,
+//       year: res.locals.year,
+//       type: type,
+//       campus: res.locals.campus
+//     }
+//   })
+//   // console.log('In here')
+//   const { document } = (new JSDOM(html)).window
+//   // draw the graph
+//   // const data = JSON.parse(fs.readFileSync('public/data/test.json'))
+
+//   const { year } = (await findYearById(res.locals.year_id)).dataValues
+
+//   console.log(res.locals.campus_id)
+//   const { campus_name } =  (await findCampusById(res.locals.campus_id)).dataValues
+//   const campus_word = getFromNum(map,{campus: campus_name, type: res.locals.type_id})
+//   drawBarChart(document.querySelector('body'),dataSet,{
+//     year: year,
+//     year_id : res.locals.year_id,
+//     type: type,
+//     campus: campus_word,
+//     id: req.session.userId
+//   })
+//   res.send(document.querySelector('html').innerHTML)
+// }
+// catch(err){
+//   console.log(err)
+// }
+
+// })
+router.get('/all',async (req,res)=>{
   try{
-  const user = await User.findOne({
-    where:{
-      user_id: req.session.userId
+    console.log('I Got it')
+    var data = {
+      "教學": {
+        "強化教學品質": {
+          "推廣創新教學模式": {
+            self: 2,
+            overview: 20,
+          }
+          ,
+          "訂定核心能力，規劃課程地圖": {
+            self: 5,
+            overview: 12
+          },
+          "強化課程內容": {
+            self: 4,
+            overview: 15
+          }
+        },
+        "跨領域學習": {
+          "規劃跨領域學位（分）學程": {
+            self: 5,
+            overview: 13
+          },
+          "鼓勵輔系、雙主修": {
+            self: 3,
+            overview: 17
+          },
+          "跨領域教學": {
+            self: 3,
+            overview: 12
+          }
+        }
+      },
+      "研究":{
+        "測試1":{
+          "子測試1-1" : {
+            self: 12,
+            overview: 12
+          },
+          "子測試2-1" : {
+            self: 6,
+            overview: 13
+          },
+          "子測試3-1" : {
+            self: 7,
+            overview: 7
+          }
+        }
+      }
     }
-  })
-  if(user == null)
-    throw new Error(`No userId ${req.session.userId}`)
-  else
-    var {dataValues, } = user
-  const result = await OP.countAllDetailRespectToCampusId(res.locals.campus_id)
 
-  const result_word = OP.convertToWord(result)
+    res.json(data)
+  }catch(err){
 
-  const dataSet = OP.convertToJson(result_word,{json: false})
-
-  // console.log(dataSet)
-  var fn = pug.compileFile(`views/playground.pug`)
-  const type = getFromNum(map,{type: res.locals.type_id})
-  var html = fn({
-    title: res.locals.campus,
-    GLOBAL:{
-      id: req.session.userId,
-      user: dataValues.user_name,
-      year: res.locals.year,
-      type: type,
-      campus: res.locals.campus
-    }
-  })
-  // console.log('In here')
-  const { document } = (new JSDOM(html)).window
-  // draw the graph
-  // const data = JSON.parse(fs.readFileSync('public/data/test.json'))
-
-  const { year } = (await findYearById(res.locals.year_id)).dataValues
-
-  console.log(res.locals.campus_id)
-  const { campus_name } =  (await findCampusById(res.locals.campus_id)).dataValues
-  const campus_word = getFromNum(map,{campus: campus_name, type: res.locals.type_id})
-  drawBarChart(document.querySelector('body'),dataSet,{
-    year: year,
-    year_id : res.locals.year_id,
-    type: type,
-    campus: campus_word,
-    id: req.session.userId
-  })
-  res.send(document.querySelector('html').innerHTML)
-}
-catch(err){
-  console.log(err)
-}
-
+  }
 })
+
 
 router.get('/', async (req,res)=>{
   try{
@@ -103,14 +162,6 @@ router.get('/', async (req,res)=>{
     })
   }catch (err){
     console.log(err)
-  }
-})
-
-router.get('/',async (req,res)=>{
-  try{
-
-  }catch(err){
-
   }
 })
 

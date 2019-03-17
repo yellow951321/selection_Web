@@ -1,5 +1,8 @@
 extends component/layout
 
+append head
+  link(rel='stylesheet', href='/static/stylesheets/playground.js')
+
 append content
 
   #page-filter.ui.container.placeholder.segment
@@ -10,7 +13,7 @@ append content
           .ui.icon.header
             i.search.icon Retrieve all data
           .field
-            .ui.button All
+            button.ui.button.filter.filter__all All
         .column
           .ui.form
             .field
@@ -33,7 +36,7 @@ append content
               .reserved__item=GLOBAL['item']
               .reserved__detail=GLOBAL['detail']
 
-  #page-edit.ui.container
+  .page-svg.ui.container
 
   #footer.ui.container.center.aligned.transistion.hidden
     .ui.floating.message.transistion.hidden
@@ -41,4 +44,5 @@ append content
 
 append script
   script(src='/static/javascripts/schema.js')
-  script(src='/static/javascripts/manage/edit.js')
+  script(src='https://d3js.org/d3.v5.min.js')
+  script(src='/static/javascripts/manage/draw.js')
