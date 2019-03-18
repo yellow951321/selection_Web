@@ -45,7 +45,6 @@ function findCampusById(campus_id){
 function deleteCampus(campus_id){
   return async () => {
     try{
-      console.log(12313)
       // record the yearid
       let year_id = await Campus.findOne({
           where: {campus_id: campus_id, },
