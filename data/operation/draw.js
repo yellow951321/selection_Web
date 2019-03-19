@@ -1,143 +1,341 @@
-const OpUser = require('../../models/mariadb/User/op')
-const OpYear = require('../../models/mariadb/Year/op')
-const OpCampus = require('../../models/mariadb/Campus/op')
-const OpDimension = require('../../models/mariadb/Dimension/op')
-const OpItem = require('../../models/mariadb/Item/op')
-const OpDetail = require('../../models/mariadb/Detail/op')
-const OpContent = require('../../models/mariadb/Content/op')
+const { Data, User, Content } = require('../../models/newModel/association')
 const {map,getFromWord,getFromNum} = require('./mapping')
-const fs = require('fs')
 
-const findAllCampusIdWithRespectUser = async (user_id)=>{
+const countOneCampusMethod = async (info) => {
   try{
-    let result = {}
-    result.user = user_id
+    let data = await Data.findOne({
+      where:{
+        campus: info.campus,
+        year: info.year,
+        type: info.type,
+        userId: info.userId
 
-    const arr_yearId = await OpYear.findYearAll(user_id).map(d=> d.dataValues.year_id)
-
-    let year = []
-
-    await new Promise(async (res,rej)=>{
-      for(let year_id of arr_yearId){
-        let arr_campusId = await OpCampus.findCampusAll(year_id).then(data=>{
-          return  data.map(d=> d.dataValues.campus_id)
-          })
-        let t = {}
-        t[year_id] = arr_campusId
-        year.push(t)
-      }
-      res()
+      },
+      attributes: ['dataId']
+    }).then( data => {
+      if(data != null)
+        return data = data.dataId
+      else
+        throw new Error('No specific Data')
     })
 
-    result.year = year
+    var GroupOfEachMethod = await Content.findAll({
+      where:{
+        dataId: data
+      },
+      attributes: [
+        'aspect',
+        'keypoint',
+        'method',
+        'dataId'
+      ],
+      group: ['method']
+    }).then( data => data.map(d => d.dataValues))
 
-    return result
-  }
-  catch(err){
-    console.log(err)
-  }
-}
-
-const countAllDetailRespectToCampusId = async (campus_id)=>{
-  try{
-    let result = {}
-    result[campus_id] = {}
-    const dimensions = await OpDimension.findDimensionAll(campus_id).map(d=>d.dataValues)
-    await new Promise(async (res,rej)=>{
-      for(let {dimension_id,dimension_name} of dimensions){
-        result[campus_id][dimension_name] = {}
-        const items = await OpItem.findItemAll(dimension_id).map(d=>d.dataValues)
-        for(let {item_id,item_name} of items){
-          result[campus_id][dimension_name][item_name] = {}
-          const details = await OpDetail.findDetailAll(item_id).map(d=>d.dataValues)
-          for(let {detail_id,detail_name} of details){
-            const contentNum = await OpContent.countContentByDetailId(detail_id)
-            console.log(contentNum)
-            result[campus_id][dimension_name][item_name][detail_name] = contentNum
-          }
+    let numberOfEachGroupMethod = await Promise.all(GroupOfEachMethod.map( d => {
+      return Content.count({
+        where: {
+          dataId: d.dataId,
+          aspect: d.aspect,
+          keypoint: d.keypoint,
+          method: d.method
         }
-      }
-      res()
-    })
-    return result
-  }
-  catch(err){
-    console.log(err)
+      }).then( number => {
+        return {
+          aspect: getFromNum(map, { dimension: d.aspect }),
+          keypoint: getFromNum(map, { item: d.keypoint }),
+          method: getFromNum(map, {detail: d.method }),
+          value: number
+        }
+      })
+    }))
+
+    return numberOfEachGroupMethod
+
+
+  }catch(err) {
+    console.log(new Error(err))
   }
 }
 
+const countAllCampusMethod = async () => {
+  try{
+    var GroupOfEachMethod = await Content.findAll({
+      attributes: [
+        'aspect',
+        'keypoint',
+        'method'
+      ],
+      group: ['method']
+    }).then( data => data.map(d => d.dataValues))
 
-const convertToWord = (obj)=>{
-  let result = {}
-  Object.keys(obj).map(campus_id=>{
-    result[campus_id] = {}
-    Object.keys(obj[campus_id]).map(dimension_id=>{
-      const dimension_word = getFromNum(map,{
-        dimension: dimension_id
+    let numberOfEachGroupMethod = await Promise.all(GroupOfEachMethod.map( d => {
+      return Content.count({
+        where: {
+          aspect: d.aspect,
+          keypoint: d.keypoint,
+          method: d.method
+        }
+      }).then( number => {
+        return {
+          aspect: getFromNum(map, { dimension: d.aspect }),
+          keypoint: getFromNum(map, { item: d.keypoint }),
+          method: getFromNum(map, { detail: d.method }),
+          value: number
+        }
       })
-      result[campus_id][dimension_word] = {}
-      Object.keys(obj[campus_id][dimension_id]).map(item_id=>{
-        const item_word = getFromNum(map,{
-          item: item_id
-        })
-        result[campus_id][dimension_word][item_word] = {}
-        Object.keys(obj[campus_id][dimension_id][item_id]).map(detail_id=>{
-            const detail_word = getFromNum(map,{
-              detail: detail_id
-            })
-            result[campus_id][dimension_word][item_word][detail_word] = obj[campus_id][dimension_id][item_id][detail_id]
-        })
-      })
-    })
-  })
+    }))
 
-  return result
+    return numberOfEachGroupMethod
+  }catch(err){
+    console.log(new Error(err))
+  }
 }
 
-const convertToJson = (obj,flag)=>{
+const countAllCampusMethodCorToOneCampus = async (info) => {
+  try{
+    let data = await Data.findOne({
+      where:{
+        campus: info.campus,
+        year: info.year,
+        type: info.type,
+        userId: info.userId
 
-  let result = []
+      },
+      attributes: ['dataId']
+    }).then( data => {
+      if(data != null)
+        return data = data.dataId
+      else
+        throw new Error('No specific Data')
+    })
 
-  Object.keys(obj).map(campus_id=>{
-    Object.keys(obj[campus_id]).map(dimension_word=>{
-      Object.keys(obj[campus_id][dimension_word]).map(item_word=>{
-        Object.keys(obj[campus_id][dimension_word][item_word]).map(detail_word=>{
-          let t = {
-            detail: detail_word,
-            value : obj[campus_id][dimension_word][item_word][detail_word]
+    var GroupOfEachMethod = await Content.findAll({
+      where:{
+        dataId: data
+      },
+      attributes: [
+        'aspect',
+        'keypoint',
+        'method',
+        'dataId'
+      ],
+      group: ['method']
+    }).then( data => data.map(d => d.dataValues))
+
+    let numberOfEachGroupMethod = await Promise.all( GroupOfEachMethod.map( d => {
+      return Content.count({
+        where: {
+          aspect: d.aspect,
+          keypoint: d.keypoint,
+          method: d.method
+        }
+      }).then( number => {
+        return {
+          aspect: getFromNum(map, { dimension: d.aspect }),
+          keypoint: getFromNum(map, { item: d.keypoint }),
+          method: getFromNum(map, {detail: d.method }),
+          overall: number
+        }
+      }).then( obj => {
+        return Content.count({
+          where: {
+            dataId: d.dataId,
+            aspect: d.aspect,
+            keypoint: d.keypoint,
+            method: d.method
           }
-          result.push(t)
+        }).then( specficNum => {
+            obj.self = specficNum
+            return obj
         })
       })
-    })
-  })
-  if(flag.json == true){
-    fs.writeFile('test.json',JSON.stringify(result,null,2),(err)=>{
-      if(err) console.log(err)
-    })
-  }else{
-    return result
+    }))
+
+    return numberOfEachGroupMethod
+
+
+  }catch(err) {
+    console.log(new Error(err))
   }
 }
 
+const countOneCampusMethodCorToAspect = async (info) =>{
+  try{
+    let data = await Data.findOne({
+      where:{
+        campus: info.campus,
+        year: info.year,
+        type: info.type,
+        userId: info.userId
 
+      },
+      attributes: ['dataId']
+    }).then( data => {
+      if(data != null)
+        return data = data.dataId
+      else
+        throw new Error('No specific Data')
+    })
+
+    var GroupOfEachMethod = await Content.findAll({
+      where:{
+        dataId: data,
+        aspect: info.aspect,
+      },
+      attributes: [
+        'aspect',
+        'keypoint',
+        'method',
+        'dataId'
+      ],
+      group: ['method']
+    }).then( data => data.map(d => d.dataValues))
+
+    let numberOfEachGroupMethod = await Promise.all( GroupOfEachMethod.map( d => {
+      return Content.count({
+        where: {
+          aspect: d.aspect,
+          keypoint: d.keypoint,
+          method: d.method
+        }
+      }).then( number => {
+        return {
+          aspect: getFromNum(map, { dimension: d.aspect }),
+          keypoint: getFromNum(map, { item: d.keypoint }),
+          method: getFromNum(map, {detail: d.method }),
+          overall: number
+        }
+      }).then( obj => {
+        return Content.count({
+          where: {
+            dataId: d.dataId,
+            aspect: d.aspect,
+            keypoint: d.keypoint,
+            method: d.method
+          }
+        }).then( specficNum => {
+            obj.self = specficNum
+            return obj
+        })
+      })
+    }))
+
+    return numberOfEachGroupMethod
+
+  }catch(err) {
+
+  }
+}
+
+const countOneCampusMethodCorToAspectKey = async(info) =>{
+  try{
+    let data = await Data.findOne({
+      where:{
+        campus: info.campus,
+        year: info.year,
+        type: info.type,
+        userId: info.userId
+
+      },
+      attributes: ['dataId']
+    }).then( data => {
+      if(data != null)
+        return data = data.dataId
+      else
+        throw new Error('No specific Data')
+    })
+
+    var GroupOfEachMethod = await Content.findAll({
+      where:{
+        dataId: data,
+        aspect: info.aspect,
+        keypoint: info.keypoint
+      },
+      attributes: [
+        'aspect',
+        'keypoint',
+        'method',
+        'dataId'
+      ],
+      group: ['method']
+    }).then( data => data.map(d => d.dataValues))
+
+    let numberOfEachGroupMethod = await Promise.all( GroupOfEachMethod.map( d => {
+      return Content.count({
+        where: {
+          aspect: d.aspect,
+          keypoint: d.keypoint,
+          method: d.method
+        }
+      }).then( number => {
+        return {
+          aspect: getFromNum(map, { dimension: d.aspect }),
+          keypoint: getFromNum(map, { item: d.keypoint }),
+          method: getFromNum(map, {detail: d.method }),
+          overall: number
+        }
+      }).then( obj => {
+        return Content.count({
+          where: {
+            dataId: d.dataId,
+            aspect: d.aspect,
+            keypoint: d.keypoint,
+            method: d.method
+          }
+        }).then( specficNum => {
+            obj.self = specficNum
+            return obj
+        })
+      })
+    }))
+
+    return numberOfEachGroupMethod
+
+  }catch(err){
+    console.log(new Error(err))
+  }
+}
 
 const test = async ()=>{
 
-  const result = await countAllDetailRespectToCampusId(2)
+  // const result = await countOneCampusMethod({
+  //   campus: 1,
+  //   year: 107,
+  //   type: 0,
+  //   userId: 6
+  // })
+  // const result = await countAllCampusMethodCorToOneCampus({
+  //   campus: 1,
+  //   year: 107,
+  //   type: 0,
+  //   userId: 6
+  // })
+  // const result = await countAllCampusMethod()
+  // const result = await countOneCampusMethodCorToAspect({
+  //   campus: 1,
+  //   year: 107,
+  //   type: 0,
+  //   userId: 6,
+  //   aspect: 0
+  // })
+  // const result = await countOneCampusMethodCorToAspectKey({
+  //   campus: 1,
+  //   year: 107,
+  //   type: 0,
+  //   userId: 6,
+  //   aspect: 0,
+  //   keypoint: 0
+  // })
   console.log(result)
-  const result_word = convertToWord(result)
-
-  convertToJson(result_word)
 
 }
 
-// test()
-
 
 module.exports = {
-  findAllCampusIdWithRespectUser,
-  countAllDetailRespectToCampusId,
-  convertToWord,
-  convertToJson
+  countOneCampusMethod,
+  countAllCampusMethod,
+  countAllCampusMethodCorToOneCampus,
+  countOneCampusMethodCorToAspect,
+  countOneCampusMethodCorToAspectKey
 }

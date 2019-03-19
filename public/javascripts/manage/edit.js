@@ -191,7 +191,7 @@ class Filter{
             start: startPage,
             end: endPage,
           },
-          content_id: content_id,
+          contentId: content_id,
           title: title,
           content: content,
         }),
@@ -240,7 +240,7 @@ class Filter{
       fetch(`/man/${that.selected.userId}/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
-          content_id: content_id,
+          contentId: content_id,
         }),
         headers: {
           'Content-Type': 'application/json',

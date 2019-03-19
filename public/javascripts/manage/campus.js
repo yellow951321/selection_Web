@@ -45,12 +45,12 @@ class Delete {
   // handle delete event
   static deleteContent(that, campusNode){
     return () =>{
-      const campus_id = campusNode.querySelector('.campus_id').value
+      const dataId = campusNode.querySelector('.dataId').value
       const user_id = campusNode.querySelector('.user_id').value
       fetch(`/man/${user_id}/file/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
-          campus_id: campus_id,
+          dataId,
         }),
         headers: {
           'Content-Type': 'application/json',

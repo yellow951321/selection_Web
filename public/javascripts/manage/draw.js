@@ -8,6 +8,7 @@ class Draw {
     this.selectedItem = ''
     this.selectedDetail = ''
     this.htmlTable = this.buildTables()
+    console.log(this.htmlTable)
 
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
@@ -25,10 +26,10 @@ class Draw {
       detail: {},
     };
     Reflect.ownKeys(schema).forEach((dimension) => {
-      table['item'][dimension] = '';
+      table['item'][dimension] = `<option value='All'>ALL</option>`;
       if(schema[dimension] instanceof Object){
         Reflect.ownKeys(schema[dimension]).forEach((item) =>{
-          table['detail'][item] = '';
+          table['detail'][item] = `<option value='All'>ALL</option>`;
           Reflect.ownKeys(schema[dimension][item]).forEach((detail) =>{
             table['detail'][item] += `<option value='${ detail }'>${ detail }</option>`
           })
@@ -48,7 +49,7 @@ class Draw {
       const detail = editNode.querySelector('.filter__detail').firstChild
       const defaultItem = Object.keys(schema[event.target.value])[0]
       item.innerHTML = that.htmlTable['item'][event.target.value]
-      item.value = defaultItem
+      item.value = 'All'
       detail.innerHTML = that.htmlTable['detail'][item.value]
     }
   }
@@ -57,7 +58,7 @@ class Draw {
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
       const detail = editNode.querySelector('.filter__detail').firstChild
-      detail.innerHTML = that.htmlTable['detail'][event.target.value]
+      detail.innerHTML = event.target.value != 'All' ? that.htmlTable['detail'][event.target.value] : '<option> ALL </option>'
     }
   }
 }
@@ -65,10 +66,50 @@ class Draw {
 
 const draw = new Draw()
 
-const retrieveSpecficData = ()=>{
-  const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
-  const item = pageFilter.querySelector('.filter.filter__item').firstChild
-  const detial = pageFilter.querySelector('.filter.filter__detail').firstChild
+const retrieveSpecficData = (that)=>{
+  const pathSplit = window.location.pathname.split('/')
+  const selected = {
+    userId: pathSplit[2],
+    year: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
+    type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
+    campus: pathSplit[5] ? decodeURI(pathSplit[5]) : ''
+  }
+  const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
+  const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
+  const method = pageFilter.querySelector('.filter.filter__detail').firstChild
+  return () => {
+    //query parameter for GET
+    let parameters = {
+      id: selected.userId,
+      year: selected.year,
+      type: selected.type,
+      campus: selected.campus,
+      aspect: aspect.value,
+      keypoint: keypoint.value,
+      method: method.value
+    }
+    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
+    fetch(`/man/${selected.userId}/${selected.year}/${selected.type}/${selected.campus}/graph/filter?${parameters}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.text())
+    .then(data => {
+      console.log(data)
+      data = JSON.parse(data)
+      let graphNode = document.querySelector('.page-svg')
+      while( graphNode.lastChild )
+        graphNode.removeChild(graphNode.lastChild)
+      drawBarChart(data,{
+        id: selected.userId,
+        year: selected.year,
+        type: selected.type,
+        campus: selected.campus
+      })
+    })
+  }
 }
 
 function retrieveAllData() {
@@ -97,6 +138,9 @@ function retrieveAllData() {
   .then(data => {
     console.log(data)
     data = JSON.parse(data)
+    let graphNode = document.querySelector('.page-svg')
+    while( graphNode.lastChild )
+      graphNode.removeChild(graphNode.lastChild)
     drawBarChart(data,{
       id: selected.userId,
       year: selected.year,
@@ -108,30 +152,18 @@ function retrieveAllData() {
 }
 
 const zippedData = (data) => {
-  let zipData = []
-  for(let aspect in data)
-    for(let keypoint in data[aspect])
-      for(let method in data[aspect][keypoint]){
-        zipData.push({
-          aspect: aspect,
-          keypoint : keypoint,
-          method: method,
-          value: [data[aspect][keypoint][method].self , data[aspect][keypoint][method].overview]
-        })
-      }
   let aspectLable = [],
       keypointLable = [],
       methodLable = []
-  Object.keys(data).map(aspect => {
-    aspectLable.push(aspect)
-    Object.keys(data[aspect]).map( keypoint => {
-      keypointLable.push(keypoint)
-      Object.keys(data[aspect][keypoint]).map( method => {
-        methodLable.push(method)
-      })
-    })
+  data.forEach( obj => {
+    if( !aspectLable.includes(obj.aspect))
+      aspectLable.push(obj.aspect)
+    if( !keypointLable.includes(obj.keypoint) )
+      keypointLable.push(obj.keypoint)
+    if( !methodLable.includes(obj.method) )
+      methodLable.push(obj.method)
   })
-  return {zipData, aspectLable, keypointLable, methodLable}
+  return {zipData: data , aspectLable, keypointLable, methodLable}
 }
 
 
@@ -140,35 +172,29 @@ const drawBarChart = (data,info)=>{
                              right: window.document.body.offsetWidth*0.17,
                              bottom: 80,
                              left: window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.25 : window.document.body.offsetWidth*0.35},
+      barHeight           = 25,
+      barPadding          = 10,
       width               = window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.4 : window.document.body.offsetWidth*0.3,
-      height              = 3000 - margin.top - margin.bottom,
+      height              = data.length*2*(barHeight + barPadding),
   // zipped the data as array
       {zipData, aspectLable, keypointLable, methodLable}   = zippedData(data)
-  // console.log(zipData)
+  // console.log(aspectLable, keypointLable, methodLable)
   // define the scale of x
+  console.log(data.length)
   var x = d3.scaleLinear()
-  .domain([0,d3.max(zipData, d => d.value[1] )])
+  .domain([0,d3.max(zipData, d => d.overall )])
   .range([0, width]);
 
-  var y_aspect = d3.scaleBand()
-      .domain(aspectLable)
-      .rangeRound([0,height])
-      .paddingInner(0.2)
-
-  var y_keypoint = d3.scaleBand()
-      .domain(keypointLable)
-      .rangeRound([0,y_aspect.bandwidth()])
-      .paddingInner(0.1)
 
   var y_method = d3.scaleBand()
       .domain(methodLable)
-      .rangeRound([0,y_keypoint.bandwidth()])
-      .padding(0.05)
+      .rangeRound([0,height])
+      .padding(0.2)
 
   var y_bar = d3.scaleBand()
-      .domain(["self","overview"])
+      .domain(["self","overall"])
       .rangeRound([0,y_method.bandwidth()])
-      .padding(0.05)
+      .padding(0.1)
 
   var xAxis = d3.axisBottom(x)
       .ticks(10)
@@ -191,14 +217,11 @@ const drawBarChart = (data,info)=>{
     .selectAll("g")
     .data(zipData)
     .join("g")
-      .attr("transform", d => {
-        return `translate(0,${y_aspect(d.aspect)})`})
-    .join("g")
-      .attr("transform", d => `translate(0,${y_keypoint(d.keypoint)})`)
-    .join("g")
       .attr("transform", d => `translate(0,${y_method(d.method)})`)
     .selectAll('rect')
-    .data( d => [{method: "self", value: d.value[0]}, {method: "overview", value: d.value[1]}] )
+    .data( d => [
+      { method: d.method, prop: "self",    value: d.self    , percentage: ((d.self/d.overall)*100).toFixed(2) },
+      { method: d.method, prop: "overall", value: d.overall , percentage : 100 }] )
       .enter()
       .append('a')
         .attr("href", d=>{
@@ -208,27 +231,38 @@ const drawBarChart = (data,info)=>{
   bar.append('rect')
   .attr("fill", (d,i) => {
     if(i%2 == 0)
-      return "orange"
+      return "#80d6ff"
     else
-      return "blue"
+      return "#0077c2"
   })
   .attr("class", "bar")
   .attr("x", 0)
-  .attr("y", d => y_bar(d.method))
-  .attr("width", d => x(d.value))
+  .attr("y", d => {
+    return y_bar(d.prop)})
+  .attr("width", (d,i) => {
+    if( i%2 == 0)
+      return x(d.value + 20)
+    else
+      return x(d.value) > 60 ? x(d.value) : 80
+  })
   .attr("height", y_bar.bandwidth())
 
   bar.append('text')
-    .attr("fill" , "white")
+    .attr("fill" , (d,i) => {
+      if( i%2 == 0)
+        return "black"
+      else
+        return "white"
+    })
     .attr("x", 3)
     .attr("y" , d => {
       console.log(y_bar.bandwidth())
-      return y_bar(d.method) + y_bar.bandwidth()/1.5 })
-    .text(d =>{
+      return y_bar(d.prop) + y_bar.bandwidth()/1.5 })
+    .text((d , i) =>{
       if(d.value == 0)
         return ""
       else
-        return d.value
+        return `${d.value} , ${d.percentage}%`
     })
 }
 
@@ -245,6 +279,7 @@ pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(n
 
 pageFilter.querySelector('.filter.filter__all').addEventListener('click', retrieveAllData)
 
+pageFilter.querySelector('.filter.filter__choice').addEventListener('click', retrieveSpecficData(draw) )
 // if reserved exsists,which means this page was rendered by clicking the graph
 // we need to filter the reserved dimension, item, and detail
 if(reserved.querySelector('.reserved__dimension') !== null){

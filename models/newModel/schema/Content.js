@@ -2,7 +2,7 @@ const sequelize = require('../../../db/mariadb')
 const Sequelize = require('sequelize')
 const Data = require('./Data')
 const contentSchema = {
-  dataId:{
+  contentId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
     primaryKey: true,
     allowNull: false,
@@ -39,13 +39,6 @@ const contentSchema = {
   },
   dataId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
-    references:{
-      // This is a reference to another model
-      model: Data,
-
-      // This is the column name of the referenced model
-      key: 'dataId',
-    },
     allowNull: false,
   },
 }
