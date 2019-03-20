@@ -216,7 +216,7 @@ Year.findYearAll(6)
                 arr.splice(i,1)
                 break;
             }
-        } 
+        }
     }
 
     let dataArr = arr.map(obj=>{
@@ -385,6 +385,5 @@ Year.findYearAll(6)
             tf_idf: tempObj,
         })
     })
-    
     console.log(dataTotal)
 })

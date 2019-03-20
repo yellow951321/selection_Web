@@ -8,7 +8,6 @@ class Draw {
     this.selectedItem = ''
     this.selectedDetail = ''
     this.htmlTable = this.buildTables()
-    console.log(this.htmlTable)
 
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
@@ -26,10 +25,10 @@ class Draw {
       detail: {},
     };
     Reflect.ownKeys(schema).forEach((dimension) => {
-      table['item'][dimension] = `<option value='All'>ALL</option>`;
+      table['item'][dimension] = `<option value='All'>全部</option>`;
       if(schema[dimension] instanceof Object){
         Reflect.ownKeys(schema[dimension]).forEach((item) =>{
-          table['detail'][item] = `<option value='All'>ALL</option>`;
+          table['detail'][item] = `<option value='All'>全部</option>`;
           Reflect.ownKeys(schema[dimension][item]).forEach((detail) =>{
             table['detail'][item] += `<option value='${ detail }'>${ detail }</option>`
           })
@@ -47,10 +46,16 @@ class Draw {
       const editNode = event.target.parentNode.parentNode.parentNode
       const item = editNode.querySelector('.filter__item').firstChild
       const detail = editNode.querySelector('.filter__detail').firstChild
-      const defaultItem = Object.keys(schema[event.target.value])[0]
-      item.innerHTML = that.htmlTable['item'][event.target.value]
-      item.value = 'All'
-      detail.innerHTML = that.htmlTable['detail'][item.value]
+      // const defaultItem = Object.keys(schema[event.target.value])[0]
+      if( event.target.value != 'All'){
+        item.innerHTML = that.htmlTable['item'][event.target.value]
+        item.value = 'All'
+        detail.innerHTML = that.htmlTable['detail'][item.value]
+      }
+      else{
+        item.innerHTML = '<option>全部</option>'
+        detail.innerHTML = '<option>全部</option>'
+      }
     }
   }
   // dropndown item on change
@@ -58,7 +63,7 @@ class Draw {
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
       const detail = editNode.querySelector('.filter__detail').firstChild
-      detail.innerHTML = event.target.value != 'All' ? that.htmlTable['detail'][event.target.value] : '<option> ALL </option>'
+      detail.innerHTML = event.target.value != 'All' ? that.htmlTable['detail'][event.target.value] : '<option>全部</option>'
     }
   }
 }
@@ -97,7 +102,6 @@ const retrieveSpecficData = (that)=>{
     })
     .then(res => res.text())
     .then(data => {
-      console.log(data)
       data = JSON.parse(data)
       let graphNode = document.querySelector('.page-svg')
       while( graphNode.lastChild )
@@ -112,54 +116,11 @@ const retrieveSpecficData = (that)=>{
   }
 }
 
-function retrieveAllData() {
-  const pathSplit = window.location.pathname.split('/')
-  const selected = {
-    userId: pathSplit[2],
-    year: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-    type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-    campus: pathSplit[5] ? decodeURI(pathSplit[5]) : ''
-  }
-  // query parameter for GET
-  let parameters = {
-    id: selected.userId,
-    year: selected.year,
-    type: selected.type,
-    campus: selected.campus
-  }
-  parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-  fetch(`/man/${selected.userId}/${selected.year}/${selected.type}/${selected.campus}/graph/all?${parameters}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-  .then(res => res.text())
-  .then(data => {
-    console.log(data)
-    data = JSON.parse(data)
-    let graphNode = document.querySelector('.page-svg')
-    while( graphNode.lastChild )
-      graphNode.removeChild(graphNode.lastChild)
-    drawBarChart(data,{
-      id: selected.userId,
-      year: selected.year,
-      type: selected.type,
-      campus: selected.campus
-    })
-  })
-
-}
-
 const zippedData = (data) => {
   let aspectLable = [],
       keypointLable = [],
       methodLable = []
   data.forEach( obj => {
-    if( !aspectLable.includes(obj.aspect))
-      aspectLable.push(obj.aspect)
-    if( !keypointLable.includes(obj.keypoint) )
-      keypointLable.push(obj.keypoint)
     if( !methodLable.includes(obj.method) )
       methodLable.push(obj.method)
   })
@@ -178,12 +139,10 @@ const drawBarChart = (data,info)=>{
       height              = data.length*2*(barHeight + barPadding),
   // zipped the data as array
       {zipData, aspectLable, keypointLable, methodLable}   = zippedData(data)
-  // console.log(aspectLable, keypointLable, methodLable)
   // define the scale of x
-  console.log(data.length)
   var x = d3.scaleLinear()
-  .domain([0,d3.max(zipData, d => d.overall )])
-  .range([0, width]);
+      .domain([0,100])
+      .range([0, width])
 
 
   var y_method = d3.scaleBand()
@@ -200,6 +159,7 @@ const drawBarChart = (data,info)=>{
       .ticks(10)
 
   var yAxis = d3.axisLeft(y_method)
+      .tickSize(0)
 
   var svg = d3.select(".page-svg").append("svg")
   .attr("height" , height + margin.top + margin.bottom)
@@ -220,12 +180,12 @@ const drawBarChart = (data,info)=>{
       .attr("transform", d => `translate(0,${y_method(d.method)})`)
     .selectAll('rect')
     .data( d => [
-      { method: d.method, prop: "self",    value: d.self    , percentage: ((d.self/d.overall)*100).toFixed(2) },
-      { method: d.method, prop: "overall", value: d.overall , percentage : 100 }] )
+      { method: d.method, methodId: d.methodId, prop: "self",    value: d.self    , percentage: ((d.rank)*100).toFixed(2) },
+      { method: d.method, methodId: d.methodId, prop: "overall", value: d.highest , percentage : 100 }] )
       .enter()
       .append('a')
         .attr("href", d=>{
-          return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.method}`
+          return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`
         })
 
   bar.append('rect')
@@ -239,12 +199,7 @@ const drawBarChart = (data,info)=>{
   .attr("x", 0)
   .attr("y", d => {
     return y_bar(d.prop)})
-  .attr("width", (d,i) => {
-    if( i%2 == 0)
-      return x(d.value + 20)
-    else
-      return x(d.value) > 60 ? x(d.value) : 80
-  })
+  .attr("width", d => x(d.percentage))
   .attr("height", y_bar.bandwidth())
 
   bar.append('text')
@@ -256,14 +211,44 @@ const drawBarChart = (data,info)=>{
     })
     .attr("x", 3)
     .attr("y" , d => {
-      console.log(y_bar.bandwidth())
       return y_bar(d.prop) + y_bar.bandwidth()/1.5 })
     .text((d , i) =>{
       if(d.value == 0)
         return ""
       else
-        return `${d.value} , ${d.percentage}%`
+        return `共 ${d.value} 筆 , 百分點: ${d.percentage}%`
     })
+
+    //draw legends
+    let legendLabel = [ '此大學資料數', '所有大學最多筆資料數']
+    var legend = d3.select('.page-svg svg')
+      .append('g')
+      .selectAll('rect')
+      .data(legendLabel)
+      .enter()
+        // .attr('transform', )
+    legend.append('rect')
+          .attr("fill", (d,i) => {
+            if(i%2 == 0)
+              return "#80d6ff"
+            else
+              return "#0077c2"
+          })
+          .attr("class", "bar")
+          .attr("x", width)
+          .attr("y", (d,i) => {
+            return i*30 + i*5 + 5 +30/2
+          })
+          .attr("width", 30)
+          .attr("height", 5)
+
+    legend.append('text')
+            .attr("fill" , "black" )
+            .attr("x", width + 35)
+            .attr("y" , (d,i)=>{
+              return i*30+ i*5 + 5 + 2.5 + 30/2
+            })
+            .text(d => d)
 }
 
 $('select.dropdown')
@@ -277,7 +262,6 @@ pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('ch
 // pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Draw.filter(draw))
 pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'));
 
-pageFilter.querySelector('.filter.filter__all').addEventListener('click', retrieveAllData)
 
 pageFilter.querySelector('.filter.filter__choice').addEventListener('click', retrieveSpecficData(draw) )
 // if reserved exsists,which means this page was rendered by clicking the graph

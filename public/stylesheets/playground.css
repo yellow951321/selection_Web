@@ -16,6 +16,10 @@
   font: 25px sans-serif;
 }
 
+.tick line {
+  visibility: hidden;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -31,6 +35,10 @@ svg {
   overflow: visible!important;
   overflow-x: scroll!important;
   margin: auto;
+}
+
+.page-svg {
+  overflow-x: scroll
 }
 
 g {
