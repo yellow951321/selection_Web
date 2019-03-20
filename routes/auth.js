@@ -1,8 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 
-//const User = require('../models/User/schema')
-const User = require('../models/mariadb/User/schema')
+const User = require('../models/newModel/schema/User')
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -23,14 +22,14 @@ router.post('/login', async(req, res)=>{
   try{
     const doc = await User.findOne({
       where:{
-        user_name: req.body.username,
+        account: req.body.username,
         password: req.body.password,
       },
     })
 
     if(doc != null){
       //console.log(doc)
-      req.session.userId = doc.dataValues.user_id
+      req.session.userId = doc.dataValues.userId
       res.redirect(`/man/${req.session.userId}`)
     }else{
       throw new Error(`No account matched ${req.body.username}`)
@@ -58,7 +57,7 @@ router.post('/signup', async(req, res)=>{
       throw new Error('Forbidden password or account')
 
     const promise = await User.create({
-      user_name : req.body.username,
+      account : req.body.username,
       password: req.body.password,
     })
 

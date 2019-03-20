@@ -1,4 +1,5 @@
-const Data = require('../schema/Data')
+const { Data , User, Content } = require('../association')
+const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
 
 const findYearAll = async (userId) => {
     try{
@@ -10,8 +11,8 @@ const findYearAll = async (userId) => {
         })
 
         // transfer data in to column year only
-        val = val.map((data) => data.year)
-
+        val = val.map((data) => data.dataValues.year)
+        // console.log(val)
         // find and sort the destinct year
         let output = []
         for(let year of val){
@@ -40,24 +41,26 @@ const findTypeAll = async (userId, year) => {
         })
 
         // transfer data into column type only
-        val = val.map((data) => data.type)
+        val = val.map((data) => data.dataValues.type)
+        val = val.filter((value, index,self)=>{
+            return self.indexOf(value) === index
+        })
+        // // record the appereared type
+        // let exists = [false, false]
+        // for(let type of val){
+        //     if(!exists[type])
+        //         exists[type] = true;
 
-        // record the appereared type
-        let exists = [false, false]
-        for(let type of val){
-            if(!exists[type])
-                exists[type] = true;
+        //     if(exists[0] && exists[1])
+        //         break;
+        // }
+        // let output = []
+        // for(let index of exists){
+        //     if(exists[index])
+        //         output.push(index)
+        // }
 
-            if(exists[0] && exists[1])
-                break;
-        }
-        let output = []
-        for(let index of exists){
-            if(exists[index])
-                output.push(index)
-        }
-
-        return output
+        return val
     }
     catch(err){
         throw err
@@ -76,10 +79,85 @@ const findCampusAll =  async (userId, year, type) => {
         })
 
         //transfer data into column campus only
-        val = val.map((data) => data.campus)
+        val = val.map( data => {
+            return {
+                campus : data.dataValues.campus,
+                dataId : data.dataValues.dataId,
+            }
+        })
+
+        // val = val.filter((value, index,self)=>{
+        //     return self.indexOf(value) === index
+        // })
+        val = val.map( campusInfo => {
+            return [getFromNum(map, {
+                campus: campusInfo.campus,
+                type: type
+            }), campusInfo.dataId]
+        })
         return val
     }
     catch(err){
         throw err
     }
 };
+
+const findCampusOne = async (info) =>{
+    try{
+        let campus = await Data.findOne({
+            where:{
+                campus: info.campusId,
+                year: info.year,
+                type: info.typeId,
+                userId: info.userId
+            }
+        })
+        if( campus == null)
+            return null
+        else
+            var {dataValues, } = campus
+
+            return dataValues
+    } catch(err){
+        console.log(err)
+    }
+}
+const createNewProject = async (info) =>{
+    try{
+        console.log(info)
+        let outputCampus = await findCampusOne(info)
+        if( outputCampus !== null)
+            return outputCampus
+
+        return Data.create({
+            campus: info.campusId,
+            year: info.year,
+            type: info.type,
+            userId: info.userId
+        })
+    }catch(err) {
+        console.log(new Error(err))
+    }
+}
+
+const deleteProject = async (info) =>{
+    try{
+        Data.destroy({
+            where: {
+                dataId: info.dataId
+            }
+        })
+        .then(() => 'OK')
+        .catch( () => { throw new Error('No specified project') } )
+    }catch(err) {
+        console.log(new Error(err))
+    }
+}
+module.exports = {
+    findYearAll,
+    findTypeAll,
+    findCampusAll,
+    findCampusOne,
+    createNewProject,
+    deleteProject
+}

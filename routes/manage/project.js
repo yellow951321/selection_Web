@@ -8,7 +8,7 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/mariadb/User/schema')
+const User = require('../../models/newModel/schema/User')
 const { map, getFromNum, findParentByDetail, } = require('../../data/operation/mapping')
 
 
@@ -16,7 +16,7 @@ router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id:req.session.userId,
+        userId:req.session.userId,
       },
     })
 
@@ -28,7 +28,7 @@ router.get('/', async(req, res)=>{
     res.render('manage/edit', {
       GLOBAL : {
         id : req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         year : res.locals.year,
         type : res.locals.type,
         campus : res.locals.campus,
@@ -49,7 +49,7 @@ router.get('/:detail_num',async (req,res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id: req.session.userId
+        userId: req.session.userId
       }
     })
     if(user == null)
@@ -77,7 +77,7 @@ router.get('/:detail_num',async (req,res)=>{
     res.render('manage/edit',{
       GLOBAL: {
         id : req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         year : res.locals.year,
         type : res.locals.type,
         campus : res.locals.campus,

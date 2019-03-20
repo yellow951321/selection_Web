@@ -7,16 +7,17 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const User = require('../../models/mariadb/User/schema')
+const User = require('../../models/newModel/schema/User')
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
-const { findCampusByType, } = require('../../models/mariadb/Campus/op')
+// const { findCampusByType, } = require('../../models/mariadb/Campus/op')
+const {findTypeAll, } = require('../../models/newModel/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
     //get user information assign to user
     const user = await User.findOne({
       where:{
-        user_id: req.session.userId,
+        userId: req.session.userId,
       },
     })
     if(user == null)
@@ -24,25 +25,19 @@ router.get('/', async(req, res)=>{
     else
       var {dataValues, } = user
 
-    let files = []
-    // check if there's 普通大學 in the database
-    let checkType = await findCampusByType(res.locals.year_id, '0')
+    let checkType = await findTypeAll(req.session.userId, res.locals.year )
+    // translate the type number into word 0 for "大學" 1 for "技職大學"
+    checkType = checkType.map(type => type == 0 ? "大學" : "技職大學")
     if(checkType.length !== 0)
-      files.push(getFromNum(map, {type: '0', }))
-
-    // check if there's 技職學校 in the database
-    checkType = await findCampusByType(res.locals.year_id, '1')
-    if(checkType.length !== 0)
-      files.push(getFromNum(map, {type: '1', }))
-    res.render('manage/type', {
-      GLOBAL: {
-        types : files,
-        id : req.session.userId,
-        user : dataValues.user_name,
-        year : res.locals.year,
-        map: map.campus,
-      },
-    })
+      res.render('manage/type', {
+        GLOBAL: {
+          types : checkType,
+          id : req.session.userId,
+          user : dataValues.account,
+          year : res.locals.year,
+          map: map.campus,
+        },
+      })
   }
   catch (err) {
     res.status(403).render('error', {

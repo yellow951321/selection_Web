@@ -18,7 +18,7 @@ const sequelize = new Sequelize(`${config.database.database}`, `${config.databas
   define:{
     underscored: true,
     charset: 'utf-8',
-    freezeTableName: false,
+    freezeTableName: true,
     dialectOptions:{
       collate: 'utf8mb4_general_ci',
     },

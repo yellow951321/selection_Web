@@ -1,0 +1,48 @@
+extends component/layout
+
+append head
+  link(rel='stylesheet', href='/static/stylesheets/playground.css')
+
+append content
+
+  #page-filter.ui.container.placeholder.segment
+    .ui.two.column.stackable.center.aligned.grid
+      .ui.vertical.divider Or
+      .middle.aligned.row
+        .column
+          .ui.icon.header
+            i.search.icon Retrieve all data
+          .field
+            button.ui.button.filter.filter__all All
+        .column
+          .ui.form
+            .field
+              label 構面
+              select.filter.filter__dimension.ui.selection.dropdown
+                option(value='教學') 教學
+                option(value='研究') 研究
+                option(value='產學') 產學
+                option(value='社會責任') 社會責任
+                option(value='大學治理及公共性') 大學治理及公共性
+              label 項目
+              select.filter.filter__item.ui.selection.dropdown
+              label 詳細資料
+              select.filter.filter__detail.ui.selection.dropdown
+              .ui.container.center.aligned.choice-block
+                button.ui.button.filter.filter__choice 選擇
+          .reserved.ui.transition.hidden
+            if GLOBAL['dimension']
+              .reserved__dimension=GLOBAL['dimension']
+              .reserved__item=GLOBAL['item']
+              .reserved__detail=GLOBAL['detail']
+
+  .page-svg.ui.container
+
+  #footer.ui.container.center.aligned.transistion.hidden
+    .ui.floating.message.transistion.hidden
+      p 尚未繪畫任何資料
+
+append script
+  script(src='/static/javascripts/schema.js')
+  script(src='https://d3js.org/d3.v5.min.js')
+  script(src='/static/javascripts/manage/draw.js')
