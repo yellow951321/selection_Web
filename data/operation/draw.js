@@ -357,6 +357,7 @@ const countCampusAll = async (info) => {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
+          methodId: d.method,
           self: foundCampus.count,
           highest,
           rank: matchNum[matchNum.length-1]/number.length
@@ -428,6 +429,7 @@ const countCampusRespectToAspect = async (info) => {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
+          methodId: d.method,
           self: foundCampus.count,
           highest,
           rank: index/number.length
@@ -500,6 +502,7 @@ const countCampusRespectToKey = async (info) => {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
+          methodId: d.method,
           self: foundCampus.count,
           highest,
           rank: index/number.length
@@ -573,6 +576,7 @@ const countCampusRespectToMethod = async(info) => {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
+          methodId: d.method,
           self: foundCampus.count,
           highest,
           rank: index/number.length

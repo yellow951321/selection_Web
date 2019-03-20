@@ -61,21 +61,6 @@ router.get('/filter', async (req,res)=>{
   }
 })
 
-// router.get('/all',async (req,res)=>{
-//   try{
-//     console.log(req.query)
-//     let data = await countAllCampusMethodCorToOneCampus({
-//       campus: getFromWord(map, { campus: req.query.campus, type: req.query.type}),
-//       year: req.query.year,
-//       type: getFromWord(map, {type: req.query.type }),
-//       userId: req.session.userId
-//     })
-//     res.json(data)
-//   }catch(err){
-
-//   }
-// })
-
 
 router.get('/', async (req,res)=>{
   try{
@@ -97,7 +82,8 @@ router.get('/', async (req,res)=>{
         user: dataValues.account,
         year: res.locals.year,
         type: res.locals.type,
-        campus: res.locals.campus
+        campus: res.locals.campus,
+        graph: '統計圖表',
       },
     })
   }catch (err){

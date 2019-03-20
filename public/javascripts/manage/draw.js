@@ -180,12 +180,12 @@ const drawBarChart = (data,info)=>{
       .attr("transform", d => `translate(0,${y_method(d.method)})`)
     .selectAll('rect')
     .data( d => [
-      { method: d.method, prop: "self",    value: d.self    , percentage: ((d.rank)*100).toFixed(2) },
-      { method: d.method, prop: "overall", value: d.highest , percentage : 100 }] )
+      { method: d.method, methodId: d.methodId, prop: "self",    value: d.self    , percentage: ((d.rank)*100).toFixed(2) },
+      { method: d.method, methodId: d.methodId, prop: "overall", value: d.highest , percentage : 100 }] )
       .enter()
       .append('a')
         .attr("href", d=>{
-          return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.method}`
+          return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`
         })
 
   bar.append('rect')

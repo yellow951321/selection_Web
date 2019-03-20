@@ -45,7 +45,7 @@ router.get('/', async(req, res)=>{
   }
 })
 
-router.get('/:detail_num',async (req,res)=>{
+router.get('/:methodId',async (req,res)=>{
   try{
     const user = await User.findOne({
       where:{
@@ -56,24 +56,24 @@ router.get('/:detail_num',async (req,res)=>{
       throw new Error(`No userId ${req.session.userId}`)
     else
       var {dataValues, } = user
-    console.log()
-    const detail_word = getFromNum(map,{
-      detail: req.params.detail_num
+    // console.log()
+    const method_word = getFromNum(map,{
+      detail: req.params.methodId
     })
-    console.log(detail_word)
-    const { dimension, item, } = findParentByDetail(detail_word)
-    console.log({
-      GLOBAL: {
-        id : req.session.userId,
-        user : dataValues.user_name,
-        year : res.locals.year,
-        type : res.locals.type,
-        campus : res.locals.campus,
-        dimension : dimension,
-        item : item,
-        detail : detail_word
-      }
-    })
+    // console.log(detail_word)
+    const { dimension, item, } = findParentByDetail(method_word)
+    // console.log({
+    //   GLOBAL: {
+    //     id : req.session.userId,
+    //     user : dataValues.user_name,
+    //     year : res.locals.year,
+    //     type : res.locals.type,
+    //     campus : res.locals.campus,
+    //     dimension : dimension,
+    //     item : item,
+    //     detail : detail_word
+    //   }
+    // })
     res.render('manage/edit',{
       GLOBAL: {
         id : req.session.userId,
@@ -83,7 +83,7 @@ router.get('/:detail_num',async (req,res)=>{
         campus : res.locals.campus,
         dimension : dimension,
         item : item,
-        detail : detail_word
+        detail : method_word
       }
     })
   }
