@@ -177,6 +177,7 @@ class Filter{
 			const title = editNode.querySelector('.title').value
 			const content = editNode.querySelector('.content').value
 			const content_id = editNode.querySelector('.node-index').value
+			const summary = editNode.querySelector('.summary').value
 
 			fetch(`/man/${that.selected.userId}/content/save`, {
 				method: 'POST',
@@ -189,6 +190,7 @@ class Filter{
 					contentId: content_id,
 					title: title,
 					content: content,
+					summary: summary,
 				}),
 				headers: {
 					'Content-Type': 'application/json',

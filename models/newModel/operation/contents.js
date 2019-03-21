@@ -61,6 +61,7 @@ const findOneGroupContents = async (projectInfo,contentInfo) => {
         'contentId',
         'content',
         'title',
+        'summary',
         'pageStart',
         'pageEnd',
         'aspect',
@@ -74,7 +75,6 @@ const findOneGroupContents = async (projectInfo,contentInfo) => {
       dataId
       }
     })
-
     return data
 
   }catch(err){
@@ -113,13 +113,14 @@ const updateContent = async (info) =>{
         'contentId'
       ]
     })
-
+    console.log(info)
     let savedData = await data.update({
       content: info.content,
       title: info.title,
       pageStart: info.pageStart,
       pageEnd: info.pageEnd,
-      contentId: info.contentId
+      contentId: info.contentId,
+      summary: info.summary,
     })
 
     return savedData
