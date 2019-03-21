@@ -83,7 +83,6 @@ class Filter{
           message.classList.remove('hidden');
         }
         else{
-          // @TODO turn data into json format and render at frontend
           pageEdit.insertAdjacentHTML('beforeend', data)
           message.classList.add('transition');
           message.classList.add('hidden');
@@ -165,7 +164,6 @@ class Filter{
   // handle save button clicked
   static saveContent (that){
     return (event) => {
-      // @TODO remove form after changing delete dependencies to database id
       event.preventDefault();
 
       const message = that.pageMessage.querySelector('.message')
@@ -174,19 +172,12 @@ class Filter{
       const endPage = editNode.querySelector('.page__end').value
       const title = editNode.querySelector('.title').value
       const content = editNode.querySelector('.content').value
-      // @TODO save by id
       const content_id = editNode.querySelector('.node-index').value
 
       fetch(`/man/${that.selected.userId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
           id: that.selected.userId,
-          // year: that.selected.year,
-          // type: that.selected.type,
-          // campus: that.selected.school,
-          // dimension: that.selectedDimension,
-          // item: that.selectedItem,
-          // detail: that.selectedDetail,
           page: {
             start: startPage,
             end: endPage,
@@ -219,7 +210,6 @@ class Filter{
   // show delete confirm popup
   static showDeleteConfirm(that){
     return (event) =>{
-      // @TODO remove form after changing delete dependencies to database id
       event.preventDefault();
       $('#delete').modal({
         onApprove : function(){return false},
@@ -234,7 +224,6 @@ class Filter{
   // handle delete event
   static deleteContent(that, editNode){
     return () =>{
-      // @TODO delete by id
       const content_id = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
       fetch(`/man/${that.selected.userId}/content/delete`, {
