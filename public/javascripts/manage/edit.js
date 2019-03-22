@@ -5,6 +5,32 @@ const pageEdit = document.getElementById('page-edit')
 const pageFilter = document.getElementById('page-filter')
 const reserved = pageFilter.querySelector('.reserved')
 
+// function for unsaved content alert
+class UnsavedAlert{
+	haveUnsaved(targetNode){
+		return () => {
+			if(!targetNode.classList.contains('red')){
+				targetNode.classList.add('red')
+				targetNode.classList.add('inverted')
+			}
+		}
+	}
+
+	addAlertListener(targetNode){
+		targetNode.querySelector('.page__start').addEventListener('change',this.haveUnsaved(targetNode))
+		targetNode.querySelector('.page__end').addEventListener('change',this.haveUnsaved(targetNode))
+		targetNode.querySelector('.title').addEventListener('change',this.haveUnsaved(targetNode))
+		targetNode.querySelector('.content').addEventListener('change',this.haveUnsaved(targetNode))
+		targetNode.querySelector('.summary').addEventListener('change',this.haveUnsaved(targetNode))
+	}
+	afterSaving(targetNode){
+		if(targetNode.classList.contains('red')){
+			targetNode.classList.remove('red')
+			targetNode.classList.remove('inverted')
+		}
+	}
+}
+
 class Filter{
 	constructor(){
 		this.selectedDimension = ''
@@ -21,6 +47,9 @@ class Filter{
 			type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
 			school: pathSplit[5] ? decodeURI(pathSplit[5]) : ''
 		}
+
+		//alert user when unsaved data exists
+		this.unsaveAlert = new UnsavedAlert()
 	}
 
 	// build htmltable
@@ -90,14 +119,22 @@ class Filter{
 					message.classList.add('transition');
 					message.classList.add('hidden');
 				}
+
+				// add eventListener to save and delete button
 				pageEdit.querySelectorAll('.save').forEach((button)=> {
 					button.addEventListener('click', Filter.saveContent(that))
 				})
 				pageEdit.querySelectorAll('.delete').forEach((button)=> {
 					button.addEventListener('click', Filter.showDeleteConfirm(that))
 				})
+
+				// add unsavedAlert to all editNodes
+				pageEdit.querySelectorAll('.editNode').forEach((targetNode) => {
+					that.unsaveAlert.addAlertListener(targetNode)
+				})
 			})
 			.catch(err => {
+				const message = footer.querySelector('.message');
 				message.classList.remove('green')
 				message.classList.add('red')
 				message.innerHTML = `<p>${err.message}</p>`
@@ -132,6 +169,8 @@ class Filter{
 				pageEdit.lastChild.querySelector('.delete').addEventListener('click', Filter.showDeleteConfirm(that))
 				message.classList.add('transition');
 				message.classList.add('hidden');
+
+				that.unsaveAlert.addAlertListener(pageEdit.lastChild)
 			})
 			.catch(err => {
 				message.classList.remove('green')
@@ -197,11 +236,14 @@ class Filter{
 				},
 			})
 			.then(res => res.text())
-			.then(data => {
+			.then(() => {
 				message.classList.remove('red')
 				message.classList.add('green')
 				message.innerHTML = '<p>儲存成功</p>'
 				that.fadeOut(that.pageMessage)
+
+				// reset alert after saving
+				that.unsaveAlert.afterSaving(editNode)
 			})
 			.catch(err => {
 				message.classList.remove('green')
