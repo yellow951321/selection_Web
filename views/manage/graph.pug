@@ -7,7 +7,7 @@ append content
 
   #page-filter.ui.container.pusher
         .ui.form.segment
-          .four.fields
+          .five.fields
             .field
               label 構面
               select.filter.filter__dimension.ui.selection.dropdown
@@ -23,6 +23,14 @@ append content
             .field
               label 詳細資料
               select.filter.filter__detail.ui.selection.dropdown
+            .field
+              label 百分點
+              select.filter.filter__percent.ui.selection.dropdown
+                option(value='All') 全部百分點
+                option(value='q3') 第 75 ~ 100 百分點
+                option(value='q2') 第 50 ~ 75 百分點
+                option(value='q1') 第 25 ~ 50 百分點
+                option(value='q0') 第 0 ~ 25 百分點
             .field
               .ui.container.center.aligned.choice-block
                 button.ui.button.filter.filter__choice 選擇

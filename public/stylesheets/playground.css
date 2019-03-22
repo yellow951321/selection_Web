@@ -41,6 +41,21 @@ svg {
   overflow-x: scroll
 }
 
+.center {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.median {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.bound {
+  stroke: #000;
+  stroke-width: 2;
+}
+
 g {
   width: 100%;
 }

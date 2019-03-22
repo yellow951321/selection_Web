@@ -316,7 +316,7 @@ const countCampusAll = async (info) => {
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
-        dataId: data
+        dataId: data //dataId
       },
       attributes: [
         'aspect',
@@ -327,7 +327,7 @@ const countCampusAll = async (info) => {
       group: ['method']
     }).then( data => data.map(d => d.dataValues))
 
-    let numberOfEachGroupMethod = await Promise.all( GroupOfEachMethod.map( d => {
+    let dataOfEachGroupMethod = await Promise.all( GroupOfEachMethod.map( d => {
       return Content.count({
         attributes:[
           'dataId'
@@ -342,30 +342,18 @@ const countCampusAll = async (info) => {
         number = number.sort( (a,b) => {
           return a.count - b.count
         })
-        let index = number.findIndex(e => {
-          return e.dataId == d.dataId
-        })
-        let foundCampus = number[index]
-        let matchNum = number.map( (d,i) => {
-          if( foundCampus.count == d.count )
-            return i
-        })
-        matchNum = matchNum.filter( d => d)
-        console.log(matchNum)
-        let highest = number[number.length - 1].count
         return {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
           methodId: d.method,
-          self: foundCampus.count,
-          highest,
-          rank: matchNum[matchNum.length-1]/number.length
+          selfId: d.dataId,
+          data: number
         }
       })
     }))
 
-    return numberOfEachGroupMethod
+    return dataOfEachGroupMethod
 
   }catch(err) {
     console.log(err)
@@ -419,20 +407,13 @@ const countCampusRespectToAspect = async (info) => {
         number = number.sort( (a,b) => {
           return a.count - b.count
         })
-        console.log(number)
-        let index = number.findIndex(e => {
-          return e.dataId == d.dataId
-        })
-        let foundCampus = number[index]
-        let highest = number[number.length - 1].count
         return {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
           methodId: d.method,
-          self: foundCampus.count,
-          highest,
-          rank: index/number.length
+          selfId: d.dataId,
+          data: number
         }
       })
     }))
@@ -492,20 +473,13 @@ const countCampusRespectToKey = async (info) => {
         number = number.sort( (a,b) => {
           return a.count - b.count
         })
-        console.log(number)
-        let index = number.findIndex(e => {
-          return e.dataId == d.dataId
-        })
-        let foundCampus = number[index]
-        let highest = number[number.length - 1].count
         return {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
           methodId: d.method,
-          self: foundCampus.count,
-          highest,
-          rank: index/number.length
+          selfId: d.dataId,
+          data: number
         }
       })
     }))
@@ -566,20 +540,13 @@ const countCampusRespectToMethod = async(info) => {
         number = number.sort( (a,b) => {
           return a.count - b.count
         })
-        console.log(number)
-        let index = number.findIndex(e => {
-          return e.dataId == d.dataId
-        })
-        let foundCampus = number[index]
-        let highest = number[number.length - 1].count
         return {
           aspect: getFromNum(map, { dimension: d.aspect }),
           keypoint: getFromNum(map, { item: d.keypoint }),
           method: getFromNum(map, {detail: d.method }),
           methodId: d.method,
-          self: foundCampus.count,
-          highest,
-          rank: index/number.length
+          selfId: d.dataId,
+          data: number
         }
       })
     }))
@@ -590,6 +557,7 @@ const countCampusRespectToMethod = async(info) => {
     console.log(err)
   }
 }
+
 const test = async ()=>{
 
   // const result = await countOneCampusMethod({
@@ -620,6 +588,12 @@ const test = async ()=>{
   //   aspect: 0,
   //   keypoint: 0
   // })
+  const result = await countCampusAll({
+    campus: 1,
+    year: 107,
+    type: 0,
+    userId: 6
+  })
   // const result = await countCampusRespectToAspect({
     // campus: 1,
     // year: 107,
@@ -635,19 +609,20 @@ const test = async ()=>{
   //   aspect: 0,
   //   keypoint: 0
   // })
-  const result = await countCampusRespectToMethod({
-    campus: 1,
-    year: 107,
-    type: 0,
-    userId: 6,
-    aspect: 0,
-    keypoint: 0,
-    method: 0
-  })
+  // const result = await countCampusRespectToMethod({
+  //   campus: 1,
+  //   year: 107,
+  //   type: 0,
+  //   userId: 6,
+  //   aspect: 0,
+  //   keypoint: 0,
+  //   method: 0
+  // })
   console.log(JSON.stringify(result,null ,2))
 
 }
 
+// test()
 
 module.exports = {
   countCampusAll,

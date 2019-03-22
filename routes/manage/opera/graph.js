@@ -18,7 +18,6 @@ const { map, getFromWord, } = require('../../../data/operation/mapping')
 
 router.get('/filter', async (req,res)=>{
   try{
-    console.log(req.query)
     let data
     if(req.query.aspect == 'All'){
       data = await countCampusAll({
@@ -26,6 +25,7 @@ router.get('/filter', async (req,res)=>{
         year: req.query.year,
         type: getFromWord(map, { type: req.query.type }),
         userId: req.session.userId,
+        percentage: req.query.percentage
       })
     }else if(req.query.keypoint == 'All'){ // choose whole keypoint
       data = await countCampusRespectToAspect({
@@ -33,7 +33,8 @@ router.get('/filter', async (req,res)=>{
         year: req.query.year,
         type: getFromWord(map, { type: req.query.type }),
         userId: req.session.userId,
-        aspect: getFromWord(map, { dimension: req.query.aspect })
+        aspect: getFromWord(map, { dimension: req.query.aspect }),
+        percentage: req.query.percentage
       })
     }else if( req.query.method == 'All'){ // choose whle method
       data = await countCampusRespectToKey({
@@ -42,7 +43,8 @@ router.get('/filter', async (req,res)=>{
         type: getFromWord(map, { type: req.query.type }),
         userId: req.session.userId,
         aspect: getFromWord(map, { dimension: req.query.aspect }),
-        keypoint: getFromWord(map, { item: req.query.keypoint })
+        keypoint: getFromWord(map, { item: req.query.keypoint }),
+        percentage: req.query.percentage
       })
     }else if( req.query.method ){
       data = await countCampusRespectToMethod({
@@ -52,7 +54,8 @@ router.get('/filter', async (req,res)=>{
         userId: req.session.userId,
         aspect: getFromWord(map, { dimension: req.query.aspect }),
         keypoint: getFromWord(map, { item: req.query.keypoint }),
-        method: getFromWord(map, { detail: req.query.method})
+        method: getFromWord(map, { detail: req.query.method}),
+        percentage: req.query.percentage
       })
     }
     res.json(data)
