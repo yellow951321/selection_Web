@@ -330,7 +330,9 @@ $('select.dropdown')
 //add window.unbeforeload
 window.addEventListener('beforeunload', (e) => {
   e.preventDefault()
-  e.returnValue = "Do you want to leave?"
+  // check if there is unsaved content
+  if(pageEdit.querySelector('.red.inverted'))
+	  e.returnValue = "Do you want to leave?"
   return true
 })
 
