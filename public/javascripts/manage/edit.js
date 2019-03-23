@@ -329,6 +329,8 @@ $('select.dropdown')
 
 //add window.unbeforeload
 window.addEventListener('beforeunload', (e) => {
+  e.preventDefault()
+  e.returnValue = "Do you want to leave?"
   return true
 })
 
