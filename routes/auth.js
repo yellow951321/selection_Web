@@ -49,6 +49,7 @@ router.post('/login', async(req, res)=>{
 
 router.get('/logout', async (req, res)=>{
 	try {
+		// remove session and remove the login record in the database
 		await Session.destroy({
 			where: {
 				sessionId: req.session.id
