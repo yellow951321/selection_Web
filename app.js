@@ -2,12 +2,15 @@ const express = require('express')
 const path = require('path')
 const session = require('express-session')
 const logger = require('morgan')
+const cookieParser = require('cookie-parser')
 
 const config = require('./config')
 const auth = require('./routes/auth')
 const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
 const apiRouter = require('./apis/apiRouter')
+
+const Session = require('./models/newModel/schema/Session')
 
 const app = express()
 
@@ -30,6 +33,9 @@ app.set('view engine', 'pug')
 if(isDevMode){
   app.use(logger('dev'))
 }
+
+// cookie parser
+app.use(cookieParser())
 
 // json parser for http body
 app.use(express.json({
@@ -111,10 +117,45 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   },
 }))
 
+// check the sessionId in the cookie
+// if it's status 'login' (stored in database)
+// automatically login
+app.use( async (req, res, next) => {
+  let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['reddeadredemption']
+
+  // sessionId will be reset after restarting server
+  // we need to update session after every connection
+  if(sessionId !== req.session.id){
+    let doc = await Session.findOne({
+      where: {
+        sessionId
+      }
+    })
+    if(doc !== null){
+      if(Number(doc.expiration) > Date.now()){
+        req.session.userId = doc.userId;
+        await doc.update({
+          sessionId: req.session.id
+        })
+      }
+      else if(Number(doc.expiration) < Date.now()){
+        await doc.destroy()
+      }
+    }
+  }
+  next();
+})
+
+// resolve /auth router
 app.use('/auth',auth)
+
+// resolve /man router
 app.use('/man', AuthRouter)
+
+// resolve /apis router
 app.use('/apis',apiRouter)
-//app.use('/',AuthRouter)
+
+
 app.use((req, res, next)=>{
   if(!req.session.userId){
     res.redirect('/auth/login')

@@ -124,7 +124,6 @@ const findCampusOne = async (info) =>{
 }
 const createNewProject = async (info) =>{
     try{
-        console.log(info)
         let outputCampus = await findCampusOne(info)
         if( outputCampus !== null)
             return outputCampus
