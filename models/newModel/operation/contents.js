@@ -113,7 +113,6 @@ const updateContent = async (info) =>{
         'contentId'
       ]
     })
-    console.log(info)
     let savedData = await data.update({
       content: info.content,
       title: info.title,
