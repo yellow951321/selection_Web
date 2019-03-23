@@ -1,10 +1,11 @@
 const fs = require('fs')
 const express = require('express')
 const uniqueFilename = require('unique-filename')
-const OpDimension = require('../../../models/mariadb/Dimension/op')
-const OpItem = require('../../../models/mariadb/Item/op')
-const OpDetail = require('../../../models/mariadb/Detail/op')
-const OpContent = require('../../../models/mariadb/Content/op')
+// const OpDimension = require('../../../models/mariadb/Dimension/op')
+// const OpItem = require('../../../models/mariadb/Item/op')
+// const OpDetail = require('../../../models/mariadb/Detail/op')
+// const OpContent = require('../../../models/mariadb/Content/op')
+const {Content} = require('../../../models/newModel/association')
 const {map,getFromNum} = require('../../../data/operation/mapping')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
@@ -18,9 +19,9 @@ const router = express.Router({
 })
 
 //@TODO change to send header only
-router.get('/:campus_id/:campus_name', async (req, res)=>{
+router.get('/:dataId/:campusName', async (req, res)=>{
     try{
-        let campus_id = req.params.campus_id
+        let dataId = req.params.dataId
         // create tmp directory
         let tmpDir = '/tmp/selection_Web'
         if(!fs.existsSync(tmpDir))
@@ -32,37 +33,58 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
         const csvWriter = createCsvWriter({
             path: filePath,
             header: [
-                {id: 'dimension', title: '構面'},
-                {id: 'item', title: '推動項目'},
-                {id: 'detail', title: '推動重點'},
-                {id: 'topic', title: '標題'},
+                {id: 'aspect', title: '構面'},
+                {id: 'keypoint', title: '推動項目'},
+                {id: 'method', title: '推動重點'},
+                {id: 'title', title: '標題'},
                 {id: 'content', title: '內容'},
             ]
         })
 
         // write in the tmp output file
-        let data = []
-        let dimensions = await OpDimension.findDimensionAll(campus_id).map(d => d.dataValues)
+        let outputObject = []
+        // let dimensions = await OpDimension.findDimensionAll(campusId).map(d => d.dataValues)
 
-        for(let {dimension_id,dimension_name} of dimensions){
-            const items = await OpItem.findItemAll(dimension_id).map(d => d.dataValues)
-            for(let {item_id,item_name} of items){
-                const details = await OpDetail.findDetailAll(item_id).map(d => d.dataValues)
-                for(let {detail_id,detail_name} of details){
-                    const contents = await OpContent.findContentAll(detail_id).map(d => d.dataValues)
-                    for(let {content_title,content_content} of contents){
-                        data.push({
-                        dimension: getFromNum(map, {dimension: dimension_name}),
-                        item: getFromNum(map, {item: item_name}),
-                        detail: getFromNum(map, {detail: detail_name}),
-                        topic: content_title,
-                        content: content_content
-                        })
-                    }
-                }
+        // for(let {dimension_id,dimension_name} of dimensions){
+        //     const items = await OpItem.findItemAll(dimension_id).map(d => d.dataValues)
+        //     for(let {item_id,item_name} of items){
+        //         const details = await OpDetail.findDetailAll(item_id).map(d => d.dataValues)
+        //         for(let {detail_id,detail_name} of details){
+        //             const contents = await OpContent.findContentAll(detail_id).map(d => d.dataValues)
+        //             for(let {content_title,content_content} of contents){
+        //                 data.push({
+        //                 dimension: getFromNum(map, {dimension: dimension_name}),
+        //                 item: getFromNum(map, {item: item_name}),
+        //                 detail: getFromNum(map, {detail: detail_name}),
+        //                 topic: content_title,
+        //                 content: content_content
+        //                 })
+        //             }
+        //         }
+        //     }
+        // }
+
+        let data = await Content.findAll({
+            where: {
+                dataId: dataId,
             }
+        })
+        .then(data => {return data})
+        .catch(err => {throw err})
+
+        data = data.map(val => val.dataValues)
+
+        for(let val of data){
+            outputObject.push({
+                aspect: getFromNum(map, {dimension: val.aspect}),
+                keypoint: getFromNum(map, {item: val.keypoint}),
+                method: getFromNum(map, {detail: val.method}),
+                title: val.title,
+                content: val.content,
+            })
         }
-        await csvWriter.writeRecords(data)
+
+        await csvWriter.writeRecords(outputObject)
 
         // send requested output file
         let options = {
@@ -70,7 +92,7 @@ router.get('/:campus_id/:campus_name', async (req, res)=>{
             dotfiles: 'deny',
             headers: {
                 'content-type': 'text/csv',
-                'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campus_name)}.csv`
+                'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campusName)}.csv`
             }
         };
         res.sendFile(filePath, options, function(err){

@@ -11,11 +11,13 @@ const contentSchema = {
   },
   content:{
     type: Sequelize.STRING(1000),
-    allowNull: false,
   },
   title:{
     type: Sequelize.STRING(200),
     allowNull: false,
+  },
+  summary:{
+    type: Sequelize.STRING(200),
   },
   pageStart:{
     type: Sequelize.INTEGER(10).UNSIGNED,

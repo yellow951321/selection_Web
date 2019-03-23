@@ -8,10 +8,10 @@ const auth = require('./routes/auth')
 const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
 const apiRouter = require('./apis/apiRouter')
+
 const app = express()
 
 const isDevMode = process.env.MODE == 'DEVELOPMENT'
-
 
 //test the connection of sequelize
 sequelize
@@ -110,7 +110,6 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
     res.set('x-timestamp', Date.now())
   },
 }))
-
 
 app.use('/auth',auth)
 app.use('/man', AuthRouter)

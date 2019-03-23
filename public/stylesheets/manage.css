@@ -52,3 +52,7 @@
 .choice-block {
     padding-top: 1rem;
 }
+
+.editNode--unsaved {
+    background-color: red;
+}
