@@ -289,6 +289,12 @@ $('select.dropdown')
   .dropdown()
 
 // add event listener
+
+//add window.unbeforeload
+window.addEventListener('beforeunload', (e) => {
+  return true
+})
+
 // add event listener to dropdowns
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))

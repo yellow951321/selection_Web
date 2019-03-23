@@ -384,40 +384,6 @@ const drawBoxPlot = (data,info) => {
         .attr("y1", d => y_particle("box")  )
         .attr("x2", d => x(d.quartileData[1] ) )
         .attr("y2", d => y_particle("box") + barHeight  )
-
-  // draw the text
-  // boxPlot.selectAll("text").data( d => [
-  //   {
-  //     value: d.whiskerData[0],
-  //     y: 0
-  //   },
-  //   {
-  //     value: d.quartileData[0],
-  //     y: barHeight
-  //   },
-  //   {
-  //     value: d.quartileData[1],
-  //     y: 0
-  //   },
-  //   {
-  //     value: d.quartileData[2],
-  //     y: barHeight
-  //   },
-  //   {
-  //     value: d.whiskerData[1],
-  //     y: 0
-  //   }])
-  //   .enter().append("text")
-  //   .attr("fill", "black" )
-  //   .attr("x", (d,i) => {
-  //     if(i == 0)
-  //       return x(d.value)*0.8
-  //     else
-  //       return x(d.value)
-  //   })
-  //   .attr("y", d => d.y)
-  //   .text( d => `${d.value}`)
-
   // draw the bar chart
   var barChart = boxPlot.selectAll("g").data( d => {
     let min = {
