@@ -34,8 +34,8 @@ router.get('/:dataId/:campusName', async(req, res)=>{
       path: filePath,
       header: [
         {id: 'aspect', title: '構面', },
-        {id: 'keypoint', title: '推動項目', },
-        {id: 'method', title: '推動重點', },
+        {id: 'keypoint', title: '推動重點', },
+        {id: 'method', title: '具體作法', },
         {id: 'title', title: '標題', },
         {id: 'content', title: '內容', },
       ],
