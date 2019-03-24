@@ -55,13 +55,19 @@ router.get('/logout', async(req, res)=>{
         sessionId: req.session.id,
       },
     })
-    await req.session.destroy((err)=>{
-      if(err)
-        throw err
+    await new Promise( (res, rej) => {
+      req.session.destroy((err)=>{
+        if(err)
+          rej(err)
+        res()
+      })
+    })
+    .catch( (err) => {
+      throw err
     })
     res.status(200).redirect('/auth/login')
   } catch (err) {
-    res.status(404).render('error', {'message': err.message, 'err':{'status': '404', }, })
+    res.status(404).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error'}, })
   }
 })
 
