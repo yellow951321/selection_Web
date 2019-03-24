@@ -30,7 +30,6 @@ class Delete {
   }
   static showDeleteConfirm(that){
     return (event) =>{
-      // @TODO remove form after changing delete dependencies to database id
       event.preventDefault()
       $('#delete').modal({
         onApprove : function(){return false},

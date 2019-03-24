@@ -1,5 +1,5 @@
-const { Data, User, Content, } = require('../../models/newModel/association')
-const {map, getFromWord, getFromNum, } = require('./mapping')
+const { Data, Content, } = require('../../models/newModel/association')
+const {map, getFromNum, } = require('./mapping')
 
 const countOneCampusMethod = async(info) => {
   try{
@@ -557,72 +557,6 @@ const countCampusRespectToMethod = async(info) => {
     console.log(err)
   }
 }
-
-const test = async()=>{
-
-  // const result = await countOneCampusMethod({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6
-  // })
-  // const result = await countAllCampusMethodCorToOneCampus({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6
-  // })
-  // const result = await countAllCampusMethod()
-  // const result = await countOneCampusMethodCorToAspect({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6,
-  //   aspect: 0
-  // })
-  // const result = await countOneCampusMethodCorToAspectKey({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6,
-  //   aspect: 0,
-  //   keypoint: 0
-  // })
-  const result = await countCampusAll({
-    campus: 1,
-    year: 107,
-    type: 0,
-    userId: 6,
-  })
-  // const result = await countCampusRespectToAspect({
-  // campus: 1,
-  // year: 107,
-  // type: 0,
-  // userId: 6,
-  // aspect: 0,
-  // })
-  // const result = await countCampusRespectToKey({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6,
-  //   aspect: 0,
-  //   keypoint: 0
-  // })
-  // const result = await countCampusRespectToMethod({
-  //   campus: 1,
-  //   year: 107,
-  //   type: 0,
-  //   userId: 6,
-  //   aspect: 0,
-  //   keypoint: 0,
-  //   method: 0
-  // })
-  console.log(JSON.stringify(result, null, 2))
-
-}
-
-// test()
 
 module.exports = {
   countCampusAll,

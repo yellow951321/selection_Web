@@ -1,6 +1,4 @@
 const { Data, Content, } = require('../association')
-const Sequelize = require('sequelize')
-const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
 
 
 const findAllGroupContents = async(userId, year, typeId, campusId)=>{

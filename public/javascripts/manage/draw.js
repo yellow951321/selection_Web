@@ -48,7 +48,6 @@ class Draw {
       const editNode = event.target.parentNode.parentNode.parentNode
       const item = editNode.querySelector('.filter__item').firstChild
       const detail = editNode.querySelector('.filter__detail').firstChild
-      // const defaultItem = Object.keys(schema[event.target.value])[0]
       if(event.target.value != 'All'){
         item.innerHTML = that.htmlTable['item'][event.target.value]
         item.value = 'All'
@@ -198,7 +197,6 @@ const drawBarChart = (data, info)=>{
   var svg = d3.select('.page-svg').append('svg')
     .attr('height', height + margin.top + margin.bottom)
     .attr('width', width + margin.left + margin.right)
-  // .attr("transform", `translate`)
     .append('g')
     .attr('transform', 'translate(' + (margin.left) + ',' + margin.top + ')')
 
@@ -260,7 +258,7 @@ const drawBarChart = (data, info)=>{
     .selectAll('rect')
     .data(legendLabel)
     .enter()
-  // .attr('transform', )
+
   legend.append('rect')
     .attr('fill', (d, i) => {
       if(i%2 == 0)
@@ -329,7 +327,6 @@ const drawBoxPlot = (data, info) => {
   var svg = d3.select('.page-svg').append('svg')
     .attr('height', height + margin.top + margin.bottom)
     .attr('width', width + margin.left + margin.right)
-    // .attr("transform", `translate`)
     .append('g')
     .attr('transform', 'translate(' + (margin.left) + ',' + margin.top + ')')
 
