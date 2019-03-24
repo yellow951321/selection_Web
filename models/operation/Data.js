@@ -1,5 +1,5 @@
 const { Data, } = require('../association')
-const { map, getFromNum, } = require('../../../data/operation/mapping')
+const { map, getFromNum, } = require('../../data/operation/mapping')
 
 const findYearAll = async(userId) => {
   try{

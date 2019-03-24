@@ -1,4 +1,4 @@
-const { Data, Content, } = require('../../models/newModel/association')
+const { Data, Content, } = require('../../models/association')
 const {map, getFromNum, } = require('./mapping')
 
 const countOneCampusMethod = async(info) => {

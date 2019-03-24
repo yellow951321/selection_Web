@@ -1,4 +1,4 @@
-const sequelize = require('../../../db/mariadb')
+const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
 const Data = require('./Data')
 const contentSchema = {

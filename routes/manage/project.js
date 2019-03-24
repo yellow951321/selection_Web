@@ -8,7 +8,7 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/newModel/schema/User')
+const User = require('../../models/schema/User')
 const { map, getFromNum, findParentByDetail, } = require('../../data/operation/mapping')
 
 

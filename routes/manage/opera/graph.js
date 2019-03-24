@@ -7,7 +7,7 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const User = require('../../../models/newModel/schema/User')
+const User = require('../../../models/schema/User')
 
 const { countCampusAll,
   countCampusRespectToAspect,

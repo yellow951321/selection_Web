@@ -7,11 +7,11 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const { User, Data, Content, } = require('../../../models/newModel/association')
+const { User, Data, Content, } = require('../../../models/association')
 const { map, getFromWord, getFromNum, } = require('../../../data/operation/mapping')
 
 
-const { createNewProject, deleteProject, } = require('../../../models/newModel/operation/Data')
+const { createNewProject, deleteProject, } = require('../../../models/operation/Data')
 
 router.post('/add', async(req, res)=>{
   try{
@@ -33,7 +33,6 @@ router.post('/add', async(req, res)=>{
     })
 
     res.redirect(`/man/${req.session.userId}/${req.body.year}/${type}/${req.body.campus}`)
-    console.log('Add operation is finished')
 
   }
   catch (err){

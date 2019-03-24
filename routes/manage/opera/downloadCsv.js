@@ -5,7 +5,7 @@ const uniqueFilename = require('unique-filename')
 // const OpItem = require('../../../models/mariadb/Item/op')
 // const OpDetail = require('../../../models/mariadb/Detail/op')
 // const OpContent = require('../../../models/mariadb/Content/op')
-const {Content, } = require('../../../models/newModel/association')
+const {Content, } = require('../../../models/association')
 const {map, getFromNum, } = require('../../../data/operation/mapping')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 

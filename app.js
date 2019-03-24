@@ -10,7 +10,7 @@ const sequelize = require('./db/mariadb')
 const AuthRouter = require('./routes/manage/auth')
 const apiRouter = require('./apis/apiRouter')
 
-const Session = require('./models/newModel/schema/Session')
+const Session = require('./models/schema/Session')
 
 const app = express()
 

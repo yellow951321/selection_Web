@@ -8,9 +8,9 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/newModel/schema/User')
+const User = require('../../models/schema/User')
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
-const { findCampusAll, } = require('../../models/newModel/operation/Data')
+const { findCampusAll, } = require('../../models/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{

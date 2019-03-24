@@ -1,4 +1,4 @@
-const sequelize = require('../../../db/mariadb')
+const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
 const User = require('./User')
 const dataSchema = {

@@ -1,4 +1,4 @@
-const sequelize = require('../../../db/mariadb')
+const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
 const sessionSchema = {
   tableId: {
@@ -23,6 +23,6 @@ const sessionSchema = {
   },
 }
 
-const Session = sequelize.define('Sessions', sessionSchema)
+const Session = sequelize.define('sessions', sessionSchema)
 
 module.exports = Session

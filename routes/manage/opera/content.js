@@ -7,12 +7,12 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const { User, Data, Content, } = require('../../../models/newModel/association')
+const { User, Data, Content, } = require('../../../models/association')
 const { map, getFromWord, } = require('../../../data/operation/mapping')
 const { findOneGroupContents,
   insertContent,
   updateContent,
-  deleteContent, } = require('../../../models/newModel/operation/contents')
+  deleteContent, } = require('../../../models/operation/contents')
 
 router.get('/filter', async(req, res)=>{
   try{

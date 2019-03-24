@@ -7,10 +7,10 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const User = require('../../models/newModel/schema/User')
+const User = require('../../models/schema/User')
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
 // const { findCampusByType, } = require('../../models/mariadb/Campus/op')
-const {findTypeAll, } = require('../../models/newModel/operation/Data')
+const {findTypeAll, } = require('../../models/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
