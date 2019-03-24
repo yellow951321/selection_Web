@@ -25,9 +25,9 @@ router.get('/', async(req, res)=>{
     else
       var {dataValues, } = user
 
-    let checkType = await findTypeAll(req.session.userId, res.locals.year )
+    let checkType = await findTypeAll(req.session.userId, res.locals.year)
     // translate the type number into word 0 for "大學" 1 for "技職大學"
-    checkType = checkType.map(type => type == 0 ? "大學" : "技職大學")
+    checkType = checkType.map(type => type == 0 ? '大學' : '技職大學')
     if(checkType.length !== 0)
       res.render('manage/type', {
         GLOBAL: {

@@ -7,11 +7,11 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const { User , Data, Content } = require('../../../models/newModel/association')
+const { User, Data, Content, } = require('../../../models/newModel/association')
 const { map, getFromWord, getFromNum, } = require('../../../data/operation/mapping')
 
 
-const { createNewProject, deleteProject} = require('../../../models/newModel/operation/Data')
+const { createNewProject, deleteProject, } = require('../../../models/newModel/operation/Data')
 
 router.post('/add', async(req, res)=>{
   try{
@@ -19,17 +19,17 @@ router.post('/add', async(req, res)=>{
      * @todo year, type, campus validation
      */
     let typeId = req.body.type
-    let type = getFromNum(map, { type: req.body.type})
+    let type = getFromNum(map, { type: req.body.type, })
     let campusId = getFromWord(map, {
       campus: req.body.campus,
-      type
+      type,
     })
 
     let newProject = await createNewProject({
       campusId,
       year: req.body.year,
       type: typeId,
-      userId: req.session.userId
+      userId: req.session.userId,
     })
 
     res.redirect(`/man/${req.session.userId}/${req.body.year}/${type}/${req.body.campus}`)
@@ -57,7 +57,7 @@ router.delete('/delete', async(req, res)=>{
       throw new Error(`No userId ${req.session.userId}`)
 
     await deleteProject({
-      dataId: req.body.dataId
+      dataId: req.body.dataId,
     })
     res.status(200).send('OK')
   }

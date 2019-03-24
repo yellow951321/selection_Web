@@ -120,7 +120,7 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
 // check the sessionId in the cookie
 // if it's status 'login' (stored in database)
 // automatically login
-app.use( async (req, res, next) => {
+app.use(async(req, res, next) => {
   let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['reddeadredemption']
 
   // sessionId will be reset after restarting server
@@ -128,14 +128,14 @@ app.use( async (req, res, next) => {
   if(sessionId !== req.session.id){
     let doc = await Session.findOne({
       where: {
-        sessionId
-      }
+        sessionId,
+      },
     })
     if(doc !== null){
       if(Number(doc.expiration) > Date.now()){
-        req.session.userId = doc.userId;
+        req.session.userId = doc.userId
         await doc.update({
-          sessionId: req.session.id
+          sessionId: req.session.id,
         })
       }
       else if(Number(doc.expiration) < Date.now()){
@@ -143,17 +143,17 @@ app.use( async (req, res, next) => {
       }
     }
   }
-  next();
+  next()
 })
 
 // resolve /auth router
-app.use('/auth',auth)
+app.use('/auth', auth)
 
 // resolve /man router
 app.use('/man', AuthRouter)
 
 // resolve /apis router
-app.use('/apis',apiRouter)
+app.use('/apis', apiRouter)
 
 
 app.use((req, res, next)=>{

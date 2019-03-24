@@ -68,15 +68,15 @@ const mod = async(path)=>{
       })
     })
 
-    const standardDatta = await new Promise((res,rej)=>{
-      fs.readFile('../projectSchema.json',(err,data)=>{
+    const standardDatta = await new Promise((res, rej)=>{
+      fs.readFile('../projectSchema.json', (err, data)=>{
         if(err) rej(err)
         data = JSON.parse(data)
         res(data)
       })
     })
 
-    await new Promise((res,rej)=>{
+    await new Promise((res, rej)=>{
       for(dimension in data)
         for(item in data[dimension])
           for(detail in data[dimension][item]){

@@ -2,11 +2,11 @@ const Dimension = require('./schema')
 
 function findDimension(campus_id, dimension){
   return Dimension.findOne({
-      where: {
-        dimension_name: dimension,
-        campus_id: campus_id,
-      },
-    })
+    where: {
+      dimension_name: dimension,
+      campus_id: campus_id,
+    },
+  })
     .then(data => {return data})
     .catch(err => {throw err})
 }
@@ -14,8 +14,8 @@ function findDimension(campus_id, dimension){
 function findDimensionAll(campus_id){
   return Dimension.findAll({
     where:{
-      campus_id: campus_id
-    }
+      campus_id: campus_id,
+    },
   })
 }
 
@@ -30,9 +30,9 @@ function insertDimensionByCampusId(campus_id, inputDimension){
         dimension_name: inputDimension,
         campus_id: campus_id,
       })
-      .then(data => {return data})
-      .catch(err => {throw err})
-      return output;
+        .then(data => {return data})
+        .catch(err => {throw err})
+      return output
     }
     catch(err){
       throw err

@@ -34,7 +34,7 @@ $('select.dropdown')
 header.querySelector('.add').addEventListener('click', addButtonClicked)
 
 // add enent listener to the dropdown of addForm
-addForm.querySelector('.type-dropdown').firstChild.addEventListener( 'change', yearDropdownOnChange)
+addForm.querySelector('.type-dropdown').firstChild.addEventListener('change', yearDropdownOnChange)
 
 // trigger dropdown on change to refresh the selection of school
-addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'));
+addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'))

@@ -1,9 +1,9 @@
-const { Data, Content } = require('../association')
+const { Data, Content, } = require('../association')
 const Sequelize = require('sequelize')
 const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
 
 
-const findAllGroupContents = async (userId, year, typeId, campusId)=>{
+const findAllGroupContents = async(userId, year, typeId, campusId)=>{
   try{
 
     let data = await Data.findAll({
@@ -11,14 +11,14 @@ const findAllGroupContents = async (userId, year, typeId, campusId)=>{
         userId: userId,
         year: year,
         type: typeId,
-        campus: campusId
+        campus: campusId,
       },
-      attributes: ['dataId'],
+      attributes: ['dataId', ],
     })
 
-    data = data.map( data=>data.dataId)
-    data = await Promise.all( data.map( dataId => {
-      return Content.findAll( {
+    data = data.map(data=>data.dataId)
+    data = await Promise.all(data.map(dataId => {
+      return Content.findAll({
         attributes: [
           'contentId',
           'content',
@@ -27,11 +27,11 @@ const findAllGroupContents = async (userId, year, typeId, campusId)=>{
           'pageEnd',
           'aspect',
           'keypoint',
-          'method'
-      ],
+          'method',
+        ],
         where: {
           dataId,
-        }
+        },
       })
     }))
 
@@ -43,19 +43,19 @@ const findAllGroupContents = async (userId, year, typeId, campusId)=>{
   // console.log(JSON.stringify(data, null, 2))
 }
 
-const findOneGroupContents = async (projectInfo,contentInfo) => {
+const findOneGroupContents = async(projectInfo, contentInfo) => {
   try{
     let data = await Data.findOne({
       where:{
         userId: projectInfo.userId,
         year: projectInfo.year,
         type: projectInfo.typeId,
-        campus: projectInfo.campusId
+        campus: projectInfo.campusId,
       },
-      attributes: ['dataId'],
+      attributes: ['dataId', ],
     })
 
-    let { dataId } = data.dataValues
+    let { dataId, } = data.dataValues
     data = await Content.findAll({
       attributes:[
         'contentId',
@@ -66,14 +66,14 @@ const findOneGroupContents = async (projectInfo,contentInfo) => {
         'pageEnd',
         'aspect',
         'keypoint',
-        'method'
-    ],
-    where: {
-      aspect: contentInfo.aspect,
-      keypoint: contentInfo.keypoint,
-      method: contentInfo.method,
-      dataId
-      }
+        'method',
+      ],
+      where: {
+        aspect: contentInfo.aspect,
+        keypoint: contentInfo.keypoint,
+        method: contentInfo.method,
+        dataId,
+      },
     })
     return data
 
@@ -82,7 +82,7 @@ const findOneGroupContents = async (projectInfo,contentInfo) => {
   }
 }
 
-const insertContent = async (info)=>{
+const insertContent = async(info)=>{
   try{
     return Content.create({
       content: info.content,
@@ -92,26 +92,26 @@ const insertContent = async (info)=>{
       aspect: info.aspect,
       keypoint: info.keypoint,
       method: info.method,
-      dataId: info.dataId
+      dataId: info.dataId,
     })
   } catch(err) {
     console.log(new Error(err))
   }
 }
 
-const updateContent = async (info) =>{
+const updateContent = async(info) =>{
   try{
     let data = await Content.findOne({
       where:{
-        contentId: info.contentId
+        contentId: info.contentId,
       },
       attributes:[
         'content',
         'title',
         'pageStart',
         'pageEnd',
-        'contentId'
-      ]
+        'contentId',
+      ],
     })
     let savedData = await data.update({
       content: info.content,
@@ -128,14 +128,14 @@ const updateContent = async (info) =>{
   }
 }
 
-const deleteContent = async (contentId) => {
+const deleteContent = async(contentId) => {
   try{
     await Content.destroy({
       where:{
-        contentId
-      }
+        contentId,
+      },
     }).then(() => 'OK')
-    .catch( err => { throw err })
+      .catch(err => { throw err })
   }catch(err){
     console.log(new Error(err))
   }
@@ -146,5 +146,5 @@ module.exports = {
   findAllGroupContents,
   insertContent,
   updateContent,
-  deleteContent
+  deleteContent,
 }

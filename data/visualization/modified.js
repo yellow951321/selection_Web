@@ -1,10 +1,10 @@
 const fs = require('fs')
 
 
-const readFileAsync = async (path)=>{
+const readFileAsync = async(path)=>{
   try{
-    const data = await new Promise((res,rej)=>{
-      fs.readFile(path,(err,data)=>{
+    const data = await new Promise((res, rej)=>{
+      fs.readFile(path, (err, data)=>{
         if(err) rej(err)
         data = JSON.parse(data)
         res(data)
@@ -17,10 +17,10 @@ const readFileAsync = async (path)=>{
   }
 }
 
-const writeFileAsync = async (path,data)=>{
+const writeFileAsync = async(path, data)=>{
   try{
-    await new Promise((res,rej)=>{
-      fs.writeFile(path,JSON.stringify(data,null,2),(err)=>{
+    await new Promise((res, rej)=>{
+      fs.writeFile(path, JSON.stringify(data, null, 2), (err)=>{
         if(err) rej(err)
         res()
       })
@@ -31,10 +31,10 @@ const writeFileAsync = async (path,data)=>{
   }
 }
 
-const rearrange = async ()=>{
+const rearrange = async()=>{
   const data = await readFileAsync('codeFlower.json')
 
-  writeFileAsync('codeFlower.json',data)
+  writeFileAsync('codeFlower.json', data)
 }
 
 

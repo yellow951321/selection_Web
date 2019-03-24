@@ -2,11 +2,11 @@ const Detail = require('./schema')
 
 function findDetail(item_id, detail){
   return Detail.findOne({
-      where: {
-        detail_name: detail,
-        item_id: item_id,
-      },
-    })
+    where: {
+      detail_name: detail,
+      item_id: item_id,
+    },
+  })
     .then(data => {return data})
     .catch(err => {throw err})
 }
@@ -14,8 +14,8 @@ function findDetail(item_id, detail){
 function findDetailAll(item_id){
   return Detail.findAll({
     where:{
-      item_id: item_id
-    }
+      item_id: item_id,
+    },
   })
 }
 
