@@ -8,15 +8,15 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/mariadb/User/schema')
+const User = require('../../models/newModel/schema/User')
 const { map, } = require('../../data/operation/mapping')
-const { findYearAll, } = require('../../models/mariadb/Year/op')
+const { findYearAll, } = require('../../models/newModel/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
       where: {
-        user_id:req.session.userId,
+        userId : req.session.userId,
       },
     })
 
@@ -25,15 +25,13 @@ router.get('/', async(req, res)=>{
 
     let {dataValues, } = user
 
-    let files = await findYearAll(dataValues.user_id)
+    let files = await findYearAll(dataValues.userId)
     // files will be transfered into the year value under years table
-    files = files.map(val => val.year)
-    //if years is undefined ,year.pug will render a empty files view
     res.render('manage/year', {
       GLOBAL:{
         years : files,
         id: req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         map: map.campus,
       },
     })

@@ -1,14 +1,14 @@
 each val in GLOBAL['contents']
-	form.ui.form.segment
+	form.ui.form.segment.editNode
 		.four.fields
 			.three.wide.field
 				.fields
 					.eight.wide.field
 						label 開始頁面
-						input.page__start(type='number' value=val[ 'page' ][ 'start' ])
+						input.page__start(type='number' value=val[ 'pageStart' ])
 					.eight.wide.field
 						label 結束頁面
-						input.page__end(type='number' value=val[ 'page'][ 'end' ])
+						input.page__end(type='number' value=val[ 'pageEnd'])
 			.nine.wide.field
 				label 標題
 				input.title(value=val[ 'title' ])
@@ -21,4 +21,7 @@ each val in GLOBAL['contents']
 		.field
 			label 內容
 			textarea.content(name="", rows="5")=val[ 'content' ]
-		input.node-index(type='hidden' value=val[ 'index' ])
+		.field
+			label 摘要
+			textarea.summary(name="", rows="2")=val[ 'summary' ]
+		input.node-index(type='hidden' value=val[ 'contentId' ])

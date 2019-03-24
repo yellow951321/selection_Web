@@ -1,0 +1,52 @@
+extends component/layout
+
+append head
+  link(rel='stylesheet', href='/static/stylesheets/playground.css')
+
+append content
+
+  #page-filter.ui.container.pusher
+        .ui.form.segment
+          .five.fields
+            .field
+              label 構面
+              select.filter.filter__dimension.ui.selection.dropdown
+                option(value='All') 全部
+                option(value='教學') 教學
+                option(value='研究') 研究
+                option(value='產學') 產學
+                option(value='社會責任') 社會責任
+                option(value='大學治理及公共性') 大學治理及公共性
+            .field
+              label 項目
+              select.filter.filter__item.ui.selection.dropdown
+            .field
+              label 詳細資料
+              select.filter.filter__detail.ui.selection.dropdown
+            .field
+              label 百分點
+              select.filter.filter__percent.ui.selection.dropdown
+                option(value='All') 全部百分點
+                option(value='q3') 第 75 ~ 100 百分點
+                option(value='q2') 第 50 ~ 75 百分點
+                option(value='q1') 第 25 ~ 50 百分點
+                option(value='q0') 第 0 ~ 25 百分點
+            .field
+              .ui.container.center.aligned.choice-block
+                button.ui.button.filter.filter__choice 選擇
+        .reserved.ui.transition.hidden
+          if GLOBAL['dimension']
+            .reserved__dimension=GLOBAL['dimension']
+            .reserved__item=GLOBAL['item']
+            .reserved__detail=GLOBAL['detail']
+
+  .page-svg.ui.container
+
+  #footer.ui.container.center.aligned.transistion.hidden
+    .ui.floating.message.transistion.hidden
+      p 尚未繪畫任何資料
+
+append script
+  script(src='/static/javascripts/schema.js')
+  script(src='https://d3js.org/d3.v5.min.js')
+  script(src='/static/javascripts/manage/draw.js')

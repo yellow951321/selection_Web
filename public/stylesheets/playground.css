@@ -1,8 +1,4 @@
 
-.bar {
-  fill: steelblue;
-}
-
 .label {
   font: 30px sans-serif;
   text-anchor: end;
@@ -17,7 +13,11 @@
 }
 
 .axis {
-  font: 30px sans-serif;
+  font: 25px sans-serif;
+}
+
+.tick line {
+  visibility: hidden;
 }
 
 .axis path,
@@ -32,8 +32,28 @@
 }
 
 svg {
-  overflow: auto!important;
+  overflow: visible!important;
+  overflow-x: scroll!important;
+  margin: auto;
+}
 
+.page-svg {
+  overflow-x: scroll
+}
+
+.center {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.median {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.bound {
+  stroke: #000;
+  stroke-width: 2;
 }
 
 g {
@@ -43,6 +63,22 @@ g {
 @media screen and (max-width: 425px){
   .axis {
     font: 15px sans-serif;
+    text-anchor: end;
+  }
+
+}
+
+@media screen and (max-width: 769px) and (min-width: 426px){
+  .axis {
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+
+}
+
+@media screen and (max-width: 1024px) and (min-width: 770px){
+  .axis {
+    font: 25px sans-serif;
     text-anchor: end;
   }
 

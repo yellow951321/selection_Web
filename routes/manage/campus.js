@@ -8,15 +8,15 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/mariadb/User/schema')
+const User = require('../../models/newModel/schema/User')
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
-const { findCampusByType, } = require('../../models/mariadb/Campus/op')
+const { findCampusAll, } = require('../../models/newModel/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id: req.session.userId,
+        userId: req.session.userId,
       },
     })
 
@@ -25,16 +25,17 @@ router.get('/', async(req, res)=>{
     else
       var {dataValues, } = user
 
-    let context = await findCampusByType(res.locals.year_id, res.locals.type_id)
-
-    context = context.map(val => [getFromNum(map, { campus: val.campus_name, type: res.locals.type_id, }), val.campus_id, ])
+    // let context = await findCampusByType(res.locals.year_id, res.locals.type_id)
+    // context = context.map(val => [getFromNum(map, { campus: val.campus_name, type: res.locals.type_id, }), val.campus_id, ])
+    let typeId = getFromWord(map, {type: res.locals.type, })
+    let campusList = await findCampusAll(req.session.userId, res.locals.year, typeId)
     res.render('manage/campus', {
       GLOBAL : {
-        campuses : context,
+        campuses : campusList,
         id : req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         year : res.locals.year,
-        type : getFromNum(map, {type: res.locals.type_id, }),
+        type : res.locals.type,
         map: map.campus,
       },
     })

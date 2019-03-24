@@ -8,7 +8,7 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/mariadb/User/schema')
+const User = require('../../models/newModel/schema/User')
 const { map, getFromNum, findParentByDetail, } = require('../../data/operation/mapping')
 
 
@@ -16,7 +16,7 @@ router.get('/', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id:req.session.userId,
+        userId:req.session.userId,
       },
     })
 
@@ -28,7 +28,7 @@ router.get('/', async(req, res)=>{
     res.render('manage/edit', {
       GLOBAL : {
         id : req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         year : res.locals.year,
         type : res.locals.type,
         campus : res.locals.campus,
@@ -45,46 +45,32 @@ router.get('/', async(req, res)=>{
   }
 })
 
-router.get('/:detail_num',async (req,res)=>{
+router.get('/:methodId', async(req, res)=>{
   try{
     const user = await User.findOne({
       where:{
-        user_id: req.session.userId
-      }
+        userId: req.session.userId,
+      },
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
     else
       var {dataValues, } = user
-    console.log()
-    const detail_word = getFromNum(map,{
-      detail: req.params.detail_num
+    const method_word = getFromNum(map, {
+      detail: req.params.methodId,
     })
-    console.log(detail_word)
-    const { dimension, item, } = findParentByDetail(detail_word)
-    console.log({
+    const { dimension, item, } = findParentByDetail(method_word)
+    res.render('manage/edit', {
       GLOBAL: {
         id : req.session.userId,
-        user : dataValues.user_name,
+        user : dataValues.account,
         year : res.locals.year,
         type : res.locals.type,
         campus : res.locals.campus,
         dimension : dimension,
         item : item,
-        detail : detail_word
-      }
-    })
-    res.render('manage/edit',{
-      GLOBAL: {
-        id : req.session.userId,
-        user : dataValues.user_name,
-        year : res.locals.year,
-        type : res.locals.type,
-        campus : res.locals.campus,
-        dimension : dimension,
-        item : item,
-        detail : detail_word
-      }
+        detail : method_word,
+      },
     })
   }
   catch(err){

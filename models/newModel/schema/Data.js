@@ -1,31 +1,39 @@
 const sequelize = require('../../../db/mariadb')
 const Sequelize = require('sequelize')
-const User = require('../User/schema')
-const yearSchema = {
-  year_id:{
+const User = require('./User')
+const dataSchema = {
+  dataId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
-    allowNull: false,
     primaryKey: true,
+    allowNull: false,
     unique: true,
     autoIncrement:true,
+  },
+  campus:{
+    type: Sequelize.INTEGER(10).UNSIGNED,
+    allowNull: false,
   },
   year:{
     type: Sequelize.INTEGER(10).UNSIGNED,
     allowNull: false,
   },
-  user_id:{
+  type:{
+    type: Sequelize.INTEGER(10).UNSIGNED.ZEROFILL,
+    allowNull: false,
+  },
+  userId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
     references:{
       // This is a reference to another model
       model: User,
 
       // This is the column name of the referenced model
-      key: 'user_id',
+      key: 'userId',
     },
     allowNull: false,
   },
 }
 
-const Year = sequelize.define('years', yearSchema)
+const Data = sequelize.define('data', dataSchema)
 
-module.exports = Year
+module.exports = Data
