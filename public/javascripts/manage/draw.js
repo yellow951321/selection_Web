@@ -218,7 +218,7 @@ const drawBarChart = (data,info)=>{
       { method: d.method, methodId: d.methodId, prop: "overall", value: d.highest , percentage : 100 }] )
       .enter()
       .append('a')
-        .attr("href", d=>{
+        .attr("href", d => {
           return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`
         })
 
@@ -303,10 +303,14 @@ const drawBoxPlot = (data,info) => {
   // rebuild data structure
     {newData , methodLabel} = rebuildDataStructure(data,range)
     width               = window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.6 : window.document.body.offsetWidth*0.3,
-    height              = newData.length*2*(barHeight + barPadding)
+    height              = newData.length*2*(barHeight + barPadding),
+    max = d3.max(data, d => d3.max(d.data, d => d.count))
+    tickValues         = []
+  for(let i=0;i<max;i++)
+    tickValues.push(i)
 
   var x = d3.scaleLinear()
-    .domain([0,d3.max(data, d => d3.max(d.data, d => d.count)) ])
+    .domain([0,max])
     .range([0,width])
 
   var x_info = d3.scaleLinear()
@@ -325,13 +329,42 @@ const drawBoxPlot = (data,info) => {
 
   var yAxis = d3.axisLeft(y_method)
     .tickSize(0)
+  var xAxis = d3.axisBottom(x)
+    .ticks(max)
+    .tickValues(tickValues)
+    .tickFormat( (d,i) => {
+      if(i == 0)
+        return ""
+      if(i%5 == 0 )
+        return d
+      else
+        return ""
+    })
+    .tickSize(10)
 
   var svg = d3.select(".page-svg").append("svg")
     .attr("height" , height + margin.top + margin.bottom)
     .attr("width" , width + margin.left + margin.right)
-    // .attr("transform", `translate`)
     .append("g")
     .attr("transform", "translate(" + (margin.left) +  "," + margin.top + ")");
+
+  // draw the illustration
+  var illustration = svg.append("g")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("transform", `translate(-200,-50)`)
+
+  illustration.append("rect")
+      .attr("fill", "#FF0085")
+      .attr("x", x(10))
+      .attr("y", 0)
+      .attr("width", 25)
+      .attr("height", 3)
+
+  illustration.append("text")
+      .attr("x", x(10) + 26 )
+      .attr("y", 5)
+      .text(`${info.year}年${info.campus}所有資料位置`)
 
   // draw the y-axis
   svg.append("g")
@@ -346,21 +379,28 @@ const drawBoxPlot = (data,info) => {
         .attr("transform", d => {
           return `translate(0,${y_method(d.method)})`
         })
-      .append("a")
+
+  boxPlot.append("g")
+      .attr("class", "x axis")
+      .attr("transform", `translate(0,${y_particle("bar")})`)
+      .call(xAxis)
+
   // draw the horizontal line
   boxPlot.append("line")
       .attr("class","center")
-      .attr("x1" , d => x(d.whiskerData[0])*0.8 )
+      .attr("x1" , d => x(d.whiskerData[0]) )
       .attr("y1" , y_particle("box") + barHeight/2 )
       .attr("x2" , d => x(d.whiskerData[1]))
       .attr("y2" , y_particle("box") + barHeight/2 )
+
   // draw the upper bound and lower bound
   boxPlot.append("line")
       .attr("class", "lower bound" )
-      .attr("x1", d => x(d.whiskerData[0])*0.8 )
+      .attr("x1", d => x(d.whiskerData[0]) )
       .attr("y1", y_particle("box") )
-      .attr("x2" , d => x(d.whiskerData[0])*0.8 )
+      .attr("x2" , d => x(d.whiskerData[0]) )
       .attr("y2" , barHeight )
+
   boxPlot.append("line")
       .attr("class", "upper bound")
       .attr("x1", d => x(d.whiskerData[1]))
@@ -384,65 +424,138 @@ const drawBoxPlot = (data,info) => {
         .attr("y1", d => y_particle("box")  )
         .attr("x2", d => x(d.quartileData[1] ) )
         .attr("y2", d => y_particle("box") + barHeight  )
+
+  // draw the line represent self
+  boxPlot.append("line")
+        .attr("class","self")
+        .attr("x1", d => x(d.self) )
+        .attr("y1", y_particle("box") )
+        .attr("x2", d => x(d.self ))
+        .attr("y2", y_particle("box") + barHeight )
+        .attr("stroke", "#FF0085")
+        .attr("stroke-width", 2)
+
+  var xAxis = boxPlot.append("g")
+        .attr("transform", d => {
+          return `translate(0,${y_particle("bar")})`
+        })
+
+  d3.selectAll(".y.axis text")
+    .style("cursor", "pointer")
+    .data(data)
+    .on("click", (d) => {
+      console.log(d)
+        document.location.href = `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`;
+        return
+    })
+  d3.selectAll(".y.axis .tick text")
+    .attr("transform", `translate(-10,0)`)
+
+  // xAxis.append("path")
+  //       .attr("class","domain")
+  //       .attr("stroke","#000")
+  //       .attr("d", `M${x(0)} ${y_particle("bar")/2} L${x(x.domain()[1])} ${y_particle("bar")/2} Z`)
+
+  // var ticks = xAxis.selectAll("svg")
+  //       .data([ x.domain()[1] ], d => {
+  //         let range = Math.ceil(d)
+  //         let t = []
+  //         for(let i=0;i<range;i++){
+  //           t.push(i)
+  //         }
+  //         return t
+  //       }).enter()
+  //       .append("g")
+  //         .attr("transform", d => `translate(${x(d)},0)`)
+
+
+  // ticks.append("line")
+  //       .attr("x1", d => {
+  //         console.log(d)
+  //         return x(d)} )
+  //       .attr("y1", y_particle("bar") )
+  //       .attr("x2", d => x(d) )
+  //       .attr("y2", d => {
+  //         if(d%5 == 0)
+  //           return 3
+  //         else
+  //           return 2
+  //       })
+  //       .attr("stroke","#000")
+  //       .attr("stroke-width",d => {
+  //         if(d%5 == 0){
+  //           return 2
+  //         }else
+  //           return 1
+  //       })
+  // ticks.append("text")
+  //       .attr("x", d => x(d) )
+  //       .attr("y", y_particle("bar") + 2)
+  //       .text(d => {
+  //         if(d%5 == 0)
+  //           return d
+  //         else
+  //           return ""
+  //       })
   // draw the bar chart
-  var barChart = boxPlot.selectAll("g").data( d => {
-    let min = {
-      percentage: 0,
-      value: Math.floor(d.whiskerData[0]),
-      color: "#2FD5D6"
-    }
-    let max = {
-      percentage: 1,
-      value: Math.floor(d.whiskerData[1]),
-      color: '#2F2DD6'
-    }
-    let q1 = {
-      percentage: 0.25,
-      value: Math.floor(d.quartileData[0]),
-      color: '#2FACD8'
-    }
-    let q2 = {
-      percentage: 0.5,
-      value: Math.floor(d.quartileData[1]),
-      color: '#2F83D6'
-    }
-    let q3 = {
-      percentage: 0.75,
-      value: Math.floor(d.quartileData[2]),
-      color: '#2F59D5'
-    }
-    let self = {
-      percentage: d.selfPercentage,
-      value: d.self,
-      color: '#FF0085'
-    }
-    let result = [min,q1,q2,q3,self,max]
-    result = result.sort((a,b) => {
-      return a.percentage - b.percentage
-    })
-    return result
-  })
-  .enter()
+  // var barChart = boxPlot.selectAll("g").data( d => {
+  //   let min = {
+  //     percentage: 0,
+  //     value: Math.floor(d.whiskerData[0]),
+  //     color: "#2FD5D6"
+  //   }
+  //   let max = {
+  //     percentage: 1,
+  //     value: Math.floor(d.whiskerData[1]),
+  //     color: '#2F2DD6'
+  //   }
+  //   let q1 = {
+  //     percentage: 0.25,
+  //     value: Math.floor(d.quartileData[0]),
+  //     color: '#2FACD8'
+  //   }
+  //   let q2 = {
+  //     percentage: 0.5,
+  //     value: Math.floor(d.quartileData[1]),
+  //     color: '#2F83D6'
+  //   }
+  //   let q3 = {
+  //     percentage: 0.75,
+  //     value: Math.floor(d.quartileData[2]),
+  //     color: '#2F59D5'
+  //   }
+  //   let self = {
+  //     percentage: d.selfPercentage,
+  //     value: d.self,
+  //     color: '#FF0085'
+  //   }
+  //   let result = [min,q1,q2,q3,self,max]
+  //   result = result.sort((a,b) => {
+  //     return a.percentage - b.percentage
+  //   })
+  //   return result
+  // })
+  // .enter()
 
-  barChart.append("rect")
-    .attr("fill", d => d.color )
-    .attr("x", (d,i) => x_info(100*0.166*i) )
-    .attr("y", y_particle("bar"))
-    .attr("width", x_info(100*0.166) )
-    .attr("height", barHeight )
+  // barChart.append("rect")
+  //   .attr("fill", d => d.color )
+  //   .attr("x", (d,i) => x_info(100*0.166*i) )
+  //   .attr("y", y_particle("bar"))
+  //   .attr("width", x_info(100*0.166) )
+  //   .attr("height", barHeight )
 
-  barChart.append("text")
-    .attr("fill", (d,i) => {
-      if(i == 0 )
-        return "black"
-      else
-        return "white"
-    })
-    .attr("x", (d,i) => x_info(100*0.166*i + 2))
-    .attr("y", y_particle("bar") + y_particle.bandwidth()/2 )
-    .text((d,i)=> {
-      return `第${(d.percentage*100).toFixed(0)}百分點: ${d.value} 筆`
-    })
+  // barChart.append("text")
+  //   .attr("fill", (d,i) => {
+  //     if(i == 0 )
+  //       return "black"
+  //     else
+  //       return "white"
+  //   })
+  //   .attr("x", (d,i) => x_info(100*0.166*i + 2))
+  //   .attr("y", y_particle("bar") + y_particle.bandwidth()/2 )
+  //   .text((d,i)=> {
+  //     return `第${(d.percentage*100).toFixed(0)}百分點: ${d.value} 筆`
+  //   })
 
 }
 

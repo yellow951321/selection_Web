@@ -17,7 +17,7 @@ const yearDropdownOnChange = (event) => {
     campusesDropDown.innerHTML = event.target.parentNode.parentNode.querySelector('.normal').innerHTML
   }
   else if(event.target.value == '1'){
-    // find the innerHTML of .others 
+    // find the innerHTML of .others
     campusesDropDown.innerHTML = event.target.parentNode.parentNode.querySelector('.others').innerHTML
   }
 }

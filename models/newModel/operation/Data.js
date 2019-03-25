@@ -39,26 +39,11 @@ const findTypeAll = async (userId, year) => {
                 year: year
             }
         })
-
         // transfer data into column type only
         val = val.map((data) => data.dataValues.type)
         val = val.filter((value, index,self)=>{
             return self.indexOf(value) === index
         })
-        // // record the appereared type
-        // let exists = [false, false]
-        // for(let type of val){
-        //     if(!exists[type])
-        //         exists[type] = true;
-
-        //     if(exists[0] && exists[1])
-        //         break;
-        // }
-        // let output = []
-        // for(let index of exists){
-        //     if(exists[index])
-        //         output.push(index)
-        // }
 
         return val
     }
