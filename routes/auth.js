@@ -1,7 +1,9 @@
 const fs = require('fs')
 const express = require('express')
 
-const User = require('../models/newModel/schema/User')
+const User = require('../models/schema/User')
+const Session = require('../models/schema/Session')
+
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -26,24 +28,47 @@ router.post('/login', async(req, res)=>{
         password: req.body.password,
       },
     })
-
     if(doc != null){
-      //console.log(doc)
       req.session.userId = doc.dataValues.userId
+
+      Session.create({
+        sessionId: req.session.id,
+        expiration: Number(req.session.cookie.expires),
+        userId: doc.userId,
+      })
+
       res.redirect(`/man/${req.session.userId}`)
     }else{
       throw new Error(`No account matched ${req.body.username}`)
     }
   }
   catch(err){
-    console.log(err.message)
     res.status(400).render('login', {error: err.message, })
   }
 })
 
-router.get('/logout', (req, res)=>{
-  req.session = null
-  res.status(200).redirect('/auth/login')
+router.get('/logout', async(req, res)=>{
+  try {
+    // remove session and remove the login record in the database
+    await Session.destroy({
+      where: {
+        sessionId: req.session.id,
+      },
+    })
+    await new Promise( (res, rej) => {
+      req.session.destroy((err)=>{
+        if(err)
+          rej(err)
+        res()
+      })
+    })
+    .catch( (err) => {
+      throw err
+    })
+    res.status(200).redirect('/auth/login')
+  } catch (err) {
+    res.status(404).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error'}, })
+  }
 })
 
 router.get('/signup', (req, res)=>{
@@ -73,7 +98,6 @@ router.post('/signup', async(req, res)=>{
     res.status(200).send('OK')
   }
   catch (err){
-    console.log(err)
     res.status(400).render('signup', {error:err.message, })
   }
 })

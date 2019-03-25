@@ -7,12 +7,12 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const { User, Data, Content} = require('../../../models/newModel/association')
+const { User, Data, Content, } = require('../../../models/association')
 const { map, getFromWord, } = require('../../../data/operation/mapping')
 const { findOneGroupContents,
-        insertContent,
-        updateContent,
-        deleteContent } = require('../../../models/newModel/operation/contents')
+  insertContent,
+  updateContent,
+  deleteContent, } = require('../../../models/operation/contents')
 
 router.get('/filter', async(req, res)=>{
   try{
@@ -24,22 +24,23 @@ router.get('/filter', async(req, res)=>{
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
 
-    let typeId = getFromWord(map,{ type: req.query.type})
-    let campusId = getFromWord(map, { campus: req.query.campus, type: req.query.type})
-    let aspect = getFromWord(map, { dimension: req.query.dimension })
-    let keypoint = getFromWord(map, {item: req.query.item })
-    let method = getFromWord(map, { detail: req.query.detail })
+    let typeId = getFromWord(map, { type: req.query.type, })
+    let campusId = getFromWord(map, { campus: req.query.campus, type: req.query.type, })
+    let aspect = getFromWord(map, { dimension: req.query.dimension, })
+    let keypoint = getFromWord(map, {item: req.query.item, })
+    let method = getFromWord(map, { detail: req.query.detail, })
+
     let data = await findOneGroupContents({
       userId: req.session.userId,
       year: req.query.year,
       typeId,
-      campusId
-    },{
+      campusId,
+    }, {
       aspect,
       keypoint,
-      method
+      method,
     })
-    data = data.map( contents => contents.dataValues)
+    data = data.map(contents => contents.dataValues)
     res.render('manage/component/filter', {
       GLOBAL :{
         contents : data,
@@ -65,16 +66,19 @@ router.post('/add', async(req, res)=>{
     })
     if(user == null)
       throw new Error(`No userId ${req.session.userId}`)
-    let typeId = getFromWord(map,{ type: req.body.type})
-    let campusId = getFromWord(map, { campus: req.body.campus, type: req.body.type})
+    let typeId = getFromWord(map, { type: req.body.type, })
+    let campusId = getFromWord(map, { campus: req.body.campus, type: req.body.type, })
+    let aspect = getFromWord(map, { dimension: req.body.dimension, })
+    let keypoint = getFromWord(map, {item: req.body.item, })
+    let method = getFromWord(map, { detail: req.body.detail, })
     let data = await Data.findOne({
       where:{
         userId: req.body.id,
         year: req.body.year,
         type: typeId,
-        campus: campusId
+        campus: campusId,
       },
-      attributes: ['dataId']
+      attributes: ['dataId', ],
     })
 
     let {dataId, } = data.dataValues
@@ -84,12 +88,12 @@ router.post('/add', async(req, res)=>{
       summary: '',
       pageStart: '',
       pageEnd: '',
-      aspect: req.body.dimension,
-      keypoint: req.body.item,
-      method: req.body.detail,
-      dataId
+      aspect,
+      keypoint,
+      method,
+      dataId,
     })
-    let { contentId } = newContent.dataValues
+    let { contentId, } = newContent.dataValues
     res.render('manage/component/newEdit', {
       GLOBAL : {
         index : contentId,

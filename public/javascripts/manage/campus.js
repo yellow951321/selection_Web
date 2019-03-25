@@ -23,15 +23,14 @@ const yearDropdownOnChange = (event) => {
 }
 
 // handle delete
-  // show delete confirm popup
+// show delete confirm popup
 class Delete {
   constructor(){
     this.deleteForm = document.getElementById('delete')
   }
   static showDeleteConfirm(that){
     return (event) =>{
-      // @TODO remove form after changing delete dependencies to database id
-      event.preventDefault();
+      event.preventDefault()
       $('#delete').modal({
         onApprove : function(){return false},
       }).modal('show')
@@ -56,22 +55,22 @@ class Delete {
           'Content-Type': 'application/json',
         },
       })
-      .then(res => res.text())
-      .then(res => {
-        if(res == 'OK')
-          window.location.assign(`/man/${user_id}`)
-        else
-          throw new Error('刪除失敗')
-      })
-      .catch(err => {
-        throw err
-      })
+        .then(res => res.text())
+        .then(res => {
+          if(res == 'OK')
+            window.location.assign(`/man/${user_id}`)
+          else
+            throw new Error('刪除失敗')
+        })
+        .catch(err => {
+          throw err
+        })
     }
   }
 }
 // init
 
-let del = new Delete();
+let del = new Delete()
 //refresh dropdwon in addForm
 $('select.dropdown')
   .dropdown()
@@ -82,12 +81,12 @@ $('select.dropdown')
 header.querySelector('.add').addEventListener('click', addButtonClicked)
 
 // add event listender to all the nodes
-pageManagement.querySelectorAll('.node').forEach( (node) => {
+pageManagement.querySelectorAll('.node').forEach((node) => {
   node.addEventListener('submit', Delete.showDeleteConfirm(del))
 })
 
 // add enent listener to the dropdown of addForm
-addForm.querySelector('.type-dropdown').firstChild.addEventListener( 'change', yearDropdownOnChange)
+addForm.querySelector('.type-dropdown').firstChild.addEventListener('change', yearDropdownOnChange)
 
 // trigger dropdown on change to refresh the selection of school
-addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'));
+addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'))

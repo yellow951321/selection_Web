@@ -8,9 +8,9 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/newModel/schema/User')
+const User = require('../../models/schema/User')
 const { map, getFromNum, getFromWord, } = require('../../data/operation/mapping')
-const { findCampusAll ,} = require('../../models/newModel/operation/Data')
+const { findCampusAll, } = require('../../models/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
@@ -27,9 +27,8 @@ router.get('/', async(req, res)=>{
 
     // let context = await findCampusByType(res.locals.year_id, res.locals.type_id)
     // context = context.map(val => [getFromNum(map, { campus: val.campus_name, type: res.locals.type_id, }), val.campus_id, ])
-    let typeId = getFromWord(map, {type: res.locals.type})
-    console.log(typeId)
-    let campusList = await findCampusAll(req.session.userId, res.locals.year, typeId )
+    let typeId = getFromWord(map, {type: res.locals.type, })
+    let campusList = await findCampusAll(req.session.userId, res.locals.year, typeId)
     res.render('manage/campus', {
       GLOBAL : {
         campuses : campusList,

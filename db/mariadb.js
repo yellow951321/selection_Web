@@ -14,6 +14,9 @@ const sequelize = new Sequelize(`${config.database.database}`, `${config.databas
   //-default: false
   native: true,
 
+  // remove logging
+  logging: false,
+
   // Specify options, which are used when sequelize.defin is called.
   define:{
     underscored: true,
@@ -34,7 +37,7 @@ const sequelize = new Sequelize(`${config.database.database}`, `${config.databas
     max: 5,
     min: 0,
     acquire: 30000,
-    idle: 10000,
+    idle: 30000,
   },
 })
 

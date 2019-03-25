@@ -8,9 +8,9 @@ const router = express.Router({
   strict: false,
 })
 
-const User = require('../../models/newModel/schema/User')
+const User = require('../../models/schema/User')
 const { map, } = require('../../data/operation/mapping')
-const { findYearAll, } = require('../../models/newModel/operation/Data')
+const { findYearAll, } = require('../../models/operation/Data')
 
 router.get('/', async(req, res)=>{
   try{
