@@ -93,10 +93,11 @@ app.use(session({
 }))
 
 app.use('/static', express.static(path.join(__dirname, 'public'), {
+  cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
-  // file hash
-  etag: true,
+  // disable cache
+  etag: false,
   // handle missing extension for static file
   extensions: ['css', 'js', ],
   // when 404, pass handle to other middleware
@@ -105,10 +106,10 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   immutable: false,
   // index file not exist
   index: false,
-  // last modified date equal to file modified date on file system
-  lastModified: true,
-  // expired time: 1 week
-  maxAge: 1000*60*60*24*7,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
