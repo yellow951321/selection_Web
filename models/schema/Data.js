@@ -14,7 +14,7 @@ const dataSchema = {
     allowNull: false,
   },
   year:{
-    type: Sequelize.INTEGER(10).UNSIGNED,
+    type: Sequelize.INTEGER(32).UNSIGNED,
     allowNull: false,
   },
   type:{
