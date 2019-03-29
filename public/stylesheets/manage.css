@@ -54,5 +54,9 @@
 }
 
 .editNode--unsaved {
-    background-color: red;
+    background-color: #F5A2A2!important;
+}
+
+.editNode--saved {
+    background-color: #DCF7F3!important;
 }

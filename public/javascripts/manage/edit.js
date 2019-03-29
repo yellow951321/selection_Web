@@ -9,9 +9,9 @@ const reserved = pageFilter.querySelector('.reserved')
 class UnsavedAlert{
   haveUnsaved(targetNode){
     return () => {
-      if(!targetNode.classList.contains('red')){
-        targetNode.classList.add('red')
-        targetNode.classList.add('inverted')
+      if(!targetNode.classList.contains('editNode--unsaved')){
+        targetNode.classList.add('editNode--unsaved')
+        // targetNode.classList.add('inverted')
       }
     }
   }
@@ -24,9 +24,10 @@ class UnsavedAlert{
     targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
   }
   afterSaving(targetNode){
-    if(targetNode.classList.contains('red')){
-      targetNode.classList.remove('red')
-      targetNode.classList.remove('inverted')
+    if(targetNode.classList.contains('editNode--unsaved')){
+      targetNode.classList.remove('editNode--unsaved')
+      // targetNode.classList.remove('inverted')
+      targetNode.classList.add('editNode--saved')
     }
   }
 }
