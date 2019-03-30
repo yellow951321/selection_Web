@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env MODE=PRODUCTION node app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
     "s": "npm run start",
-    "develop": "cross-env MODE=DEVELOPMENT nodemon app.js",
+    "develop": "cross-env NODE_ENV=develop nodemon app.js",
     "d": "npm run develop",
     "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
     "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
@@ -14,9 +14,12 @@
     "l": "npm run lb && npm run lf",
     "preset": "cp config.js.default config.js",
     "p": "npm run preset",
-    "dNode": "cross-env MODE=DEVELOPMENT node app.js"
+    "w": "webpack --config webpack.config.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.0",
+    "babel-loader": "^8.0.5",
+    "babel-polyfill": "^6.26.0",
     "chai": "^4.2.0",
     "connect-mongo": "^2.0.3",
     "cookie-parser": "~1.4.3",
@@ -31,12 +34,18 @@
     "morgan": "~1.9.0",
     "mysql2": "^1.6.4",
     "pug": "2.0.0-beta11",
-    "sequelize": "^4.42.0",
-    "unique-filename": "^1.1.1"
+    "sequelize": "^4.43.1",
+    "unique-filename": "^1.1.1",
+    "webpack": "^4.29.6",
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "eslint": "^5.12.0",
     "eslint-config-google": "^0.11.0",
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "webpack-cli": "^3.3.0"
   }
 }
