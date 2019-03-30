@@ -2,23 +2,27 @@ const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const config = require('./config')
 
+const isDevMode = process.env.NODE_ENV === 'development'
+
 module.exports = {
-  mode: process.env.NODE_ENV,
+  devtool: isDevMode ? 'inline-sourcemap' : false,
+  mode:    isDevMode ? 'development' : 'production',
   entry:   [
     'babel-polyfill',
-    path.join(config.path, 'app.js'),
+    path.join(config.projectRoot, 'server.js'),
   ],
   output: {
-    path: path.join(__dirname, 'bin'),
-    filename: '[name].bundle.js',
+    path: path.join(config.projectRoot, 'bin'),
+    filename: 'server.bundle.js',
   },
   target: 'node',
   externals: [nodeExternals(), ],
   resolve: {
     alias: {
-      models: path.join(config.path, 'models'),
-      routes: path.join(config.path, 'routes'),
-      apis: path.join(config.path, 'apis'),
+      'projectRoot': config.projectRoot,
+      'auth': path.join(config.projectRoot, 'auth'),
+      'mid-long-term': path.join(config.projectRoot, 'mid-long-term'),
+      'short-term': path.join(config.projectRoot, 'short-term'),
     },
   },
   module:  {

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node app.js",
+    "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
     "s": "npm run start",
     "develop": "cross-env NODE_ENV=develop nodemon app.js",
     "d": "npm run develop",
@@ -21,6 +21,7 @@
     "babel-loader": "^8.0.5",
     "babel-polyfill": "^6.26.0",
     "chai": "^4.2.0",
+    "compression": "^1.7.4",
     "connect-mongo": "^2.0.3",
     "cookie-parser": "~1.4.3",
     "cross-env": "^5.2.0",

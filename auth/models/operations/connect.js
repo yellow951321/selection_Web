@@ -1,6 +1,8 @@
-const Sequelize = require('sequelize')
-const config = require('../config')
-const sequelize = new Sequelize(`${config.database.database}`, `${config.database.user}`, `${config.database.password}`, {
+import Sequelize from 'sequelize'
+
+import config from 'projectRoot/config.js'
+
+const UserDB = new Sequelize( 'user', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -17,7 +19,7 @@ const sequelize = new Sequelize(`${config.database.database}`, `${config.databas
   // remove logging
   logging: false,
 
-  // Specify options, which are used when sequelize.defin is called.
+  // Specify options, which are used when sequelize.define is called.
   define:{
     underscored: true,
     charset: 'utf-8',
@@ -41,4 +43,4 @@ const sequelize = new Sequelize(`${config.database.database}`, `${config.databas
   },
 })
 
-module.exports = sequelize
+export default UserDB

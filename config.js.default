@@ -1,6 +1,5 @@
 const config = {
   'database': {
-    'database': 'sinica',
     'host': '',
     'port': 3306,
     'user': '',
@@ -11,7 +10,7 @@ const config = {
     'port': 3000,
     'secret': 'deepest and darkest secret',
   },
-  'path': ''
+  'projectRoot': '',
 }
 
 module.exports = config
