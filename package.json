@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
+    "start": "cross-env NODE_ENV=development node bin/server.bundle.js",
     "s": "npm run start",
-    "develop": "cross-env NODE_ENV=develop nodemon app.js",
+    "develop": "cross-env NODE_ENV=development nodemon app.js",
     "d": "npm run develop",
     "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
     "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
@@ -14,7 +14,7 @@
     "l": "npm run lb && npm run lf",
     "preset": "cp config.js.default config.js",
     "p": "npm run preset",
-    "w": "webpack --config webpack.config.js"
+    "w": "cross-env NODE_ENV=development webpack --config webpack.config.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.0",

@@ -95,6 +95,6 @@ server.use(async(req, {}, next) => {
   next()
 })
 
-// server.use('/auth', auth)
-// server.use('/mid-long-term', midLongTerm)
-// server.use('/short-term', shortTerm)
+server.use('/auth', auth)
+server.use('/mid-long-term', midLongTerm)
+server.use('/short-term', shortTerm)
