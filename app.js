@@ -5,13 +5,13 @@ const session = require('express-session')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 
-const config = require('./config')
-const auth = require('./routes/auth')
+import config from './config.js';
+const auth = require('routes/auth')
 const sequelize = require('./db/mariadb')
-const AuthRouter = require('./routes/manage/auth')
-const apiRouter = require('./apis/apiRouter')
+const AuthRouter = require('routes/manage/auth')
+const apiRouter = require('apis/apiRouter')
 
-const Session = require('./models/schema/Session')
+const Session = require('models/schema/Session')
 
 const app = express()
 
@@ -28,7 +28,7 @@ sequelize
   })
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(config.path, 'views'))
 app.set('view engine', 'pug')
 
 if(isDevMode){
