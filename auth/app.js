@@ -13,6 +13,20 @@ app.get('/login', (req, res)=>{
     res.render('login')
 })
 
+app.get('/mid-long-term', (req,res)=> {
+  if(res.session && req.session.userId)
+    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+  else
+    res.render('login')
+})
+
+app.get('/shortTerm', (req,res)=> {
+  if(res.session && req.session.userId)
+    res.redirect(`/shortTerm/${req.session.userId}/index`)
+  else
+    res.render('login')
+})
+
 app.post('/login', async(req, res)=>{
   try{
     const doc = await User.findOne({
