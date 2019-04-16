@@ -7,7 +7,7 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-const { User, Data, Content, } = require('../../../models/association')
+const { User, Data, Content, } = require('../../../models/association_old')
 const { map, getFromWord, getFromNum, } = require('../../../data/operation/mapping')
 
 

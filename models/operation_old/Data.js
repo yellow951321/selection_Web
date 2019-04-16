@@ -1,5 +1,5 @@
-const { Data, User, Content, } = require('../association')
-const { map, getFromNum, getFromWord, } = require('../../../data/operation/mapping')
+const { Data, } = require('../association')
+const { map, getFromNum, } = require('../../data/operation/mapping')
 
 const findYearAll = async(userId) => {
   try{
@@ -12,7 +12,6 @@ const findYearAll = async(userId) => {
 
     // transfer data in to column year only
     val = val.map((data) => data.dataValues.year)
-    // console.log(val)
     // find and sort the destinct year
     let output = []
     for(let year of val){
@@ -39,12 +38,12 @@ const findTypeAll = async(userId, year) => {
         year: year,
       },
     })
+
     // transfer data into column type only
     val = val.map((data) => data.dataValues.type)
     val = val.filter((value, index, self)=>{
       return self.indexOf(value) === index
     })
-
     return val
   }
   catch(err){
@@ -71,9 +70,6 @@ const findCampusAll = async(userId, year, type) => {
       }
     })
 
-    // val = val.filter((value, index,self)=>{
-    //     return self.indexOf(value) === index
-    // })
     val = val.map(campusInfo => {
       return [getFromNum(map, {
         campus: campusInfo.campus,
@@ -109,7 +105,6 @@ const findCampusOne = async(info) =>{
 }
 const createNewProject = async(info) =>{
   try{
-    console.log(info)
     let outputCampus = await findCampusOne(info)
     if(outputCampus !== null)
       return outputCampus

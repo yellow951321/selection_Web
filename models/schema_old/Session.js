@@ -1,8 +1,7 @@
-const {sequelizeUser, } = require(`${process.env.ROOT}/db/mariadb`)
+const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
-
 const sessionSchema = {
-  tableId :{
+  tableId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
     primaryKey: true,
     allowNull: false,
@@ -14,16 +13,16 @@ const sessionSchema = {
     allowNull: false,
     unique: true,
   },
-  expiration: {
+  expiration:{
     type: Sequelize.STRING(45),
     allowNull: false,
   },
-  userId: {
+  userId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
     allowNull: false,
-  }
+  },
 }
 
-const Session = Sequelize.define('session', sessionSchema)
+const Session = sequelize.define('sessions', sessionSchema)
 
 module.exports = Session
