@@ -4,6 +4,7 @@ import compression from 'compression'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import path from 'path'
 
 import config from 'projectRoot/config.js'
 import Session from 'auth/models/schemas/session.js'
@@ -11,9 +12,21 @@ import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
 import shortTerm from 'short-term/app.js'
 
+import userDB from 'auth/models/operations/connect.js'
+
 const isDevMode = process.env.NODE_ENV == 'development'
 
 const server = express()
+
+
+userDB
+  .authenticate()
+  .then(()=>{
+    console.log('Connection has been established successfully')
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database', err)
+  })
 
 http.createServer(server)
 server.listen(config.server.port)
@@ -22,7 +35,10 @@ if(isDevMode){
   server.use(logger('dev'))
 }
 
-server.use(compression)
+server.set('views', path.join(config.projectRoot, 'views'))
+server.set('view engine', 'pug')
+
+// server.use(compression)
 server.use(cookieParser())
 server.use(express.json({
   inflate: true,
@@ -43,6 +59,7 @@ server.use(express.urlencoded({
     'application/xml',
   ],
 }))
+
 server.use(session({
   cookie: {
     path: '/',
@@ -98,3 +115,4 @@ server.use(async(req, {}, next) => {
 server.use('/auth', auth)
 server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)
+

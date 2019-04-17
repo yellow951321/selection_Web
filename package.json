@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
     "s": "npm run start",
-    "develop": "cross-env NODE_ENV=develop nodemon app.js",
+    "develop": "cross-env NODE_ENV=development nodemon bin/server.bundle.js",
     "d": "npm run develop",
     "lint:backend": "eslint -c .eslintrc.backend.js --ignore-path .gitignore --ignore-path .eslintignore.backend --fix \"**/*.js\"",
     "lint:frontend": "eslint -c .eslintrc.frontend.js --ignore-path .gitignore --fix \"public/**/*.js\"",
