@@ -1,16 +1,12 @@
-extends layout
+extends manage/component/layout
 
 append head
-  link(rel='stylesheet', href='/static/stylesheets/manage.css')
+  link(rel='stylesheet',type='text/css', href='/static/stylesheets/manage.css')
+
+append buttons
+  a.add.ui.item 新增
 
 append content
-  //- header
-  section#header.ui.top.fixed.menu.header
-    h1#title.title management
-    .right.menu
-      a.add.ui.item 新增
-      a.logout.ui.item(href='/auth/logout') 登出
-
   //- popup addproject
   .ui.container
     form#addForm.ui.form.modal

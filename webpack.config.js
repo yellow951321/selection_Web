@@ -14,6 +14,7 @@ module.exports = {
   output: {
     path: path.join(config.projectRoot, 'bin'),
     filename: 'server.bundle.js',
+    publicPath: '/bin'
   },
   target: 'node',
   externals: [nodeExternals(), ],
@@ -45,12 +46,8 @@ module.exports = {
         test:  /\.css$/,
         exclude: /(node_modules)/,
         use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          }
+          'style-loader',
+          'css-loader'
         ]
       },
       {
