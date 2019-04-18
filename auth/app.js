@@ -7,14 +7,14 @@ import Session from 'auth/models/schemas/session.js'
 const app = express.Router()
 
 app.get('/login', (req, res)=>{
-  if(req.session && req.session.userId)
-    res.redirect(`/man/${req.session.userId}`)
+  if(true)//req.session && req.session.userId)
+    res.redirect(`/mid-long-term/0/index`)
   else
     res.render('login')
 })
 
 app.get('/mid-long-term', (req,res)=> {
-  if(res.session && req.session.userId)
+  if(true)//res.session && req.session.userId)
     res.redirect(`/mid-long-term/${req.session.userId}/index`)
   else
     res.render('login')

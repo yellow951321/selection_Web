@@ -38,9 +38,30 @@ module.exports = {
               presets:        ['@babel/preset-env', ],
               babelrc:        false,
             },
-          },
+          }
         ],
       },
+      {
+        test:  /\.css$/,
+        exclude: /(node_modules)/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          }
+        ]
+      },
+      {
+        test: /\.pug$/,
+        exclude: /(node_modules)/,
+        use: [
+          {
+            loader: 'pug-loader'
+          }
+        ]
+      }
     ],
   },
 }

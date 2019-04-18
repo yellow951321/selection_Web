@@ -1,9 +1,6 @@
 extends layout
 
 append head
-  include manage/_manage.pug
-  include manage/_edit.pug
-  include manage/_select.pug
   link(rel='stylesheet', href='/static/stylesheets/manage.css')
 
 append content
@@ -11,11 +8,8 @@ append content
   section#header.ui.top.fixed.menu.header
     h1#title.title management
     .right.menu
-      button#add.ui.blue.right.floated.button.add 新增
-      button.add-content.ui.blue.floated.button 新增
-      button.save-content.ui.blue.right.floated.button 儲存
-      button.back.ui.blue.right.floated.button 返回
-      button.logout.ui.blue.right.floated.button 登出
+      a.add.ui.item 新增
+      a.logout.ui.item(href='/auth/logout') 登出
 
   //- popup addproject
   .ui.container
