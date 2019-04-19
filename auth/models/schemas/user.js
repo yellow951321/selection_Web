@@ -2,6 +2,7 @@ import Sequelize from 'sequelize'
 
 import UserDB from 'auth/models/operations/connect.js'
 
+
 const User = UserDB.define('user', {
   userId:{
     type: Sequelize.INTEGER(32).UNSIGNED,

@@ -1,12 +1,23 @@
-import path from 'path'
-import express from 'express'
+// import path from 'path'
+// import express from 'express'
 
-import config from 'projectRoot/config.js'
-import indexRouter from 'mid-long-term/routes/index.js'
-import typeRouter from 'mid-long-term/routes/type.js'
-import campusRouter from 'mid-long-term/routes/campus.js'
-import yearRouter from 'mid-long-term/routes/year.js'
-import fileRouter from 'mid-long-term/routes/file.js'
+// import config from 'projectRoot/config.js'
+// import indexRouter from 'mid-long-term/routes/index.js'
+// import typeRouter from 'mid-long-term/routes/type.js'
+// import campusRouter from 'mid-long-term/routes/campus.js'
+// import yearRouter from 'mid-long-term/routes/year.js'
+// import fileRouter from 'mid-long-term/routes/file.js'
+
+const path = require('path')
+const express = require('express')
+
+const config = require('../config')
+const indexRouter = require('./routes/index')
+const typeRouter = require('./routes/type')
+const campusRouter = require('./routes/campus')
+const yearRouter = require('./routes/year')
+const fileRouter = require('./routes/file')
+
 
 const app = express()
 

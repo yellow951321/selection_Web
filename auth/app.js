@@ -1,8 +1,14 @@
-import fs from 'fs'
-import express from 'express'
+// import fs from 'fs'
+// import express from 'express'
 
-import User from 'auth/models/schemas/user.js'
-import Session from 'auth/models/schemas/session.js'
+// import User from 'auth/models/schemas/user.js'
+// import Session from 'auth/models/schemas/session.js'
+
+const fs = require('fs')
+const express = require('express')
+
+const User = require('./models/schemas/user')
+const Session = require('./models/schemas/session')
 
 const app = express.Router()
 

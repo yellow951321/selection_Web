@@ -1,18 +1,33 @@
-import http from 'http'
-import express from 'express'
-import compression from 'compression'
-import session from 'express-session'
-import cookieParser from 'cookie-parser'
-import logger from 'morgan'
-import path from 'path'
+// import http from 'http'
+// import express from 'express'
+// import compression from 'compression'
+// import session from 'express-session'
+// import cookieParser from 'cookie-parser'
+// import logger from 'morgan'
+// import path from 'path'
 
-import config from 'projectRoot/config.js'
-import Session from 'auth/models/schemas/session.js'
-import auth from 'auth/app.js'
-import midLongTerm from 'mid-long-term/app.js'
-import shortTerm from 'short-term/app.js'
+// import config from 'projectRoot/config.js'
+// import Session from 'auth/models/schemas/session.js'
+// import auth from 'auth/app.js'
+// import midLongTerm from 'mid-long-term/app.js'
+// import shortTerm from 'short-term/app.js'
 
-import userDB from 'auth/models/operations/connect.js'
+// import userDB from 'auth/models/operations/connect.js'
+
+const http = require('http')
+const express = require('express')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
+const path = require('path')
+
+const config = require('./config')
+const Session = require('./auth/models/schemas/session')
+const auth = require('./auth/app')
+const midLongTerm = require('./mid-long-term/app')
+
+const userDB = require('./auth/models/operations/connect')
+
 
 const isDevMode = process.env.NODE_ENV == 'development'
 
