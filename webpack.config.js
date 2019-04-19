@@ -17,6 +17,10 @@ module.exports = {
     publicPath: '/bin'
   },
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   externals: [nodeExternals(), ],
   resolve: {
     alias: {

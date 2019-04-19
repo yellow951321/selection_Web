@@ -1,32 +1,18 @@
-// import http from 'http'
-// import express from 'express'
-// import compression from 'compression'
-// import session from 'express-session'
-// import cookieParser from 'cookie-parser'
-// import logger from 'morgan'
-// import path from 'path'
+import http from 'http'
+import express from 'express'
+import compression from 'compression'
+import session from 'express-session'
+import cookieParser from 'cookie-parser'
+import logger from 'morgan'
+import path from 'path'
 
-// import config from 'projectRoot/config.js'
-// import Session from 'auth/models/schemas/session.js'
-// import auth from 'auth/app.js'
-// import midLongTerm from 'mid-long-term/app.js'
-// import shortTerm from 'short-term/app.js'
+import config from 'projectRoot/config.js'
+import Session from 'auth/models/schemas/session.js'
+import auth from 'auth/app.js'
+import midLongTerm from 'mid-long-term/app.js'
+import shortTerm from 'short-term/app.js'
 
-// import userDB from 'auth/models/operations/connect.js'
-
-const http = require('http')
-const express = require('express')
-const session = require('express-session')
-const cookieParser = require('cookie-parser')
-const logger = require('morgan')
-const path = require('path')
-
-const config = require('./config')
-const Session = require('./auth/models/schemas/session')
-const auth = require('./auth/app')
-const midLongTerm = require('./mid-long-term/app')
-
-const userDB = require('./auth/models/operations/connect')
+import userDB from 'auth/models/operations/connect.js'
 
 
 const isDevMode = process.env.NODE_ENV == 'development'
@@ -94,6 +80,32 @@ server.use(session({
   rolling: false,
   saveUninitialized : false,
   unset: 'destroy',
+}))
+
+server.use('/static', express.static( `${config.projectRoot}/public`, {
+  cacheControl: false,
+  // 404 for request dot files
+  dotfiles: 'ignore',
+  // disable cache
+  etag: false,
+  // handle missing extension for static file
+  extensions: ['css', 'js', ],
+  // when 404, pass handle to other middleware
+  fallthrough: true,
+  // static file can be cached
+  immutable: false,
+  // index file not exist
+  index: false,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
+  // do not redirect to trailing '/'
+  redirect: false,
+  // add timestamp for test
+  setHeaders(res, path, stat){
+    res.set('x-timestamp', Date.now())
+  },
 }))
 
 // check the sessionId in the cookie

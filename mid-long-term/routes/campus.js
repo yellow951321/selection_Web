@@ -1,5 +1,7 @@
 import express from 'express'
 
+import {map, } from 'projectRoot/data/operation/mapping'
+
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -10,7 +12,23 @@ const router = express.Router({
 })
 
 router.get('/', (req,res)=>{
-  res.render('campus')
+  res.render('manage/campus',{
+    GLOBAL: {
+      id: '0',
+      user: '0',
+      map: map.campus,
+      campuses: [{
+        id: 0,
+        name: '成功大學'
+      },{
+        id: 1,
+        name: '中原大學'
+      },{
+        id: 2,
+        name: '台灣大學'
+      }]
+    }
+  })
 })
 
 

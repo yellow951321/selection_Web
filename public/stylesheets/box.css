@@ -1,0 +1,23 @@
+.box-container {
+  margin-top: 1em;
+  font-size: 8px;
+}
+
+.square-box {
+  box-sizing: border-box;
+  font-size: 2em;
+  width: 7em;
+  height: 7em;
+  display: inline-block;
+  margin: 0.2em;
+  border-radius: 0.2em;
+  padding: 2em;
+  padding-top: 2.2em;
+  text-align: center;
+  border: 0.2em solid transparent;
+  color: #ddd;
+}
+
+.blue {
+  background:#26ADE4;
+}
