@@ -1,15 +1,15 @@
 .breadcrumb
 	.ui.huge.breadcrumb
-		a.section(href=`/man/${GLOBAL['id']}`)=GLOBAL[ 'user' ]
-		if GLOBAL[ 'year' ]
+		a.section(href=`#`)=GLOBAL[ 'user' ]
+		if GLOBAL[ 'channel' ]
 			.divider /
-			a.section(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}`)=GLOBAL[ 'year' ]
+			a.section(href=`/${GLOBAL['channel']}/${GLOBAL['id']}/index`)=GLOBAL[ 'channelName' ]
 		if GLOBAL[ 'type' ]
 			.divider /
-			a.section(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}`)=GLOBAL[ 'type' ]
+			a.section(href=`/${GLOBAL['channel']}/${GLOBAL['id']}/${GLOBAL['type']['id']}/index`)=GLOBAL[ 'type' ]['name']
 		if GLOBAL[ 'campus' ]
 			.divider /
-			a.section(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${GLOBAL['campus']}`)=GLOBAL[ 'campus' ]
+			a.section(href=`/${GLOBAL['channel']}/${GLOBAL['id']}/${GLOBAL['typeId']}/${GLOBAL['campus']['id']}/index`)=GLOBAL[ 'campus' ]['name']
 		if GLOBAL[ 'graph']
 			.divider /
 			.section(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${GLOBAL['type']}/${GLOBAL['campus']}/graph`)=GLOBAL[ 'graph' ]

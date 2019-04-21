@@ -2,7 +2,7 @@ import path from 'path'
 import express from 'express'
 
 import config from 'projectRoot/config.js'
-// import indexRouter from 'mid-long-term/routes/index.js'
+import User from 'projectRoot/auth/models/schemas/user.js'
 import typeRouter from 'mid-long-term/routes/type.js'
 import campusRouter from 'mid-long-term/routes/campus.js'
 import yearRouter from 'mid-long-term/routes/year.js'
@@ -14,24 +14,17 @@ const app = express()
 app.set('views', path.join(config.projectRoot, 'mid-long-term/views'))
 app.set('view engine', 'pug')
 
-// app.use('/static', express.static(path.join(`${config.projectRoot}/mid-long-term/public`), {
-//   cacheControl: false,
-//   dotfiles: 'ignore',
-//   etag: false,
-//   extensions: ['css', 'js', ],
-//   fallthrough: true,
-//   immutable: false,
-//   index: false,
-//   lastModified: false,
-//   maxAge: 0,
-//   redirect: false,
-//   setHeaders(res){
-//     res.set('x-timestamp', Date.now())
-//   },
-// }))
 
-app.use('/:userId',(req,res,next)=>{
-  if(true){//res.session && res.session.userId == req.params.userId){
+app.use('/:userId',async (req,res,next)=>{
+  console.log(req.session)
+  if(req.session && req.session.userId == req.params.userId){
+    const data = await User.findOne({
+      where:{
+        userId: req.session.userId
+      }
+    })
+    if(data != null)
+      res.locals.user = data.dataValues.account
     next()
   }else{
     res.redirect('/auth/login')

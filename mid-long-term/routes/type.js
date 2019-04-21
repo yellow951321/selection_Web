@@ -1,19 +1,33 @@
 import express from 'express'
 
-import {map, } from 'projectRoot/data/operation/mapping'
+import { findTypeAll, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, getFromNum} from 'projectRoot/data/operation/mapping'
 
 const router = express.Router()
 
-router.get('/index', (req,res)=>{
-  res.render('manage/type',{
-    GLOBAL:{
-      years: '',
-      id: '0',
-      user: '0',
-      map: map.campus,
-      types: ['普通大學', '技專院校'],
-    }
-  })
+router.get('/index', async (req,res)=>{
+  try{
+    console.log(req.session.userId)
+    let types = await findTypeAll(req.session.userId)
+
+    types = await types.map( (typeNum) => {
+      return {
+        name: getFromNum(map, {type: typeNum}),
+        id: typeNum,
+      }
+    })
+
+    res.render('manage/type',{
+      GLOBAL:{
+        id: req.session.userId,
+        user: res.locals.user,
+        map: map.campus,
+        types: types,
+      }
+    })
+  }catch(err) {
+    console.log(err)
+  }
 })
 
 export default router
