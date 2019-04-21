@@ -52,7 +52,7 @@ app.use('/:userId/:typeId/:campusId', async(req,res,next)=>{
   res.locals.campusId = req.params.campusId
   next()
 },
-campusRouter)
+yearRouter)
 
 app.use('/:userId/:typeId/:campusId/:year', async(req,res,next)=>{
   res.locals.year = req.params.year

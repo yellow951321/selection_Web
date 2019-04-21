@@ -29,6 +29,9 @@ const yearDropdownOnChange = (event) => {
 $('select.dropdown')
   .dropdown()
 
+$('.pointing.dropdown')
+  .dropdown()
+
 // add event listener
 
 // add event listener to the add button

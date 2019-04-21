@@ -1,2 +1,3 @@
 mixin renderCampus(campus)
-  a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${campus.id}`)=campus.name
+  a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${campus.id}/index`)=campus.name
+    p.lastModified=campus.time

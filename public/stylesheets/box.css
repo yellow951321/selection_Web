@@ -21,3 +21,10 @@
 .blue {
   background:#26ADE4;
 }
+
+.lastModified {
+  position: relative;
+  bottom: 2px;
+  right: 2px;
+  font-size: 1rem;
+}
