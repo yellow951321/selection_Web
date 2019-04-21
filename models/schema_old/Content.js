@@ -1,6 +1,9 @@
-const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
+
+import db from 'projectRoot/models/schema_old/mariadb.js'
+
 const Data = require('./Data')
+
 const contentSchema = {
   contentId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -45,6 +48,6 @@ const contentSchema = {
   },
 }
 
-const Content = sequelize.define('contents', contentSchema)
+const Content = db.define('contents', contentSchema)
 
-module.exports = Content
+export default Content

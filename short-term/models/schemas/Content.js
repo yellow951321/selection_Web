@@ -1,4 +1,4 @@
-const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
+const { sequelizeShortTerm, } = require('../operations/connect')
 const Sequelize = require('sequelize')
 
 // todo require('./Data)

@@ -14,30 +14,38 @@ const app = express()
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
+app.get('/login', async (req, res)=>{
+  if(req.session && req.session.userId){
 
-app.get('/login', (req, res)=>{
-  if(true)//req.session && req.session.userId)
+    let user = await User.findOne({
+      where:{
+        userId: req.session.userId
+      }
+    })
+    if(user != null)
+      user = user.dataValues
+
     res.render('manage/channel',{
       GLOBAL:{
-        years: '',
-        id: '0',
-        user: '0',
+        id: req.session.userId,
+        user: user.account,
         map: map.campus
       }
     })
+  }
   else
     res.render('login')
 })
 
 app.get('/mid-long-term', (req,res)=> {
-  if(true)//res.session && req.session.userId)
-    res.redirect(`/mid-long-term/${0}/index`)
+  if(req.session && req.session.userId)
+    res.redirect(`/mid-long-term/${req.session.userId}/index`)
   else
     res.render('login')
 })
 
 app.get('/shortTerm', (req,res)=> {
-  if(res.session && req.session.userId)
+  if(req.session && req.session.userId)
     res.redirect(`/shortTerm/${req.session.userId}/index`)
   else
     res.render('login')
@@ -60,7 +68,7 @@ app.post('/login', async(req, res)=>{
         userId: doc.userId,
       })
 
-      res.redirect(`/man/${req.session.userId}`)
+      res.redirect(`/auth/login`)
     }else{
       throw new Error(`No account matched ${req.body.username}`)
     }

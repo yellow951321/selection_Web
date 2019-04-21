@@ -15,7 +15,8 @@
     "preset": "cp config.js.default config.js",
     "p": "npm run preset",
     "w": "webpack --config webpack.config.js",
-    "ww": "webpack --config webpack.config.js --watch"
+    "ww": "webpack --config webpack.config.js --watch",
+    "t": "webpack --config webpack.transfer.config.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.0",

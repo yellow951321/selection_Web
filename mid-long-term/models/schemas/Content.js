@@ -1,4 +1,5 @@
-const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
+// const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
+import midLongTermDB from 'projectRoot/mid-long-term/models/operations/connect.js'
 const Sequelize = require('sequelize')
 
 // todo require('./Data)
@@ -94,6 +95,6 @@ const contentSchema = {
   }
 }
 
-const Content = sequelizeShortTerm.define('content', contentSchema)
+const Content = midLongTermDB.define('content', contentSchema)
 
-module.exports = Content
+export default Content

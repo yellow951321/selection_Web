@@ -1,5 +1,7 @@
-const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
+
+import db from 'projectRoot/models/schema_old/mariadb.js'
+
 const userSchema = {
   userId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -19,6 +21,5 @@ const userSchema = {
   },
 }
 
-const User = sequelize.define('users', userSchema)
-
-module.exports = User
+const User = db.define('users', userSchema)
+export default User

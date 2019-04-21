@@ -1,6 +1,8 @@
-const sequelize = require('../../db/mariadb')
 const Sequelize = require('sequelize')
 const User = require('./User')
+
+import db from 'projectRoot/models/schema_old/mariadb.js'
+
 const dataSchema = {
   dataId:{
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -34,6 +36,6 @@ const dataSchema = {
   },
 }
 
-const Data = sequelize.define('data', dataSchema)
+const Data = db.define('data', dataSchema)
 
-module.exports = Data
+export default Data

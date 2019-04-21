@@ -1,6 +1,9 @@
-import Sequelize from 'sequelize'
+// import Sequelize from 'sequelize'
 
-import config from 'projectRoot/config.js'
+// import config from 'projectRoot/config.js'
+const Sequelize = require('sequelize')
+
+const config = require('../../../config')
 
 MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.databse.user}`, `${config.database.password}`, {
   // Custom host

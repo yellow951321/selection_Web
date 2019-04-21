@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
-import config from 'projectRoot/config.js'
+import config from 'projectRoot/config'
 
-const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user}`, `${config.database.password}`, {
+const db = new Sequelize('sinica', `${config.database.user}`, `${config.database.password}`,{
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -42,4 +42,4 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   },
 })
 
-export default MidLongTermDB
+export default db

@@ -1,6 +1,6 @@
-const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
+import midLongTermDB from 'projectRoot/mid-long-term/models/operations/connect.js'
 const Sequelize = require('sequelize')
-const User = requrie('./User')
+import User from 'projectRoot/auth/models/schemas/user.js'
 
 const dataSchema = {
   dataId: {
@@ -18,7 +18,11 @@ const dataSchema = {
     type: Sequelize.TINYINT(8).UNSIGNED,
     allowNull: false
   },
-  year: {
+  yearFrom: {
+    type: Sequelize.TINYINT(8).UNSIGNED,
+    allowNull: false
+  },
+  yearTo: {
     type: Sequelize.TINYINT(8).UNSIGNED,
     allowNull: false
   },
@@ -34,6 +38,6 @@ const dataSchema = {
   }
 }
 
-const Data = sequelizeShortTerm.define('data', dataSchema)
+const Data = midLongTermDB.define('data', dataSchema)
 
-module.exports = Data
+export default Data
