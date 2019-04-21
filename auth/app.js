@@ -6,6 +6,11 @@ import Session from 'auth/models/schemas/session.js'
 
 const app = express.Router()
 
+
+app.get('/test', (req, res)=>{
+  res.render('mid-long-term/views/test.pug')
+})
+
 app.get('/login', (req, res)=>{
   if(req.session && req.session.userId)
     res.redirect(`/man/${req.session.userId}`)
