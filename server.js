@@ -35,8 +35,9 @@ if(isDevMode){
   server.use(logger('dev'))
 }
 
-server.set('views', path.join(config.projectRoot, 'views'))
+server.set('views', path.join(config.projectRoot, ''))
 server.set('view engine', 'pug')
+server.use('/static', express.static('public'))
 
 // server.use(compression)
 server.use(cookieParser())

@@ -325,9 +325,14 @@ const filter = new Filter()
 // refresh dropdown
 $('select.dropdown')
   .dropdown()
+;
+// refresh checkbox
+$('.ui.checkbox')
+  .checkbox()
+;
 
 // add event listener
-
+console.log(1)
 //add window.unbeforeload
 window.addEventListener('beforeunload', (e) => {
   e.preventDefault()
@@ -372,3 +377,17 @@ if(reserved.querySelector('.reserved__dimension') !== null){
       pageFilter.querySelector('.filter.filter__choice').click()
     })
 }
+
+// test
+
+document.querySelector('.success').addEventListener('click', (event) => {
+  $('#advice').modal({
+    onApprove : function(){return false},
+  }).modal('show')
+})
+
+let pageadvice = document.querySelector('#advice');
+
+pageadvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
+pageadvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
+pageadvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
