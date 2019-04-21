@@ -1,0 +1,54 @@
+extends component/layout
+
+append content
+  //- popup delete content
+  .ui.container
+    #delete.ui.small.modal
+      .header 確定要刪除嗎
+      .content
+        p 確定要刪除這筆資料嗎
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 刪除
+
+  //- content
+  //- page edit
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-filter.ui.container.pusher
+    .ui.form.segment.filter
+      .four.fields
+        .field
+          label 構面
+          select.filter.filter__dimension.ui.selection.dropdown
+            option(value='教學') 教學
+            option(value='研究') 研究
+            option(value='產學') 產學
+            option(value='社會責任') 社會責任
+            option(value='大學治理及公共性') 大學治理及公共性
+        .field
+          label 推動重點
+          select.filter.filter__item.ui.selection.dropdown
+        .field
+          label 具體作法
+          select.filter.filter__detail.ui.selection.dropdown
+        .field
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+    .reserved.ui.transition.hidden
+      if GLOBAL['dimension']
+        .reserved__dimension=GLOBAL['dimension']
+        .reserved__item=GLOBAL['item']
+        .reserved__detail=GLOBAL['detail']
+
+  #page-edit.ui.container
+
+  #footer.ui.container.center.aligned.transition.hidden
+    .ui.floating.message.transition.hidden
+      p 尚未新增任何資料
+    button.add-content.ui.blue.button 新增
+
+append script
+  script(src='/static/javascripts/schema.js')
+  script(src='/static/javascripts/manage/edit.js')

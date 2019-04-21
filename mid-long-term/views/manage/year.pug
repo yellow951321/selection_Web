@@ -1,5 +1,9 @@
 extends component/layout
 
+//- css
+append head
+  link(rel='stylesheet', href='/static/stylesheets/yearBox.css')
+
 //- append buttons in the header
 append buttons
   a.add.ui.item 新增
@@ -29,12 +33,17 @@ append content
         button.ui.black.deny.button(type='button') 取消
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增
 
+  include mixins/_renderYear.pug
   //- content
   //- page select
   #page-select.ui.container.pusher
-    if GLOBAL['years'].length
-      for val in GLOBAL['years']
-        a.ui.fluid.big.button(href=`/man/${GLOBAL['id']}/${val}`)=val
+    if GLOBAL['yearFroms'].length
+      for yearFrom in GLOBAL['yearFroms']
+        h1.yearFrom.header= yearFrom.year
+        for yearTo in yearFrom.info
+          +renderYear(yearTo)
+
+
     else
       .ui.center.aligned.container
         div 請點擊右上角新增來新增專案

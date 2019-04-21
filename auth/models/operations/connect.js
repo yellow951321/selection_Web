@@ -44,3 +44,4 @@ const UserDB = new Sequelize( 'sinicaUser', `${config.database.user}`, `${config
 })
 
 export default UserDB
+

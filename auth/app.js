@@ -1,26 +1,37 @@
 import fs from 'fs'
 import express from 'express'
+import path from 'path'
 
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
+import config from 'projectRoot/config.js'
+import {map, } from 'projectRoot/data/operation/mapping'
+import { runInNewContext } from 'vm';
 
-const app = express.Router()
 
+const app = express()
 
-app.get('/test', (req, res)=>{
-  res.render('mid-long-term/views/test.pug')
-})
+app.set('views', path.join(config.projectRoot, 'auth/views'))
+app.set('view engine', 'pug')
+
 
 app.get('/login', (req, res)=>{
-  if(req.session && req.session.userId)
-    res.redirect(`/man/${req.session.userId}`)
+  if(true)//req.session && req.session.userId)
+    res.render('manage/channel',{
+      GLOBAL:{
+        years: '',
+        id: '0',
+        user: '0',
+        map: map.campus
+      }
+    })
   else
     res.render('login')
 })
 
 app.get('/mid-long-term', (req,res)=> {
-  if(res.session && req.session.userId)
-    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+  if(true)//res.session && req.session.userId)
+    res.redirect(`/mid-long-term/${0}/index`)
   else
     res.render('login')
 })

@@ -14,7 +14,8 @@
     "l": "npm run lb && npm run lf",
     "preset": "cp config.js.default config.js",
     "p": "npm run preset",
-    "w": "webpack --config webpack.config.js"
+    "w": "webpack --config webpack.config.js",
+    "ww": "webpack --config webpack.config.js --watch"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
@@ -25,6 +26,7 @@
     "connect-mongo": "^2.0.3",
     "cookie-parser": "~1.4.3",
     "cross-env": "^5.2.0",
+    "css-loader": "^2.1.1",
     "csv-writer": "^1.2.0",
     "d3": "^5.7.0",
     "dotenv": "^7.0.0",
@@ -36,7 +38,9 @@
     "morgan": "~1.9.0",
     "mysql2": "^1.6.4",
     "pug": "2.0.0-beta11",
+    "pug-loader": "^2.4.0",
     "sequelize": "^4.43.1",
+    "style-loader": "^0.23.1",
     "unique-filename": "^1.1.1",
     "webpack": "^4.29.6",
     "webpack-node-externals": "^1.7.2"

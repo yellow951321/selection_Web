@@ -14,8 +14,13 @@ module.exports = {
   output: {
     path: path.join(config.projectRoot, 'bin'),
     filename: 'server.bundle.js',
+    publicPath: '/bin'
   },
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   externals: [nodeExternals(), ],
   resolve: {
     alias: {
@@ -38,9 +43,26 @@ module.exports = {
               presets:        ['@babel/preset-env', ],
               babelrc:        false,
             },
-          },
+          }
         ],
       },
+      {
+        test:  /\.css$/,
+        exclude: /(node_modules)/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.pug$/,
+        exclude: /(node_modules)/,
+        use: [
+          {
+            loader: 'pug-loader'
+          }
+        ]
+      }
     ],
   },
 }

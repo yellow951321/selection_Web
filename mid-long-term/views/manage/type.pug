@@ -1,5 +1,9 @@
 extends component/layout
 
+//- css
+append head
+  link(rel='stylesheet', href='/static/stylesheets/box.css')
+
 //- append buttons in the header
 append buttons
   a.add.ui.item 新增
@@ -32,9 +36,11 @@ append content
 
   //- content
   //- page select
-  #page-select.ui.container.pusher
-    for val in GLOBAL['types']
-      a.ui.fluid.big.button(href=`/man/${GLOBAL['id']}/${GLOBAL['year']}/${val}`)=val
+  #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
+    .two.column.row
+      for val in GLOBAL['types']
+        .column
+          a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${val}/index`)=val
 
 append buttons
 
