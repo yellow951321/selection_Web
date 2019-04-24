@@ -26,7 +26,7 @@ const transferUser = async () => {
 
   console.log(data)
   data.map( async ({ dataValues, }) => {
-    await localUser.create({
+    await sinicaUser.create({
       account: dataValues.account,
       password: dataValues.password,
       userId: dataValues.userId,

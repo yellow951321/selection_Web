@@ -51,7 +51,15 @@ const findYearAll = async (info={}) => {
         userId: info.userId,
         typeId: info.typeId,
         campusId: info.campusId
-      }
+      },
+      attributes: [
+        'dataId',
+        'campusId',
+        'typeId',
+        'yearFrom',
+        'yearTo',
+        'userId'
+      ]
     })
 
     val.map( data => data.dataValues )
@@ -65,7 +73,6 @@ const findYearAll = async (info={}) => {
 
 const parseInfo = async (dataId) => {
   try{
-    console.log(dataId)
     let data = await Content.findAll({
       where: {
         dataId: dataId
@@ -75,8 +82,6 @@ const parseInfo = async (dataId) => {
     data = data.map( ({dataValues, } ) => {
       return dataValues
     })
-
-    console.log(data)
 
     let numUnreview = 0, numChecked = 0, numUnsolved = 0
     let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
@@ -90,12 +95,12 @@ const parseInfo = async (dataId) => {
       }
 
       let arr = e.updateTime.split("-")
-      let year = int(arr[0]), month = int(arr[1]), date = int(arr[2])
+      let year = Number(arr[0]), month = Number(arr[1]), date = Number(arr[2])
       if( lastModifiedYear < year ){
         lastModifiedYear = year
         lastModifiedMonth = month
         lastModifiedDate = date
-      }else if( lasModifiedYear == year && lastModifiedMonth < month){
+      }else if( lastModifiedYear == year && lastModifiedMonth < month){
         lastModifiedYear = year
         lastModifiedMonth = month
         lastModifiedDate = date
@@ -119,13 +124,12 @@ const parseInfo = async (dataId) => {
 }
 
 
-const parseYear = (data) => {
+const parseYear = async (data) => {
   try{
 
     let t = {}
-    data.map(  data => {
-      console.log(data.dataId)
-      // let info = await parseInfo(data.dataId)
+    await Promise.all( data.map( async data => {
+      let info = await parseInfo(data.dataId)
       if(t.hasOwnProperty(data.yearFrom)){
         t[data.yearFrom].push({
           year: data.yearTo,
@@ -142,7 +146,7 @@ const parseYear = (data) => {
           time: info.updateTime
         })
       }
-    })
+    }))
     let tt = []
     Object.keys(t).map( data => {
       tt.push({
@@ -156,9 +160,32 @@ const parseYear = (data) => {
   }
 }
 
+
+const projectCreate = () => {
+  // wait for shou
+}
+
+const projectDelete = async (info={}) => {
+  try {
+    return Data.destroy({
+      where: {
+        dataId: info.dataId
+      }
+    })
+    .then(() => 'ok')
+    .catch(() => {
+      throw new Error('No specified project')
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export {
   findTypeAll,
   findCampusAll,
   findYearAll,
   parseYear,
+  projectCreate,
+  projectDelete,
 }

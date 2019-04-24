@@ -1,5 +1,57 @@
 const header = document.getElementById('header')
 const addForm = document.getElementById('addForm')
+const pageManagement = document.getElementById('page-management')
+
+
+//handle the delete pop up form
+class Delete {
+  constructor(){
+    this.deleteForm = document.getElementById('delete')
+  }
+  static showDeleteConfirm(that){
+    return (event) =>{
+      event.preventDefault()
+      $('#delete').modal({
+        onApprove : function(){ return true},
+      }).modal('show')
+      const campusNode = event.target
+      if(that.lastDeleteEvent)
+        that.deleteForm.querySelector('.positive').removeEventListener('click', that.lastDeleteEvent)
+      that.lastDeleteEvent = Delete.deleteContent(that, campusNode)
+      that.deleteForm.querySelector('.positive').addEventListener('click', that.lastDeleteEvent)
+    }
+  }
+  // handle delete event
+  static deleteContent(that, campusNode){
+    return () =>{
+      let path = campusNode.value
+      fetch(`${path}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(res => {
+          if(res == 'OK'){
+            // window.location.assign(`/man/${user_id}`)
+            let box = campusNode.parentNode.parentNode.parentNode.parentNode
+            let container = box.parentNode
+            box.remove()
+            if( container.childElementCount - 1 == 0){
+              container.remove()
+            }
+          }
+          else
+            throw new Error('刪除失敗')
+        })
+        .catch(err => {
+          throw err
+        })
+    }
+  }
+}
+
 
 // variables > functions
 
@@ -24,6 +76,7 @@ const yearDropdownOnChange = (event) => {
 }
 
 // init
+let del = new Delete()
 
 //refresh dropdwon in addForm
 $('select.dropdown')
@@ -42,3 +95,9 @@ addForm.querySelector('.type-dropdown').firstChild.addEventListener('change', ye
 
 // trigger dropdown on change to refresh the selection of school
 addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'))
+
+
+pageManagement.querySelectorAll('.deleteBtn').forEach( (node) => {
+  console.log(node)
+  node.addEventListener('click', Delete.showDeleteConfirm(del))
+})
