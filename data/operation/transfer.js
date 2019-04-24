@@ -18,6 +18,7 @@ import localContent from 'projectRoot/local/models/schemas/Content.js'
 import localData from 'projectRoot/local/models/schemas/Data.js'
 import localUser from 'projectRoot/local/models/schemas/user.js'
 
+import {Op, } from 'sequelize'
 
 const transferUser = async () => {
 
@@ -39,12 +40,13 @@ const transferData = async () => {
     const data = await Data.findAll()
 
     data.map( async ({ dataValues, }) => {
-      await localData.create({
+      await midLongTermData.create({
         campusId: dataValues.campus,
         typeId: dataValues.type,
         yearFrom: dataValues.year,
         yearTo: dataValues.year,
         userId: dataValues.userId,
+        dataId: dataValues.dataId,
       })
     })
   } catch(err){
@@ -54,25 +56,37 @@ const transferData = async () => {
 
 const transferContent = async () => {
   try {
-    const data = await Content.findAll()
-    data.map( async ({dataValues,}) => {
-      await localContent.create({
-        contentId: dataValues.contentId,
-        title1: dataValues.title,
-        content: dataValues.content,
-        summary: dataValues.summary,
-        pageFrom: dataValues.pageStart,
-        pageTo: dataValues.pageEnd,
-        isChecked: false,
-        isConflicted: false,
-        aspect: dataValues.aspect,
-        keypoint: dataValues.keypoint,
-        method: dataValues.method,
-        updateTime: Date.now(),
-        dataId: dataValues.dataId,
+    for(let i=0; i<33; i++){
+      const data = await Content.findAll({
+        where: {
+          contentId: {
+            [Op.and] : {
+              [Op.gte]: i*1000+1,
+              [Op.lt]: (i+1)*1000
+            }
+          }
+        }
       })
-      console.log("finished one")
-    })
+
+      data.map( async ({dataValues,},i) => {
+        await midLongTermContent.create({
+          contentId: dataValues.contentId,
+          title1: dataValues.title,
+          content: dataValues.content,
+          summary: dataValues.summary,
+          pageFrom: dataValues.pageStart,
+          pageTo: dataValues.pageEnd,
+          isChecked: 0,
+          isConflicted: 0,
+          aspect: dataValues.aspect,
+          keypoint: dataValues.keypoint,
+          method: dataValues.method,
+          updateTime: Date.now(),
+          dataId: dataValues.dataId,
+        })
+        console.log(`finished ${i}th querying`)
+      })
+    }
   } catch( err ){
     console.log(err)
   }
@@ -83,6 +97,6 @@ const transferContent = async () => {
 
 // transferUser()
 
-// transferData()
+transferData()
 
-transferContent()
+// transferContent()

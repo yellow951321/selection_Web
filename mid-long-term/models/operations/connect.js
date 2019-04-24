@@ -37,10 +37,10 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   sync: { force: false, },
   // pool configuration used to pool database connections
   pool: {
-    max: 5,
+    max: 100,
     min: 0,
-    acquire: 30000,
-    idle: 30000,
+    acquire: 1000000,
+    idle: 200000,
   },
 })
 
