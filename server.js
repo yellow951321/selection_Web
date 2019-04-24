@@ -14,6 +14,7 @@ import shortTerm from 'short-term/app.js'
 
 import userDB from 'auth/models/operations/connect.js'
 
+
 const isDevMode = process.env.NODE_ENV == 'development'
 
 const server = express()
@@ -34,10 +35,6 @@ server.listen(config.server.port)
 if(isDevMode){
   server.use(logger('dev'))
 }
-
-server.set('views', path.join(config.projectRoot, ''))
-server.set('view engine', 'pug')
-server.use('/static', express.static('public'))
 
 // server.use(compression)
 server.use(cookieParser())
@@ -82,6 +79,32 @@ server.use(session({
   rolling: false,
   saveUninitialized : false,
   unset: 'destroy',
+}))
+
+server.use('/static', express.static( `${config.projectRoot}/public`, {
+  cacheControl: false,
+  // 404 for request dot files
+  dotfiles: 'ignore',
+  // disable cache
+  etag: false,
+  // handle missing extension for static file
+  extensions: ['css', 'js', ],
+  // when 404, pass handle to other middleware
+  fallthrough: true,
+  // static file can be cached
+  immutable: false,
+  // index file not exist
+  index: false,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
+  // do not redirect to trailing '/'
+  redirect: false,
+  // add timestamp for test
+  setHeaders(res, path, stat){
+    res.set('x-timestamp', Date.now())
+  },
 }))
 
 // check the sessionId in the cookie

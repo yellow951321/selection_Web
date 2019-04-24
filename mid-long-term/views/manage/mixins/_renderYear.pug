@@ -1,0 +1,21 @@
+mixin renderYear(obj)
+  .rectangle-box.year
+    .ui.segment.center.aligned.grid
+      .ui.two.column.row
+        h3.yearHeader= obj.year
+        .mini.ui.icon.top.right.pointing.dropdown.basic.button
+          i.icon.ellipsis.vertical
+          .menu
+            .header 資訊
+            .item= obj.editor
+            .item= obj.progression
+            .item= obj.unsolved
+            .item= obj.time
+      .ui.row
+        .seven.wide.column
+          a.ui.button.option(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${GLOBAL.campusId}/${obj.year}/review`) 檢閱
+          a.ui.button.option(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${GLOBAL.campusId}/${obj.year}/edit`) 編輯
+          a.ui.button.option(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${GLOBAL.campusId}/${obj.year}/graph`) 圖表
+          a.ui.button.option(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${GLOBAL.campusId}/${obj.year}/download`) 下載
+          a.ui.button.option(href=`/mid-long-term/${GLOBAL.id}/${GLOBAL.type}/${GLOBAL.campusId}/${obj.year}/delete`) 刪除
+
