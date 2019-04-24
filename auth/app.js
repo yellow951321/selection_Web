@@ -14,6 +14,33 @@ const app = express()
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
+
+app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
+  cacheControl: false,
+  // 404 for request dot files
+  dotfiles: 'ignore',
+  // disable cache
+  etag: false,
+  // handle missing extension for static file
+  extensions: ['css', 'js', ],
+  // when 404, pass handle to other middleware
+  fallthrough: true,
+  // static file can be cached
+  immutable: false,
+  // index file not exist
+  index: false,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
+  // do not redirect to trailing '/'
+  redirect: false,
+  // add timestamp for test
+  setHeaders(res, path, stat){
+    res.set('x-timestamp', Date.now())
+  },
+}))
+
 app.get('/login', async (req, res)=>{
   if(req.session && req.session.userId){
 
