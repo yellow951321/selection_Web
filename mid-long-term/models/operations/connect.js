@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
-import configLocal from 'projectRoot/config.local.js'
 
 
 const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user}`, `${config.database.password}`, {
