@@ -9,6 +9,13 @@ const router = express.Router({
    strict: false,
 })
 
+router.get('/index', async (req,res) => {
+   try{
+      res.render('manage/edit', {})
+   }catch (err) {
+      console.log(err)
+   }
+})
 
 router.get('/filter', async(req,res)=>{
 

@@ -59,8 +59,6 @@ app.use('/:userId',async (req,res,next)=>{
 
 app.use('/:userId', typeRouter )
 
-app.use('/:userId/file', fileRouter )
-
 app.use('/:userId/:typeId', (req,res,next)=>{
   res.locals.typeId = Number(req.params.typeId)
   next()

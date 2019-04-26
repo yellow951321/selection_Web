@@ -1,0 +1,26 @@
+extend manage/component/layout
+
+append head
+  link(rel='stylesheet', href='/static/stylesheets/test.css')
+append content
+  .ui.center.aligned.container.pusher
+    .ui.padded.two.column.grid
+      .column
+        button.massive.ui.button 一般大學
+      .column
+        button.massive.ui.button 技專院校
+
+    //- .ui.centered.cards
+    //-   .ui.card
+    //-     .content
+    //-       .header he
+    //-       .meta wtf
+    //-       .description ouo
+    //-   .ui.card
+    //-     .content
+    //-       .header he223
+    //-       .meta wtf4r
+    //-       .description ou1123
+
+append script
+    script(src='/static/javascripts/manage/test.js')

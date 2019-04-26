@@ -1,6 +1,9 @@
 // import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {Op, } from 'sequelize'
+
+
 
 const findTypeAll = async (userId) => {
   try{
@@ -37,7 +40,6 @@ const findCampusAll = async (userId, typeId) => {
     val = val.filter( (value, index, self) => {
       return self.indexOf(value) === index
     })
-
     return val
   }catch(err){
     console.log(err)
@@ -66,6 +68,43 @@ const findYearAll = async (info={}) => {
 
     return val
 
+  }catch(err) {
+    console.log(err)
+  }
+}
+
+const findCampusOne = async (info={}) =>{
+  try{
+    let campus = await Data.findOne({
+      where:{
+        campusId: info.campusId,
+        typeId: info.type,
+        userId: info.userId,
+      },
+    })
+    if(campus == null)
+      return null
+    else
+      var {dataNew, } = campus
+
+    return dataNew
+  } catch(err){
+    console.log(err)
+  }
+}
+
+const insertCampus = async (info={}) =>{
+  try{
+    let campus = await findCampusOne(info)
+    // if(campus !== null) return campus
+
+    return Data.create({
+      campusId: info.campusId,
+      typeId: info.type,
+      userId: info.userId,
+      yearFrom: info.year,
+      yearTo: info.year,
+    })
   }catch(err) {
     console.log(err)
   }
@@ -161,6 +200,35 @@ const parseYear = async (data) => {
 }
 
 
+const findLastModifiedTimeOfCampus = async (campusId) => {
+  try{
+    let dataId = await Data.findAll({
+      where: {
+        campusId: campusId
+      },
+      attributes: ['dataId']
+    })
+
+    dataId = dataId.map( d => {
+      return d.dataValues.dataId
+    })
+
+    let content = await Content.max('updateTime', {
+      where: {
+        dataId: {
+          [Op.or]: dataId
+        }
+      }
+    })
+    return content
+
+  } catch( err ){
+    console.log(err)
+  }
+}
+
+
+
 const projectCreate = () => {
   // wait for shou
 }
@@ -186,6 +254,9 @@ export {
   findCampusAll,
   findYearAll,
   parseYear,
+  findCampusOne,
+  insertCampus,
   projectCreate,
   projectDelete,
+  findLastModifiedTimeOfCampus
 }
