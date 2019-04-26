@@ -73,6 +73,43 @@ const findYearAll = async (info={}) => {
   }
 }
 
+const findCampusOne = async (info={}) =>{
+  try{
+    let campus = await Data.findOne({
+      where:{
+        campusId: info.campusId,
+        typeId: info.type,
+        userId: info.userId,
+      },
+    })
+    if(campus == null)
+      return null
+    else
+      var {dataNew, } = campus
+
+    return dataNew
+  } catch(err){
+    console.log(err)
+  }
+}
+
+const insertCampus = async (info={}) =>{
+  try{
+    let campus = await findCampusOne(info)
+    // if(campus !== null) return campus
+
+    return Data.create({
+      campusId: info.campusId,
+      typeId: info.type,
+      userId: info.userId,
+      yearFrom: info.year,
+      yearTo: info.year,
+    })
+  }catch(err) {
+    console.log(err)
+  }
+}
+
 const parseInfo = async (dataId) => {
   try{
     let data = await Content.findAll({
@@ -217,6 +254,8 @@ export {
   findCampusAll,
   findYearAll,
   parseYear,
+  findCampusOne,
+  insertCampus,
   projectCreate,
   projectDelete,
   findLastModifiedTimeOfCampus
