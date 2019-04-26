@@ -1,6 +1,6 @@
 import express from 'express'
 
-import {map, getFromNum ,} from 'projectRoot/data/operation/mapping'
+import {map, getFromNum , getFromWord} from 'projectRoot/data/operation/mapping'
 import { findYearAll, parseYear, projectDelete, insertCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import { TSArrayType } from 'babel-types';
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
