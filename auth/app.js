@@ -14,29 +14,65 @@ const app = express()
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
-app.get('/login', (req, res)=>{
-  if(true)//req.session && req.session.userId)
+
+app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
+  cacheControl: false,
+  // 404 for request dot files
+  dotfiles: 'ignore',
+  // disable cache
+  etag: false,
+  // handle missing extension for static file
+  extensions: ['css', 'js', ],
+  // when 404, pass handle to other middleware
+  fallthrough: true,
+  // static file can be cached
+  immutable: false,
+  // index file not exist
+  index: false,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
+  // do not redirect to trailing '/'
+  redirect: false,
+  // add timestamp for test
+  setHeaders(res, path, stat){
+    res.set('x-timestamp', Date.now())
+  },
+}))
+
+app.get('/login', async (req, res)=>{
+  if(req.session && req.session.userId){
+
+    let user = await User.findOne({
+      where:{
+        userId: req.session.userId
+      }
+    })
+    if(user != null)
+      user = user.dataValues
+
     res.render('manage/channel',{
       GLOBAL:{
-        years: '',
-        id: '0',
-        user: '0',
+        id: req.session.userId,
+        user: user.account,
         map: map.campus
       }
     })
+  }
   else
     res.render('login')
 })
 
 app.get('/mid-long-term', (req,res)=> {
-  if(true)//res.session && req.session.userId)
-    res.redirect(`/mid-long-term/${0}/index`)
+  if(req.session && req.session.userId)
+    res.redirect(`/mid-long-term/${req.session.userId}/index`)
   else
     res.render('login')
 })
 
 app.get('/shortTerm', (req,res)=> {
-  if(res.session && req.session.userId)
+  if(req.session && req.session.userId)
     res.redirect(`/shortTerm/${req.session.userId}/index`)
   else
     res.render('login')
@@ -59,7 +95,7 @@ app.post('/login', async(req, res)=>{
         userId: doc.userId,
       })
 
-      res.redirect(`/man/${req.session.userId}`)
+      res.redirect(`/auth/login`)
     }else{
       throw new Error(`No account matched ${req.body.username}`)
     }

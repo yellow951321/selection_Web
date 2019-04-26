@@ -1,6 +1,7 @@
 import express from 'express'
 
-import {map, } from 'projectRoot/data/operation/mapping'
+import { findCampusAll, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, getFromNum } from 'projectRoot/data/operation/mapping'
 
 const router = express.Router({
   // case sensitive for route path
@@ -11,28 +12,45 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', (req,res)=>{
-  res.render('manage/campus',{
-    GLOBAL: {
-      id: '0',
-      user: '0',
-      map: map.campus,
-      campuses: [{
-        id: 0,
-        name: '成功大學',
+router.get('/index', async (req,res)=>{
+  try{
+
+    let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
+    campuses = campuses.map( data => {
+      return {
+        id: data,
+        name: getFromNum(map, {
+          type: res.locals.typeId,
+          campus: data
+        }),
         time: '2019-05-20'
-      },{
-        id: 1,
-        name: '中原大學',
-        time: '2019-05-10'
-      },{
-        id: 2,
-        name: '台灣大學',
-        time: '2019-05-23'
-      }]
-    }
-  })
+      }
+    })
+
+    let typeName = getFromNum(map, {type: res.locals.typeId})
+
+    res.render('manage/campus',{
+      GLOBAL: {
+        channel:{
+          id: 'mid-long-term',
+          name: '中長程計畫'
+        },
+        id: req.session.userId,
+        user: res.locals.user,
+        map: map.campus,
+        type: {
+          id: res.locals.typeId,
+          name: typeName
+        },
+        campuses: campuses
+      }
+    })
+
+  }catch( err ){
+    console.log(err)
+  }
 })
+
 
 
 export default router

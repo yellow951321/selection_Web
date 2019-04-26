@@ -3,11 +3,7 @@ extends component/layout
 
 //- css
 append head
-  link(rel='stylesheet', href='/static/stylesheets/channel.css')
-
-//- append buttons in the header
-append buttons
-  a.add.ui.item 新增
+  link(rel='stylesheet', href='/auth/static/stylesheets/channel.css')
 
 append content
   //- popup addproject
@@ -40,4 +36,4 @@ append content
     a.shortTerm(href=`/shortTerm/${GLOBAL.id}/index`) 短成計畫
 
   append script
-    script(src='/static/mid-long-term/javascripts/index.js')
+    script(src='/auth/static/javascripts/index.js')

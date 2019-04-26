@@ -2,7 +2,7 @@ extends component/layout
 
 //- css
 append head
-  link(rel='stylesheet', href='/static/stylesheets/box.css')
+  link(rel='stylesheet', href='/mid-long-term/static/stylesheets/box.css')
 
 //- append buttons in the header
 append buttons
@@ -40,7 +40,7 @@ append content
     .two.column.row
       for val in GLOBAL['types']
         .column
-          a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${val}/index`)=val
+          a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${val.id}/index`)=val.name
 
 append buttons
 

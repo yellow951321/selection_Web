@@ -64,5 +64,8 @@ typings/
 *.swp
 package-lock.json
 config.js
+config.local.js
 .env
 bin/*
+local/*
+
