@@ -1,7 +1,8 @@
 import express from 'express'
 
 import { findCampusAll, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import {map, getFromNum } from 'projectRoot/data/operation/mapping'
+import {map, getFromNum, getFromWord } from 'projectRoot/data/operation/mapping'
+import { insertCampus } from '../models/operations/Data';
 
 const router = express.Router({
   // case sensitive for route path
@@ -14,7 +15,6 @@ const router = express.Router({
 
 router.get('/index', async (req,res)=>{
   try{
-
     let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
     campuses = campuses.map( data => {
       return {
@@ -42,6 +42,25 @@ router.get('/index', async (req,res)=>{
   }
 })
 
+router.post('/file/add', async (req, res)=>{
+  try{
+    let temptype
+    (req.body.type == 0)?temptype = '大學':temptype = '技專院校'
+    let tempCampus = getFromWord(map, {
+      type: temptype,
+      campus: req.body.campus,
+    })
+    insertCampus({
+      campusId: tempCampus,
+      year: req.body.year,
+      type: req.body.type,
+      userId: req.session.userId,
+    })
+    res.redirect(`/mid-long-term/${req.session.userId}/0/index`)
 
+  }catch( err ){
+    console.log(err)
+  }
+})
 
 export default router

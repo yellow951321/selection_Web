@@ -21,7 +21,8 @@ append content
 
   //- popup addproject
   .ui.container
-    form#addForm.ui.form.modal(action=`/man/${GLOBAL.id}/file/add`, method='POST')
+    //- form#addForm.ui.form.modal(action=`/man/${GLOBAL.id}/file/add`, method='POST')
+    form#addForm.ui.form.modal(action=`file/add`, method='POST')
       h4.header 新增計畫
       .content.field
         label(for='year') 年份
