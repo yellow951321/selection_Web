@@ -9,6 +9,16 @@ append buttons
   a.add.ui.item 新增
 
 append content
+  //- pop up deleteproject
+  .ui.container
+    #delete.ui.small.modal
+      .header 確定要刪除嗎
+      .content
+        p 確定要刪除這筆資料嗎
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 刪除
+
   //- popup addproject
   .ui.container
     form#addForm.ui.form.modal(action=`/man/${GLOBAL.id}/file/add`, method='POST')
@@ -16,7 +26,7 @@ append content
       .content.field
         label(for='year') 年份
         input(type='number', min='0', max='300', step='1',value='108', name='year', required)
-        label(for='project') 學校類型
+        label(for='type') 學校類型
         select.type-dropdown.ui.selection.dropdown(type='text', placeholder='選擇學校類型', name='type', required)
           option(value='0') 大學
           option(value='1') 技專院校
@@ -34,15 +44,12 @@ append content
         button.ui.black.deny.button(type='button') 取消
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增
 
+  include mixins/_renderCampus.pug
   //- content
-  //- page select
-  #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
-    .two.column.row
-      for val in GLOBAL['types']
-        .column
-          a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/${val.id}/index`)=val.name
-
-append buttons
+  //- page management
+  #page-management.ui.container.pusher
+    for val in GLOBAL['campuses']
+      +renderCampus(val)
 
 append script
-  script(src='/mid-long-term/static/javascripts/manage/type.js')
+  script(src='/mid-long-term/static/javascripts/manage/campus.js')

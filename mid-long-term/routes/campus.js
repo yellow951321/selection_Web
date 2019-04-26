@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { findCampusAll, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import { findCampusAll, findLastModifiedTimeOfCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import {map, getFromNum } from 'projectRoot/data/operation/mapping'
 
 const router = express.Router({
@@ -16,16 +16,20 @@ router.get('/index', async (req,res)=>{
   try{
 
     let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
-    campuses = campuses.map( data => {
+
+    campuses = await Promise.all( campuses.map( async data => {
+      let time = await findLastModifiedTimeOfCampus(data)
+      time = JSON.stringify(time).split("T")
+      time = time[0].split("\"")
       return {
         id: data,
         name: getFromNum(map, {
           type: res.locals.typeId,
           campus: data
         }),
-        time: '2019-05-20'
+        time: time[1]
       }
-    })
+    }))
 
     let typeName = getFromNum(map, {type: res.locals.typeId})
 

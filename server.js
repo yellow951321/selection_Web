@@ -10,7 +10,7 @@ import config from 'projectRoot/config.js'
 import Session from 'auth/models/schemas/session.js'
 import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
-import shortTerm from 'short-term/app.js'
+// import shortTerm from 'short-term/app.js'
 
 import userDB from 'auth/models/operations/connect.js'
 
