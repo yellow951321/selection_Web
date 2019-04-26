@@ -1,8 +1,9 @@
 import express from 'express'
 
 import {map, getFromNum ,} from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import { TSArrayType } from 'babel-types';
+
 
 const router = express.Router({
   // case sensitive for route path
@@ -13,7 +14,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index',async(req,res)=>{
+router.get('/index',async (req,res)=>{
   try{
     let data = await findYearAll({
       userId: req.session.userId,
@@ -26,10 +27,13 @@ router.get('/index',async(req,res)=>{
       type: res.locals.typeId,
       campus: res.locals.campusId
     })
-
-    let yearFroms = parseYear(data)
+    let yearFroms = await parseYear(data)
     res.render('manage/year', {
       GLOBAL: {
+        channel: {
+          id: 'mid-long-term',
+          name: '中長程計畫'
+        },
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,
@@ -42,7 +46,6 @@ router.get('/index',async(req,res)=>{
           name: campusName,
         },
         yearFroms: yearFroms
-
       }
     })
 
@@ -52,27 +55,16 @@ router.get('/index',async(req,res)=>{
 })
 
 
-router.get('/review', (req,res)=>{
+// router.get('/review', (req,res)=>{
+// //TODO render the manage/edit without edition permission
+// })
 
-})
-
-router.get('/edit', (req,res)=>{
-
-})
-
-router.delete('/delete', (req,res)=>{
-
-})
-
-
-router.get('/download', (req,res)=>{
-
-})
-
-
-router.get('/graph', (req,res)=>{
-
-})
-
+// router.get('/edit', (req,res)=>{
+//   try {
+//     res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.year}/index`)
+//   } catch(err) {
+//     console.log(err)
+//   }
+// })
 
 export default router

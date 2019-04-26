@@ -27,12 +27,21 @@ router.get('/index', async (req,res)=>{
       }
     })
 
+    let typeName = getFromNum(map, {type: res.locals.typeId})
+
     res.render('manage/campus',{
       GLOBAL: {
+        channel:{
+          id: 'mid-long-term',
+          name: '中長程計畫'
+        },
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,
-        type: res.locals.typeId,
+        type: {
+          id: res.locals.typeId,
+          name: typeName
+        },
         campuses: campuses
       }
     })

@@ -1,9 +1,7 @@
 import Sequelize from 'sequelize'
-import config from 'projectRoot/config.js'
 import configLocal from 'projectRoot/config.local.js'
 
-
-const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user}`, `${config.database.password}`, {
+const LocalDB = new Sequelize('sinicaLocal', `${configLocal.database.user}`, `${configLocal.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -37,14 +35,11 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   sync: { force: false, },
   // pool configuration used to pool database connections
   pool: {
-    max: 100,
+    max: 5,
     min: 0,
-    acquire: 1000000,
-    idle: 200000,
+    acquire: 30000,
+    idle: 30000,
   },
 })
 
-
-
-
-export default MidLongTermDB
+export default LocalDB

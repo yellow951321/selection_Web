@@ -14,9 +14,9 @@ class Draw {
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
       userId: pathSplit[2],
-      year: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-      school: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
+      typeId: pathSplit[3],
+      campusId: pathSplit[4],
+      year: pathSplit[5]
     }
   }
 
@@ -76,9 +76,9 @@ const retrieveSpecficData = (that)=>{
   const pathSplit = window.location.pathname.split('/')
   const selected = {
     userId: pathSplit[2],
-    year: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-    type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-    campus: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
+    typeId: pathSplit[3],
+    campusId: pathSplit[4],
+    year: pathSplit[5]
   }
   const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
   const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
@@ -89,14 +89,14 @@ const retrieveSpecficData = (that)=>{
     let parameters = {
       id: selected.userId,
       year: selected.year,
-      type: selected.type,
-      campus: selected.campus,
+      typeId: selected.typeId,
+      campusId: selected.campusId,
       aspect: aspect.value,
       keypoint: keypoint.value,
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/man/${selected.userId}/${selected.year}/${selected.type}/${selected.campus}/graph/filter?${parameters}`, {
+    fetch(`/mid-long-term/${selected.userId}/${selected.typeId}/${selected.campusId}/${selected.year}/graph/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -62,7 +62,7 @@ const contentSchema = {
     allowNull: false
   },
   isChecked: {
-    type: Sequelize.BLOB(1),
+    type: Sequelize.TINYINT(1),
     allowNull: false
   },
   reviewerId: {
@@ -70,7 +70,7 @@ const contentSchema = {
     allowNull: true
   },
   isConflicted: {
-    type: Sequelize.BLOB(1),
+    type: Sequelize.TINYINT(1),
     allowNull: false
   },
   conflictedAspect: {

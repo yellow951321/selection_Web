@@ -37,10 +37,10 @@ append content
           .ui.container.center.aligned.choice-block
             button.ui.button.filter.filter__choice 選擇
     .reserved.ui.transition.hidden
-      if GLOBAL['dimension']
-        .reserved__dimension=GLOBAL['dimension']
-        .reserved__item=GLOBAL['item']
-        .reserved__detail=GLOBAL['detail']
+      if GLOBAL['aspect']
+        .reserved__dimension=GLOBAL['aspect']
+        .reserved__item=GLOBAL['keypoint']
+        .reserved__detail=GLOBAL['method']
 
   #page-edit.ui.container
 
@@ -50,5 +50,5 @@ append content
     button.add-content.ui.blue.button 新增
 
 append script
-  script(src='/static/javascripts/schema.js')
-  script(src='/static/javascripts/manage/edit.js')
+  script(src='/mid-long-term/static/javascripts/schema.js')
+  script(src='/mid-long-term/static/javascripts/manage/edit.js')
