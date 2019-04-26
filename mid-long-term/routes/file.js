@@ -50,7 +50,7 @@ router.delete('/delete', async (req,res)=>{
       attributes: ['dataId']
     })
     if( dataValues != null ) {
-      // await projectDelete(dataValues.dataId)
+      await projectDelete(dataValues.dataId)
       console.log('deletion procedure is conpleted')
       res.send('OK')
     }else

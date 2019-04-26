@@ -233,11 +233,11 @@ const projectCreate = () => {
   // wait for shou
 }
 
-const projectDelete = async (info={}) => {
+const projectDelete = async (dataId) => {
   try {
     return Data.destroy({
       where: {
-        dataId: info.dataId
+        dataId: dataId
       }
     })
     .then(() => 'ok')
