@@ -42,8 +42,8 @@ app.use('/static', express.static( `${config.projectRoot}/mid-long-term/public`,
   },
 }))
 
-app.use('/:userId',async (req,res,next)=>{
-  if(req.session && req.session.userId == req.params.userId){
+app.use('/',async (req,res,next)=>{
+  if(req.session && req.session.userId){
     const data = await User.findOne({
       where:{
         userId: req.session.userId
@@ -57,37 +57,35 @@ app.use('/:userId',async (req,res,next)=>{
   }
 })
 
-app.use('/:userId', typeRouter )
+app.use('/', typeRouter )
 
-app.use('/:userId/file', fileRouter )
-
-app.use('/:userId/:typeId', (req,res,next)=>{
+app.use('/:typeId', (req,res,next)=>{
   res.locals.typeId = Number(req.params.typeId)
   next()
 },
 campusRouter)
 
-app.use('/:userId/:typeId/:campusId', (req,res,next)=>{
+app.use('/:typeId/:campusId', (req,res,next)=>{
   res.locals.campusId = Number(req.params.campusId)
   next()
 },
 yearRouter)
 
-app.use('/:userId/:typeId/:campusId/:year', (req,res,next)=>{
+app.use('/:typeId/:campusId/:year', (req,res,next)=>{
   res.locals.year = Number(req.params.year)
   next()
 })
 
-app.use('/:userId/:typeId/:campusId/:year/graph', graphRouter)
+app.use('/:typeId/:campusId/:year/graph', graphRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/download', downloadRouter)
+app.use('/:typeId/:campusId/:year/download', downloadRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/file', fileRouter)
+app.use('/:typeId/:campusId/:year/file', fileRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/content', contentRouter)
+app.use('/:typeId/:campusId/:year/content', contentRouter)
 
 
 
-// app.use('/:userId/downloadCsv')
+// app.use('/downloadCsv')
 
 export default app

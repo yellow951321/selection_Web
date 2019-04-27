@@ -1,15 +1,15 @@
 .breadcrumb
 	.ui.huge.breadcrumb
-		a.section(href=`#`)=GLOBAL[ 'user' ]
+		a.section(href=`/auth/channel`)=GLOBAL[ 'user' ]
 		if GLOBAL[ 'channel' ]
 			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['id']}/index`)=GLOBAL[ 'channel' ][ 'name' ]
+			a.section(href=`/${GLOBAL['channel']['id']}/index`)=GLOBAL[ 'channel' ][ 'name' ]
 		if GLOBAL[ 'type' ]
 			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['id']}/${GLOBAL['type']['id']}/index`)=GLOBAL[ 'type' ]['name']
+			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['type']['id']}/index`)=GLOBAL[ 'type' ]['name']
 		if GLOBAL[ 'campus' ]
 			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['id']}/${GLOBAL['type']['id']}/${GLOBAL['campus']['id']}/index`)=GLOBAL[ 'campus' ]['name']
+			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['type']['id']}/${GLOBAL['campus']['id']}/index`)=GLOBAL[ 'campus' ]['name']
 		if GLOBAL[ 'graph']
 			.divider /
 			.section=GLOBAL[ 'graph' ]

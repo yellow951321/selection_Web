@@ -65,7 +65,7 @@ router.post('/file/add', async (req, res)=>{
       type: req.body.type,
       userId: req.session.userId,
     })
-    res.redirect(`/mid-long-term/${req.session.userId}/0/index`)
+    res.redirect(`/mid-long-term/${res.locals.typeId}/index`)
 
   }catch( err ){
     console.log(err)
