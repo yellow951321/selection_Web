@@ -17,7 +17,7 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   native: true,
 
   // remove logging
-  logging: false,
+  // logging: false,
 
   // Specify options, which are used when sequelize.define is called.
   define:{

@@ -67,7 +67,6 @@ router.get('/review', async (req,res) => {
 
 router.get('/edit', async (req,res) => {
   try {
-
     let typeName = getFromNum(map, {type: res.locals.typeId})
     let campusName = getFromNum(map , {
       type: res.locals.typeId ,
@@ -79,6 +78,7 @@ router.get('/edit', async (req,res) => {
           name: '中長程計畫'
         },
         id: req.session.userId,
+        dataId: res.locals.dataId,
         user: res.locals.user,
         type: {
           id: res.locals.typeId,

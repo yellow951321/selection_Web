@@ -10,7 +10,7 @@ const findTypeAll = async (userId) => {
     // find all data with the given userId and year
     let val = await Data.findAll({
       where: {
-        userId: userId,
+        // userId: userId,
       },
       attributes: [
         'dataId',
@@ -38,7 +38,7 @@ const findCampusAll = async (userId, typeId) => {
     // find all data with the given userId and typeId
     let val = await Data.findAll({
       where:{
-        userId: userId,
+        // userId: userId,
         typeId: typeId
       },
       attributes: [
@@ -66,7 +66,7 @@ const findYearAll = async (info={}) => {
   try{
     let val = await Data.findAll({
       where:{
-        userId: info.userId,
+        // userId: info.userId,
         typeId: info.typeId,
         campusId: info.campusId
       },
@@ -95,7 +95,7 @@ const findCampusOne = async (info={}) =>{
       where:{
         campusId: info.campusId,
         typeId: info.type,
-        userId: info.userId,
+        // userId: info.userId,
       },
     })
     if(campus == null)
@@ -131,12 +131,19 @@ const parseInfo = async (dataId) => {
     let data = await Content.findAll({
       where: {
         dataId: dataId
-      }
+      },
+      attributes:[
+        'contentId',
+        'isChecked',
+        'isConflicted',
+        'updateTime'
+      ]
     })
 
     data = data.map( ({dataValues, } ) => {
       return dataValues
     })
+
 
     let numUnreview = 0, numChecked = 0, numUnsolved = 0
     let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
@@ -185,20 +192,36 @@ const parseYear = async (data) => {
     let t = {}
     await Promise.all( data.map( async data => {
       let info = await parseInfo(data.dataId)
+      let user = await User.findOne({
+        where: {
+          userId: data.userId
+        }
+      })
+
       if(t.hasOwnProperty(data.yearFrom)){
         t[data.yearFrom].push({
           year: data.yearTo,
+          dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
-          time: info.updateTime
+          time: info.updateTime,
+          user: {
+            id: user.userId,
+            name: user.account
+          }
         })
       }else {
         t[data.yearFrom] = []
         t[data.yearFrom].push({
           year: data.yearTo,
+          dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
-          time: info.updateTime
+          time: info.updateTime,
+          user: {
+            id: user.userId,
+            name: user.account
+          }
         })
       }
     }))
@@ -209,6 +232,7 @@ const parseYear = async (data) => {
         info: t[data]
       })
     })
+    // console.log(JSON.stringify(tt, null, 2))
     return tt
   }catch(err){
     console.log(err)
