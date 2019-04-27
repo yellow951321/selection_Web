@@ -7,7 +7,6 @@ const router = express.Router()
 
 router.get('/index', async (req,res)=>{
   try{
-    console.log(req.session.userId)
     let types = await findTypeAll(req.session.userId)
 
     types = await types.map( (typeNum) => {

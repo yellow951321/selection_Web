@@ -1,0 +1,40 @@
+each val in GLOBAL['contents']
+	form.ui.form.segment.editNode
+		.fields
+			.four.wide.field
+				.fields
+					.eight.wide.field
+						label 開始頁
+						input.page__start(type='number' value=val.pageFrom)
+					.eight.wide.field
+						label 結束頁
+						input.page__end(type='number' value=val.pageTo)
+			.nine.wide.field
+				label 審查者
+				input.auditor(type = 'text' value = val.reviewerId)
+			.two.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.save(type='submit') 儲存
+			.two.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.delete(type='submit') 刪除
+		.fields
+			.four.wide.field
+				label 大標題
+				input.title1(value = val.title1)
+			.four.wide.field
+				label 中標題
+				input.title2(value = val.title2)
+			.four.wide.field
+				label 小標題
+				input.title3(value = val.title3)
+			.four.wide.field
+				label 最小標題
+				input.title4(value = val.title4)
+		.field
+			label 內容
+			textarea.content(name="", rows="5" val = val.content)
+		.field
+			label 摘要
+			textarea.summary(name="", rows="2" val = val.content)
+		input.node-index(type='hidden' value = val.contentId)

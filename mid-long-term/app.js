@@ -4,6 +4,7 @@ import express from 'express'
 import config from 'projectRoot/config.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import typeRouter from 'mid-long-term/routes/type.js'
+import reviewRouter from 'mid-long-term/routes/review.js'
 import campusRouter from 'mid-long-term/routes/campus.js'
 import yearRouter from 'mid-long-term/routes/year.js'
 import fileRouter from 'mid-long-term/routes/file.js'
@@ -49,8 +50,9 @@ app.use('/:userId',async (req,res,next)=>{
         userId: req.session.userId
       }
     })
-    if(data != null)
+    if(data != null){
       res.locals.user = data.dataValues.account
+    }
     next()
   }else{
     res.redirect('/auth/login')
@@ -80,10 +82,20 @@ app.use('/:userId/:typeId/:campusId/:year/graph', graphRouter)
 
 app.use('/:userId/:typeId/:campusId/:year/download', downloadRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/file', fileRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/file',(req,res,next)=>{
+  res.locals.dataId = Number(req.params.dataId)
+  next()
+}, fileRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/content', contentRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/content',(req,res,next)=>{
+  res.locals.dataId = Number(req.params.dataId)
+  next()
+}, contentRouter)
 
+app.use('/:userId/:typeId/:campusId/:dataId/review',(req,res,next)=>{
+  res.locals.dataId = Number(req.params.dataId)
+  next()
+}, reviewRouter)
 
 
 // app.use('/:userId/downloadCsv')

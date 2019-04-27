@@ -1,0 +1,39 @@
+form.ui.form.segment.editNode
+	.fields
+		.four.wide.field
+			.fields
+				.eight.wide.field
+					label 開始頁
+					input.page__start(type='number' value='1')
+				.eight.wide.field
+					label 結束頁
+					input.page__end(type='number' value='1')
+		.nine.wide.field
+			label 審查者
+			input.auditor(type = 'text')
+		.two.wide.field
+			.ui.container.center.aligned.choice-block
+				button.ui.button.save(type='submit') 儲存
+		.two.wide.field
+			.ui.container.center.aligned.choice-block
+				button.ui.button.delete(type='submit') 刪除
+	.fields
+		.four.wide.field
+			label 大標題
+			input.title1
+		.four.wide.field
+			label 中標題
+			input.title2
+		.four.wide.field
+			label 小標題
+			input.title3
+		.four.wide.field
+			label 最小標題
+			input.title4
+	.field
+		label 內容
+		textarea.content(name="", rows="5")
+	.field
+		label 摘要
+		textarea.summary(name="", rows="2")
+	input.node-index(type='hidden' value=GLOBAL['index'])

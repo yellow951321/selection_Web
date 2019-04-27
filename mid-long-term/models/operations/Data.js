@@ -10,7 +10,7 @@ const findTypeAll = async (userId) => {
     // find all data with the given userId and year
     let val = await Data.findAll({
       where: {
-        userId: userId,
+        // userId: userId,
       },
     })
     // transfer data into column type only
@@ -30,7 +30,7 @@ const findCampusAll = async (userId, typeId) => {
     // find all data with the given userId and typeId
     let val = await Data.findAll({
       where:{
-        userId: userId,
+        // userId: userId,
         typeId: typeId
       }
     })
@@ -50,7 +50,7 @@ const findYearAll = async (info={}) => {
   try{
     let val = await Data.findAll({
       where:{
-        userId: info.userId,
+        // userId: info.userId,
         typeId: info.typeId,
         campusId: info.campusId
       },
@@ -79,7 +79,7 @@ const findCampusOne = async (info={}) =>{
       where:{
         campusId: info.campusId,
         typeId: info.type,
-        userId: info.userId,
+        // userId: info.userId,
       },
     })
     if(campus == null)
@@ -172,6 +172,7 @@ const parseYear = async (data) => {
       if(t.hasOwnProperty(data.yearFrom)){
         t[data.yearFrom].push({
           year: data.yearTo,
+          dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
           time: info.updateTime
@@ -180,6 +181,7 @@ const parseYear = async (data) => {
         t[data.yearFrom] = []
         t[data.yearFrom].push({
           year: data.yearTo,
+          dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
           time: info.updateTime
@@ -233,11 +235,11 @@ const projectCreate = () => {
   // wait for shou
 }
 
-const projectDelete = async (info={}) => {
+const projectDelete = async (dataId) => {
   try {
     return Data.destroy({
       where: {
-        dataId: info.dataId
+        dataId: dataId
       }
     })
     .then(() => 'ok')

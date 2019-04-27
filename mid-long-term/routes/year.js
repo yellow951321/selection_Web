@@ -21,7 +21,6 @@ router.get('/index',async (req,res)=>{
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })
-
     let type = getFromNum(map, { type: res.locals.typeId})
     let campusName = getFromNum( map, {
       type: res.locals.typeId,
@@ -45,7 +44,7 @@ router.get('/index',async (req,res)=>{
           id: res.locals.campusId,
           name: campusName,
         },
-        yearFroms: yearFroms
+        yearFroms: yearFroms,
       }
     })
 

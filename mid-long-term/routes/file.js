@@ -1,6 +1,6 @@
 import express from 'express'
 
-import {map, getFromNum ,} from 'projectRoot/data/operation/mapping'
+import {map, getFromNum , getFromWord} from 'projectRoot/data/operation/mapping'
 import { findYearAll, parseYear, projectDelete, insertCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import { TSArrayType } from 'babel-types';
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
@@ -50,7 +50,7 @@ router.delete('/delete', async (req,res)=>{
       attributes: ['dataId']
     })
     if( dataValues != null ) {
-      // await projectDelete(dataValues.dataId)
+      await projectDelete(dataValues.dataId)
       console.log('deletion procedure is conpleted')
       res.send('OK')
     }else
@@ -66,7 +66,6 @@ router.get('/review', async (req,res) => {
 
 router.get('/edit', async (req,res) => {
   try {
-
     let typeName = getFromNum(map, {type: res.locals.typeId})
     let campusName = getFromNum(map , {
       type: res.locals.typeId ,
@@ -78,6 +77,7 @@ router.get('/edit', async (req,res) => {
           name: '中長程計畫'
         },
         id: req.session.userId,
+        dataId: res.locals.dataId,
         user: res.locals.user,
         type: {
           id: res.locals.typeId,

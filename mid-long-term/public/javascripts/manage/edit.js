@@ -40,13 +40,14 @@ class Filter{
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
     this.deleteForm = document.getElementById('delete')
+    this.dataId = pageFilter.querySelector('.dataId').innerHTML
 
     const pathSplit = window.location.pathname.split('/')
     this.selected= {
       userId: pathSplit[2],
-      year: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      type: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-      school: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
+      type: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
+      campus: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
+      dataId: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
     }
 
     //alert user when unsaved data exists
@@ -77,84 +78,142 @@ class Filter{
     return table
   }
 
+  // filter button clicked choose Mode
+  static chooseMode(that){
+    return () => {
+      const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value;
+      switch (mode){
+        case 'edit':
+          this.editMode(that);
+          break;
+        case 'audit':
+          this.auditMode(that);
+          break;
+        default:
+          console.log('mode detection failed');
+      }
+    }
+  }
+
   // filter for the dimension, item, and detail
-  static filter(that){
+  static editMode(that){
     const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
     const item = pageFilter.querySelector('.filter.filter__item').firstChild
     const detail = pageFilter.querySelector('.filter.filter__detail').firstChild
-    return ()=>{
-      // query parameter for GET
-      let parameters = {
-        id: that.selected.userId,
-        year: that.selected.year,
-        type: that.selected.type,
-        campus: that.selected.school,
-        dimension: dimension.value,
-        item: item.value,
-        detail: detail.value,
-      }
-      parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-      fetch(`/man/${that.selected.userId}/content/filter?${parameters}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(res => res.text())
-        .then(data => {
-          that.selectedDimension = dimension.value
-          that.selectedItem = item.value
-          that.selectedDetail = detail.value
-          footer.classList.remove('hidden')
-          footer.classList.remove('transition')
-
-          pageEdit.innerHTML = ''
-          // if there is no project in this campus yet
-          const message = footer.querySelector('.message')
-          if(data === ''){
-            message.classList.remove('transition')
-            message.classList.remove('hidden')
-          }
-          else{
-            pageEdit.insertAdjacentHTML('beforeend', data)
-            message.classList.add('transition')
-            message.classList.add('hidden')
-          }
-
-          // add eventListener to save and delete button
-          pageEdit.querySelectorAll('.save').forEach((button)=> {
-            button.addEventListener('click', Filter.saveContent(that))
-          })
-          pageEdit.querySelectorAll('.delete').forEach((button)=> {
-            button.addEventListener('click', Filter.showDeleteConfirm(that))
-          })
-
-          // add unsavedAlert to all editNodes
-          pageEdit.querySelectorAll('.editNode').forEach((targetNode) => {
-            that.unsaveAlert.addAlertListener(targetNode)
-          })
-        })
-        .catch(err => {
-          const message = footer.querySelector('.message')
-          message.classList.remove('green')
-          message.classList.add('red')
-          message.innerHTML = `<p>${err.message}</p>`
-          that.fadeOut(that.pageMessage)
-        })
+    // query parameter for GET
+    let parameters = {
+      dataId: that.dataId,
+      dimension: dimension.value,
+      item: item.value,
+      detail: detail.value,
     }
+    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
+    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.text())
+      .then(data => {
+        that.selectedDimension = dimension.value
+        that.selectedItem = item.value
+        that.selectedDetail = detail.value
+        footer.classList.remove('hidden')
+        footer.classList.remove('transition')
+
+        pageEdit.innerHTML = ''
+        // if there is no project in this campus yet
+        const message = footer.querySelector('.message')
+        if(data === ''){
+          message.classList.remove('transition')
+          message.classList.remove('hidden')
+        }
+        else{
+          pageEdit.insertAdjacentHTML('beforeend', data)
+          message.classList.add('transition')
+          message.classList.add('hidden')
+        }
+
+        // add eventListener to save and delete button
+        pageEdit.querySelectorAll('.save').forEach((button)=> {
+          button.addEventListener('click', Filter.saveContent(that))
+        })
+        pageEdit.querySelectorAll('.delete').forEach((button)=> {
+          button.addEventListener('click', Filter.showDeleteConfirm(that))
+        })
+
+        // add unsavedAlert to all editNodes
+        pageEdit.querySelectorAll('.editNode').forEach((targetNode) => {
+          that.unsaveAlert.addAlertListener(targetNode)
+        })
+      })
+      .catch(err => {
+        const message = footer.querySelector('.message')
+        message.classList.remove('green')
+        message.classList.add('red')
+        message.innerHTML = `<p>${err.message}</p>`
+        that.fadeOut(that.pageMessage)
+      })
+  }
+
+  static auditMode(that){
+    const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
+    const item = pageFilter.querySelector('.filter.filter__item').firstChild
+    const detail = pageFilter.querySelector('.filter.filter__detail').firstChild
+
+    // query parameter for GET
+    let parameters = {
+      userId: that.selected.userId,
+      dataId: that.dataId,
+      dimension: dimension.value,
+      item: item.value,
+      detail: detail.value,
+    }
+    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
+    console.log(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`)
+    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.text())
+      .then(data => {
+        that.selectedDimension = dimension.value
+        that.selectedItem = item.value
+        that.selectedDetail = detail.value
+        footer.classList.remove('hidden')
+        footer.classList.remove('transition')
+
+        pageEdit.innerHTML = ''
+        pageEdit.insertAdjacentHTML('beforeend', data)
+
+        // add eventListener to save and delete button
+        pageEdit.querySelectorAll('.recommend').forEach((button)=> {
+          button.addEventListener('click', Filter.saveContent(that))
+        })
+      })
+      .catch(err => {
+        const message = footer.querySelector('.message')
+        message.classList.remove('green')
+        message.classList.add('red')
+        message.innerHTML = `<p>${err.message}</p>`
+        that.fadeOut(that.pageMessage)
+      })
   }
 
   // handle add content button clicked
   static addContentClicked(that){
     const message = footer.querySelector('.message')
     return () => {
-      fetch(`/man/${that.selected.userId}/content/add`, {
+      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
         method: 'POST',
         body: JSON.stringify({
           id: that.selected.userId,
-          year: that.selected.year,
           type: that.selected.type,
-          campus: that.selected.school,
+          campus: that.selected.campus,
+          dataId: that.selected.dataId,
           dimension: that.selectedDimension,
           item: that.selectedItem,
           detail: that.selectedDetail,
@@ -214,12 +273,16 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const startPage = editNode.querySelector('.page__start').value
       const endPage = editNode.querySelector('.page__end').value
-      const title = editNode.querySelector('.title').value
+      const title1 = editNode.querySelector('.title1').value
+      const title2 = editNode.querySelector('.title2').value
+      const title3 = editNode.querySelector('.title3').value
+      const title4 = editNode.querySelector('.title4').value
       const content = editNode.querySelector('.content').value
-      const content_id = editNode.querySelector('.node-index').value
+      const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
+      const auditor = editNode.querySelector('.auditor').value
 
-      fetch(`/man/${that.selected.userId}/content/save`, {
+      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
           id: that.selected.userId,
@@ -227,24 +290,33 @@ class Filter{
             start: startPage,
             end: endPage,
           },
-          contentId: content_id,
-          title: title,
+          contentId: contentId,
+          title1: title1,
+          title2: title2,
+          title3: title3,
+          title4: title4,
           content: content,
           summary: summary,
+          auditor,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
         .then(res => res.text())
-        .then(() => {
-          message.classList.remove('red')
-          message.classList.add('green')
-          message.innerHTML = '<p>儲存成功</p>'
-          that.fadeOut(that.pageMessage)
+        .then(res => {
+          if(res === 'completed'){
+            message.classList.remove('red')
+            message.classList.add('green')
+            message.innerHTML = '<p>儲存成功</p>'
+            that.fadeOut(that.pageMessage)
 
-          // reset alert after saving
-          that.unsaveAlert.afterSaving(editNode)
+            // reset alert after saving
+            that.unsaveAlert.afterSaving(editNode)
+          }
+          else{
+            throw new Error('save failed')
+          }
         })
         .catch(err => {
           message.classList.remove('green')
@@ -273,27 +345,32 @@ class Filter{
   // handle delete event
   static deleteContent(that, editNode){
     return () =>{
-      const content_id = editNode.querySelector('.node-index').value
+      const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/man/${that.selected.userId}/content/delete`, {
+      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
-          contentId: content_id,
+          contentId,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
         .then(res => res.text())
-        .then(data => {
-          editNode.parentNode.removeChild(editNode)
-          $('#delete').modal({
-            onApprove : function(){return false},
-          }).modal('hide')
-          message.classList.remove('red')
-          message.classList.add('green')
-          message.innerHTML = '<p>刪除成功</p>'
-          that.fadeOut(that.pageMessage)
+        .then(res => {
+          if(res === 'completed'){
+            editNode.parentNode.removeChild(editNode)
+            $('#delete').modal({
+              onApprove : function(){return false},
+            }).modal('hide')
+            message.classList.remove('red')
+            message.classList.add('green')
+            message.innerHTML = '<p>刪除成功</p>'
+            that.fadeOut(that.pageMessage)
+          }
+          else{
+            throw new Error('delete failed')
+          }
         })
         .catch(err => {
           message.classList.remove('green')
@@ -332,7 +409,6 @@ $('.ui.checkbox')
 ;
 
 // add event listener
-console.log(1)
 //add window.unbeforeload
 window.addEventListener('beforeunload', (e) => {
   e.preventDefault()
@@ -350,7 +426,7 @@ pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('ch
 footer.querySelector('.add-content').addEventListener('click', Filter.addContentClicked(filter))
 
 // add event listener to the choice content button
-pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.filter(filter))
+pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.chooseMode(filter))
 
 // initialize dropdown
 // pageFilter.querySelector('[data-value="研究"]').click()
@@ -380,14 +456,14 @@ if(reserved.querySelector('.reserved__dimension') !== null){
 
 // test
 
-document.querySelector('.success').addEventListener('click', (event) => {
-  $('#advice').modal({
-    onApprove : function(){return false},
-  }).modal('show')
-})
+// document.querySelector('.success').addEventListener('click', (event) => {
+//   $('#advice').modal({
+//     onApprove : function(){return false},
+//   }).modal('show')
+// })
 
-let pageadvice = document.querySelector('#advice');
+// let pageadvice = document.querySelector('#advice');
 
-pageadvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-pageadvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
-pageadvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
+// pageadvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
+// pageadvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
+// pageadvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
