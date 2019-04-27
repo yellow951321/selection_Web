@@ -7,11 +7,14 @@ mixin renderYear(obj)
           i.icon.ellipsis.vertical
           .menu
             .header 資訊
-            .item= GLOBAL['user']
             .item= obj.progression
+              .floating.ui.red.label 進度
             .item= obj.unsolved
+              .floating.ui.red.label 尚未解決
             .item= obj.time
+              .floating.ui.red.label 時間
       .ui.row
+        .ui.bottom.left.attached.teal.label=obj.user.name
         .seven.wide.column
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.year}/file/review`) 檢閱
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.year}/file/edit`) 編輯

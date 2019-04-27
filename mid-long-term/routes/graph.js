@@ -54,41 +54,25 @@ router.get('/filter', async(req, res)=>{
     let data
     if(req.query.aspect == 'All'){
       data = await countCampusAll({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
-        percentage: req.query.percentage,
+        dataId: res.locals.dataId
       })
     }else if(req.query.keypoint == 'All'){ // choose whole keypoint
       data = await countCampusRespectToAspect({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
-        percentage: req.query.percentage,
+        dataId: res.locals.dataId,
       })
     }else if(req.query.method == 'All'){ // choose whle method
       data = await countCampusRespectToKey({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
+        dataId: res.locals.dataId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
         keypoint: getFromWord(map, { item: req.query.keypoint, }),
-        percentage: req.query.percentage,
       })
     }else if(req.query.method){
       data = await countCampusRespectToMethod({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
+        dataId: res.locals.dataId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
         keypoint: getFromWord(map, { item: req.query.keypoint, }),
         method: getFromWord(map, { detail: req.query.method, }),
-        percentage: req.query.percentage,
       })
     }
     res.json(data)

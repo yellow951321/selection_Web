@@ -303,27 +303,27 @@ const countOneCampusMethodCorToAspectKey = async(info) =>{
   }
 }
 
-const countCampusAll = async(info) => {
+const countCampusAll = async(info={}) => {
   try{
-    let data = await Data.findOne({
-      where:{
-        campusId: info.campus,
-        yearFrom: info.year,
-        yearTo: info.year,
-        typeId: info.type,
-        userId: info.userId,
-      },
-      attributes: ['dataId', ],
-    }).then(data => {
-      if(data != null)
-        return data = data.dataId
-      else
-        throw new Error('No specific Data')
-    })
+    // let data = await Data.findOne({
+    //   where:{
+    //     campusId: info.campus,
+    //     yearFrom: info.year,
+    //     yearTo: info.year,
+    //     typeId: info.type,
+    //     userId: info.userId,
+    //   },
+    //   attributes: ['dataId', ],
+    // }).then(data => {
+    //   if(data != null)
+    //     return data = data.dataId
+    //   else
+    //     throw new Error('No specific Data')
+    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
-        dataId: data, //dataId
+        dataId: info.dataId, //dataId
       },
       attributes: [
         'aspect',
@@ -367,28 +367,28 @@ const countCampusAll = async(info) => {
   }
 }
 
-const countCampusRespectToAspect = async(info) => {
+const countCampusRespectToAspect = async(info={}) => {
   try{
-    let data = await Data.findOne({
-      where:{
-        campusId: info.campus,
-        yearFrom: info.year,
-        yearTo: info.year,
-        typeId: info.type,
-        userId: info.userId,
+    // let data = await Data.findOne({
+    //   where:{
+    //     campusId: info.campus,
+    //     yearFrom: info.year,
+    //     yearTo: info.year,
+    //     typeId: info.type,
+    //     userId: info.userId,
 
-      },
-      attributes: ['dataId', ],
-    }).then(data => {
-      if(data != null)
-        return data = data.dataId
-      else
-        throw new Error('No specific Data')
-    })
+    //   },
+    //   attributes: ['dataId', ],
+    // }).then(data => {
+    //   if(data != null)
+    //     return data = data.dataId
+    //   else
+    //     throw new Error('No specific Data')
+    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
-        dataId: data,
+        dataId: info.dataId,
         aspect: info.aspect,
       },
       attributes: [
@@ -433,28 +433,28 @@ const countCampusRespectToAspect = async(info) => {
   }
 }
 
-const countCampusRespectToKey = async(info) => {
+const countCampusRespectToKey = async(info={}) => {
   try{
-    let data = await Data.findOne({
-      where:{
-        campusId: info.campus,
-        yearFrom: info.year,
-        yearTo: info.year,
-        typeId: info.type,
-        userId: info.userId,
+    // let data = await Data.findOne({
+    //   where:{
+    //     campusId: info.campus,
+    //     yearFrom: info.year,
+    //     yearTo: info.year,
+    //     typeId: info.type,
+    //     userId: info.userId,
 
-      },
-      attributes: ['dataId', ],
-    }).then(data => {
-      if(data != null)
-        return data = data.dataId
-      else
-        throw new Error('No specific Data')
-    })
+    //   },
+    //   attributes: ['dataId', ],
+    // }).then(data => {
+    //   if(data != null)
+    //     return data = data.dataId
+    //   else
+    //     throw new Error('No specific Data')
+    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
-        dataId: data,
+        dataId: info.dataId,
         aspect: info.aspect,
         keypoint: info.keypoint,
       },
@@ -500,28 +500,28 @@ const countCampusRespectToKey = async(info) => {
   }
 }
 
-const countCampusRespectToMethod = async(info) => {
+const countCampusRespectToMethod = async(info={}) => {
   try{
-    let data = await Data.findOne({
-      where:{
-        campusId: info.campus,
-        yearFrom: info.year,
-        yearTo: info.year,
-        typeId: info.type,
-        userId: info.userId,
+    // let data = await Data.findOne({
+    //   where:{
+    //     campusId: info.campus,
+    //     yearFrom: info.year,
+    //     yearTo: info.year,
+    //     typeId: info.type,
+    //     userId: info.userId,
 
-      },
-      attributes: ['dataId', ],
-    }).then(data => {
-      if(data != null)
-        return data = data.dataId
-      else
-        throw new Error('No specific Data')
-    })
+    //   },
+    //   attributes: ['dataId', ],
+    // }).then(data => {
+    //   if(data != null)
+    //     return data = data.dataId
+    //   else
+    //     throw new Error('No specific Data')
+    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
-        dataId: data,
+        dataId: info.dataId,
         aspect: info.aspect,
         keypoint: info.keypoint,
         method: info.method,

@@ -1,11 +1,7 @@
-// import Sequelize from 'sequelize'
+import Sequelize from 'sequelize'
+import config from 'projectRoot/config.js'
 
-// import config from 'projectRoot/config.js'
-const Sequelize = require('sequelize')
-
-const config = require('../../../config')
-
-MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.databse.user}`, `${config.database.password}`, {
+ShortTermDB = new Sequelize('sinicaShrotTerm', `${config.databse.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -46,4 +42,4 @@ MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.databse.user}`, `${
   },
 })
 
-export default MidLongTermDB
+export default ShorTermDtB

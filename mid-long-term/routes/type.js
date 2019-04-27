@@ -7,7 +7,6 @@ const router = express.Router()
 
 router.get('/index', async (req,res)=>{
   try{
-    console.log(req.session.userId)
     let types = await findTypeAll(req.session.userId)
 
     types = await types.map( (typeNum) => {
@@ -19,7 +18,10 @@ router.get('/index', async (req,res)=>{
 
     res.render('manage/type',{
       GLOBAL:{
-        channel: 'mid-long-term',
+        channel: {
+          id: 'mid-long-term',
+          name: '中長程計畫'
+        },
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,

@@ -1,0 +1,107 @@
+
+body {
+  color: #000;
+}
+
+.label {
+  font: 30px sans-serif;
+  text-anchor: end;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.title {
+  font: bold 40px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.y {
+  font: 25px sans-serif;
+}
+
+
+.axis path,
+.axis line {
+  stroke: gray;
+  shape-rendering: geometricPrecision;
+  fill: none;
+}
+
+.x.axis .tick line {
+  stroke-width: 2;
+}
+
+svg {
+  overflow: visible!important;
+  overflow-x: scroll!important;
+  margin: auto;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 120px;
+  color: #000;
+  text-align: center;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  display:none;
+}
+
+
+.y.axis .tick text:hover .tooltip{
+  visibility: visible;
+  display: inline;
+  position: absolute;
+  bottom: 28px;
+  left: 200px;
+}
+.page-svg {
+  overflow-x: scroll
+}
+
+.center {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.median {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.bound {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+
+g {
+  width: 100%;
+}
+
+@media screen and (max-width: 425px){
+  .y {
+    font: 15px sans-serif;
+    text-anchor: end;
+  }
+
+}
+
+@media screen and (max-width: 769px) and (min-width: 426px){
+  .y {
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+
+}
+
+@media screen and (max-width: 1024px) and (min-width: 770px){
+  .y {
+    font: 25px sans-serif;
+    text-anchor: end;
+  }
+
+}

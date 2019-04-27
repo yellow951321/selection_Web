@@ -10,7 +10,7 @@ import config from 'projectRoot/config.js'
 import Session from 'auth/models/schemas/session.js'
 import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
-import shortTerm from 'short-term/app.js'
+// import shortTerm from 'short-term/app.js'
 
 import userDB from 'auth/models/operations/connect.js'
 
@@ -85,31 +85,6 @@ server.use(session({
   unset: 'destroy',
 }))
 
-// server.use('/static', express.static( `${config.projectRoot}/public`, {
-//   cacheControl: false,
-//   // 404 for request dot files
-//   dotfiles: 'ignore',
-//   // disable cache
-//   etag: false,
-//   // handle missing extension for static file
-//   extensions: ['css', 'js', ],
-//   // when 404, pass handle to other middleware
-//   fallthrough: true,
-//   // static file can be cached
-//   immutable: false,
-//   // index file not exist
-//   index: false,
-//   // disable cache
-//   lastModified: false,
-//   // disable cache
-//   maxAge: 0,
-//   // do not redirect to trailing '/'
-//   redirect: false,
-//   // add timestamp for test
-//   setHeaders(res, path, stat){
-//     res.set('x-timestamp', Date.now())
-//   },
-// }))
 
 // check the sessionId in the cookie
 // if it's status 'login' (stored in database)
@@ -143,4 +118,15 @@ server.use(async(req, {}, next) => {
 server.use('/auth', auth)
 server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)
+
+
+server.use( (req, res, next) => {
+  if(!req.session.userId){
+    res.redirect('/auth/login')
+  }
+  else if(req.session && req.session.userId)
+    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+  else
+    next()
+})
 

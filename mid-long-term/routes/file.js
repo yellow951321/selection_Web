@@ -1,11 +1,10 @@
 import express from 'express'
 
-import {map, getFromNum ,} from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, getFromNum , getFromWord} from 'projectRoot/data/operation/mapping'
+import { findYearAll, parseYear, projectDelete, insertCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import { TSArrayType } from 'babel-types';
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,7 +16,25 @@ const router = express.Router({
 })
 
 router.post('/add', async(req,res)=>{
+  try{
+    let temptype
+    (req.body.type == 0) ? temptype = '大學' : temptype = '技專院校'
+    let tempCampus = getFromWord(map, {
+      type: temptype,
+      campus: req.body.campus,
+    })
+    insertCampus({
+      campusId: tempCampus,
+      yearFrom: req.body.yearFrom,
+      yearTo: req.body.yearTo,
+      type: req.body.type,
+      userId: req.session.userId,
+    })
+    res.redirect(`/mid-long-term/${req.session.userId}/${req.body.type}/index`)
 
+  }catch( err ){
+    console.log(err)
+  }
 })
 
 
@@ -34,7 +51,7 @@ router.delete('/delete', async (req,res)=>{
       attributes: ['dataId']
     })
     if( dataValues != null ) {
-      // await projectDelete(dataValues.dataId)
+      await projectDelete(dataValues.dataId)
       console.log('deletion procedure is conpleted')
       res.send('OK')
     }else
@@ -50,7 +67,6 @@ router.get('/review', async (req,res) => {
 
 router.get('/edit', async (req,res) => {
   try {
-
     let typeName = getFromNum(map, {type: res.locals.typeId})
     let campusName = getFromNum(map , {
       type: res.locals.typeId ,
@@ -62,6 +78,7 @@ router.get('/edit', async (req,res) => {
           name: '中長程計畫'
         },
         id: req.session.userId,
+        dataId: res.locals.dataId,
         user: res.locals.user,
         type: {
           id: res.locals.typeId,
