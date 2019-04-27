@@ -54,25 +54,25 @@ router.get('/index', async (req,res)=>{
   }
 })
 
-// router.post('/file/add', async (req, res)=>{
-//   try{
-//     let temptype
-//     (req.body.type == 0)?temptype = '大學':temptype = '技專院校'
-//     let tempCampus = getFromWord(map, {
-//       type: temptype,
-//       campus: req.body.campus,
-//     })
-//     insertCampus({
-//       campusId: tempCampus,
-//       year: req.body.year,
-//       type: req.body.type,
-//       userId: req.session.userId,
-//     })
-//     res.redirect(`/mid-long-term/${req.session.userId}/0/index`)
+router.post('/file/add', async (req, res)=>{
+  try{
+    let temptype
+    (req.body.type == 0)?temptype = '大學':temptype = '技專院校'
+    let tempCampus = getFromWord(map, {
+      type: temptype,
+      campus: req.body.campus,
+    })
+    insertCampus({
+      campusId: tempCampus,
+      year: req.body.year,
+      type: req.body.type,
+      userId: req.session.userId,
+    })
+    res.redirect(`/mid-long-term/${res.locals.typeId}/index`)
 
-//   }catch( err ){
-//     console.log(err)
-//   }
-// })
+  }catch( err ){
+    console.log(err)
+  }
+})
 
 export default router

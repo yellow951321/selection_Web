@@ -6,8 +6,6 @@ import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
 import {map, } from 'projectRoot/data/operation/mapping'
-import { runInNewContext } from 'vm';
-
 
 const app = express()
 
@@ -42,8 +40,14 @@ app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
 }))
 
 app.get('/login', async (req, res)=>{
-  if(req.session && req.session.userId){
+  if(req.session && req.session.userId)
+    res.redirect('/auth/channel')
+  else
+    res.render('login')
+})
 
+app.get('/channel', async (req,res)=> {
+  if(req.session && req.session.userId){
     let user = await User.findOne({
       where:{
         userId: req.session.userId
@@ -66,14 +70,14 @@ app.get('/login', async (req, res)=>{
 
 app.get('/mid-long-term', (req,res)=> {
   if(req.session && req.session.userId)
-    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+    res.redirect(`/mid-long-term/index`)
   else
     res.render('login')
 })
 
 app.get('/shortTerm', (req,res)=> {
   if(req.session && req.session.userId)
-    res.redirect(`/shortTerm/${req.session.userId}/index`)
+    res.redirect(`/shortTerm/index`)
   else
     res.render('login')
 })
