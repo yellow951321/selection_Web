@@ -1,6 +1,6 @@
-// import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
+// import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
+// import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import {Op, } from 'sequelize'
 
 
@@ -12,6 +12,14 @@ const findTypeAll = async (userId) => {
       where: {
         userId: userId,
       },
+      attributes: [
+        'dataId',
+        'campusId',
+        'typeId',
+        'yearFrom',
+        'yearTo',
+        'userId'
+      ]
     })
     // transfer data into column type only
     val = val.map((data) => data.dataValues.typeId)
@@ -32,7 +40,15 @@ const findCampusAll = async (userId, typeId) => {
       where:{
         userId: userId,
         typeId: typeId
-      }
+      },
+      attributes: [
+        'dataId',
+        'campusId',
+        'typeId',
+        'yearFrom',
+        'yearTo',
+        'userId'
+      ]
     })
 
     // transfer data into column campusId only
@@ -102,8 +118,8 @@ const insertCampus = async (info={}) =>{
       campusId: info.campusId,
       typeId: info.type,
       userId: info.userId,
-      yearFrom: info.year,
-      yearTo: info.year,
+      yearFrom: info.yearFrom,
+      yearTo: info.yearTo,
     })
   }catch(err) {
     console.log(err)

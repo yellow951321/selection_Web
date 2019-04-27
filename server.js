@@ -119,3 +119,14 @@ server.use('/auth', auth)
 server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)
 
+
+server.use( (req, res, next) => {
+  if(!req.session.userId){
+    res.redirect('/auth/login')
+  }
+  else if(req.session && req.session.userId)
+    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+  else
+    next()
+})
+

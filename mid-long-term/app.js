@@ -71,21 +71,19 @@ app.use('/:userId/:typeId/:campusId', (req,res,next)=>{
 },
 yearRouter)
 
-app.use('/:userId/:typeId/:campusId/:year', (req,res,next)=>{
-  res.locals.year = Number(req.params.year)
+app.use('/:userId/:typeId/:campusId/:dataId', (req,res,next)=>{
+  res.locals.dataId = Number(req.params.dataId)
   next()
 })
 
-app.use('/:userId/:typeId/:campusId/:year/graph', graphRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/graph', graphRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/download', downloadRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/download', downloadRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/file', fileRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/file', fileRouter)
 
-app.use('/:userId/:typeId/:campusId/:year/content', contentRouter)
+app.use('/:userId/:typeId/:campusId/:dataId/content', contentRouter)
 
 
-
-// app.use('/:userId/downloadCsv')
 
 export default app

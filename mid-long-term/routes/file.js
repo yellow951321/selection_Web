@@ -25,7 +25,8 @@ router.post('/add', async(req,res)=>{
     })
     insertCampus({
       campusId: tempCampus,
-      year: req.body.year,
+      yearFrom: req.body.yearFrom,
+      yearTo: req.body.yearTo,
       type: req.body.type,
       userId: req.session.userId,
     })
