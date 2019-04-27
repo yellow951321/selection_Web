@@ -103,6 +103,8 @@ const retrieveSpecficData = (that)=>{
       .then(res => res.text())
       .then(data => {
         data = JSON.parse(data)
+        year = data.year,
+        data = data.data
         if(data.length != 0){
           let graphNode = document.querySelector('.page-svg')
           while(graphNode.lastChild)
@@ -113,6 +115,7 @@ const retrieveSpecficData = (that)=>{
             typeId: selected.typeId,
             campusId: selected.campusId,
             campus: campusName,
+            year,
           })
         }else {
           let hint = document.getElementById("footer")
@@ -366,7 +369,7 @@ const drawBoxPlot = (data, info) => {
   illustration.append("text")
       .attr("x", x(10) + 26 )
       .attr("y", 5)
-      .text(`${info.dataId}年${info.campus}所有資料位置`)
+      .text(`${info.year.yearFrom}-${info.year.yearTo}年${info.campus}所有資料位置`)
 
   // draw the y-axis
   svg.append('g')

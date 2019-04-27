@@ -7,6 +7,7 @@ import {
   countCampusRespectToMethod, } from 'projectRoot/mid-long-term/models/operations/draw.js'
 
 import {map, getFromWord, getFromNum} from 'projectRoot/data/operation/mapping.js'
+import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -75,7 +76,24 @@ router.get('/filter', async(req, res)=>{
         method: getFromWord(map, { detail: req.query.method, }),
       })
     }
-    res.json(data)
+
+    let year = await Data.findOne({
+      where: {
+        dataId: res.locals.dataId
+      },
+      attributes: [
+        'yearFrom',
+        'yearTo'
+      ]
+    }).then( d => d.dataValues )
+
+    res.json({
+      data,
+      year: {
+        yearFrom: year.yearFrom,
+        yearTo: year.yearTo,
+      }
+    })
   }catch(err){
     console.log(new Error(err))
   }

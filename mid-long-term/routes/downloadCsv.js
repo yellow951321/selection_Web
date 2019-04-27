@@ -41,8 +41,11 @@ router.get('/index', async (req,res)=>{
         {id: 'aspect', title: '構面', },
         {id: 'keypoint', title: '推動重點', },
         {id: 'method', title: '具體作法', },
-        {id: 'title', title: '標題', },
-        {id: 'content', title: '內容', },
+        {id: 'title1', title: '大標題', },
+        {id: 'title2', title: '中標題' },
+        {id: 'title3', title: '小標題' },
+        {id: 'title4', title: '最小標題' },
+        {id: 'content', title: '內容' },
       ],
     })
     // write in the tmp output file
