@@ -27,6 +27,28 @@ router.get('/filter', async(req,res)=>{
 				keypoint,
 				method,
 			},
+			attributes: [
+				'contentId',
+				'title1',
+				'title2',
+				'title3',
+				'title4',
+				'content',
+				'summary',
+				'note',
+				'pageFrom',
+				'pageTo',
+				'aspect',
+				'keypoint',
+				'method',
+				'isChecked',
+				'reviewerId',
+				'isConflicted',
+				'conflictedAspect',
+				'conflictedMethod',
+				'updateTime',
+				'dataId'
+			]
 		})
 		if(data === []){
 			res.send('empty');

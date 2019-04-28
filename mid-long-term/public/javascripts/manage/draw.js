@@ -13,10 +13,9 @@ class Draw {
 
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
-      userId: pathSplit[2],
-      typeId: pathSplit[3],
-      campusId: pathSplit[4],
-      dataId: pathSplit[5]
+      typeId: pathSplit[2],
+      campusId: pathSplit[3],
+      dataId: pathSplit[4]
     }
   }
 
@@ -75,10 +74,9 @@ const draw = new Draw()
 const retrieveSpecficData = (that)=>{
   const pathSplit = window.location.pathname.split('/')
   const selected = {
-    userId: pathSplit[2],
-    typeId: pathSplit[3],
-    campusId: pathSplit[4],
-    dataId: pathSplit[5]
+    typeId: pathSplit[2],
+    campusId: pathSplit[3],
+    dataId: pathSplit[4]
   }
   const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
   const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
@@ -94,7 +92,7 @@ const retrieveSpecficData = (that)=>{
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${selected.userId}/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
+    fetch(`/mid-long-term/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -103,16 +101,18 @@ const retrieveSpecficData = (that)=>{
       .then(res => res.text())
       .then(data => {
         data = JSON.parse(data)
+        year = data.year,
+        data = data.data
         if(data.length != 0){
           let graphNode = document.querySelector('.page-svg')
           while(graphNode.lastChild)
             graphNode.removeChild(graphNode.lastChild)
           drawBoxPlot(data, {
-            id: selected.userId, //TODO delete
             dataId: selected.dataId,
             typeId: selected.typeId,
             campusId: selected.campusId,
             campus: campusName,
+            year,
           })
         }else {
           let hint = document.getElementById("footer")
@@ -366,7 +366,7 @@ const drawBoxPlot = (data, info) => {
   illustration.append("text")
       .attr("x", x(10) + 26 )
       .attr("y", 5)
-      .text(`${info.dataId}年${info.campus}所有資料位置`)
+      .text(`${info.year.yearFrom}-${info.year.yearTo}年${info.campus}所有資料位置`)
 
   // draw the y-axis
   svg.append('g')
@@ -447,7 +447,7 @@ const drawBoxPlot = (data, info) => {
     .data(data)
     .on("click", (d) => {
       console.log(d)
-        document.location.href = `/mid-long-term/${info.id}/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`;
+        document.location.href = `/mid-long-term/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`;
         return
     })
   d3.selectAll(".y.axis .tick text")
