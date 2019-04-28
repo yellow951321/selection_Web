@@ -18,3 +18,14 @@
   margin: 0.2em 0.2em 0.2em 0!important;
 }
 
+.userTime {
+  color: #888;
+  font-size: 15px!important;
+}
+
+.userTimeRow {
+  text-align: left;
+  display: block!important;
+  padding-left: 10px !important;
+}
+
