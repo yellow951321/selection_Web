@@ -60,7 +60,7 @@ app.get('/channel', async (req,res)=> {
       GLOBAL:{
         id: req.session.userId,
         user: user.account,
-        map: map.campus
+        map: map.campus,
       }
     })
   }

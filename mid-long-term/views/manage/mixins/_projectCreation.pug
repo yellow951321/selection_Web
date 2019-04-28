@@ -1,14 +1,14 @@
 .ui.container
-  form#addForm.ui.form.modal(action=`/mid-long-term/${GLOBAL['id']}/0/0/0/file/add`, method='POST')
+  form#addForm.ui.form.modal(action=`/mid-long-term/0/0/0/file/add`, method='POST')
     h4.header 新增計畫
     .content.field
       .two.fields
         .field
           label(for='yearFrom') 年份起點
-          input(type='number', min='0', max='300', step='1', value='108', name='yearFrom', required)
+          input.yearFrom(type='number', min='0', max='300', step='1', value='107', name='yearFrom', required)
         .field
           label(for='yearTo') 年份終點
-          input(type='number', min='0', max='300', step='1', value='108', name='yearTo', required)
+          input.yearTo(type='number', min='0', max='300', step='1', value='108', name='yearTo', required)
       label(for='type') 學校類型
       select.type-dropdown.ui.selection.dropdown(type='text', placeholder='選擇學校類型', name='type', required)
         option(value='0') 大學

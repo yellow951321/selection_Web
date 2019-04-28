@@ -30,7 +30,7 @@ router.post('/add', async(req,res)=>{
       type: req.body.type,
       userId: req.session.userId,
     })
-    res.redirect(`/mid-long-term/${req.session.userId}/${req.body.type}/index`)
+    res.redirect(`/mid-long-term/${req.body.type}/index`)
 
   }catch( err ){
     console.log(err)
