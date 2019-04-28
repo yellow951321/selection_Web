@@ -13,10 +13,9 @@ class Draw {
 
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
-      userId: pathSplit[2],
-      typeId: pathSplit[3],
-      campusId: pathSplit[4],
-      dataId: pathSplit[5]
+      typeId: pathSplit[2],
+      campusId: pathSplit[3],
+      dataId: pathSplit[4]
     }
   }
 
@@ -75,10 +74,9 @@ const draw = new Draw()
 const retrieveSpecficData = (that)=>{
   const pathSplit = window.location.pathname.split('/')
   const selected = {
-    userId: pathSplit[2],
-    typeId: pathSplit[3],
-    campusId: pathSplit[4],
-    dataId: pathSplit[5]
+    typeId: pathSplit[2],
+    campusId: pathSplit[3],
+    dataId: pathSplit[4]
   }
   const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
   const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
@@ -94,7 +92,7 @@ const retrieveSpecficData = (that)=>{
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${selected.userId}/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
+    fetch(`/mid-long-term/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +108,6 @@ const retrieveSpecficData = (that)=>{
           while(graphNode.lastChild)
             graphNode.removeChild(graphNode.lastChild)
           drawBoxPlot(data, {
-            id: selected.userId, //TODO delete
             dataId: selected.dataId,
             typeId: selected.typeId,
             campusId: selected.campusId,
@@ -450,7 +447,7 @@ const drawBoxPlot = (data, info) => {
     .data(data)
     .on("click", (d) => {
       console.log(d)
-        document.location.href = `/mid-long-term/${info.id}/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`;
+        document.location.href = `/mid-long-term/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`;
         return
     })
   d3.selectAll(".y.axis .tick text")

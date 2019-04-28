@@ -73,25 +73,25 @@ app.use('/:typeId/:campusId', (req,res,next)=>{
 },
 yearRouter)
 
-app.use('/:typeId/:campusId/:year', (req,res,next)=>{
-  res.locals.year = Number(req.params.year)
+app.use('/:typeId/:campusId/:dataId', (req,res,next)=>{
+  res.locals.dataId = Number(req.params.dataId)
   next()
 })
 
-app.use('/:typeId/:campusId/:year/graph', graphRouter)
+app.use('/:typeId/:campusId/:dataId/graph', graphRouter)
 
-app.use('/:typeId/:campusId/:year/download', downloadRouter)
+app.use('/:typeId/:campusId/:dataId/download', downloadRouter)
 
-app.use('/:typeId/:campusId/:year/file', fileRouter)
+app.use('/:typeId/:campusId/:dataId/file', fileRouter)
 
-app.use('/:typeId/:campusId/:year/content', contentRouter)
+app.use('/:typeId/:campusId/:dataId/content', contentRouter)
 
-app.use('/:userId/:typeId/:campusId/:dataId/content',(req,res,next)=>{
+app.use('/:typeId/:campusId/:dataId/content',(req,res,next)=>{
   res.locals.dataId = Number(req.params.dataId)
   next()
 }, contentRouter)
 
-app.use('/:userId/:typeId/:campusId/:dataId/review',(req,res,next)=>{
+app.use('/:typeId/:campusId/:dataId/review',(req,res,next)=>{
   res.locals.dataId = Number(req.params.dataId)
   next()
 }, reviewRouter)
