@@ -36,8 +36,10 @@ each val in GLOBAL['contents']
 				input.title4(value = val.title4)
 		.field
 			label 內容
-			textarea.content(name="", rows="5" val = val.content)
+			textarea.content(name="", rows="5")= val.content
 		.field
 			label 摘要
-			textarea.summary(name="", rows="2" val = val.content)
-		input.node-index(type='hidden' value = val.contentId)
+			textarea.summary(name="", rows="2")= val.summary
+			label 備註
+			textarea.note(name="", rows="1")= val.note
+		input.node-index(type='hidden', value = val.contentId)

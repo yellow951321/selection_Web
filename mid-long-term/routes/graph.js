@@ -7,6 +7,7 @@ import {
   countCampusRespectToMethod, } from 'projectRoot/mid-long-term/models/operations/draw.js'
 
 import {map, getFromWord, getFromNum} from 'projectRoot/data/operation/mapping.js'
+import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -54,44 +55,45 @@ router.get('/filter', async(req, res)=>{
     let data
     if(req.query.aspect == 'All'){
       data = await countCampusAll({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
-        percentage: req.query.percentage,
+        dataId: res.locals.dataId
       })
     }else if(req.query.keypoint == 'All'){ // choose whole keypoint
       data = await countCampusRespectToAspect({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
-        percentage: req.query.percentage,
+        dataId: res.locals.dataId,
       })
     }else if(req.query.method == 'All'){ // choose whle method
       data = await countCampusRespectToKey({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
+        dataId: res.locals.dataId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
         keypoint: getFromWord(map, { item: req.query.keypoint, }),
-        percentage: req.query.percentage,
       })
     }else if(req.query.method){
       data = await countCampusRespectToMethod({
-        campus: req.query.campusId,
-        year: req.query.year,
-        type: req.query.typeId,
-        userId: req.session.userId,
+        dataId: res.locals.dataId,
         aspect: getFromWord(map, { dimension: req.query.aspect, }),
         keypoint: getFromWord(map, { item: req.query.keypoint, }),
         method: getFromWord(map, { detail: req.query.method, }),
-        percentage: req.query.percentage,
       })
     }
-    res.json(data)
+
+    let year = await Data.findOne({
+      where: {
+        dataId: res.locals.dataId
+      },
+      attributes: [
+        'yearFrom',
+        'yearTo'
+      ]
+    }).then( d => d.dataValues )
+
+    res.json({
+      data,
+      year: {
+        yearFrom: year.yearFrom,
+        yearTo: year.yearTo,
+      }
+    })
   }catch(err){
     console.log(new Error(err))
   }

@@ -44,10 +44,9 @@ class Filter{
 
     const pathSplit = window.location.pathname.split('/')
     this.selected= {
-      userId: pathSplit[2],
-      type: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      campus: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-      dataId: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
+      type: pathSplit[2],
+      campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
+      dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
     }
 
     //alert user when unsaved data exists
@@ -108,7 +107,7 @@ class Filter{
       detail: detail.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
+    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -158,7 +157,7 @@ class Filter{
   }
 
   static checkMode(that){
-    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -177,6 +176,9 @@ class Filter{
           Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
             button.addEventListener('click', Filter.changeNodeClicked(that))
           })
+
+          footer.classList.add('hidden')
+          footer.classList.add('transition')
       })
       .catch(err => {
         const message = footer.querySelector('.message')
@@ -191,10 +193,9 @@ class Filter{
   static addContentClicked(that){
     const message = footer.querySelector('.message')
     return () => {
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
         method: 'POST',
         body: JSON.stringify({
-          id: that.selected.userId,
           type: that.selected.type,
           campus: that.selected.campus,
           dataId: that.selected.dataId,
@@ -264,22 +265,23 @@ class Filter{
       const content = editNode.querySelector('.content').value
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
-
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
+      const note = editNode.querySelector('.note').value
+      console.log(content+summary+note)
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
-          id: that.selected.userId,
           page: {
             start: startPage,
             end: endPage,
           },
-          contentId: contentId,
-          title1: title1,
-          title2: title2,
-          title3: title3,
-          title4: title4,
-          content: content,
-          summary: summary,
+          contentId,
+          title1,
+          title2,
+          title3,
+          title4,
+          content,
+          summary,
+          note,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -329,7 +331,7 @@ class Filter{
     return () =>{
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
           contentId,
@@ -369,7 +371,7 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId,
@@ -398,7 +400,6 @@ class Filter{
 
   static changeNodeClicked(that){
     return (event) => {
-      console.log(111)
       event.preventDefault()
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
@@ -407,7 +408,7 @@ class Filter{
       const keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       const method = editNode.querySelector('.conflictedMethod').innerHTML
 
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/change`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/change`, {
         method: 'POST',
         body: JSON.stringify({
           contentId,
@@ -509,17 +510,3 @@ if(reserved.querySelector('.reserved__dimension') !== null){
       pageFilter.querySelector('.filter.filter__choice').click()
     })
 }
-
-// test
-
-// document.querySelector('.success').addEventListener('click', (event) => {
-//   $('#advice').modal({
-//     onApprove : function(){return false},
-//   }).modal('show')
-// })
-
-// let pageadvice = document.querySelector('#advice');
-
-// pageadvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-// pageadvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
-// pageadvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))

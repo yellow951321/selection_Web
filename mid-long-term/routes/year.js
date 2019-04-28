@@ -17,7 +17,6 @@ const router = express.Router({
 router.get('/index',async (req,res)=>{
   try{
     let data = await findYearAll({
-      userId: req.session.userId,
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })

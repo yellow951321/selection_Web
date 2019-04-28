@@ -1,6 +1,6 @@
-// import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
+// import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
+// import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import {Op, } from 'sequelize'
 
 
@@ -12,6 +12,14 @@ const findTypeAll = async (userId) => {
       where: {
         // userId: userId,
       },
+      attributes: [
+        'dataId',
+        'campusId',
+        'typeId',
+        'yearFrom',
+        'yearTo',
+        'userId'
+      ]
     })
     // transfer data into column type only
     val = val.map((data) => data.dataValues.typeId)
@@ -32,7 +40,15 @@ const findCampusAll = async (userId, typeId) => {
       where:{
         // userId: userId,
         typeId: typeId
-      }
+      },
+      attributes: [
+        'dataId',
+        'campusId',
+        'typeId',
+        'yearFrom',
+        'yearTo',
+        'userId'
+      ]
     })
 
     // transfer data into column campusId only
@@ -102,8 +118,8 @@ const insertCampus = async (info={}) =>{
       campusId: info.campusId,
       typeId: info.type,
       userId: info.userId,
-      yearFrom: info.year,
-      yearTo: info.year,
+      yearFrom: info.yearFrom,
+      yearTo: info.yearTo,
     })
   }catch(err) {
     console.log(err)
@@ -115,12 +131,19 @@ const parseInfo = async (dataId) => {
     let data = await Content.findAll({
       where: {
         dataId: dataId
-      }
+      },
+      attributes:[
+        'contentId',
+        'isChecked',
+        'isConflicted',
+        'updateTime'
+      ]
     })
 
     data = data.map( ({dataValues, } ) => {
       return dataValues
     })
+
 
     let numUnreview = 0, numChecked = 0, numUnsolved = 0
     let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
@@ -169,13 +192,23 @@ const parseYear = async (data) => {
     let t = {}
     await Promise.all( data.map( async data => {
       let info = await parseInfo(data.dataId)
+      let user = await User.findOne({
+        where: {
+          userId: data.userId
+        }
+      })
+
       if(t.hasOwnProperty(data.yearFrom)){
         t[data.yearFrom].push({
           year: data.yearTo,
           dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
-          time: info.updateTime
+          time: info.updateTime,
+          user: {
+            id: user.userId,
+            name: user.account
+          }
         })
       }else {
         t[data.yearFrom] = []
@@ -184,7 +217,11 @@ const parseYear = async (data) => {
           dataId: data.dataId,
           progression: info.progression,
           unsolved: info.unsolved,
-          time: info.updateTime
+          time: info.updateTime,
+          user: {
+            id: user.userId,
+            name: user.account
+          }
         })
       }
     }))
@@ -195,6 +232,7 @@ const parseYear = async (data) => {
         info: t[data]
       })
     })
+    // console.log(JSON.stringify(tt, null, 2))
     return tt
   }catch(err){
     console.log(err)

@@ -20,9 +20,13 @@ router.get('/', async (req, res) => {
             where:{
                 dataId: res.locals.dataId,
             }
+            ,
+            attributes: [
+                'dataId',
+            ]
         })
         if(checkData.dataValues.userId === req.session.userId){
-            res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/edit/file`)
+            res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/edit/file`)
             return;
         }
         let data = await Content.findAll({
@@ -36,6 +40,7 @@ router.get('/', async (req, res) => {
                 'title2',
                 'title3',
                 'title4',
+                'note',
                 'content',
                 'pageFrom',
                 'pageTo',
@@ -97,7 +102,7 @@ router.get('/', async (req, res) => {
         })
     }
     catch(err){
-        res.status(404)
+        res.sendStatus(404)
     }
 })
 

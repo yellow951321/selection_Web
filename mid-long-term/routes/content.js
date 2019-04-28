@@ -17,7 +17,7 @@ router.get('/index', async (req,res) => {
 })
 
 router.get('/filter', async(req,res)=>{
-  	try{
+  try{
 		let aspect = getFromWord(map, { dimension: req.query.dimension, })
 		let keypoint = getFromWord(map, {item: req.query.item, })
 		let method = getFromWord(map, { detail: req.query.detail, })
@@ -28,6 +28,26 @@ router.get('/filter', async(req,res)=>{
 				keypoint,
 				method,
 			},
+			attributes: [
+				'contentId',
+				'title1',
+				'title2',
+				'title3',
+				'title4',
+				'content',
+				'summary',
+				'note',
+				'pageFrom',
+				'pageTo',
+				'aspect',
+				'keypoint',
+				'method',
+				'isChecked',
+				'reviewerId',
+				'isConflicted',
+				'updateTime',
+				'dataId'
+			]
 		})
 		if(data === []){
 			res.send('empty');
@@ -68,6 +88,22 @@ router.get('/check', async (req,res) => {
 				isConflicted: 1,
 				isChecked: 0,
 			},
+			attributes:[
+				'content',
+				'summary',
+				'note',
+				'reviewerId',
+				'title1',
+				'title2',
+				'title3',
+				'title4',
+				'pageFrom',
+				'pageTo',
+				'contentId',
+				'conflictedAspect',
+				'conflictedKeypoint',
+				'conflictedMethod',
+			],
 		})
 		if(data === []){
 			res.send('empty');
@@ -110,12 +146,10 @@ router.post('/check', async (req, res) => {
 				'isChecked',
 			],
 		})
-		console.log(data)
 		let savedData = await data.update({
 			isChecked: 1,
 			isConflicted: 0,
 		})
-		console.log(1212)
 		if(savedData){
 			res.send('completed')
 		}
@@ -141,7 +175,6 @@ router.post('/change', async (req, res) => {
 		let keypoint = getFromWord(map, {item: req.body.keypoint, })
 		let method = getFromWord(map, { detail: req.body.method, })
 
-		console.log(1)
 		let savedData = await data.update({
 			isChecked: 1,
 			isConflicted: 0,
@@ -206,21 +239,13 @@ router.post('/save', async(req,res)=>{
 				contentId: req.body.contentId,
 			},
 			attributes:[
-				'content',
-				'summary',
-				'reviewerId',
-				'title1',
-				'title2',
-				'title3',
-				'title4',
-				'pageFrom',
-				'pageTo',
 				'contentId',
 			],
 		})
 		let savedData = await data.update({
 			content: req.body.content,
 			summary: req.body.summary,
+			note: req.body.note,
 			reviewerId: req.body.auditor,
 			title1: req.body.title1,
 			title2: req.body.title2,

@@ -25,7 +25,8 @@ router.post('/add', async(req,res)=>{
     })
     insertCampus({
       campusId: tempCampus,
-      year: req.body.year,
+      yearFrom: req.body.yearFrom,
+      yearTo: req.body.yearTo,
       type: req.body.type,
       userId: req.session.userId,
     })
@@ -65,10 +66,14 @@ router.get('/edit', async (req,res) => {
     let checkData = await Data.findOne({
       where: {
         dataId: res.locals.dataId,
-      }
+      },
+      attributes: [
+        'dataId',
+        'userId'
+      ]
     })
     if(checkData.dataValues.userId !== req.session.userId){
-      res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
+      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
       return;
     }
     let typeName = getFromNum(map, {type: res.locals.typeId})
