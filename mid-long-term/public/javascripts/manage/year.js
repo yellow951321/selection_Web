@@ -85,6 +85,13 @@ $('select.dropdown')
 $('.pointing.dropdown')
   .dropdown()
 
+$('.progress')
+  .progress({
+    text: {
+      percent: '{percent} %'
+    }
+  })
+
 // add event listener
 
 // add event listener to the add button

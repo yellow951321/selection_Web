@@ -172,12 +172,15 @@ const parseInfo = async (dataId) => {
         lastModifiedDate = date
       }
     })
-
-    let progression = (((numChecked)/(numChecked+numUnsolved+numUnreview))*100).toFixed(2)
-
+    let total = numChecked+numUnsolved+numUnreview
+    // let progression = (((numChecked)/total)*100).toFixed(0)
+    let unChecked = ((numUnreview/total)*100).toFixed(0)
+    let isChecked = ((numChecked/total)*100).toFixed(0)
+    let unsolved = ((numUnsolved/total)*100).toFixed(0)
     return {
-      progression,
-      unsolved: numUnsolved == 0 ? 'No' : 'Yes',
+      unChecked,
+      isChecked,
+      unsolved,
       updateTime: String(`${lastModifiedYear}-${lastModifiedMonth}-${lastModifiedDate}`)
     }
   } catch(err) {
@@ -202,7 +205,8 @@ const parseYear = async (data) => {
         t[data.yearFrom].push({
           year: data.yearTo,
           dataId: data.dataId,
-          progression: info.progression,
+          unChecked: info.unChecked,
+          isChecked: info.isChecked,
           unsolved: info.unsolved,
           time: info.updateTime,
           user: {
@@ -215,7 +219,8 @@ const parseYear = async (data) => {
         t[data.yearFrom].push({
           year: data.yearTo,
           dataId: data.dataId,
-          progression: info.progression,
+          unChecked: info.unChecked,
+          isChecked: info.isChecked,
           unsolved: info.unsolved,
           time: info.updateTime,
           user: {

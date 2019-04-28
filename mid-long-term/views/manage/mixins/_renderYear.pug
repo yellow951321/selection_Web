@@ -2,20 +2,9 @@ mixin renderYear(obj)
   .rectangle-box.year
     .ui.segment.center.aligned.grid
       .ui.two.column.row
-        h3.yearHeader= obj.year
-        .mini.ui.icon.top.right.pointing.dropdown.basic.button
-          i.icon.ellipsis.vertical
-          .menu
-            .header 資訊
-            .item= `${obj.progression}%`
-              .floating.ui.red.label 進度
-            .item= obj.unsolved
-              .floating.ui.red.label 尚未解決
-            .item= obj.time
-              .floating.ui.red.label 時間
+        h3.column.yearHeader= obj.year
       .ui.row
-        .ui.bottom.left.attached.teal.label=obj.user.name
-        .seven.wide.column
+        .sixteen.wide.column
           if obj.user.id == GLOBAL['id']
             a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/file/edit`) 編輯
           else
@@ -23,4 +12,32 @@ mixin renderYear(obj)
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/graph/index`) 圖表
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/download/index`) 下載
           button.ui.button.option.deleteBtn(type='submit', value=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/file/delete` ) 刪除
+      .ui.row
+        //- .ui.bottom.left.attached.teal.label=obj.user.name
+        .ui.ten.wide.column
+          .ui.teal.label
+            .name= ` 編輯者: ${obj.user.name}`
+      .ui.row
+        .item= obj.time
+      if obj.unChecked != 0
+        .ui.row
+          .sixteen.wide.column
+            #unchecked.ui.red.progress(data-percent=`${obj.unChecked}`)
+              .bar
+                .progress
+              .label 尚未審核
+      if obj.isChecked != 0
+        .ui.row
+          .sixteen.wide.column
+            #isChecked.ui.green.progress(data-percent=`${obj.isChecked}`)
+              .bar
+                .progress
+              .label 審核通過
+      if obj.unsolved != 0
+        .ui.row
+          .sixteen.wide.column
+            #unsolved.ui.orange.progress(data-percent=`${obj.unsolved}`)
+              .bar
+                .progress
+              .label 尚未確認
 
