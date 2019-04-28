@@ -97,6 +97,6 @@ const transferContent = async () => {
 
 // transferUser()
 
-transferData()
+// transferData()
 
-// transferContent()
+transferContent()

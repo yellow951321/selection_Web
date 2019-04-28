@@ -16,7 +16,9 @@ class Filter{
 
         const pathSplit = window.location.pathname.split('/')
         this.selected= {
-            userId: pathSplit[2],
+            type: pathSplit[2],
+            campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
+            dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
         }
     }
 
@@ -65,10 +67,9 @@ class Filter{
             let conflictedAspect = pageAdvice.querySelector('.filter.filter__dimension').firstChild.value
             let conflictedKeypoint = pageAdvice.querySelector('.filter.filter__item').firstChild.value
             let conflictedMethod = pageAdvice.querySelector('.filter.filter__detail').firstChild.value
-            fetch(`/mid-long-term/${that.selected.userId}/review/conflict`, {
+            fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/conflict`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    id: that.selected.userId,
                     contentId: that.targetNode.querySelector('.node-index').value,
                     conflictedAspect,
                     conflictedKeypoint,
@@ -96,13 +97,13 @@ class Filter{
         }
     }
     static check(that){
+        const message = that.pageMessage.querySelector('.message')
         return (event) => {
             event.preventDefault()
             let node = event.target.parentNode.parentNode.parentNode.parentNode;
-            fetch(`/mid-long-term/${that.selected.userId}/review/check`, {
+            fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/check`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    id: that.selected.userId,
                     contentId: node.querySelector('.node-index').value,
                 }),
                 headers: {

@@ -86,15 +86,7 @@ app.use('/:typeId/:campusId/:dataId/file', fileRouter)
 
 app.use('/:typeId/:campusId/:dataId/content', contentRouter)
 
-app.use('/:typeId/:campusId/:dataId/content',(req,res,next)=>{
-  res.locals.dataId = Number(req.params.dataId)
-  next()
-}, contentRouter)
-
-app.use('/:typeId/:campusId/:dataId/review',(req,res,next)=>{
-  res.locals.dataId = Number(req.params.dataId)
-  next()
-}, reviewRouter)
+app.use('/:typeId/:campusId/:dataId/review', reviewRouter)
 
 
 export default app

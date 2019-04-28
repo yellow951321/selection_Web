@@ -68,6 +68,14 @@ class Delete {
     }
   }
 }
+
+const restrictYear = (event) => {
+  let to = parseInt(addForm.querySelector('.yearTo').value)
+  let from = parseInt(addForm.querySelector('.yearFrom').value)
+  if(from >= to)
+    addForm.querySelector('.yearTo').value = ++from
+}
+
 // init
 
 let del = new Delete()
@@ -85,8 +93,12 @@ pageManagement.querySelectorAll('.node').forEach((node) => {
   node.addEventListener('submit', Delete.showDeleteConfirm(del))
 })
 
-// add enent listener to the dropdown of addForm
+// add event listener to the dropdown of addForm
 addForm.querySelector('.type-dropdown').firstChild.addEventListener('change', yearDropdownOnChange)
 
 // trigger dropdown on change to refresh the selection of school
 addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('change'))
+
+addForm.querySelector('.yearTo').addEventListener('change', restrictYear)
+
+addForm.querySelector('.yearFrom').addEventListener('change', restrictYear)

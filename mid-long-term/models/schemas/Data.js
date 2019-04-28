@@ -28,6 +28,12 @@ const dataSchema = {
   },
   userId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
+    references: {
+      // This is a reference to another model
+      model: User,
+      // This is the column name of the referenced model
+      key: 'userId'
+    },
     allowNull: false
   }
 }

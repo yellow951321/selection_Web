@@ -8,7 +8,7 @@ mixin renderYear(obj)
           if obj.user.id == GLOBAL['id']
             a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/file/edit`) 編輯
           else
-            a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/file/review`) 檢閱
+            a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/review`) 檢閱
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/graph/index`) 圖表
           a.ui.button.option(href=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/download/index`) 下載
           button.ui.button.option.deleteBtn(type='submit', value=`/mid-long-term/${GLOBAL.type['id']}/${GLOBAL.campus['id']}/${obj.dataId}/file/delete` ) 刪除

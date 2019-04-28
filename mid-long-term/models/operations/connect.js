@@ -11,7 +11,7 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   dialect: 'mysql',
   // Disable inserting undefined values as NULL
   //-default: false
-  omitNull: true,
+  omitNull: false,
   // a flag for using a native library or not
   //-default: false
   native: true,

@@ -3,7 +3,7 @@ extends component/layout
 
 //- css
 append head
-  link(rel='stylesheet', href='/auth/static/stylesheets/channel.css')
+  link(rel='stylesheet', href='/auth/static/stylesheets/box.css')
 
 append content
   //- popup addproject
@@ -30,10 +30,12 @@ append content
         button.ui.black.deny.button(type='button') 取消
         button#add-project.ui.positive.right.lacbeled.icon.button(type='submit') 新增
 
-  //- channel
-  .channel.ui.container
-    a.mid-long-term(href=`/mid-long-term/index`) 中長程計畫
-    a.shortTerm(href=`/shortTerm/index`) 短成計畫
+  #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
+    .two.column.row
+      .column
+        a.blue.square-box(href=`/mid-long-term/index`) 中長程計畫
+      .column
+        a.blue.square-box(href=`/shortTerm/index`) 短程計畫(詳版)
 
   append script
     script(src='/auth/static/javascripts/index.js')

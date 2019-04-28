@@ -75,6 +75,13 @@ const yearDropdownOnChange = (event) => {
   }
 }
 
+const restrictYear = (event) => {
+  let to = parseInt(addForm.querySelector('.yearTo').value)
+  let from = parseInt(addForm.querySelector('.yearFrom').value)
+  if(from >= to)
+    addForm.querySelector('.yearTo').value = ++from
+}
+
 // init
 let del = new Delete()
 
@@ -97,7 +104,7 @@ $('.progress')
 // add event listener to the add button
 header.querySelector('.add').addEventListener('click', addButtonClicked)
 
-// add enent listener to the dropdown of addForm
+// add event listener to the dropdown of addForm
 addForm.querySelector('.type-dropdown').firstChild.addEventListener('change', yearDropdownOnChange)
 
 // trigger dropdown on change to refresh the selection of school
@@ -108,3 +115,7 @@ pageManagement.querySelectorAll('.deleteBtn').forEach( (node) => {
   console.log(node)
   node.addEventListener('click', Delete.showDeleteConfirm(del))
 })
+
+addForm.querySelector('.yearTo').addEventListener('change', restrictYear)
+
+addForm.querySelector('.yearFrom').addEventListener('change', restrictYear)

@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
 
-ShortTermDB = new Sequelize('sinicaShrotTerm', `${config.databse.user}`, `${config.database.password}`, {
+ShortTermDB = new Sequelize('sinicaShortTerm', `${config.databse.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port

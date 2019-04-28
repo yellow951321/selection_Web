@@ -30,7 +30,7 @@ router.post('/add', async(req,res)=>{
       type: req.body.type,
       userId: req.session.userId,
     })
-    res.redirect(`/mid-long-term/${req.session.userId}/${req.body.type}/index`)
+    res.redirect(`/mid-long-term/${req.body.type}/index`)
 
   }catch( err ){
     console.log(err)
@@ -42,11 +42,7 @@ router.delete('/delete', async (req,res)=>{
   try{
     const {dataValues, } = await Data.findOne({
       where: {
-        campusId: res.locals.campusId,
-        typeId: res.locals.typeId,
-        yearFrom: res.locals.year, // TODO
-        yearTo: res.locals.year, // TODO
-        userId: req.session.userId
+       dataId: res.locals.dataId
       },
       attributes: ['dataId']
     })
@@ -61,12 +57,21 @@ router.delete('/delete', async (req,res)=>{
   }
 })
 
-router.get('/review', async (req,res) => {
-
-})
-
 router.get('/edit', async (req,res) => {
   try {
+    let checkData = await Data.findOne({
+      where: {
+        dataId: res.locals.dataId,
+      },
+      attributes: [
+        'dataId',
+        'userId'
+      ]
+    })
+    if(checkData.dataValues.userId !== req.session.userId){
+      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
+      return;
+    }
     let typeName = getFromNum(map, {type: res.locals.typeId})
     let campusName = getFromNum(map , {
       type: res.locals.typeId ,

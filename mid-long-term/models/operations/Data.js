@@ -1,6 +1,7 @@
-import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
-// import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-// import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+// import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
+import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
+import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import User from 'projectRoot/auth/models/schemas/user.js'
 import {Op, } from 'sequelize'
 
 

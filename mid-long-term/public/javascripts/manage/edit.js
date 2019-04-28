@@ -11,7 +11,7 @@ class UnsavedAlert{
     return () => {
       if(!targetNode.classList.contains('editNode--unsaved')){
         targetNode.classList.add('editNode--unsaved')
-        // targetNode.classList.add('inverted')
+        // targetNode.classList.remove('editNode--saved')
       }
     }
   }
@@ -19,15 +19,17 @@ class UnsavedAlert{
   addAlertListener(targetNode){
     targetNode.querySelector('.page__start').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.page__end').addEventListener('change', this.haveUnsaved(targetNode))
-    targetNode.querySelector('.title').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title1').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title2').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title3').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title4').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.content').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode))
   }
   afterSaving(targetNode){
     if(targetNode.classList.contains('editNode--unsaved')){
       targetNode.classList.remove('editNode--unsaved')
-      // targetNode.classList.remove('inverted')
-      targetNode.classList.add('editNode--saved')
     }
   }
 }
@@ -44,10 +46,9 @@ class Filter{
 
     const pathSplit = window.location.pathname.split('/')
     this.selected= {
-      userId: pathSplit[2],
-      type: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      campus: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-      dataId: pathSplit[5] ? decodeURI(pathSplit[5]) : '',
+      type: pathSplit[2],
+      campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
+      dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
     }
 
     //alert user when unsaved data exists
@@ -86,8 +87,8 @@ class Filter{
         case 'edit':
           this.editMode(that);
           break;
-        case 'audit':
-          this.auditMode(that);
+        case 'check':
+          this.checkMode(that);
           break;
         default:
           console.log('mode detection failed');
@@ -108,7 +109,7 @@ class Filter{
       detail: detail.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
+    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -157,22 +158,8 @@ class Filter{
       })
   }
 
-  static auditMode(that){
-    const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
-    const item = pageFilter.querySelector('.filter.filter__item').firstChild
-    const detail = pageFilter.querySelector('.filter.filter__detail').firstChild
-
-    // query parameter for GET
-    let parameters = {
-      userId: that.selected.userId,
-      dataId: that.dataId,
-      dimension: dimension.value,
-      item: item.value,
-      detail: detail.value,
-    }
-    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    console.log(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`)
-    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`, {
+  static checkMode(that){
+    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -180,19 +167,20 @@ class Filter{
     })
       .then(res => res.text())
       .then(data => {
-        that.selectedDimension = dimension.value
-        that.selectedItem = item.value
-        that.selectedDetail = detail.value
-        footer.classList.remove('hidden')
-        footer.classList.remove('transition')
+          pageEdit.innerHTML = ''
+          pageEdit.insertAdjacentHTML('beforeend', data)
 
-        pageEdit.innerHTML = ''
-        pageEdit.insertAdjacentHTML('beforeend', data)
+          // add eventListener to check and change button
+          Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
+            button.addEventListener('click', Filter.checkNodeClicked(that))
+          })
 
-        // add eventListener to save and delete button
-        pageEdit.querySelectorAll('.recommend').forEach((button)=> {
-          button.addEventListener('click', Filter.saveContent(that))
-        })
+          Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
+            button.addEventListener('click', Filter.changeNodeClicked(that))
+          })
+
+          footer.classList.add('hidden')
+          footer.classList.add('transition')
       })
       .catch(err => {
         const message = footer.querySelector('.message')
@@ -207,10 +195,9 @@ class Filter{
   static addContentClicked(that){
     const message = footer.querySelector('.message')
     return () => {
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
         method: 'POST',
         body: JSON.stringify({
-          id: that.selected.userId,
           type: that.selected.type,
           campus: that.selected.campus,
           dataId: that.selected.dataId,
@@ -280,24 +267,22 @@ class Filter{
       const content = editNode.querySelector('.content').value
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
-      const auditor = editNode.querySelector('.auditor').value
-
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
+      const note = editNode.querySelector('.note').value
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
-          id: that.selected.userId,
           page: {
             start: startPage,
             end: endPage,
           },
-          contentId: contentId,
-          title1: title1,
-          title2: title2,
-          title3: title3,
-          title4: title4,
-          content: content,
-          summary: summary,
-          auditor,
+          contentId,
+          title1,
+          title2,
+          title3,
+          title4,
+          content,
+          summary,
+          note,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -347,7 +332,7 @@ class Filter{
     return () =>{
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
           contentId,
@@ -367,6 +352,79 @@ class Filter{
             message.classList.add('green')
             message.innerHTML = '<p>刪除成功</p>'
             that.fadeOut(that.pageMessage)
+          }
+          else{
+            throw new Error('delete failed')
+          }
+        })
+        .catch(err => {
+          message.classList.remove('green')
+          message.classList.add('red')
+          message.innerHTML = `<p>${err.message}</p>`
+          that.fadeOut(that.pageMessage)
+        })
+    }
+  }
+
+  static checkNodeClicked(that){
+    return (event) => {
+      event.preventDefault()
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const contentId = editNode.querySelector('.node-index').value
+      const message = that.pageMessage.querySelector('.message')
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+        method: 'POST',
+        body: JSON.stringify({
+          contentId,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(res => {
+          if(res === 'completed'){
+            editNode.parentNode.removeChild(editNode)
+          }
+          else{
+            throw new Error('delete failed')
+          }
+        })
+        .catch(err => {
+          message.classList.remove('green')
+          message.classList.add('red')
+          message.innerHTML = `<p>${err.message}</p>`
+          that.fadeOut(that.pageMessage)
+        })
+    }
+  }
+
+  static changeNodeClicked(that){
+    return (event) => {
+      event.preventDefault()
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const contentId = editNode.querySelector('.node-index').value
+      const message = that.pageMessage.querySelector('.message')
+      const aspect = editNode.querySelector('.conflictedAspect').innerHTML
+      const keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
+      const method = editNode.querySelector('.conflictedMethod').innerHTML
+
+      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/change`, {
+        method: 'POST',
+        body: JSON.stringify({
+          contentId,
+          aspect,
+          keypoint,
+          method,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(res => {
+          if(res === 'completed'){
+            editNode.parentNode.removeChild(editNode)
           }
           else{
             throw new Error('delete failed')
@@ -453,17 +511,3 @@ if(reserved.querySelector('.reserved__dimension') !== null){
       pageFilter.querySelector('.filter.filter__choice').click()
     })
 }
-
-// test
-
-// document.querySelector('.success').addEventListener('click', (event) => {
-//   $('#advice').modal({
-//     onApprove : function(){return false},
-//   }).modal('show')
-// })
-
-// let pageadvice = document.querySelector('#advice');
-
-// pageadvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-// pageadvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
-// pageadvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
