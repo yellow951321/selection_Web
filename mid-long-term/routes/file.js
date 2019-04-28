@@ -60,12 +60,17 @@ router.delete('/delete', async (req,res)=>{
   }
 })
 
-router.get('/review', async (req,res) => {
-
-})
-
 router.get('/edit', async (req,res) => {
   try {
+    let checkData = await Data.findOne({
+      where: {
+        dataId: res.locals.dataId,
+      }
+    })
+    if(checkData.dataValues.userId !== req.session.userId){
+      res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
+      return;
+    }
     let typeName = getFromNum(map, {type: res.locals.typeId})
     let campusName = getFromNum(map , {
       type: res.locals.typeId ,

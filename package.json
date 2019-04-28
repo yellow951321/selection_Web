@@ -14,7 +14,7 @@
     "l": "npm run lb && npm run lf",
     "preset": "cp config.js.default config.js",
     "p": "npm run preset",
-    "w": "webpack --config webpack.config.js",
+    "w": "webpack --config webpack.config.js && npm run d",
     "ww": "webpack --config webpack.config.js --watch",
     "t": "webpack --config webpack.transfer.config.js"
   },

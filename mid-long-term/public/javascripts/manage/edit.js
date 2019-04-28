@@ -86,8 +86,8 @@ class Filter{
         case 'edit':
           this.editMode(that);
           break;
-        case 'audit':
-          this.auditMode(that);
+        case 'check':
+          this.checkMode(that);
           break;
         default:
           console.log('mode detection failed');
@@ -157,22 +157,8 @@ class Filter{
       })
   }
 
-  static auditMode(that){
-    const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
-    const item = pageFilter.querySelector('.filter.filter__item').firstChild
-    const detail = pageFilter.querySelector('.filter.filter__detail').firstChild
-
-    // query parameter for GET
-    let parameters = {
-      userId: that.selected.userId,
-      dataId: that.dataId,
-      dimension: dimension.value,
-      item: item.value,
-      detail: detail.value,
-    }
-    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    console.log(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`)
-    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/audit?${parameters}`, {
+  static checkMode(that){
+    fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -180,19 +166,17 @@ class Filter{
     })
       .then(res => res.text())
       .then(data => {
-        that.selectedDimension = dimension.value
-        that.selectedItem = item.value
-        that.selectedDetail = detail.value
-        footer.classList.remove('hidden')
-        footer.classList.remove('transition')
+          pageEdit.innerHTML = ''
+          pageEdit.insertAdjacentHTML('beforeend', data)
 
-        pageEdit.innerHTML = ''
-        pageEdit.insertAdjacentHTML('beforeend', data)
+          // add eventListener to check and change button
+          Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
+            button.addEventListener('click', Filter.checkNodeClicked(that))
+          })
 
-        // add eventListener to save and delete button
-        pageEdit.querySelectorAll('.recommend').forEach((button)=> {
-          button.addEventListener('click', Filter.saveContent(that))
-        })
+          Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
+            button.addEventListener('click', Filter.changeNodeClicked(that))
+          })
       })
       .catch(err => {
         const message = footer.querySelector('.message')
@@ -280,7 +264,6 @@ class Filter{
       const content = editNode.querySelector('.content').value
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
-      const auditor = editNode.querySelector('.auditor').value
 
       fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
         method: 'POST',
@@ -297,7 +280,6 @@ class Filter{
           title4: title4,
           content: content,
           summary: summary,
-          auditor,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -367,6 +349,80 @@ class Filter{
             message.classList.add('green')
             message.innerHTML = '<p>刪除成功</p>'
             that.fadeOut(that.pageMessage)
+          }
+          else{
+            throw new Error('delete failed')
+          }
+        })
+        .catch(err => {
+          message.classList.remove('green')
+          message.classList.add('red')
+          message.innerHTML = `<p>${err.message}</p>`
+          that.fadeOut(that.pageMessage)
+        })
+    }
+  }
+
+  static checkNodeClicked(that){
+    return (event) => {
+      event.preventDefault()
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const contentId = editNode.querySelector('.node-index').value
+      const message = that.pageMessage.querySelector('.message')
+      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+        method: 'POST',
+        body: JSON.stringify({
+          contentId,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(res => {
+          if(res === 'completed'){
+            editNode.parentNode.removeChild(editNode)
+          }
+          else{
+            throw new Error('delete failed')
+          }
+        })
+        .catch(err => {
+          message.classList.remove('green')
+          message.classList.add('red')
+          message.innerHTML = `<p>${err.message}</p>`
+          that.fadeOut(that.pageMessage)
+        })
+    }
+  }
+
+  static changeNodeClicked(that){
+    return (event) => {
+      console.log(111)
+      event.preventDefault()
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const contentId = editNode.querySelector('.node-index').value
+      const message = that.pageMessage.querySelector('.message')
+      const aspect = editNode.querySelector('.conflictedAspect').innerHTML
+      const keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
+      const method = editNode.querySelector('.conflictedMethod').innerHTML
+
+      fetch(`/mid-long-term/${that.selected.userId}/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/change`, {
+        method: 'POST',
+        body: JSON.stringify({
+          contentId,
+          aspect,
+          keypoint,
+          method,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(res => {
+          if(res === 'completed'){
+            editNode.parentNode.removeChild(editNode)
           }
           else{
             throw new Error('delete failed')
