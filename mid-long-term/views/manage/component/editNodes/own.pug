@@ -11,7 +11,10 @@ each val in GLOBAL['contents']
 						input.page__end(type='number' value=val.pageTo)
 			.nine.wide.field
 				label 審查者
-				input.auditor(type = 'text' value = val.reviewerId)
+				if val.isChecked == 1
+					.ui.green.large.label=`已經由${val.reviewerId}審核`
+				else
+					.ui.red.large.label=`尚未審核`
 			.two.wide.field
 				.ui.container.center.aligned.choice-block
 					button.ui.button.save(type='submit') 儲存
@@ -33,8 +36,10 @@ each val in GLOBAL['contents']
 				input.title4(value = val.title4)
 		.field
 			label 內容
-			textarea.content(name="", rows="5" val = val.content)
+			textarea.content(name="", rows="5")= val.content
 		.field
 			label 摘要
-			textarea.summary(name="", rows="2" val = val.content)
-		input.node-index(type='hidden' value = val.contentId)
+			textarea.summary(name="", rows="2")= val.summary
+			label 備註
+			textarea.note(name="", rows="1")= val.note
+		input.node-index(type='hidden', value = val.contentId)

@@ -2,7 +2,7 @@ import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
 
 
-const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user}`, `${config.database.password}`, {
+const MidLongTermDB = new Sequelize('midLongTerm', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -11,7 +11,7 @@ const MidLongTermDB = new Sequelize('sinicaMidLongTerm', `${config.database.user
   dialect: 'mysql',
   // Disable inserting undefined values as NULL
   //-default: false
-  omitNull: true,
+  omitNull: false,
   // a flag for using a native library or not
   //-default: false
   native: true,

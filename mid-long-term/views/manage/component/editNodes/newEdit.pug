@@ -10,7 +10,7 @@ form.ui.form.segment.editNode
 					input.page__end(type='number' value='1')
 		.nine.wide.field
 			label 審查者
-			input.auditor(type = 'text')
+			.ui.red.large.label=`尚未審核`
 		.two.wide.field
 			.ui.container.center.aligned.choice-block
 				button.ui.button.save(type='submit') 儲存
@@ -36,4 +36,6 @@ form.ui.form.segment.editNode
 	.field
 		label 摘要
 		textarea.summary(name="", rows="2")
+		label 備註
+		textarea.note(name="", rows="1")
 	input.node-index(type='hidden' value=GLOBAL['index'])

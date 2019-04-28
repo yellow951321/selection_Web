@@ -16,8 +16,6 @@ append content
   //- page select
   #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
-      .columna
-        a.blue.square-box(href=`/mid-long-term/${GLOBAL.id}/review`) 審核
       for val in GLOBAL['types']
         .column
           a.blue.square-box(href=`/mid-long-term/${val.id}/index`)=val.name

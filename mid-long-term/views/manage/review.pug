@@ -29,69 +29,10 @@ append content
 	#page-message.ui.container.center.aligned.transition.hidden.save-message
 		.ui.floating.message
 
+	include component/editNodes/review.pug
 	#page-audit.ui.container.pusher
-		each val in GLOBAL['contents']
-			form.ui.form.segment.editNode
-				.fields
-					.eight.wide.field
-						.fields
-							.eight.wide.field
-								label 開始頁
-								input.page__start(type='number' value=val.pageFrom disabled)
-							.eight.wide.field
-								label 結束頁
-								input.page__end(type='number' value=val.pageTo disabled)
-					.four.wide.field
-						.ui.container.center.aligned.choice-block
-							button.ui.button.recommend(type='submit') 建議
-					.four.wide.field
-						.ui.container.center.aligned.choice-block
-							button.ui.button.check(type='submit') 確認
-				.fields
-					.eight.wide.field
-						label 原構面
-						.aspect=val.aspect
-						label 原推動重點
-						.keypoint=val.keypoint
-						label 原推動作法
-						.method=val.method
-					.eight.wide.field
-						label 建議構面
-						if val.conflictedAspect
-							.conflictedAspect=val.conflictedAspect
-						else
-							.conflictedAspect
-						label 建議推動重點
-						if val.conflictedKeypoint
-							.conflictedKeypoint=val.conflictedKeypoint
-						else
-							.conflictedKeypoint
-						label 建議推動作法
-						if val.conflictedMethod
-							.conflictedMethod=val.conflictedMethod
-						else
-							.conflictedMethod
-				.fields
-					.four.wide.field
-						label 大標題
-						input.title1(value = val.title1 disabled)
-					.four.wide.field
-						label 中標題
-						input.title2(value = val.title2 disabled)
-					.four.wide.field
-						label 小標題
-						input.title3(value = val.title3 disabled)
-					.four.wide.field
-						label 最小標題
-						input.title4(value = val.title4 disabled)
-				.field
-					label 內容
-					textarea.content(name="", rows="5" val = val.content disabled)
-				.field
-					label 摘要
-					textarea.summary(name="", rows="2" val = val.content disabled)
-				input.node-index(type='hidden' value = val.contentId)
-
+		for val in GLOBAL['contents']
+			+renderReviewNode(val)
 	#page-message.ui.container.center.aligned.transition.hidden.save-message
 		.ui.floating.message
 
