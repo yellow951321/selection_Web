@@ -1,6 +1,6 @@
 .breadcrumb
 	.ui.huge.breadcrumb
-		a.section(href=`#`)=GLOBAL[ 'user' ]
+		a.section(href=`/auth/channel`)=GLOBAL[ 'user' ]
 		if GLOBAL[ 'channel' ] && GLOBAL[ 'type' ]
 			.divider /
 			a.section(href=`/${GLOBAL['channel']['id']}/index`)=GLOBAL[ 'channel' ][ 'name' ]

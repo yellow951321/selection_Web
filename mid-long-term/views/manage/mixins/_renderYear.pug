@@ -7,7 +7,7 @@ mixin renderYear(obj)
           i.icon.ellipsis.vertical
           .menu
             .header 資訊
-            .item= obj.progression
+            .item= `${obj.progression}%`
               .floating.ui.red.label 進度
             .item= obj.unsolved
               .floating.ui.red.label 尚未解決
