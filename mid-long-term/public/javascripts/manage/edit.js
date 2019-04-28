@@ -11,7 +11,7 @@ class UnsavedAlert{
     return () => {
       if(!targetNode.classList.contains('editNode--unsaved')){
         targetNode.classList.add('editNode--unsaved')
-        // targetNode.classList.add('inverted')
+        // targetNode.classList.remove('editNode--saved')
       }
     }
   }
@@ -19,15 +19,17 @@ class UnsavedAlert{
   addAlertListener(targetNode){
     targetNode.querySelector('.page__start').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.page__end').addEventListener('change', this.haveUnsaved(targetNode))
-    targetNode.querySelector('.title').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title1').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title2').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title3').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.title4').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.content').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
+    targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode))
   }
   afterSaving(targetNode){
     if(targetNode.classList.contains('editNode--unsaved')){
       targetNode.classList.remove('editNode--unsaved')
-      // targetNode.classList.remove('inverted')
-      targetNode.classList.add('editNode--saved')
     }
   }
 }
@@ -266,7 +268,6 @@ class Filter{
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
       const note = editNode.querySelector('.note').value
-      console.log(content+summary+note)
       fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
         method: 'POST',
         body: JSON.stringify({
