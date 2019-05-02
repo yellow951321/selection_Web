@@ -13,7 +13,7 @@ app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
 
-app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
+app.use('/static', express.static(`${config.projectRoot}/auth/public`, {
   cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -39,45 +39,45 @@ app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
   },
 }))
 
-app.get('/login', async (req, res)=>{
+app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
     res.redirect('/auth/channel')
   else
     res.render('login')
 })
 
-app.get('/channel', async (req,res)=> {
+app.get('/channel', async(req, res)=> {
   if(req.session && req.session.userId){
     let user = await User.findOne({
       where:{
-        userId: req.session.userId
-      }
+        userId: req.session.userId,
+      },
     })
     if(user != null)
       user = user.dataValues
 
-    res.render('manage/channel',{
+    res.render('manage/channel', {
       GLOBAL:{
         id: req.session.userId,
         user: user.account,
         map: map.campus,
-      }
+      },
     })
   }
   else
     res.render('login')
 })
 
-app.get('/mid-long-term', (req,res)=> {
+app.get('/mid-long-term', (req, res)=> {
   if(req.session && req.session.userId)
-    res.redirect(`/mid-long-term/index`)
+    res.redirect('/mid-long-term/index')
   else
     res.render('login')
 })
 
-app.get('/shortTerm', (req,res)=> {
+app.get('/shortTerm', (req, res)=> {
   if(req.session && req.session.userId)
-    res.redirect(`/shortTerm/index`)
+    res.redirect('/shortTerm/index')
   else
     res.render('login')
 })
@@ -99,7 +99,7 @@ app.post('/login', async(req, res)=>{
         userId: doc.userId,
       })
 
-      res.redirect(`/auth/login`)
+      res.redirect('/auth/login')
     }else{
       throw new Error(`No account matched ${req.body.username}`)
     }

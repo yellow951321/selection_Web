@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { findCampusAll, findLastModifiedTimeOfCampus} from 'projectRoot/mid-long-term/models/operations/Data.js'
-import {map, getFromNum, getFromWord } from 'projectRoot/data/operation/mapping'
+import { findCampusAll, findLastModifiedTimeOfCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
 
 const router = express.Router({
   // case sensitive for route path
@@ -12,49 +12,49 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async (req,res)=>{
+router.get('/index', async(req, res)=>{
   try{
     let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
 
-    campuses = await Promise.all( campuses.map( async data => {
+    campuses = await Promise.all(campuses.map(async data => {
       let time = await findLastModifiedTimeOfCampus(data)
-      time = JSON.stringify(time).split("T")
-      time = time[0].split("\"")
+      time = JSON.stringify(time).split('T')
+      time = time[0].split('"')
       return {
         id: data,
         name: getFromNum(map, {
           type: res.locals.typeId,
-          campus: data
+          campus: data,
         }),
-        time: time[1]
+        time: time[1],
       }
     }))
 
-    let typeName = getFromNum(map, {type: res.locals.typeId})
+    let typeName = getFromNum(map, {type: res.locals.typeId, })
 
-    res.render('manage/campus',{
+    res.render('manage/campus', {
       GLOBAL: {
         channel:{
           id: 'mid-long-term',
-          name: '中長程計畫'
+          name: '中長程計畫',
         },
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,
         type: {
           id: res.locals.typeId,
-          name: typeName
+          name: typeName,
         },
-        campuses: campuses
-      }
+        campuses: campuses,
+      },
     })
 
-  }catch( err ){
+  }catch(err){
     console.log(err)
   }
 })
 
-router.post('/file/add', async (req, res)=>{
+router.post('/file/add', async(req, res)=>{
   try{
     let temptype
     (req.body.type == 0)?temptype = '大學':temptype = '技專院校'
@@ -70,7 +70,7 @@ router.post('/file/add', async (req, res)=>{
     })
     res.redirect(`/mid-long-term/${res.locals.typeId}/index`)
 
-  }catch( err ){
+  }catch(err){
     console.log(err)
   }
 })

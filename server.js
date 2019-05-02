@@ -111,7 +111,7 @@ server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)
 
 
-server.use( (req, res, next) => {
+server.use((req, res, next) => {
   if(!req.session.userId){
     res.redirect('/auth/login')
   }

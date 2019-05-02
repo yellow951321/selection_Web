@@ -13,9 +13,10 @@ class Draw {
 
     const pathSplit = window.location.pathname.split('/')
     this.selected = {
-      typeId: pathSplit[2],
-      campusId: pathSplit[3],
-      dataId: pathSplit[4]
+      userId: pathSplit[2],
+      typeId: pathSplit[3],
+      campusId: pathSplit[4],
+      year: pathSplit[5],
     }
   }
 
@@ -74,25 +75,28 @@ const draw = new Draw()
 const retrieveSpecficData = (that)=>{
   const pathSplit = window.location.pathname.split('/')
   const selected = {
-    typeId: pathSplit[2],
-    campusId: pathSplit[3],
-    dataId: pathSplit[4]
+    userId: pathSplit[2],
+    typeId: pathSplit[3],
+    campusId: pathSplit[4],
+    year: pathSplit[5],
   }
   const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
   const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
   const method = pageFilter.querySelector('.filter.filter__detail').firstChild
-  const campusName = document.querySelector('.breadcrumb :nth-child(7)').text
-  console.log(campusName)
 
   return () => {
     //query parameter for GET
     let parameters = {
+      id: selected.userId,
+      year: selected.year,
+      typeId: selected.typeId,
+      campusId: selected.campusId,
       aspect: aspect.value,
       keypoint: keypoint.value,
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
+    fetch(`/mid-long-term/${selected.userId}/${selected.typeId}/${selected.campusId}/${selected.year}/graph/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -101,21 +105,18 @@ const retrieveSpecficData = (that)=>{
       .then(res => res.text())
       .then(data => {
         data = JSON.parse(data)
-        year = data.year,
-        data = data.data
         if(data.length != 0){
           let graphNode = document.querySelector('.page-svg')
           while(graphNode.lastChild)
             graphNode.removeChild(graphNode.lastChild)
           drawBoxPlot(data, {
-            dataId: selected.dataId,
-            typeId: selected.typeId,
-            campusId: selected.campusId,
-            campus: campusName,
-            year,
+            id: selected.userId,
+            year: selected.year,
+            type: selected.type,
+            campus: selected.campus,
           })
         }else {
-          let hint = document.getElementById("footer")
+          let hint = document.getElementById('footer')
           hint.querySelector('.ui.floating.message').style.display = 'block'
         }
       })
@@ -215,14 +216,14 @@ const drawBarChart = (data, info)=>{
     .join('g')
     .attr('transform', d => `translate(0,${y_method(d.method)})`)
     .selectAll('rect')
-    .data( d => [
-      { method: d.method, methodId: d.methodId, prop: "self",    value: d.self    , percentage: ((d.rank)*100).toFixed(2) },
-      { method: d.method, methodId: d.methodId, prop: "overall", value: d.highest , percentage : 100 }] )
-      .enter()
-      .append('a')
-        .attr("href", d => {
-          return `/mid-long-term/${info.id}/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`
-        })
+    .data(d => [
+      { method: d.method, methodId: d.methodId, prop: 'self', value: d.self, percentage: ((d.rank)*100).toFixed(2), },
+      { method: d.method, methodId: d.methodId, prop: 'overall', value: d.highest, percentage : 100, }, ])
+    .enter()
+    .append('a')
+    .attr('href', d => {
+      return `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`
+    })
 
   bar.append('rect')
     .attr('fill', (d, i) => {
@@ -302,18 +303,18 @@ const drawBoxPlot = (data, info) => {
     barPadding = 20,
     // zipped the data as array
     range = rangeDetermine(percentage),
-  // rebuild data structure
-    {newData , methodLabel} = rebuildDataStructure(data,range)
-    width               = window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.6 : window.document.body.offsetWidth*0.3,
-    height              = newData.length*2*(barHeight + barPadding),
-    max = d3.max(data, d => d3.max(d.data, d => d.count))
-    tickValues         = []
+    // rebuild data structure
+    {newData, methodLabel, } = rebuildDataStructure(data, range)
+  width = window.document.body.offsetWidth > 1024 ? window.document.body.offsetWidth*0.6 : window.document.body.offsetWidth*0.3,
+  height = newData.length*2*(barHeight + barPadding),
+  max = d3.max(data, d => d3.max(d.data, d => d.count))
+  tickValues = []
   for(let i=0;i<max;i++)
     tickValues.push(i)
 
   var x = d3.scaleLinear()
-    .domain([0,max])
-    .range([0,width])
+    .domain([0, max, ])
+    .range([0, width, ])
 
   var x_info = d3.scaleLinear()
     .domain([0, 100, ])
@@ -334,13 +335,13 @@ const drawBoxPlot = (data, info) => {
   var xAxis = d3.axisBottom(x)
     .ticks(max)
     .tickValues(tickValues)
-    .tickFormat( (d,i) => {
+    .tickFormat((d, i) => {
       if(i == 0)
-        return ""
-      if(i%5 == 0 )
+        return ''
+      if(i%5 == 0)
         return d
       else
-        return ""
+        return ''
     })
     .tickSize(10)
 
@@ -351,64 +352,64 @@ const drawBoxPlot = (data, info) => {
     .attr('transform', 'translate(' + (margin.left) + ',' + margin.top + ')')
 
   // draw the illustration
-  var illustration = svg.append("g")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("transform", `translate(-200,-50)`)
+  var illustration = svg.append('g')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('transform', 'translate(-200,-50)')
 
-  illustration.append("rect")
-      .attr("fill", "#FF0085")
-      .attr("x", x(10))
-      .attr("y", 0)
-      .attr("width", 25)
-      .attr("height", 3)
+  illustration.append('rect')
+    .attr('fill', '#FF0085')
+    .attr('x', x(10))
+    .attr('y', 0)
+    .attr('width', 25)
+    .attr('height', 3)
 
-  illustration.append("text")
-      .attr("x", x(10) + 26 )
-      .attr("y", 5)
-      .text(`${info.year.yearFrom}-${info.year.yearTo}年${info.campus}所有資料位置`)
+  illustration.append('text')
+    .attr('x', x(10) + 26)
+    .attr('y', 5)
+    .text(`${info.year}年${info.campus}所有資料位置`)
 
   // draw the y-axis
   svg.append('g')
     .attr('class', 'y axis')
     .call(yAxis)
 
-  var boxPlot = svg.append("g")
-      .selectAll("g")
-      .data(newData)
-      .enter()
-      .append("g")
-        .attr("transform", d => {
-          return `translate(0,${y_method(d.method)})`
-        })
+  var boxPlot = svg.append('g')
+    .selectAll('g')
+    .data(newData)
+    .enter()
+    .append('g')
+    .attr('transform', d => {
+      return `translate(0,${y_method(d.method)})`
+    })
 
-  boxPlot.append("g")
-      .attr("class", "x axis")
-      .attr("transform", `translate(0,${y_particle("bar")})`)
-      .call(xAxis)
+  boxPlot.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', `translate(0,${y_particle('bar')})`)
+    .call(xAxis)
 
   // draw the horizontal line
-  boxPlot.append("line")
-      .attr("class","center")
-      .attr("x1" , d => x(d.whiskerData[0]) )
-      .attr("y1" , y_particle("box") + barHeight/2 )
-      .attr("x2" , d => x(d.whiskerData[1]))
-      .attr("y2" , y_particle("box") + barHeight/2 )
+  boxPlot.append('line')
+    .attr('class', 'center')
+    .attr('x1', d => x(d.whiskerData[0]))
+    .attr('y1', y_particle('box') + barHeight/2)
+    .attr('x2', d => x(d.whiskerData[1]))
+    .attr('y2', y_particle('box') + barHeight/2)
 
   // draw the upper bound and lower bound
-  boxPlot.append("line")
-      .attr("class", "lower bound" )
-      .attr("x1", d => x(d.whiskerData[0]) )
-      .attr("y1", y_particle("box") )
-      .attr("x2" , d => x(d.whiskerData[0]) )
-      .attr("y2" , barHeight )
+  boxPlot.append('line')
+    .attr('class', 'lower bound')
+    .attr('x1', d => x(d.whiskerData[0]))
+    .attr('y1', y_particle('box'))
+    .attr('x2', d => x(d.whiskerData[0]))
+    .attr('y2', barHeight)
 
-  boxPlot.append("line")
-      .attr("class", "upper bound")
-      .attr("x1", d => x(d.whiskerData[1]))
-      .attr("y1", y_particle("box") )
-      .attr("x2" , d => x(d.whiskerData[1]))
-      .attr("y2" , barHeight )
+  boxPlot.append('line')
+    .attr('class', 'upper bound')
+    .attr('x1', d => x(d.whiskerData[1]))
+    .attr('y1', y_particle('box'))
+    .attr('x2', d => x(d.whiskerData[1]))
+    .attr('y2', barHeight)
 
   // draw the bar chart
   boxPlot.append('rect')
@@ -420,38 +421,38 @@ const drawBoxPlot = (data, info) => {
     .attr('height', barHeight)
 
   // draw the line median
-  boxPlot.append("line")
-        .attr("class", "median")
-        .attr("x1", d => x(d.quartileData[1] ) )
-        .attr("y1", d => y_particle("box")  )
-        .attr("x2", d => x(d.quartileData[1] ) )
-        .attr("y2", d => y_particle("box") + barHeight  )
+  boxPlot.append('line')
+    .attr('class', 'median')
+    .attr('x1', d => x(d.quartileData[1]))
+    .attr('y1', d => y_particle('box'))
+    .attr('x2', d => x(d.quartileData[1]))
+    .attr('y2', d => y_particle('box') + barHeight)
 
   // draw the line represent self
-  boxPlot.append("line")
-        .attr("class","self")
-        .attr("x1", d => x(d.self) )
-        .attr("y1", y_particle("box") )
-        .attr("x2", d => x(d.self ))
-        .attr("y2", y_particle("box") + barHeight )
-        .attr("stroke", "#FF0085")
-        .attr("stroke-width", 2)
+  boxPlot.append('line')
+    .attr('class', 'self')
+    .attr('x1', d => x(d.self))
+    .attr('y1', y_particle('box'))
+    .attr('x2', d => x(d.self))
+    .attr('y2', y_particle('box') + barHeight)
+    .attr('stroke', '#FF0085')
+    .attr('stroke-width', 2)
 
-  var xAxis = boxPlot.append("g")
-        .attr("transform", d => {
-          return `translate(0,${y_particle("bar")})`
-        })
-
-  d3.selectAll(".y.axis text")
-    .style("cursor", "pointer")
-    .data(data)
-    .on("click", (d) => {
-      console.log(d)
-        document.location.href = `/mid-long-term/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`;
-        return
+  var xAxis = boxPlot.append('g')
+    .attr('transform', d => {
+      return `translate(0,${y_particle('bar')})`
     })
-  d3.selectAll(".y.axis .tick text")
-    .attr("transform", `translate(-10,0)`)
+
+  d3.selectAll('.y.axis text')
+    .style('cursor', 'pointer')
+    .data(data)
+    .on('click', (d) => {
+      console.log(d)
+      document.location.href = `/man/${info.id}/${info.year}/${info.type}/${info.campus}/${d.methodId}`
+      return
+    })
+  d3.selectAll('.y.axis .tick text')
+    .attr('transform', 'translate(-10,0)')
 
 }
 

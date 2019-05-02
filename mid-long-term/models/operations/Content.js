@@ -4,7 +4,7 @@ const projectCreate = () => {
   // wait for chou
 }
 
-const projectDelete = async (info={}) => {
+const projectDelete = async(info={}) => {
   try{
     
   } catch (err) {

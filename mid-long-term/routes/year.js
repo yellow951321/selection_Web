@@ -1,9 +1,7 @@
 import express from 'express'
 
-import {map, getFromNum ,} from 'projectRoot/data/operation/mapping'
+import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
 import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import { TSArrayType } from 'babel-types';
-
 
 const router = express.Router({
   // case sensitive for route path
@@ -14,23 +12,23 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index',async (req,res)=>{
+router.get('/index', async(req, res)=>{
   try{
     let data = await findYearAll({
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })
-    let type = getFromNum(map, { type: res.locals.typeId})
-    let campusName = getFromNum( map, {
+    let type = getFromNum(map, { type: res.locals.typeId, })
+    let campusName = getFromNum(map, {
       type: res.locals.typeId,
-      campus: res.locals.campusId
+      campus: res.locals.campusId,
     })
     let yearFroms = await parseYear(data)
     res.render('manage/year', {
       GLOBAL: {
         channel: {
           id: 'mid-long-term',
-          name: '中長程計畫'
+          name: '中長程計畫',
         },
         id: req.session.userId,
         user: res.locals.user,
@@ -44,7 +42,7 @@ router.get('/index',async (req,res)=>{
           name: campusName,
         },
         yearFroms: yearFroms,
-      }
+      },
     })
 
   }catch(err){

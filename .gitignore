@@ -68,4 +68,5 @@ config.local.js
 .env
 bin/*
 local/*
+auth/public/javascripts/*
 

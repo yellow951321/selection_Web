@@ -1,11 +1,13 @@
 module.exports = {
     "env": {
-        "browser": true,
-        "es6": true
+        "es6": true,
+        "node": true,
+        "commonjs": true,
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 2017,
+        "sourceType": "module",
     },
     "rules": {
         "indent": [
@@ -46,11 +48,7 @@ module.exports = {
             {
                 'before': false,
                 'after': true,
-            }
-        ],
-        'comma-dangle': [
-            'error',
-            'always',
+            },
         ],
         'comma-dangle': [
             'error',

@@ -9,22 +9,10 @@ const config = require('./config')
 
 const isDevMode = process.env.NODE_ENV === 'development'
 
-module.exports = {
+const webpackConfigTemplate = {
   devtool: isDevMode ? 'inline-sourcemap' : false,
   mode:    isDevMode ? 'development' : 'production',
-  entry: {
-    a: path.join(config.projectRoot, 'server.js'),
-  },
-  output: {
-    path: path.join(config.projectRoot, 'bin'),
-    filename: 'server.bundle.js',
-    publicPath: '/bin'
-  },
-  target: 'node',
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
+  target: 'web',
   resolve: {
     alias: {
       'projectRoot': config.projectRoot,
@@ -37,7 +25,6 @@ module.exports = {
     rules: [
       {
         test:    /\.js$/,
-        exclude: /(node_modules)/,
         use:     [
           {
             loader:  'babel-loader',
@@ -49,23 +36,49 @@ module.exports = {
           }
         ],
       },
-      {
-        test:  /\.css$/,
-        exclude: /(node_modules)/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.pug$/,
-        exclude: /(node_modules)/,
-        use: [
-          {
-            loader: 'pug-loader'
-          }
-        ]
-      }
     ],
   },
 }
+
+const authSrcRoot = path.join(config.projectRoot, 'auth/static/javascripts')
+const authDistRoot = path.join(config.projectRoot, 'auth/public/javascripts')
+const authConfig = Object.assign({}, webpackConfigTemplate, {
+  entry: {
+    'login': path.join(authSrcRoot, 'login.js'),
+  },
+  output: {
+    path: authDistRoot,
+    filename: '[name].bundle.js',
+  },
+})
+
+const midLongTermSrcRoot = path.join(config.projectRoot, 'mid-long-term/static/javascripts')
+const midLongTermDistRoot = path.join(config.projectRoot, 'mid-long-term/public/javascripts')
+const midLongTermConfig = Object.assign({}, webpackConfigTemplate, {
+  entry: {
+    'type': path.join(midLongTermSrcRoot, 'manage/type.js'),
+  },
+  output: {
+    path: midLongTermDistRoot,
+    filename: '[name].bundle.js',
+  },
+})
+
+const shortTermSrcRoot = path.join(config.projectRoot, 'short-term/static/javascripts')
+const shortTermDistRoot = path.join(config.projectRoot, 'short-term/public/javascripts')
+const shortTermConfig = Object.assign({}, webpackConfigTemplate, {
+  entry: {
+    'year': path.join(shortTermSrcRoot, 'manage/year.js'),
+  },
+  output: {
+    path: shortTermDistRoot,
+    filename: '[name].bundle.js',
+  },
+})
+
+
+module.exports = [
+    authConfig,
+    midLongTermConfig,
+    shortTermConfig,
+]

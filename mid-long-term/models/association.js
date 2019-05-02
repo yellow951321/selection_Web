@@ -3,22 +3,22 @@ import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 
 
-User.hasMany( Data , {
+User.hasMany(Data, {
   as: 'data',
   foreignkey: 'userId',
-  sourceKey: 'userId'
+  sourceKey: 'userId',
 })
 
-Data.hasMany( Content, {
+Data.hasMany(Content, {
   as: 'content',
   foreignkey: 'dataId',
-  sourceKey: 'dataId'
+  sourceKey: 'dataId',
 })
 
 
 export {
   User,
   Data,
-  Content
+  Content,
 }
 

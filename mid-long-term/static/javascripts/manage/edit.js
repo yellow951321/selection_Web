@@ -82,16 +82,16 @@ class Filter{
   // filter button clicked choose Mode
   static chooseMode(that){
     return () => {
-      const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value;
+      const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value
       switch (mode){
-        case 'edit':
-          this.editMode(that);
-          break;
-        case 'check':
-          this.checkMode(that);
-          break;
-        default:
-          console.log('mode detection failed');
+      case 'edit':
+        this.editMode(that)
+        break
+      case 'check':
+        this.checkMode(that)
+        break
+      default:
+        console.log('mode detection failed')
       }
     }
   }
@@ -167,20 +167,20 @@ class Filter{
     })
       .then(res => res.text())
       .then(data => {
-          pageEdit.innerHTML = ''
-          pageEdit.insertAdjacentHTML('beforeend', data)
+        pageEdit.innerHTML = ''
+        pageEdit.insertAdjacentHTML('beforeend', data)
 
-          // add eventListener to check and change button
-          Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
-            button.addEventListener('click', Filter.checkNodeClicked(that))
-          })
+        // add eventListener to check and change button
+        Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
+          button.addEventListener('click', Filter.checkNodeClicked(that))
+        })
 
-          Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
-            button.addEventListener('click', Filter.changeNodeClicked(that))
-          })
+        Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
+          button.addEventListener('click', Filter.changeNodeClicked(that))
+        })
 
-          footer.classList.add('hidden')
-          footer.classList.add('transition')
+        footer.classList.add('hidden')
+        footer.classList.add('transition')
       })
       .catch(err => {
         const message = footer.querySelector('.message')
@@ -460,11 +460,11 @@ const filter = new Filter()
 // refresh dropdown
 $('select.dropdown')
   .dropdown()
-;
+
 // refresh checkbox
 $('.ui.checkbox')
   .checkbox()
-;
+
 
 // add event listener
 //add window.unbeforeload

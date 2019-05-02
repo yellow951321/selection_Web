@@ -9,7 +9,7 @@ const contentSchema = {
     primaryKey: true,
     allowNull: false,
     unqiue: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   title1: {
     type: Sequelize.STRING(200),
@@ -50,48 +50,48 @@ const contentSchema = {
   },
   aspect: {
     type: Sequelize.TINYINT(8),
-    allowNull: false
+    allowNull: false,
   },
   keypoint: {
     type: Sequelize.TINYINT(8),
-    allowNull: false
+    allowNull: false,
   },
   method: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   isChecked: {
     type: Sequelize.BLOB(1),
-    allowNull: false
+    allowNull: false,
   },
   reviewerId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
-    allowNull: true
+    allowNull: true,
   },
   isConflicted: {
     type: Sequelize.BLOB(1),
-    allowNull: false
+    allowNull: false,
   },
   conflictedAspect: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: true
+    allowNull: true,
   },
   conflictedKeypoint: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: true
+    allowNull: true,
   },
   conflictedMethod: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: true
+    allowNull: true,
   },
   updateTime: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: false,
   },
   dataId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
     allowNull: false,
-  }
+  },
 }
 
 const Content = sequelizeShortTerm.define('content', contentSchema)

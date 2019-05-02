@@ -17,7 +17,7 @@ const app = express()
 
 app.set('views', path.join(config.projectRoot, 'mid-long-term/views'))
 app.set('view engine', 'pug')
-app.use('/static', express.static( `${config.projectRoot}/mid-long-term/public`, {
+app.use('/static', express.static(`${config.projectRoot}/mid-long-term/public`, {
   cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -43,12 +43,12 @@ app.use('/static', express.static( `${config.projectRoot}/mid-long-term/public`,
   },
 }))
 
-app.use('/',async (req,res,next)=>{
+app.use('/', async(req, res, next)=>{
   if(req.session && req.session.userId){
     const data = await User.findOne({
       where:{
-        userId: req.session.userId
-      }
+        userId: req.session.userId,
+      },
     })
     if(data != null){
       res.locals.user = data.dataValues.account
@@ -59,21 +59,21 @@ app.use('/',async (req,res,next)=>{
   }
 })
 
-app.use('/', typeRouter )
+app.use('/', typeRouter)
 
-app.use('/:typeId', (req,res,next)=>{
+app.use('/:typeId', (req, res, next)=>{
   res.locals.typeId = Number(req.params.typeId)
   next()
 },
 campusRouter)
 
-app.use('/:typeId/:campusId', (req,res,next)=>{
+app.use('/:typeId/:campusId', (req, res, next)=>{
   res.locals.campusId = Number(req.params.campusId)
   next()
 },
 yearRouter)
 
-app.use('/:typeId/:campusId/:dataId', (req,res,next)=>{
+app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
   res.locals.dataId = Number(req.params.dataId)
   next()
 })

@@ -15,7 +15,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async (req,res)=>{
+router.get('/index', async(req, res)=>{
   try {
     // const {dataValues, } = await Data.findOne({
     //   where: {
@@ -29,7 +29,7 @@ router.get('/index', async (req,res)=>{
     // })
 
     let tmpDir = '/tmp/selection_Web'
-    if( !fs.existsSync(tmpDir) )
+    if(!fs.existsSync(tmpDir))
       fs.mkdirSync(tmpDir)
 
     let filePath = uniqueFilename(tmpDir)
@@ -42,10 +42,10 @@ router.get('/index', async (req,res)=>{
         {id: 'keypoint', title: '推動重點', },
         {id: 'method', title: '具體作法', },
         {id: 'title1', title: '大標題', },
-        {id: 'title2', title: '中標題' },
-        {id: 'title3', title: '小標題' },
-        {id: 'title4', title: '最小標題' },
-        {id: 'content', title: '內容' },
+        {id: 'title2', title: '中標題', },
+        {id: 'title3', title: '小標題', },
+        {id: 'title4', title: '最小標題', },
+        {id: 'content', title: '內容', },
       ],
     })
     // write in the tmp output file
@@ -66,8 +66,8 @@ router.get('/index', async (req,res)=>{
         'note',
         'aspect',
         'keypoint',
-        'method'
-      ]
+        'method',
+      ],
     })
       .then(data => {return data})
       .catch(err => {throw err})
