@@ -76,36 +76,6 @@ server.use(session({
   unset: 'destroy',
 }))
 
-
-// check the sessionId in the cookie
-// if it's status 'login' (stored in database)
-// automatically login
-server.use(async(req, {}, next) => {
-  let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
-
-  // sessionId will be reset after restarting server
-  // we need to update session after every connection
-  if(sessionId !== req.session.id){
-    let data = await Session.findOne({
-      where: {
-        sessionId,
-      },
-    })
-    if(data !== null){
-      if(Number(data.expiration) > Date.now()){
-        req.session.userId = data.userId
-        await data.update({
-          sessionId: req.session.id,
-        })
-      }
-      else if(Number(data.expiration) < Date.now()){
-        await data.destroy()
-      }
-    }
-  }
-  next()
-})
-
 server.use('/auth', auth)
 server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)

@@ -56,7 +56,12 @@ const midLongTermSrcRoot = path.join(config.projectRoot, 'mid-long-term/static/j
 const midLongTermDistRoot = path.join(config.projectRoot, 'mid-long-term/public/javascripts')
 const midLongTermConfig = Object.assign({}, webpackConfigTemplate, {
   entry: {
-    'type': path.join(midLongTermSrcRoot, 'manage/type.js'),
+    'campus': path.join(midLongTermSrcRoot, 'campus.js'),
+    'draw': path.join(midLongTermSrcRoot, 'draw.js'),
+    'edit': path.join(midLongTermSrcRoot, 'edit.js'),
+    'review': path.join(midLongTermSrcRoot, 'review.js'),
+    'type': path.join(midLongTermSrcRoot, 'type.js'),
+    'year': path.join(midLongTermSrcRoot, 'year.js'),
   },
   output: {
     path: midLongTermDistRoot,

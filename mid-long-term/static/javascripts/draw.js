@@ -1,3 +1,5 @@
+import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+
 //global variable
 var savedData = null
 //Variables

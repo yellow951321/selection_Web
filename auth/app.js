@@ -1,6 +1,7 @@
 import fs from 'fs'
 import express from 'express'
 import path from 'path'
+import cookieParser from 'cookie-parser'
 
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
@@ -38,6 +39,36 @@ app.use('/static', express.static(`${config.projectRoot}/auth/public`, {
     res.set('x-timestamp', Date.now())
   },
 }))
+
+
+// check the sessionId in the cookie
+// if it's status 'login' (stored in database)
+// automatically login
+app.use(async(req, {}, next) => {
+  let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
+
+  // sessionId will be reset after restarting server
+  // we need to update session after every connection
+  if(sessionId !== req.session.id){
+    let data = await Session.findOne({
+      where: {
+        sessionId,
+      },
+    })
+    if(data !== null){
+      if(Number(data.expiration) > Date.now()){
+        req.session.userId = data.userId
+        await data.update({
+          sessionId: req.session.id,
+        })
+      }
+      else if(Number(data.expiration) < Date.now()){
+        await data.destroy()
+      }
+    }
+  }
+  next()
+})
 
 app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
