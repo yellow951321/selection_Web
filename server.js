@@ -1,10 +1,8 @@
 import http from 'http'
 import express from 'express'
-import compression from 'compression'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-import path from 'path'
 
 import config from 'projectRoot/config.js'
 import Session from 'auth/models/schemas/session.js'
@@ -14,11 +12,9 @@ import midLongTerm from 'mid-long-term/app.js'
 
 import userDB from 'auth/models/operations/connect.js'
 
-
 const isDevMode = process.env.NODE_ENV == 'development'
 
 const server = express()
-
 
 userDB
   .authenticate()
@@ -36,11 +32,6 @@ if(isDevMode){
   server.use(logger('dev'))
 }
 
-// server.set('views', path.join(config.projectRoot, ''))
-// server.set('view engine', 'pug')
-// server.use('/static', express.static('public'))
-
-// server.use(compression)
 server.use(cookieParser())
 server.use(express.json({
   inflate: true,

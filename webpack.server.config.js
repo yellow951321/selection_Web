@@ -1,3 +1,10 @@
+/**
+ * This webpack file serve the purpose of bundling server js files.
+ * This file should remain untouched, unless you know what you are doing.
+ * Also, only use commonJS syntax in this file,
+ * DO NOT use any other transformer (ex: Babel) for unnecessary burden.
+ */
+
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const config = require('./config')
@@ -12,22 +19,17 @@ module.exports = {
     path.join(config.projectRoot, 'server.js'),
   ],
   output: {
-    path: path.join(config.projectRoot, 'bin'),
+    path:      path.join(config.projectRoot, 'bin'),
     filename: 'server.bundle.js',
-    publicPath: '/bin'
   },
   target: 'node',
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
   externals: [nodeExternals(), ],
   resolve: {
     alias: {
-      'projectRoot': config.projectRoot,
-      'auth': path.join(config.projectRoot, 'auth'),
+      'projectRoot':   config.projectRoot,
+      'auth':          path.join(config.projectRoot, 'auth'),
       'mid-long-term': path.join(config.projectRoot, 'mid-long-term'),
-      'short-term': path.join(config.projectRoot, 'short-term'),
+      'short-term':    path.join(config.projectRoot, 'short-term'),
     },
   },
   module:  {
@@ -46,23 +48,6 @@ module.exports = {
           }
         ],
       },
-      {
-        test:  /\.css$/,
-        exclude: /(node_modules)/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.pug$/,
-        exclude: /(node_modules)/,
-        use: [
-          {
-            loader: 'pug-loader'
-          }
-        ]
-      }
     ],
   },
 }
