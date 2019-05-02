@@ -69,4 +69,6 @@ config.local.js
 bin/*
 local/*
 auth/public/javascripts/*
+mid-long-term/public/javascripts/*
+short-term/public/javascripts/*
 
