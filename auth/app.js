@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
-import {map, } from 'projectRoot/data/operation/mapping'
 
 const app = express()
 
@@ -91,24 +90,9 @@ app.get('/channel', async(req, res)=> {
       GLOBAL:{
         id: req.session.userId,
         user: user.account,
-        map: map.campus,
       },
     })
   }
-  else
-    res.render('login')
-})
-
-app.get('/mid-long-term', (req, res)=> {
-  if(req.session && req.session.userId)
-    res.redirect('/mid-long-term/index')
-  else
-    res.render('login')
-})
-
-app.get('/shortTerm', (req, res)=> {
-  if(req.session && req.session.userId)
-    res.redirect('/shortTerm/index')
   else
     res.render('login')
 })

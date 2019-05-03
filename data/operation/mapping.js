@@ -443,9 +443,6 @@ const map = {
   ],
 }
 
-
-const fs = require('fs')
-
 const getFromWord = (map, consult)=>{
   if(consult.campus){
     let type = getFromWord(map, {type:consult.type, }).toString()
