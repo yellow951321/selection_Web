@@ -35,7 +35,7 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res, path, stat){
+  setHeaders(res){
     res.set('x-timestamp', Date.now())
   },
 }))
@@ -62,7 +62,7 @@ app.use(async(req, {}, next) => {
           sessionId: req.session.id,
         })
       }
-      else if(Number(data.expiration) < Date.now()){
+      else{
         await data.destroy()
       }
     }
@@ -135,7 +135,7 @@ app.get('/logout', async(req, res)=>{
     })
     req.session.destroy()
 
-    res.status(304).redirect('/auth/login')
+    res.redirect('/auth/login')
   } catch (err) {
     res.status(500).render('error', {
       'message': err.message,

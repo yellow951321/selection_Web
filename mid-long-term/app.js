@@ -1,8 +1,10 @@
 import path from 'path'
 import express from 'express'
 
+import {authUser, } from 'projectRoot/lib/middleware/auth.js'
+
 import config from 'projectRoot/config.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
+// import User from 'projectRoot/auth/models/schemas/user.js'
 import typeRouter from 'mid-long-term/routes/type.js'
 import reviewRouter from 'mid-long-term/routes/review.js'
 import campusRouter from 'mid-long-term/routes/campus.js'
@@ -14,6 +16,9 @@ import graphRouter from 'mid-long-term/routes/graph.js'
 
 
 const app = express()
+app.locals.GLOBAL = {
+  config,
+}
 
 app.set('views', path.join(config.projectRoot, 'mid-long-term/views'))
 app.set('view engine', 'pug')
@@ -38,43 +43,54 @@ app.use('/static', express.static(`${config.projectRoot}/mid-long-term/public`, 
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res, path, stat){
+  setHeaders(res){
     res.set('x-timestamp', Date.now())
   },
 }))
 
-app.use('/', async(req, res, next)=>{
-  if(req.session && req.session.userId){
-    const data = await User.findOne({
-      where:{
-        userId: req.session.userId,
-      },
-    })
-    if(data != null){
-      res.locals.user = data.dataValues.account
-    }
-    next()
-  }else{
-    res.redirect('/auth/login')
-  }
-})
+
+app.use(authUser)
 
 app.use('/', typeRouter)
 
 app.use('/:typeId', (req, res, next)=>{
-  res.locals.typeId = Number(req.params.typeId)
+  let typeId = Number(req.params.typeId)
+  if(typeof typeId === 'number')
+    res.locals.typeId = typeId
+  else{
+    res.status(500).render('error', {
+      status: 500,
+      message: 'invaliad type',
+    })
+  }
   next()
 },
 campusRouter)
 
 app.use('/:typeId/:campusId', (req, res, next)=>{
-  res.locals.campusId = Number(req.params.campusId)
+  let campusId = Number(req.params.campusId)
+  if(typeof campusId === 'number')
+    res.locals.campusId = campusId
+  else{
+    res.status(500).render('error', {
+      status: 500,
+      message: 'invaliad campus',
+    })
+  }
   next()
 },
 yearRouter)
 
 app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
-  res.locals.dataId = Number(req.params.dataId)
+  let dataId = Number(req.params.dataId)
+  if(typeof dataId === 'number')
+    res.locals.dataId = dataId
+  else{
+    res.status(500).render('error', {
+      status: 500,
+      message: 'invalid data',
+    })
+  }
   next()
 })
 
