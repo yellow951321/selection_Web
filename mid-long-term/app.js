@@ -38,7 +38,7 @@ app.use('/static', express.static(`${config.projectRoot}/mid-long-term/public`, 
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res, path, stat){
+  setHeaders(res){
     res.set('x-timestamp', Date.now())
   },
 }))
