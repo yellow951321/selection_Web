@@ -12,11 +12,11 @@ append content
   //- popup addproject
   include mixins/_projectCreation.pug
 
-  //- content
-  //- page select
+  content
+  page select
   #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
-      for val in GLOBAL['types']
+      for val in types
         .column
           a.blue.square-box(href=`/mid-long-term/${val.id}/index`)=val.name
 

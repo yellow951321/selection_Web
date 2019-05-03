@@ -2,6 +2,7 @@ import express from 'express'
 
 import { findCampusAll, findLastModifiedTimeOfCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -22,31 +23,32 @@ router.get('/index', async(req, res)=>{
       time = time[0].split('"')
       return {
         id: data,
-        name: getFromNum(map, {
-          type: res.locals.typeId,
-          campus: data,
-        }),
+        name: campusMap[res.locals.typeId].campus[data],
         time: time[1],
       }
     }))
 
-    let typeName = getFromNum(map, {type: res.locals.typeId, })
+    let typeName = campusMap[res.locals.typeId].type
 
     res.render('manage/campus', {
-      GLOBAL: {
-        channel:{
-          id: 'mid-long-term',
-          name: '中長程計畫',
-        },
+        breadcrumb: [
+          {
+            id: 'mid-long-term',
+            name: '中長程計畫',
+          },
+          {
+            id: res.locals.typeId,
+            name: typeName
+          }
+        ],
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,
         type: {
           id: res.locals.typeId,
-          name: typeName,
+          name: typeName
         },
         campuses: campuses,
-      },
     })
 
   }catch(err){

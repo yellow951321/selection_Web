@@ -6,7 +6,7 @@ append head
 
 append content
   .ui.center.aligned.container
-    form#signup.ui.form(method='POST')
+    form.ui.form(method='POST', action=`${GLOBAL.config.server.host}/auth/signup`)
       h1 SIGN UP
       .field
         label.interface account:

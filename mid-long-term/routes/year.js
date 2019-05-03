@@ -2,6 +2,7 @@ import express from 'express'
 
 import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
 import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -18,31 +19,36 @@ router.get('/index', async(req, res)=>{
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })
-    let type = getFromNum(map, { type: res.locals.typeId, })
-    let campusName = getFromNum(map, {
-      type: res.locals.typeId,
-      campus: res.locals.campusId,
-    })
+    let typeName = campusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     let yearFroms = await parseYear(data)
     res.render('manage/year', {
-      GLOBAL: {
-        channel: {
-          id: 'mid-long-term',
-          name: '中長程計畫',
-        },
+        breadcrumb: [
+          {
+            id: 'mid-long-term',
+            name: '中長程計畫',
+          },
+          {
+            id: res.locals.typeId,
+            name: typeName
+          },
+          {
+            id: res.locals.campusId,
+            name: campusName
+          }
+        ],
         id: req.session.userId,
         user: res.locals.user,
         map: map.campus,
         type: {
           id: res.locals.typeId,
-          name: type,
+          name: typeName
         },
         campus: {
           id: res.locals.campusId,
-          name: campusName,
+          name: campusName
         },
         yearFroms: yearFroms,
-      },
     })
 
   }catch(err){
