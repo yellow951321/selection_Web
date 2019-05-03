@@ -88,7 +88,6 @@ app.get('/channel', async(req, res)=> {
 
     res.render('manage/channel', {
       GLOBAL:{
-        id: req.session.userId,
         user: user.account,
       },
     })
@@ -132,19 +131,11 @@ app.get('/logout', async(req, res)=>{
         sessionId: req.session.id,
       },
     })
-    await new Promise((res, rej) => {
-      req.session.destroy((err)=>{
-        if(err)
-          rej(err)
-        res()
-      })
-    })
-      .catch((err) => {
-        throw err
-      })
-    res.status(200).redirect('/auth/login')
+    req.session.destroy()
+
+    res.status(304).redirect('/auth/login')
   } catch (err) {
-    res.status(404).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
+    res.status(500).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
   }
 })
 

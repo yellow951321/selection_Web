@@ -30,6 +30,7 @@ module.exports = {
       'auth':          path.join(config.projectRoot, 'auth'),
       'mid-long-term': path.join(config.projectRoot, 'mid-long-term'),
       'short-term':    path.join(config.projectRoot, 'short-term'),
+      'lib': path.join(config.projectRoot, 'lib')
     },
   },
   module:  {

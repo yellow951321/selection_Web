@@ -1,24 +1,11 @@
 .breadcrumb
 	.ui.huge.breadcrumb
-		a.section(href=`/auth/channel`)=GLOBAL[ 'user' ]
-		if GLOBAL[ 'channel' ] && GLOBAL[ 'type' ]
+		a.section(href=`/auth/channel`)=user
+		- let route = GLOBAL.config.host
+		each value, index in breadcrumb
 			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/index`)=GLOBAL[ 'channel' ][ 'name' ]
-		else
-			.divider /
-			.section=GLOBAL[ 'channel' ][ 'name' ]
-		if GLOBAL[ 'type' ] && GLOBAL['campus']
-			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['type']['id']}/index`)=GLOBAL[ 'type' ]['name']
-		else if GLOBAL[ 'type' ]
-			.divider /
-			.section=GLOBAL[ 'type' ]['name']
-		if GLOBAL[ 'campus' ] && GLOBAL['graph']
-			.divider /
-			a.section(href=`/${GLOBAL['channel']['id']}/${GLOBAL['type']['id']}/${GLOBAL['campus']['id']}/index`)=GLOBAL[ 'campus' ]['name']
-		else if GLOBAL[ 'campus' ]
-			.divider /
-			.section=GLOBAL[ 'campus' ]['name']
-		if GLOBAL[ 'graph']
-			.divider /
-			.section=GLOBAL[ 'graph' ]
+			- route = route + `/${value.id}`
+			if index != breadcrumb.length - 1
+				a.section(href=route)= value.name
+			else
+				.section=value.name
