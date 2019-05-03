@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
-import { campusMap, } from 'projectRoot/lib/static/jsavascripts/mapping/campus.js'
 
 const app = express()
 
