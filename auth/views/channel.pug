@@ -1,14 +1,21 @@
-extends component/layout
-
+extends mixins/_layout
 
 //- css
 append head
-  link(rel='stylesheet', href='/auth/static/stylesheets/box.css')
+  +authCss('box.css')
+  +authCss('manage.css')
 
 append content
   //- popup addproject
+  section#header.ui.top.fixed.menu.header
+    .title
+      include mixins/_breadcrumb.pug
+    .right.menu
+      block buttons
+      a.logout.ui.item(href=`/auth/logout`) 登出
+
   .ui.container
-    form#addForm.ui.form.modal(action=`/man/${GLOBAL.id}/file/add`, method='POST')
+    form#addForm.ui.form.modal(action=`/man/${Global.id}/file/add`, method='POST')
       h4.header 新增計畫
       .content.field
         label(for='year') 年份
@@ -20,10 +27,10 @@ append content
         label(for='campus') 學校
         select.campus-dropdown.ui.selection.dropdown(type='text', placeholder='Enter school Name', name='campus', required)
         .normal.ui.transition.hidden
-          each val in GLOBAL['map']['0']
+          each val in Global['map']['0']
             option(value=val)=val
         .others.ui.transition.hidden
-          each val in GLOBAL['map']['1']
+          each val in Global['map']['1']
             option(value=val)=val
 
   .actions
@@ -36,3 +43,7 @@ append content
         a.blue.square-box(href=`/mid-long-term/index`) 中長程計畫
       .column
         a.blue.square-box(href=`/shortTerm/index`) 短程計畫(詳版)
+
+append footer
+  .ui.vertical.footer.segment
+    p v1.0.0

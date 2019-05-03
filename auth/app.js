@@ -10,11 +10,12 @@ import {map, } from 'projectRoot/data/operation/mapping'
 
 const app = express()
 
+app.locals.GLOBAL = {config: config, }
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
 
-app.use('/static', express.static(`${config.projectRoot}/auth/public`, {
+app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -87,8 +88,8 @@ app.get('/channel', async(req, res)=> {
     if(user != null)
       user = user.dataValues
 
-    res.render('manage/channel', {
-      GLOBAL:{
+    res.render('channel', {
+      Global:{
         id: req.session.userId,
         user: user.account,
         map: map.campus,
