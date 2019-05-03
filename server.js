@@ -5,25 +5,12 @@ import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 
 import config from 'projectRoot/config.js'
-import Session from 'auth/models/schemas/session.js'
 import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
 // import shortTerm from 'short-term/app.js'
-
-import userDB from 'auth/models/operations/connect.js'
-
 const isDevMode = process.env.NODE_ENV == 'development'
 
 const server = express()
-
-userDB
-  .authenticate()
-  .then(()=>{
-    console.log('Connection has been established successfully')
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database', err)
-  })
 
 http.createServer(server)
 server.listen(config.server.port)
@@ -81,13 +68,10 @@ server.use('/mid-long-term', midLongTerm)
 // server.use('/short-term', shortTerm)
 
 
-server.use((req, res, next) => {
-  if(!req.session.userId){
-    res.redirect('/auth/login')
-  }
-  else if(req.session && req.session.userId)
-    res.redirect(`/mid-long-term/${req.session.userId}/index`)
+server.use((req, res) => {
+  if(req.session.userId)
+    res.redirect('/auth/channel')
   else
-    next()
+    res.redirect('/auth/login')
 })
 
