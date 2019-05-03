@@ -1,8 +1,8 @@
-extends layout
+extends mixins/_layout
 
 append head
   title Login
-  link(rel='stylesheet', href='/static/stylesheets/login.css')
+  +authCss('login.css')
 
 append content
   .ui.center.aligned.container
@@ -18,4 +18,4 @@ append content
       a#back.ui.button(href="/auth/login", style='width:100px;height:40px;') Back
 
 append script
-  script(src='/static/javascripts/signup.js')
+  +authJS('signup.js')

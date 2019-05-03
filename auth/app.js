@@ -9,11 +9,12 @@ import config from 'projectRoot/config.js'
 
 const app = express()
 
+app.locals.Global = {config: config, }
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
 
-app.use('/static', express.static(`${config.projectRoot}/auth/public`, {
+app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -34,7 +35,7 @@ app.use('/static', express.static(`${config.projectRoot}/auth/public`, {
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res, path, stat){
+  setHeaders(res){
     res.set('x-timestamp', Date.now())
   },
 }))
@@ -61,7 +62,7 @@ app.use(async(req, {}, next) => {
           sessionId: req.session.id,
         })
       }
-      else if(Number(data.expiration) < Date.now()){
+      else{
         await data.destroy()
       }
     }
@@ -86,7 +87,7 @@ app.get('/channel', async(req, res)=> {
     if(user != null)
       user = user.dataValues
 
-    res.render('manage/channel', {
+    res.render('channel', {
       GLOBAL:{
         user: user.account,
       },
@@ -133,13 +134,13 @@ app.get('/logout', async(req, res)=>{
     })
     req.session.destroy()
 
-    res.status(304).redirect('/auth/login')
+    res.redirect('/auth/login')
   } catch (err) {
     res.status(500).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
   }
 })
 
-app.get('/signup', (req, res)=>{
+app.get('/signup', ({}, res)=>{
   res.render('signup')
 })
 
