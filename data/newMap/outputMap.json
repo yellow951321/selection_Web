@@ -189,13 +189,30 @@
             "shortTerm": "培養華語教學人才",
             "midLongTerm": "",
             "label": "10"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_B04",
+            "label": "11"
+          }
+        ]
+      },
+      {
+        "shortTerm": "產學合作教學",
+        "midLongTerm": "",
+        "label": "05",
+        "method": [
+          {
+            "shortTerm": "產學合作教學",
+            "midLongTerm": "",
+            "label": "01"
           }
         ]
       },
       {
         "shortTerm": "提升基礎能力",
         "midLongTerm": "",
-        "label": "05",
+        "label": "06",
         "method": [
           {
             "shortTerm": "強化國文能力",
@@ -222,7 +239,7 @@
       {
         "shortTerm": "提升實作能力",
         "midLongTerm": "",
-        "label": "06",
+        "label": "07",
         "method": [
           {
             "shortTerm": "推動各類競賽（實作能力）",
@@ -263,13 +280,28 @@
             "shortTerm": "實施課程分流制度",
             "midLongTerm": "",
             "label": "08"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_B07",
+            "label": "09"
+          },
+          {
+            "shortTerm": "無",
+            "midLongTerm": "學校舉辦競賽",
+            "label": "10"
+          },
+          {
+            "shortTerm": "無",
+            "midLongTerm": "參加校外競賽",
+            "label": "11"
           }
         ]
       },
       {
-        "shortTerm": "提升專業/證照能力",
-        "midLongTerm": "",
-        "label": "07",
+        "shortTerm": "提升專業證照能力",
+        "midLongTerm": "提升專業證照能力",
+        "label": "08",
         "method": [
           {
             "shortTerm": "開設證照專業課程",
@@ -301,7 +333,7 @@
       {
         "shortTerm": "數位化",
         "midLongTerm": "",
-        "label": "08",
+        "label": "09",
         "method": [
           {
             "shortTerm": "建置開放式線上課程",
@@ -338,7 +370,7 @@
       {
         "shortTerm": "資訊力",
         "midLongTerm": "",
-        "label": "09",
+        "label": "10",
         "method": [
           {
             "shortTerm": "開設程式設計課程",
@@ -365,7 +397,7 @@
       {
         "shortTerm": "博雅教育",
         "midLongTerm": "",
-        "label": "10",
+        "label": "11",
         "method": [
           {
             "shortTerm": "通識課程革新",
@@ -397,7 +429,7 @@
       {
         "shortTerm": "培養自主學習能力",
         "midLongTerm": "",
-        "label": "11",
+        "label": "12",
         "method": [
           {
             "shortTerm": "閱讀計畫補助",
@@ -429,7 +461,7 @@
       {
         "shortTerm": "培育創新創業人才",
         "midLongTerm": "",
-        "label": "12",
+        "label": "13",
         "method": [
           {
             "shortTerm": "創新創業學程或課程",
@@ -471,7 +503,7 @@
       {
         "shortTerm": "健康力",
         "midLongTerm": "",
-        "label": "13",
+        "label": "14",
         "method": [
           {
             "shortTerm": "促進學生生理健康",
@@ -488,7 +520,7 @@
       {
         "shortTerm": "就業力",
         "midLongTerm": "",
-        "label": "14",
+        "label": "15",
         "method": [
           {
             "shortTerm": "強化職場連結",
@@ -518,9 +550,9 @@
         ]
       },
       {
-        "shortTerm": "其他",
+        "shortTerm": "其他_B16",
         "midLongTerm": "",
-        "label": "15",
+        "label": "16",
         "method": [
           {
             "shortTerm": "充實與改善硬體設備",
@@ -536,6 +568,11 @@
             "shortTerm": "學生輔導",
             "midLongTerm": "",
             "label": "03"
+          },
+          {
+            "shortTerm": "畢業門檻相關策略",
+            "midLongTerm": "",
+            "label": "04"
           }
         ]
       }
@@ -711,13 +748,30 @@
             "shortTerm": "建立跨領域研究中心",
             "midLongTerm": "",
             "label": "03"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_C04",
+            "label": "04"
           }
         ]
       },
       {
-        "shortTerm": "其他",
+        "shortTerm": "產學合作研究",
         "midLongTerm": "",
         "label": "05",
+        "method": [
+          {
+            "shortTerm": "產學合作研究",
+            "midLongTerm": "產學合作研究",
+            "label": "01"
+          }
+        ]
+      },
+      {
+        "shortTerm": "其他_C06",
+        "midLongTerm": "",
+        "label": "06",
         "method": [
           {
             "shortTerm": "充實硬體設備",
@@ -733,6 +787,11 @@
             "shortTerm": "強化學術研究倫理",
             "midLongTerm": "",
             "label": "03"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_C06",
+            "label": "04"
           }
         ]
       }
@@ -846,11 +905,16 @@
             "shortTerm": "成立產學合作研究園區",
             "midLongTerm": "",
             "label": "05"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_D03",
+            "label": "06"
           }
         ]
       },
       {
-        "shortTerm": "強化產學連結（不分教學研究）",
+        "shortTerm": "強化產學連結(不分教學研究)",
         "midLongTerm": "",
         "label": "04",
         "method": [
@@ -915,11 +979,16 @@
             "shortTerm": "扶植RSC新創事業",
             "midLongTerm": "",
             "label": "06"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_D05",
+            "label": "07"
           }
         ]
       },
       {
-        "shortTerm": "其他",
+        "shortTerm": "其他_D06",
         "midLongTerm": "",
         "label": "06",
         "method": [
@@ -937,6 +1006,11 @@
             "shortTerm": "技術開發",
             "midLongTerm": "",
             "label": "03"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_D06",
+            "label": "04"
           }
         ]
       }
@@ -948,7 +1022,7 @@
     "label": "E",
     "keypoint": [
       {
-        "shortTerm": "與地方（或中央）政府連結",
+        "shortTerm": "與地方(或中央)政府連結",
         "midLongTerm": "",
         "label": "01",
         "method": [
@@ -971,11 +1045,16 @@
             "shortTerm": "配合政策提供專業資訊/服務",
             "midLongTerm": "",
             "label": "04"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_E01",
+            "label": "05"
           }
         ]
       },
       {
-        "shortTerm": "與非營利組織（NPO）連結",
+        "shortTerm": "與非營利組織(NPO)連結",
         "midLongTerm": "",
         "label": "02",
         "method": [
@@ -1020,11 +1099,16 @@
             "shortTerm": "建置區域教學資源中心",
             "midLongTerm": "",
             "label": "04"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "其他_E03",
+            "label": "05"
           }
         ]
       },
       {
-        "shortTerm": "促進地區（社區）發展",
+        "shortTerm": "促進地區(社區)發展",
         "midLongTerm": "",
         "label": "04",
         "method": [
@@ -1305,11 +1389,16 @@
             "shortTerm": "校務基金決策機制透明化",
             "midLongTerm": "",
             "label": "04"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "",
+            "label": "05"
           }
         ]
       },
       {
-        "shortTerm": "推動校務研究（IR）",
+        "shortTerm": "推動校務研究(IR)",
         "midLongTerm": "",
         "label": "06",
         "method": [
@@ -1327,11 +1416,16 @@
             "shortTerm": "發展校務研究",
             "midLongTerm": "",
             "label": "03"
+          },
+          {
+            "shortTerm": "其他",
+            "midLongTerm": "",
+            "label": "04"
           }
         ]
       },
       {
-        "shortTerm": "健全改革董事會（私校）",
+        "shortTerm": "健全改革董事會(私校)",
         "midLongTerm": "",
         "label": "07",
         "method": [
@@ -1424,7 +1518,7 @@
         ]
       },
       {
-        "shortTerm": "其他",
+        "shortTerm": "其他_F11",
         "midLongTerm": "",
         "label": "11",
         "method": [
