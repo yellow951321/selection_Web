@@ -1,11 +1,12 @@
 .breadcrumb
 	.ui.huge.breadcrumb
 		a.section(href=`/auth/channel`)=user
-		- let route = GLOBAL.config.host
+		- console.log(GLOBAL)
+		- let route = GLOBAL.config.server.host
 		each value, index in breadcrumb
 			.divider /
 			- route = route + `/${value.id}`
 			if index != breadcrumb.length - 1
-				a.section(href=route)= value.name
+				a.section(href=`${route}/index`)= value.name
 			else
 				.section=value.name

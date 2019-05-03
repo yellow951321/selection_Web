@@ -26,8 +26,8 @@ append content
   //- content
   //- page select
   #page-management.ui.container.pusher
-    if GLOBAL['yearFroms'].length
-      for yearFrom in GLOBAL['yearFroms']
+    if yearFroms.length
+      for yearFrom in yearFroms
         .year.ui.container
           h1.yearFrom.header= yearFrom.year
           for yearTo in yearFrom.info

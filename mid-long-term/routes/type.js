@@ -22,8 +22,9 @@ router.get('/index', async(req, res)=>{
 
     res.render('manage/type', {
       breadcrumb: [
-        {id: 'mid-long-term',
-         name: '中長程計畫',
+        {
+          id: 'mid-long-term',
+          name: '中長程計畫',
         },
       ],
       id: req.session.userId,
