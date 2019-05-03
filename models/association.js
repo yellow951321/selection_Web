@@ -1,22 +1,25 @@
-const User = require('./schema/User')
-const Data= require('./schema/Data')
-const Content= require('./schema/Content')
+const UserShortTerm = require('./schema/shortTerm/User')
+const DataShortTerm = require('./shema/shortTerm/Data')
+const ContentShortTerm = require('./schema/shortTerm/Content')
 
-User.hasMany(Data, {
+// ShortTerm section
+
+UserShortTerm.hasMany(DataShortTerm, {
   as: 'data',
-  foreignKey: 'userId',
+  foreignkey: 'userId',
   sourceKey: 'userId',
 })
 
-Data.hasMany(Content, {
-  as: 'contents',
-  foreignKey: 'dataId',
-  sourceKey: 'dataId',
+DataShortTerm.hasMany(ContentShortTerm, {
+  as: 'content',
+  foreignkey: 'dataId',
+  sourceKey: 'dataId'
 })
 
-module.exports = {
-  User,
-  Data,
-  Content,
-}
 
+
+module.exports = {
+  UserShortTerm,
+  DataShortTerm,
+  ContentShortTerm
+}

@@ -1,14 +1,98 @@
 import fs from 'fs'
 import express from 'express'
+import path from 'path'
+import cookieParser from 'cookie-parser'
 
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
+import config from 'projectRoot/config.js'
 
-const app = express.Router()
+const app = express()
 
-app.get('/login', (req, res)=>{
+app.locals.Global = {config: config, }
+app.set('views', path.join(config.projectRoot, 'auth/views'))
+app.set('view engine', 'pug')
+
+
+app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
+  cacheControl: false,
+  // 404 for request dot files
+  dotfiles: 'ignore',
+  // disable cache
+  etag: false,
+  // handle missing extension for static file
+  extensions: ['css', 'js', ],
+  // when 404, pass handle to other middleware
+  fallthrough: true,
+  // static file can be cached
+  immutable: false,
+  // index file not exist
+  index: false,
+  // disable cache
+  lastModified: false,
+  // disable cache
+  maxAge: 0,
+  // do not redirect to trailing '/'
+  redirect: false,
+  // add timestamp for test
+  setHeaders(res){
+    res.set('x-timestamp', Date.now())
+  },
+}))
+
+
+// check the sessionId in the cookie
+// if it's status 'login' (stored in database)
+// automatically login
+app.use(async(req, {}, next) => {
+  let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
+
+  // sessionId will be reset after restarting server
+  // we need to update session after every connection
+  if(sessionId !== req.session.id){
+    let data = await Session.findOne({
+      where: {
+        sessionId,
+      },
+    })
+    if(data !== null){
+      if(Number(data.expiration) > Date.now()){
+        req.session.userId = data.userId
+        await data.update({
+          sessionId: req.session.id,
+        })
+      }
+      else{
+        await data.destroy()
+      }
+    }
+  }
+  next()
+})
+
+app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
-    res.redirect(`/man/${req.session.userId}`)
+    res.redirect('/auth/channel')
+  else
+    res.render('login')
+})
+
+app.get('/channel', async(req, res)=> {
+  if(req.session && req.session.userId){
+    let user = await User.findOne({
+      where:{
+        userId: req.session.userId,
+      },
+    })
+    if(user != null)
+      user = user.dataValues
+
+    res.render('channel', {
+      GLOBAL:{
+        user: user.account,
+      },
+    })
+  }
   else
     res.render('login')
 })
@@ -30,7 +114,7 @@ app.post('/login', async(req, res)=>{
         userId: doc.userId,
       })
 
-      res.redirect(`/man/${req.session.userId}`)
+      res.redirect('/auth/login')
     }else{
       throw new Error(`No account matched ${req.body.username}`)
     }
@@ -48,23 +132,15 @@ app.get('/logout', async(req, res)=>{
         sessionId: req.session.id,
       },
     })
-    await new Promise((res, rej) => {
-      req.session.destroy((err)=>{
-        if(err)
-          rej(err)
-        res()
-      })
-    })
-      .catch((err) => {
-        throw err
-      })
-    res.status(200).redirect('/auth/login')
+    req.session.destroy()
+
+    res.redirect('/auth/login')
   } catch (err) {
-    res.status(404).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
+    res.status(500).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
   }
 })
 
-app.get('/signup', (req, res)=>{
+app.get('/signup', ({}, res)=>{
   res.render('signup')
 })
 

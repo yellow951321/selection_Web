@@ -1,24 +1,26 @@
-const sequelize = require('../../db/mariadb')
+const { sequelizeUser ,} = require(`${process.env.ROOT}/db/mariadb`)
 const Sequelize = require('sequelize')
+
 const userSchema = {
-  userId:{
+  userId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
-    primaryKey: true,
+    primarKey: true,
     allowNull: false,
     unique: true,
-    autoIncrement: true,
+    autoIncrement: true
   },
-  account:{
+  account: {
     type: Sequelize.STRING(20),
     allowNull: false,
     unique: true,
   },
-  password:{
+  password: {
     type: Sequelize.STRING(20),
     allowNull: false,
-  },
+  }
 }
 
-const User = sequelize.define('users', userSchema)
+
+const User = sequelizeUser.define('user', userSchema)
 
 module.exports = User

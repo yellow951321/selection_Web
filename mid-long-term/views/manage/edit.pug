@@ -1,0 +1,79 @@
+extends component/layout
+
+append content
+  //- popup delete content
+  .ui.container
+    #delete.ui.small.modal
+      .header 確定要刪除嗎
+      .content
+        p 確定要刪除這筆資料嗎
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 刪除
+
+  //- popup advice filter
+  .ui.container
+    #advice.ui.small.modal
+      .ui.form.segment.filter
+        .three.fields
+          .field
+            label 構面
+            select.filter.filter__dimension.ui.selection.dropdown
+              option(value='教學') 教學
+              option(value='研究') 研究
+              option(value='產學') 產學
+              option(value='社會責任') 社會責任
+              option(value='大學治理及公共性') 大學治理及公共性
+          .field
+            label 推動重點
+            select.filter.filter__item.ui.selection.dropdown
+          .field
+            label 具體作法
+            select.filter.filter__detail.ui.selection.dropdown
+
+  //- content
+  //- page edit
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-filter.ui.container.pusher
+    .dataId.transition.hidden=GLOBAL['dataId']
+    .ui.form.segment.filter
+      .five.fields
+        .field
+          label 構面
+          select.filter.filter__dimension.ui.selection.dropdown
+            option(value='教學') 教學
+            option(value='研究') 研究
+            option(value='產學') 產學
+            option(value='社會責任') 社會責任
+            option(value='大學治理及公共性') 大學治理及公共性
+        .field
+          label 推動重點
+          select.filter.filter__item.ui.selection.dropdown
+        .field
+          label 具體作法
+          select.filter.filter__detail.ui.selection.dropdown
+        .field
+          label 模式
+          select.filter.filter__mode.ui.selection.dropdown
+            option(value='edit') 編輯
+            option(value='check') 待確認
+        .field
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+    .reserved.ui.transition.hidden
+      if GLOBAL['aspect']
+        .reserved__dimension=GLOBAL['aspect']
+        .reserved__item=GLOBAL['keypoint']
+        .reserved__detail=GLOBAL['method']
+
+  #page-edit.ui.container
+
+  #footer.ui.container.center.aligned.transition.hidden
+    .ui.floating.message.transition.hidden
+      p 尚未新增任何資料
+    button.add-content.ui.blue.button 新增
+
+append script
+  script(src='/mid-long-term/static/javascripts/edit.bundle.js')

@@ -1,6 +1,6 @@
 const config = {
   'database': {
-    'host': '',
+    'host': '127.0.0.1',
     'port': 3306,
     'user': '',
     'password': '',
@@ -9,6 +9,9 @@ const config = {
     'domain': 'localhost',
     'port': 3000,
     'secret': 'deepest and darkest secret',
+    get host() {
+      return `http://${config.server.domain}:${config.server.port}`
+    }
   },
   'projectRoot': '',
 }

@@ -1,0 +1,31 @@
+.rectangle-box {
+  box-sizing: border-box;
+  font-size: 2em;
+  width: 12em;
+  display: inline-block;
+  margin: 0.2em;
+  border-radius: 0.2em;
+  border: 0.2em solid transparent;
+}
+
+.icon.top.right.pointing.dropdown.button {
+  position: relative;
+  margin-left: 8em;
+  margin-bottom: 2em;
+}
+
+.option {
+  margin: 0.2em 0.2em 0.2em 0!important;
+}
+
+.userTime {
+  color: #888;
+  font-size: 15px!important;
+}
+
+.userTimeRow {
+  text-align: left;
+  display: block!important;
+  padding-left: 10px !important;
+}
+

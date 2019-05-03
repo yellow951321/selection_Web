@@ -2,7 +2,7 @@ import Sequelize from 'sequelize'
 
 import config from 'projectRoot/config.js'
 
-const UserDB = new Sequelize( 'sinicaUser', `${config.database.user}`, `${config.database.password}`, {
+const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -44,3 +44,4 @@ const UserDB = new Sequelize( 'sinicaUser', `${config.database.user}`, `${config
 })
 
 export default UserDB
+

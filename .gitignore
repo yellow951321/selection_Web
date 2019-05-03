@@ -64,4 +64,11 @@ typings/
 *.swp
 package-lock.json
 config.js
+config.local.js
+.env
 bin/*
+local/*
+auth/public/javascripts/*
+mid-long-term/public/javascripts/*
+short-term/public/javascripts/*
+
