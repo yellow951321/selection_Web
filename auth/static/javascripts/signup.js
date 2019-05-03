@@ -4,8 +4,8 @@ window.addEventListener('load', ()=>{
 
   signup.addEventListener('submit', (event) => {
     event.preventDefault()
-    const account = signup.querySelector('.account2')
-    const password = signup.querySelector('.password2')
+    const account = signup.querySelector('.account')
+    const password = signup.querySelector('.password')
     console.log(account.value)
     console.log(password.value)
 

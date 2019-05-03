@@ -8,7 +8,9 @@ append head
 append content
   section#header.ui.top.fixed.menu.header
     .title
-      include mixins/_breadcrumb.pug
+      .breadcrumb
+        .ui.huge.breadcrumb
+          a.section(href=`/auth/channel`)=user
     .right.menu
       block buttons
       a.logout.ui.item(href=`/auth/logout`) 登出

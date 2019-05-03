@@ -15,6 +15,7 @@ import graphRouter from 'mid-long-term/routes/graph.js'
 
 const app = express()
 
+app.locals.GLOBAL = {config: config, }
 app.set('views', path.join(config.projectRoot, 'mid-long-term/views'))
 app.set('view engine', 'pug')
 app.use('/static', express.static(`${config.projectRoot}/mid-long-term/public`, {

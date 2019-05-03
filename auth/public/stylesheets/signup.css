@@ -3,10 +3,6 @@ body {
     font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-#hide, #wrong {
-    visibility: hidden;
-}
-
 .account, .password {
     width:300px !important;
     height:40px !important;

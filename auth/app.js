@@ -9,7 +9,7 @@ import config from 'projectRoot/config.js'
 
 const app = express()
 
-app.locals.Global = {config: config, }
+app.locals.GLOBAL = {config: config, }
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
@@ -21,7 +21,7 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   // disable cache
   etag: false,
   // handle missing extension for static file
-  extensions: ['css', 'js', ],
+  extensions: ['css', 'js',],
   // when 404, pass handle to other middleware
   fallthrough: true,
   // static file can be cached
@@ -88,9 +88,7 @@ app.get('/channel', async(req, res)=> {
       user = user.dataValues
 
     res.render('channel', {
-      GLOBAL:{
-        user: user.account,
-      },
+      user: user.account,
     })
   }
   else
