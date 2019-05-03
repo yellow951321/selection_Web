@@ -12,7 +12,6 @@ const app = express()
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
-
 app.use('/static', express.static( `${config.projectRoot}/auth/public`, {
   cacheControl: false,
   // 404 for request dot files
