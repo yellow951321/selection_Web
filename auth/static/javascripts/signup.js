@@ -6,8 +6,6 @@ window.addEventListener('load', ()=>{
     event.preventDefault()
     const account = signup.querySelector('.account2')
     const password = signup.querySelector('.password2')
-    console.log(account.value)
-    console.log(password.value)
 
     fetch(signURL, {
       method: 'POST',

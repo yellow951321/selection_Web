@@ -72,9 +72,13 @@ app.use(async(req, {}, next) => {
 
 app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
-    res.redirect('/auth/channel')
+    res.status(304).redirect('/auth/channel')
   else
-    res.render('login')
+    res.render('login', {
+      GLOBAL: {
+        config: app.locals.Global.config,
+      },
+    })
 })
 
 app.get('/channel', async(req, res)=> {
@@ -84,9 +88,6 @@ app.get('/channel', async(req, res)=> {
         userId: req.session.userId,
       },
     })
-    if(user != null)
-      user = user.dataValues
-
     res.render('channel', {
       GLOBAL:{
         user: user.account,
@@ -94,7 +95,7 @@ app.get('/channel', async(req, res)=> {
     })
   }
   else
-    res.render('login')
+    res.status(304).redirect('/auth/channel')
 })
 
 app.post('/login', async(req, res)=>{
@@ -136,38 +137,37 @@ app.get('/logout', async(req, res)=>{
 
     res.status(304).redirect('/auth/login')
   } catch (err) {
-    res.status(500).render('error', {'message': err.message, 'error':{'status': '404', 'stack': 'error', }, })
+    res.status(500).render('error', {
+      'message': err.message,
+      'status': 500,
+    })
   }
 })
 
 app.get('/signup', (req, res)=>{
-  res.render('signup')
+  res.render('signup', {
+    GLOBAL: {
+      config: app.locals.Global.config,
+    },
+  })
 })
 
 app.post('/signup', async(req, res)=>{
-  var rMatch = new RegExp('<script[\s\S]*?>[\s\S]*?<\/script>', 'gi')
   try{
-    if(rMatch.test(req.body.username) || rMatch.test(req.body.password))
-      throw new Error('Forbidden password or account')
-
-    const promise = await User.create({
-      account : req.body.username,
+    const user = await User.create({
+      account : req.body.account,
       password: req.body.password,
     })
-
-    if(promise){
-      await new Promise((resolve, reject)=>{
-        fs.mkdir(`data/${req.body.username}`, {recursive: true, }, (err)=>{
-          if(err) reject(err)
-          resolve(true)
-        })
-      })
-    }
-
-    res.status(200).send('OK')
+    if(user)
+      res.redirect('/auth/login')
+    else
+      throw new Error('sign up failed')
   }
   catch (err){
-    res.status(400).render('signup', {error:err.message, })
+    res.status(400).render('error', {
+      status: 400,
+      message: err.message,
+    })
   }
 })
 
