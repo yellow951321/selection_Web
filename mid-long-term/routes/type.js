@@ -1,18 +1,22 @@
 import express from 'express'
 
-import { findTypeAll, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+// import { findTypeAll, } from 'mid-long-term/models/operations/Data.js'
+import getAllType from 'mid-long-term/models/operations/get-all-type.js'
+
 import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
+
+
 
 const router = express.Router()
 
 router.get('/index', async(req, res)=>{
   try{
-    let types = await findTypeAll(req.session.userId)
+    let types = await getAllType(req.session.userId)
 
-    types = await types.map((typeNum) => {
+    types = await types.map((typeId) => {
       return {
-        name: getFromNum(map, {type: typeNum, }),
-        id: typeNum,
+        name: getFromNum(map, {type: typeId, }),
+        id: typeId,
       }
     })
 
