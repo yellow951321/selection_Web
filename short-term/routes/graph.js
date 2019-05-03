@@ -6,7 +6,7 @@ import {
   countCampusRespectToKey,
   countCampusRespectToMethod, } from 'projectRoot/mid-long-term/models/operations/draw.js'
 
-import {map, getFromWord, getFromNum} from 'projectRoot/data/operation/mapping.js'
+import {map, getFromWord, getFromNum, } from 'projectRoot/data/operation/mapping.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,18 +17,18 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async (req,res) => {
+router.get('/index', async(req, res) => {
   try {
-    let typeName = getFromNum(map, {type: res.locals.typeId})
+    let typeName = getFromNum(map, {type: res.locals.typeId, })
     let campusName = getFromNum(map, {
       type: res.locals.typeId,
-      campus: res.locals.campusId
+      campus: res.locals.campusId,
     })
     res.render('manage/graph', {
       GLOBAL: {
         channel: {
           id: 'mid-long-term',
-          name: '中長程計畫'
+          name: '中長程計畫',
         },
         id: req.session.userId,
         user: res.locals.user,
@@ -41,9 +41,9 @@ router.get('/index', async (req,res) => {
           name: campusName,
         },
         graph: '統計圖表',
-      }
+      },
     })
-  } catch( err ){
+  } catch(err){
     console.log(err)
   }
 })

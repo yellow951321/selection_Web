@@ -15,7 +15,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async (req,res)=>{
+router.get('/index', async(req, res)=>{
   try {
     const {dataValues, } = await Data.findOne({
       where: {
@@ -23,14 +23,14 @@ router.get('/index', async (req,res)=>{
         typeId: res.locals.typeId,
         yearFrom: res.locals.year, // TODO
         yearTo: res.locals.year, // TODO
-        userId: req.session.userId
+        userId: req.session.userId,
       },
-      attributes: ['dataId']
+      attributes: ['dataId', ],
     })
 
-    if( dataValues != null) {
+    if(dataValues != null) {
       let tmpDir = '/tmp/selection_Web'
-      if( !fs.existsSync(tmpDir) )
+      if(!fs.existsSync(tmpDir))
         fs.mkdirSync(tmpDir)
 
       let filePath = uniqueFilename(tmpDir)

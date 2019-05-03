@@ -12,19 +12,19 @@ const dataSchema = {
   },
   campusId: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   typeId: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   yearFrom: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   yearTo: {
     type: Sequelize.TINYINT(8).UNSIGNED,
-    allowNull: false
+    allowNull: false,
   },
   userId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -32,10 +32,10 @@ const dataSchema = {
       // This is a reference to another model
       model: User,
       // This is the column name of the referenced model
-      key: 'userId'
+      key: 'userId',
     },
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }
 
 const Data = midLongTermDB.define('data', dataSchema)

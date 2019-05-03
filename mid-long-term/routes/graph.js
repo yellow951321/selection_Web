@@ -6,7 +6,7 @@ import {
   countCampusRespectToKey,
   countCampusRespectToMethod, } from 'projectRoot/mid-long-term/models/operations/draw.js'
 
-import {map, getFromWord, getFromNum} from 'projectRoot/data/operation/mapping.js'
+import {map, getFromWord, getFromNum, } from 'projectRoot/data/operation/mapping.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 const router = express.Router({
@@ -18,18 +18,18 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async (req,res) => {
+router.get('/index', async(req, res) => {
   try {
-    let typeName = getFromNum(map, {type: res.locals.typeId})
+    let typeName = getFromNum(map, {type: res.locals.typeId, })
     let campusName = getFromNum(map, {
       type: res.locals.typeId,
-      campus: res.locals.campusId
+      campus: res.locals.campusId,
     })
     res.render('manage/graph', {
       GLOBAL: {
         channel: {
           id: 'mid-long-term',
-          name: '中長程計畫'
+          name: '中長程計畫',
         },
         id: req.session.userId,
         user: res.locals.user,
@@ -42,9 +42,9 @@ router.get('/index', async (req,res) => {
           name: campusName,
         },
         graph: '統計圖表',
-      }
+      },
     })
-  } catch( err ){
+  } catch(err){
     console.log(err)
   }
 })
@@ -55,7 +55,7 @@ router.get('/filter', async(req, res)=>{
     let data
     if(req.query.aspect == 'All'){
       data = await countCampusAll({
-        dataId: res.locals.dataId
+        dataId: res.locals.dataId,
       })
     }else if(req.query.keypoint == 'All'){ // choose whole keypoint
       data = await countCampusRespectToAspect({
@@ -79,20 +79,20 @@ router.get('/filter', async(req, res)=>{
 
     let year = await Data.findOne({
       where: {
-        dataId: res.locals.dataId
+        dataId: res.locals.dataId,
       },
       attributes: [
         'yearFrom',
-        'yearTo'
-      ]
-    }).then( d => d.dataValues )
+        'yearTo',
+      ],
+    }).then(d => d.dataValues)
 
     res.json({
       data,
       year: {
         yearFrom: year.yearFrom,
         yearTo: year.yearTo,
-      }
+      },
     })
   }catch(err){
     console.log(new Error(err))

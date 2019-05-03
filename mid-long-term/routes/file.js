@@ -1,8 +1,8 @@
 import express from 'express'
 
-import {map, getFromNum , getFromWord} from 'projectRoot/data/operation/mapping'
+import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
 import { findYearAll, parseYear, projectDelete, insertCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import { TSArrayType } from 'babel-types';
+import { TSArrayType, } from 'babel-types'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 
@@ -15,7 +15,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.post('/add', async(req,res)=>{
+router.post('/add', async(req, res)=>{
   try{
     let temptype
     (req.body.type == 0) ? temptype = '大學' : temptype = '技專院校'
@@ -32,21 +32,21 @@ router.post('/add', async(req,res)=>{
     })
     res.redirect(`/mid-long-term/${req.body.type}/index`)
 
-  }catch( err ){
+  }catch(err){
     console.log(err)
   }
 })
 
 
-router.delete('/delete', async (req,res)=>{
+router.delete('/delete', async(req, res)=>{
   try{
     const {dataValues, } = await Data.findOne({
       where: {
-       dataId: res.locals.dataId
+        dataId: res.locals.dataId,
       },
-      attributes: ['dataId']
+      attributes: ['dataId', ],
     })
-    if( dataValues != null ) {
+    if(dataValues != null) {
       await projectDelete(dataValues.dataId)
       console.log('deletion procedure is conpleted')
       res.send('OK')
@@ -57,7 +57,7 @@ router.delete('/delete', async (req,res)=>{
   }
 })
 
-router.get('/edit', async (req,res) => {
+router.get('/edit', async(req, res) => {
   try {
     let checkData = await Data.findOne({
       where: {
@@ -65,35 +65,35 @@ router.get('/edit', async (req,res) => {
       },
       attributes: [
         'dataId',
-        'userId'
-      ]
+        'userId',
+      ],
     })
     if(checkData.dataValues.userId !== req.session.userId){
       res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
-      return;
+      return
     }
-    let typeName = getFromNum(map, {type: res.locals.typeId})
-    let campusName = getFromNum(map , {
-      type: res.locals.typeId ,
-      campus: res.locals.campusId})
-    res.render('manage/edit',{
+    let typeName = getFromNum(map, {type: res.locals.typeId, })
+    let campusName = getFromNum(map, {
+      type: res.locals.typeId,
+      campus: res.locals.campusId, })
+    res.render('manage/edit', {
       GLOBAL: {
         channel: {
           id: 'mid-long-term',
-          name: '中長程計畫'
+          name: '中長程計畫',
         },
         id: req.session.userId,
         dataId: res.locals.dataId,
         user: res.locals.user,
         type: {
           id: res.locals.typeId,
-          name: typeName
+          name: typeName,
         },
         campus: {
           id: res.locals.campusId,
-          name: campusName
-        }
-      }
+          name: campusName,
+        },
+      },
     })
   } catch (err) {
     console.log(err)
