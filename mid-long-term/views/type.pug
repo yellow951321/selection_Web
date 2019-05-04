@@ -18,7 +18,7 @@ append content
     .two.column.row
       for val in types
         .column
-          a.blue.square-box(href=`/mid-long-term/${val.id}/index`)=val.name
+          a.blue.square-box(href=`${GLOBAL.config.server.host}/mid-long-term/${val.id}/index`)=val.name
 
 append buttons
 

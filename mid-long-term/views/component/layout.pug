@@ -11,7 +11,7 @@ append content
       include ../mixins/_breadcrumb.pug
     .right.menu
       block buttons
-      a.logout.ui.item(href=`/auth/logout`) 登出
+      a.logout.ui.item(href=`${GLOBAL.config.server.host}/auth/logout`) 登出
 
 append footer
 
