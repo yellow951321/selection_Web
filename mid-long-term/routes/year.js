@@ -16,13 +16,10 @@ const router = express.Router({
 
 router.get('/index', async(req, res)=>{
   try{
-    let data = await getAllYear({
+    let {typeName, campusName, yearFroms} = await getAllYear({
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })
-    let typeName = campusMap[res.locals.typeId].type
-    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
-    let yearFroms = await parseYear(data)
     res.render('year', {
         breadcrumb: [
           {
@@ -40,7 +37,6 @@ router.get('/index', async(req, res)=>{
         ],
         id: req.session.userId,
         user: res.locals.user,
-        map: campusMap,
         type: {
           id: res.locals.typeId,
           name: typeName
@@ -53,7 +49,7 @@ router.get('/index', async(req, res)=>{
     })
 
   }catch(err){
-    console.log(err)
+    throw new Error("error occurred in year.js", err)
   }
 })
 

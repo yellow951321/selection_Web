@@ -32,7 +32,12 @@ export default async(typeId) => {
         time: data.content[0].dataValues.lastUpdateTime,
       }
     })
-    return data
+
+    return {
+      campuses: data,
+      typeName: campusMap[typeId].type,
+    }
+
   }catch(err){
     console.log(err)
   }

@@ -113,6 +113,6 @@ export default async(data) => {
     // console.log(JSON.stringify(tt, null, 2))
     return tt
   }catch(err){
-    console.log(err)
+    throw new Error('Error ocurred in parse-year.js', err)
   }
 }

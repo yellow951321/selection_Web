@@ -17,10 +17,10 @@
       select.campus-dropdown.ui.selection.dropdown(type='text', placeholder='Enter school Name', name='campus', required)
 
       .normal.ui.transition.hidden
-        each val in map['0'].campus
+        each val in GLOBAL.campusMap[0].campus
           option(value= val)=val
       .others.ui.transition.hidden
-        each val in map['1'].campus
+        each val in GLOBAL.campusMap[1].campus
           option(value= val)=val
 
     .actions

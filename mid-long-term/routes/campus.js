@@ -1,8 +1,6 @@
 import express from 'express'
-
-import campusMap from 'lib/static/javascripts/mapping/campus.js'
-
 import getAllCampus from 'mid-long-term/models/operations/get-all-campus.js'
+
 
 const router = express.Router({
   // case sensitive for route path
@@ -13,10 +11,9 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
-    let campuses = await getAllCampus(res.locals.typeId)
-    let typeName = campusMap[res.locals.typeId].type
+    let {campuses, typeName} = await getAllCampus(res.locals.typeId)
 
     res.render('campus', {
       breadcrumb: [
@@ -31,7 +28,6 @@ router.get('/index', async(req, res)=>{
       ],
       id: req.session.userId,
       user: res.locals.user,
-      map: campusMap,
       type: {
         id: res.locals.typeId,
         name: typeName
@@ -40,7 +36,7 @@ router.get('/index', async(req, res)=>{
     })
 
   }catch(err){
-    console.log(err)
+    next(err)
   }
 })
 
