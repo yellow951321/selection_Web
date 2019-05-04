@@ -1,9 +1,5 @@
 import express from 'express'
 
-import {map, } from 'projectRoot/data/operation/mapping.js'
-// import { parseYear, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import parseYear from 'mid-long-term/models/operations/parse-year.js'
-import campusMap from 'lib/static/javascripts/mapping/campus.js'
 import getAllYear from 'mid-long-term/models/operations/get-all-year.js'
 const router = express.Router({
   // case sensitive for route path
