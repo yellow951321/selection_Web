@@ -84,6 +84,9 @@ router.get('/edit', async(req, res) => {
         {
           id: res.locals.campusId,
           name: campusName
+        },
+        {
+          name: '編輯'
         }
       ],
       id: req.session.userId,
