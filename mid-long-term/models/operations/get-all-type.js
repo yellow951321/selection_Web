@@ -1,5 +1,5 @@
 import Data from 'mid-long-term/models/schemas/Data.js'
-
+import typeMap from 'lib/static/javascripts/mapping/campus.js'
 
 export default async() => {
   try{
@@ -8,9 +8,15 @@ export default async() => {
       attributes: ['typeId', ],
       group: ['typeId', ],
     })
-    return data.map((data) => data.typeId)
+    return data.map(d => {
+      return {
+        name: typeMap[d.typeId].type,
+        id: d.typeId,
+      }
+    })
+
   }
   catch(err){
-    throw err
+    throw new Error('Error occur in get-all-type.js', err)
   }
 }

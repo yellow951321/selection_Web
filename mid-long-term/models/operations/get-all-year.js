@@ -1,4 +1,6 @@
 import {Data, } from 'mid-long-term/models/association.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
+import parseYear from 'mid-long-term/models/operations/parse-year.js'
 
 export default async(info={}) => {
   try{
@@ -17,10 +19,16 @@ export default async(info={}) => {
       ],
     })
 
-    return data.map(d => d.dataValues)
+    data = data.map(d => d.dataValues)
+    let yearFroms = await parseYear(data)
+    return {
+      typeName: campusMap[info.typeId].type,
+      campusName: campusMap[info.typeId].campus[info.campusId],
+      yearFroms,
+    }
 
   }catch(err) {
-    console.log(err)
+    throw new Error('Error occurred in get-all-year.js', err)
   }
 }
 
