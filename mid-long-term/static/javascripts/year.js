@@ -56,7 +56,7 @@ class Delete {
 // variables > functions
 
 // add project button clicked
-const addButtonClicked = (event) => {
+const addButtonClicked = () => {
   $('#addForm').modal({
     onApprove : function(){return false},
   }).modal('show')
@@ -75,7 +75,7 @@ const yearDropdownOnChange = (event) => {
   }
 }
 
-const restrictYear = (event) => {
+const restrictYear = () => {
   let to = parseInt(addForm.querySelector('.yearTo').value)
   let from = parseInt(addForm.querySelector('.yearFrom').value)
   if(from >= to)
@@ -112,7 +112,6 @@ addForm.querySelector('.type-dropdown').firstChild.dispatchEvent(new Event('chan
 
 
 pageManagement.querySelectorAll('.deleteBtn').forEach((node) => {
-  console.log(node)
   node.addEventListener('click', Delete.showDeleteConfirm(del))
 })
 

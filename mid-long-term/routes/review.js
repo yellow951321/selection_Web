@@ -3,7 +3,7 @@ import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
-
+import { midLongTermFromNumber, midLongTermFromWord, } from 'projectRoot/data/newMap/mapping.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -61,10 +61,18 @@ router.get('/', async(req, res) => {
       temp.keypoint = getFromNum(map, {item: temp.keypoint, })
       temp.method = getFromNum(map, {detail: temp.method, })
 
+      // temp.aspect = midLongTermFromNumber({aspect: temp.aspect })
+      // temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
+      // temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
+
+
       temp.conflictedAspect = getFromNum(map, {dimension: temp.conflictedAspect, })
       temp.conflictedKeypoint = getFromNum(map, {item: temp.conflictedKeypoint, })
       temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
 
+      // temp.conflictedAspect = midLongTermFromNumber({aspect: temp.aspect})
+      // temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
+      // temp.conflictedMethod = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
       if(temp.reviewerId){
         temp.reviewerId = await User.findOne({
           where: {
@@ -76,29 +84,21 @@ router.get('/', async(req, res) => {
       }
       return temp
     }))
-    let type = getFromNum(map, { type: res.locals.typeId, })
-    let campusName = getFromNum(map, {
-      type: res.locals.typeId,
-      campus: res.locals.campusId,
-    })
+    let typeName = campusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
+
     res.render('manage/review.pug', {
-      GLOBAL:{
-        channel: {
-          id: 'mid-long-term',
-          name: '中長程計畫',
-        },
-        id: req.session.userId,
-        user: res.locals.user,
-        type: {
-          id: res.locals.typeId,
-          name: type,
-        },
-        campus: {
-          id: res.locals.campusId,
-          name: campusName,
-        },
-        contents: data,
+      id: req.session.userId,
+      user: res.locals.user,
+      type: {
+        id: res.locals.typeId,
+        name: typeName
       },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName
+      },
+      contents: data,
     })
   }
   catch(err){
@@ -119,6 +119,11 @@ router.post('/conflict', async(req, res) => {
     let conflictedAspect = getFromWord(map, {dimension: req.body.conflictedAspect, })
     let conflictedKeypoint = getFromWord(map, {item: req.body.conflictedKeypoint, })
     let conflictedMethod = getFromWord(map, {detail: req.body.conflictedMethod, })
+
+    // let conflictedAspect = midLongTermFromWord({ aspect: req.body.conflictedAspect, })
+    // let conflictedKeypoint = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint})
+    // let conflictedMethod = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint, method: req.body.conflictedMethod})
+
     let newData = await data.update({
       conflictedAspect,
       conflictedKeypoint,

@@ -2,11 +2,11 @@ extends mixins/_layout
 
 append head
   title Login
-  +authCss('login.css')
+  +authCss('login')
 
 append content
   .ui.center.aligned.container
-    form.ui.form(method='POST', action='/auth/login')
+    form.ui.form(method='POST', action=`${GLOBAL.config.server.host}/auth/login`)
       h1 LOGIN
       .field
         label.interface account:

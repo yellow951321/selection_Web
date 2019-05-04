@@ -54,19 +54,43 @@ app.use(authUser)
 app.use('/', typeRouter)
 
 app.use('/:typeId', (req, res, next)=>{
-  res.locals.typeId = Number(req.params.typeId)
+  let typeId = Number(req.params.typeId)
+  if(typeof typeId === 'number')
+    res.locals.typeId = typeId
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invaliad type',
+    })
+  }
   next()
 },
 campusRouter)
 
 app.use('/:typeId/:campusId', (req, res, next)=>{
-  res.locals.campusId = Number(req.params.campusId)
+  let campusId = Number(req.params.campusId)
+  if(typeof campusId === 'number')
+    res.locals.campusId = campusId
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invaliad campus',
+    })
+  }
   next()
 },
 yearRouter)
 
 app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
-  res.locals.dataId = Number(req.params.dataId)
+  let dataId = Number(req.params.dataId)
+  if(typeof dataId === 'number')
+    res.locals.dataId = dataId
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invalid data',
+    })
+  }
   next()
 })
 

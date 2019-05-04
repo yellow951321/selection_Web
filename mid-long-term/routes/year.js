@@ -1,7 +1,8 @@
 import express from 'express'
 
 import {map, } from 'projectRoot/data/operation/mapping.js'
-import { parseYear, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+// import { parseYear, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import parseYear from 'mid-long-term/models/operations/parse-year.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 import getAllYear from 'mid-long-term/models/operations/get-all-year.js'
 const router = express.Router({
@@ -39,7 +40,7 @@ router.get('/index', async(req, res)=>{
         ],
         id: req.session.userId,
         user: res.locals.user,
-        map: map.campus,
+        map: campusMap,
         type: {
           id: res.locals.typeId,
           name: typeName

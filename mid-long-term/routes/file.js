@@ -1,10 +1,11 @@
 import express from 'express'
 
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, projectDelete, insertCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import { TSArrayType, } from 'babel-types'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+
+import projectDelete from 'mid-long-term/models/operations/project-delete.js'
+import projectCreate from 'mid-long-term/models/operations/project-create.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
+
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,17 +18,12 @@ const router = express.Router({
 
 router.post('/add', async(req, res)=>{
   try{
-    let temptype
-    (req.body.type == 0) ? temptype = '大學' : temptype = '技專院校'
-    let tempCampus = getFromWord(map, {
-      type: temptype,
-      campus: req.body.campus,
-    })
-    insertCampus({
-      campusId: tempCampus,
+    let campusName = campusMap[req.body.type].campus.indexOf(req.body.campus)
+    projectCreate({
+      campusId: campusName,
       yearFrom: req.body.yearFrom,
       yearTo: req.body.yearTo,
-      type: req.body.type,
+      typeId: req.body.type,
       userId: req.session.userId,
     })
     res.redirect(`/mid-long-term/${req.body.type}/index`)
@@ -72,28 +68,37 @@ router.get('/edit', async(req, res) => {
       res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
       return
     }
-    let typeName = getFromNum(map, {type: res.locals.typeId, })
-    let campusName = getFromNum(map, {
-      type: res.locals.typeId,
-      campus: res.locals.campusId, })
+
+    let typeName = campusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     res.render('manage/edit', {
-      GLOBAL: {
-        channel: {
+      breadcrumb: [
+        {
           id: 'mid-long-term',
           name: '中長程計畫',
         },
-        id: req.session.userId,
-        dataId: res.locals.dataId,
-        user: res.locals.user,
-        type: {
+        {
           id: res.locals.typeId,
-          name: typeName,
+          name: typeName
         },
-        campus: {
+        {
           id: res.locals.campusId,
-          name: campusName,
-        },
+          name: campusName
+        }
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      dataId: res.locals.dataId,
+      map: campusMap,
+      type: {
+        id: res.locals.typeId,
+        name: typeName
       },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName
+      },
+      yearFroms: yearFroms,
     })
   } catch (err) {
     console.log(err)

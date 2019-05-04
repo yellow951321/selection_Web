@@ -2,11 +2,11 @@ extends mixins/_layout
 
 append head
   title Login
-  +authCss('login.css')
+  +authCss('signup')
 
 append content
   .ui.center.aligned.container
-    form#signup.ui.form(method='POST')
+    form.ui.form(method='POST', action=`${GLOBAL.config.server.host}/auth/signup`)
       h1 SIGN UP
       .field
         label.interface account:
@@ -16,6 +16,3 @@ append content
         input.password2(type='password', name='password', style='width:300px;height:40px;', value='', placeholder="password", minlength="6", maxlength="25")
       button.ui.secondary.button(type='submit', style='width:100px;height:40px;') Confirm
       a#back.ui.button(href="/auth/login", style='width:100px;height:40px;') Back
-
-append script
-  +authJS('signup.js')

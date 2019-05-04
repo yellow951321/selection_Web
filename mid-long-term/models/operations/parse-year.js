@@ -1,43 +1,4 @@
-// import {User, Data, Content} from 'projectRoot/mid-long-term/models/association.js'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
-
-const findCampusOne = async(info={}) =>{
-  try{
-    let campus = await Data.findOne({
-      where:{
-        campusId: info.campusId,
-        typeId: info.type,
-      },
-    })
-    if(campus == null)
-      return null
-    else
-      var {dataNew, } = campus
-
-    return dataNew
-  } catch(err){
-    console.log(err)
-  }
-}
-
-const insertCampus = async(info={}) =>{
-  try{
-    let campus = await findCampusOne(info)
-    // if(campus !== null) return campus
-
-    return Data.create({
-      campusId: info.campusId,
-      typeId: info.type,
-      userId: info.userId,
-      yearFrom: info.yearFrom,
-      yearTo: info.yearTo,
-    })
-  }catch(err) {
-    console.log(err)
-  }
-}
+import {Content, User, } from 'mid-long-term/models/association.js'
 
 const parseInfo = async(dataId) => {
   try{
@@ -56,7 +17,6 @@ const parseInfo = async(dataId) => {
     data = data.map(({dataValues, }) => {
       return dataValues
     })
-
 
     let numUnreview = 0, numChecked = 0, numUnsolved = 0
     let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
@@ -102,7 +62,7 @@ const parseInfo = async(dataId) => {
 }
 
 
-const parseYear = async(data) => {
+export default async(data) => {
   try{
 
     let t = {}
@@ -155,27 +115,4 @@ const parseYear = async(data) => {
   }catch(err){
     console.log(err)
   }
-}
-
-const projectDelete = async(dataId) => {
-  try {
-    return Data.destroy({
-      where: {
-        dataId: dataId,
-      },
-    })
-      .then(() => 'ok')
-      .catch(() => {
-        throw new Error('No specified project')
-      })
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-export {
-  parseYear,
-  findCampusOne,
-  insertCampus,
-  projectDelete,
 }
