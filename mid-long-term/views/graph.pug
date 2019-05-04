@@ -6,26 +6,26 @@ append head
 append content
 
   #page-filter.ui.container.pusher
-        .ui.form.segment
-          .five.fields
-            include mixins/_filterthreefield
-            +filter('全部','教學','研究','產學','社會責任','大學治理及公共性')
-            .field
-              label 百分點
-              select.filter.filter__percent.ui.selection.dropdown
-                option(value='All') 全部百分點
-                option(value='q3') 第 75 ~ 100 百分點
-                option(value='q2') 第 50 ~ 75 百分點
-                option(value='q1') 第 25 ~ 50 百分點
-                option(value='q0') 第 0 ~ 25 百分點
-            .field
-              .ui.container.center.aligned.choice-block
-                button.ui.button.filter.filter__choice 選擇
-        .reserved.ui.transition.hidden
-          if dimension
-            .reserved__dimension=dimension
-            .reserved__item=item
-            .reserved__detail=detail
+    .ui.form.segment
+      .five.fields
+        include mixins/_filterthreefield
+        +filter('全部','教學','研究','產學','社會責任','大學治理及公共性')
+        .field
+          label 百分點
+          select.filter.filter__percent.ui.selection.dropdown
+            option(value='All') 全部百分點
+            option(value='q3') 第 75 ~ 100 百分點
+            option(value='q2') 第 50 ~ 75 百分點
+            option(value='q1') 第 25 ~ 50 百分點
+            option(value='q0') 第 0 ~ 25 百分點
+        .field
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+    .reserved.ui.transition.hidden
+      if dimension
+        .reserved__dimension=dimension
+        .reserved__item=item
+        .reserved__detail=detail
 
   .page-svg.ui.container
 

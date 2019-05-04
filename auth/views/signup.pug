@@ -1,21 +1,21 @@
 extends mixins/_layout
 
 append head
-  title Login
+  title Signup
   +authCss('signup')
 
 append content
   .ui.center.aligned.container
     form.ui.form(method='POST', action=`${GLOBAL.config.server.host}/auth/signup`)
-      h1 SIGN UP
+      h1 註冊
       .field
-        label.interface account:
+        label.interface 帳號:
         input.account(type='text', name='account', value='', placeholder="account", minlength="3", maxlength="25")
       .field
-        label.interface password:
+        label.interface 密碼:
         input.password(type='password', name='password', value='', placeholder="password", minlength="6", maxlength="25")
-      button.ui.secondary.button(type='submit') Confirm
-      a#back.ui.button(href=`${GLOBAL.config.server.host}/auth/login`) Back
+      button.ui.secondary.button(type='submit') 確認
+      a#back.ui.button(href=`${GLOBAL.config.server.host}/auth/login`) 返回
 
 append script
   +authJS('signup')
