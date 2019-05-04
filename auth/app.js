@@ -8,10 +8,11 @@ import config from 'projectRoot/config.js'
 
 const app = express()
 
-app.locals.GLOBAL = {config: config, }
+app.locals.GLOBAL = {
+  config,
+}
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
-
 
 app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   cacheControl: false,
@@ -39,82 +40,96 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   },
 }))
 
-
 // check the sessionId in the cookie
 // if it's status 'login' (stored in database)
 // automatically login
 app.use(async(req, {}, next) => {
-  let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
+  try {
+    let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
 
-  // sessionId will be reset after restarting server
-  // we need to update session after every connection
-  if(sessionId !== req.session.id){
-    let data = await Session.findOne({
-      where: {
-        sessionId,
-      },
-    })
-    if(data !== null){
-      if(Number(data.expiration) > Date.now()){
-        req.session.userId = data.userId
-        await data.update({
-          sessionId: req.session.id,
-        })
-      }
-      else{
-        await data.destroy()
-      }
-    }
-  }
-  next()
-})
-
-app.get('/login', async(req, res)=>{
-  if(req.session && req.session.userId)
-    res.status(304).redirect('/auth/channel')
-  else
-    res.render('login')
-})
-
-app.get('/channel', async(req, res)=> {
-  if(req.session && req.session.userId){
-    let user = await User.findOne({
-      where:{
-        userId: req.session.userId,
-      },
-    })
-    res.render('channel', {
-      user: user.account,
-    })
-  }
-  else
-    res.status(304).redirect('/auth/channel')
-})
-
-app.post('/login', async(req, res)=>{
-  try{
-    const doc = await User.findOne({
-      where:{
-        account: req.body.username,
-        password: req.body.password,
-      },
-    })
-    if(doc != null){
-      req.session.userId = doc.dataValues.userId
-
-      Session.create({
-        sessionId: req.session.id,
-        expiration: Number(req.session.cookie.expires),
-        userId: doc.userId,
+    // sessionId will be reset after restarting server
+    // we need to update session after every connection
+    if(sessionId !== req.session.id){
+      let data = await Session.findOne({
+        where: {
+          sessionId,
+        },
       })
-
-      res.redirect('/auth/login')
-    }else{
-      throw new Error(`No account matched ${req.body.username}`)
+      if(data !== null){
+        if(Number(data.expiration) > Date.now()){
+          req.session.userId = data.userId
+          await data.update({
+            sessionId: req.session.id,
+          })
+        }
+        else{
+          await data.destroy()
+        }
+      }
     }
+    next()
   }
-  catch(err){
-    res.status(400).render('login', {error: err.message, })
+  catch (err) {
+    next(err)
+  }
+})
+
+app.route('/login')
+  .get(async(req, res, next)=>{
+    try {
+      if(req.session && req.session.userId)
+        res.status(304).redirect('/auth/channel')
+      else
+        res.render('login')
+    }
+    catch(err){
+      next(err)
+    }
+  })
+  .post(async(req, res)=>{
+    try{
+      const doc = await User.findOne({
+        where:{
+          account: req.body.username,
+          password: req.body.password,
+        },
+      })
+      if(doc != null){
+        req.session.userId = doc.dataValues.userId
+
+        Session.create({
+          sessionId: req.session.id,
+          expiration: Number(req.session.cookie.expires),
+          userId: doc.userId,
+        })
+
+        res.redirect('/auth/login')
+      }else{
+        throw new Error(`No account matched ${req.body.username}`)
+      }
+    }
+    catch(err){
+      res.status(400).render('login', {error: err.message, })
+    }
+  })
+
+app.get('/channel', async(req, res, next)=> {
+  try {
+    if(req.session && req.session.userId){
+      let user = await User.findOne({
+        where:{
+          userId: req.session.userId,
+        },
+      })
+      res.render('channel', {
+        user: user.account,
+      })
+    }
+    else
+      res.redirect('/auth/channel')
+  }
+  catch (err){
+    next(err)
   }
 })
 
@@ -160,4 +175,7 @@ app.post('/signup', async(req, res)=>{
   }
 })
 
+app.use((err, req, res, next)=>{
+
+})
 export default app

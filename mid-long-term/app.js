@@ -108,7 +108,7 @@ app.use('/:typeId/:campusId/:dataId/content', contentRouter)
 
 app.use('/:typeId/:campusId/:dataId/review', reviewRouter)
 
-app.use((err, req, res, next) => {
+app.use((err, {}, res, {}) => {
   res.render('error', {
     message: err,
     error: err,
