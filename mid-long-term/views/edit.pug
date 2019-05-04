@@ -5,14 +5,7 @@ append head
 
 append content
   //- popup delete content
-  .ui.container
-    #delete.ui.small.modal
-      .header 確定要刪除嗎
-      .content
-        p 確定要刪除這筆資料嗎
-      .actions
-        button.ui.negative.button 取消
-        button.ui.positive.button 刪除
+  include mixins/_sureDelete
 
   //- popup advice filter
   .ui.container
@@ -43,20 +36,8 @@ append content
     .dataId.transition.hidden=dataId
     .ui.form.segment.filter
       .five.fields
-        .field
-          label 構面
-          select.filter.filter__dimension.ui.selection.dropdown
-            option(value='教學') 教學
-            option(value='研究') 研究
-            option(value='產學') 產學
-            option(value='社會責任') 社會責任
-            option(value='大學治理及公共性') 大學治理及公共性
-        .field
-          label 推動重點
-          select.filter.filter__item.ui.selection.dropdown
-        .field
-          label 具體作法
-          select.filter.filter__detail.ui.selection.dropdown
+        include mixins/_filter
+        +filter('教學','研究','產學','社會責任','大學治理及公共性')
         .field
           label 模式
           select.filter.filter__mode.ui.selection.dropdown

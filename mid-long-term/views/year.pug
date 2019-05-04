@@ -5,19 +5,11 @@ append head
   +midLongCss('year')
 
 //- append buttons in the header
-append buttons
-  a.add.ui.item 新增
+include mixins/_addButton
 
 append content
   //- pop up deleteproject
-  .ui.container
-    #delete.ui.small.modal
-      .header 確定要刪除嗎
-      .content
-        p 確定要刪除這筆資料嗎
-      .actions
-        button.ui.negative.button 取消
-        button.ui.positive.button 刪除
+  include mixins/_sureDelete
 
   //- popup addproject
   include mixins/_projectCreation.pug
