@@ -1,52 +1,42 @@
 import {Content, User, } from 'mid-long-term/models/association.js'
+import Sequelize from 'sequelize'
+const Op = Sequelize.Op
 
 const parseInfo = async(dataId) => {
   try{
-    let data = await Content.findAll({
+    let numUnreview = await Content.count({
+      where: {
+        dataId: dataId,
+        [Op.and]: [ {isChecked: 0, }, {isConflicted: 0, }, ],
+      },
+    })
+
+    let numChecked = await Content.count({
+      where: {
+        dataId: dataId,
+        isChecked : 1,
+      },
+    })
+
+    let numUnsolved = await Content.count({
+      where: {
+        dataId: dataId,
+        [Op.and]: [{isChecked: 0, }, {isConflicted: 1, }, ],
+      },
+    })
+
+    let time = await Content.findAll({
       where: {
         dataId: dataId,
       },
-      attributes:[
-        'contentId',
-        'isChecked',
-        'isConflicted',
-        'updateTime',
+      attributes: [
+        [Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ],
       ],
     })
-
-    data = data.map(({dataValues, }) => {
-      return dataValues
-    })
-
-    let numUnreview = 0, numChecked = 0, numUnsolved = 0
-    let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
-    data.map(e => {
-      if(e.isChecked == 0 && e.isConflicted == 0){
-        numUnreview = numUnreview + 1
-      }else if(e.isChecked == 1){
-        numChecked = numChecked + 1
-      }else if(e.isChecked == 0 && e.isConflicted == 1){
-        numUnsolved = numUnsolved + 1
-      }
-
-      let arr = e.updateTime.split('-')
-      let year = Number(arr[0]), month = Number(arr[1]), date = Number(arr[2])
-      if(lastModifiedYear < year){
-        lastModifiedYear = year
-        lastModifiedMonth = month
-        lastModifiedDate = date
-      }else if(lastModifiedYear == year && lastModifiedMonth < month){
-        lastModifiedYear = year
-        lastModifiedMonth = month
-        lastModifiedDate = date
-      }else if(lastModifiedMonth == month && lastModifiedDate < date){
-        lastModifiedYear = year
-        lastModifiedMonth = month
-        lastModifiedDate = date
-      }
-    })
+    console.log(numChecked)
+    console.log(numUnreview)
+    console.log(numUnsolved)
     let total = numChecked+numUnsolved+numUnreview
-    // let progression = (((numChecked)/total)*100).toFixed(0)
     let unChecked = ((numUnreview/total)*100).toFixed(0)
     let isChecked = ((numChecked/total)*100).toFixed(0)
     let unsolved = ((numUnsolved/total)*100).toFixed(0)
@@ -54,10 +44,10 @@ const parseInfo = async(dataId) => {
       unChecked,
       isChecked,
       unsolved,
-      updateTime: String(`${lastModifiedYear}-${lastModifiedMonth}-${lastModifiedDate}`),
+      updateTime: time[0].dataValues.lastUpdateTime,
     }
   } catch(err) {
-    console.log(err)
+    throw new Error('Error occurred in parse-year.js parseInfo', err)
   }
 }
 
@@ -110,7 +100,6 @@ export default async(data) => {
         info: t[data],
       })
     })
-    // console.log(JSON.stringify(tt, null, 2))
     return tt
   }catch(err){
     throw new Error('Error ocurred in parse-year.js', err)
