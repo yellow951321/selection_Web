@@ -1,15 +1,15 @@
-extends component/layout
+extends mixins/layout
 
 //- css
 append head
   +midLongCss('type')
 
 //- append buttons in the header
-include mixins/_addButton
+include mixins/_addbutton
 
 append content
   //- popup addproject
-  include mixins/_projectCreation.pug
+  include mixins/_projectcreation.pug
 
   content
   page select
