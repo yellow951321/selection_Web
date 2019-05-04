@@ -4,22 +4,19 @@ extends mixins/layout
 append head
   +midLongCss('type')
 
-//- append buttons in the header
-include mixins/_addbutton
+append buttons
+  //- append buttons in the header
+  include mixins/_addbutton
 
 append content
   //- popup addproject
   include mixins/_projectcreation.pug
 
-  content
-  page select
-  #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
+  .ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
       for val in types
         .column
           a.blue.square-box(href=`${GLOBAL.config.server.host}/mid-long-term/${val.id}/index`)=val.name
-
-append buttons
 
 append script
   +midLongJS('type')
