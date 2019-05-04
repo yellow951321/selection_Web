@@ -81,24 +81,22 @@ router.get('/', async(req, res) => {
       type: res.locals.typeId,
       campus: res.locals.campusId,
     })
-    res.render('manage/review.pug', {
-      GLOBAL:{
-        channel: {
-          id: 'mid-long-term',
-          name: '中長程計畫',
-        },
-        id: req.session.userId,
-        user: res.locals.user,
-        type: {
-          id: res.locals.typeId,
-          name: type,
-        },
-        campus: {
-          id: res.locals.campusId,
-          name: campusName,
-        },
-        contents: data,
+    res.render('review.pug', {
+      channel: {
+        id: 'mid-long-term',
+        name: '中長程計畫',
       },
+      id: req.session.userId,
+      user: res.locals.user,
+      type: {
+        id: res.locals.typeId,
+        name: type,
+      },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName,
+      },
+      contents: data,
     })
   }
   catch(err){

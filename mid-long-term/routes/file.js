@@ -76,23 +76,35 @@ router.get('/edit', async(req, res) => {
     let campusName = getFromNum(map, {
       type: res.locals.typeId,
       campus: res.locals.campusId, })
-    res.render('manage/edit', {
-      GLOBAL: {
-        channel: {
+    res.render('edit', {
+      breadcrumb: [
+        {
           id: 'mid-long-term',
           name: '中長程計畫',
         },
-        id: req.session.userId,
-        dataId: res.locals.dataId,
-        user: res.locals.user,
-        type: {
+        {
           id: res.locals.typeId,
-          name: typeName,
+          name: typeName
         },
-        campus: {
+        {
           id: res.locals.campusId,
-          name: campusName,
-        },
+          name: campusName
+        }
+      ],
+      channel: {
+        id: 'mid-long-term',
+        name: '中長程計畫',
+      },
+      id: req.session.userId,
+      dataId: res.locals.dataId,
+      user: res.locals.user,
+      type: {
+        id: res.locals.typeId,
+        name: typeName,
+      },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName,
       },
     })
   } catch (err) {

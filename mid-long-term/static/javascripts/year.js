@@ -2,7 +2,6 @@ const header = document.getElementById('header')
 const addForm = document.getElementById('addForm')
 const pageManagement = document.getElementById('page-management')
 
-
 //handle the delete pop up form
 class Delete {
   constructor(){

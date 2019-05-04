@@ -30,25 +30,25 @@ router.get('/index', async(req, res)=>{
 
     let typeName = campusMap[res.locals.typeId].type
 
-    res.render('manage/campus', {
-        breadcrumb: [
-          {
-            id: 'mid-long-term',
-            name: '中長程計畫',
-          },
-          {
-            id: res.locals.typeId,
-            name: typeName
-          }
-        ],
-        id: req.session.userId,
-        user: res.locals.user,
-        map: map.campus,
-        type: {
+    res.render('campus', {
+      breadcrumb: [
+        {
+          id: 'mid-long-term',
+          name: '中長程計畫',
+        },
+        {
           id: res.locals.typeId,
           name: typeName
-        },
-        campuses: campuses,
+        }
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      map: map.campus,
+      type: {
+        id: res.locals.typeId,
+        name: typeName
+      },
+      campuses: campuses,
     })
 
   }catch(err){

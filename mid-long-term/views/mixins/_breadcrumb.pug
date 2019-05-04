@@ -1,7 +1,6 @@
 .breadcrumb
 	.ui.huge.breadcrumb
 		a.section(href=`/auth/channel`)=user
-		- console.log(GLOBAL)
 		- let route = GLOBAL.config.server.host
 		each value, index in breadcrumb
 			.divider /

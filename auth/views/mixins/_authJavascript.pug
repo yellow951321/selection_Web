@@ -1,2 +1,3 @@
 mixin authJS(path)
-  script(src=`${Global.config.server.host}/auth/public/javascripts/${path}.bundle.js`)
+  - let tempPath = path.split('.')
+  script(src=`${GLOBAL.config.server.host}/auth/public/javascripts/${tempPath[0]}.bundle.js`)

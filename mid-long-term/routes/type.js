@@ -20,7 +20,7 @@ router.get('/index', async(req, res)=>{
       }
     })
 
-    res.render('manage/type', {
+    res.render('type', {
       breadcrumb: [
         {
           id: 'mid-long-term',

@@ -2,7 +2,7 @@ extends component/layout
 
 //- css
 append head
-  link(rel='stylesheet', href='/mid-long-term/static/stylesheets/box.css')
+  +authCss('box.css')
 
 //- append buttons in the header
 append buttons
@@ -23,4 +23,4 @@ append content
 append buttons
 
 append script
-  script(src='/mid-long-term/static/javascripts/type.bundle.js')
+  +authJS('type.js')

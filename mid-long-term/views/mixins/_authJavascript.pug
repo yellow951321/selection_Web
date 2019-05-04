@@ -1,0 +1,3 @@
+mixin authJS(path)
+  - let tempPath = path.split('.')
+  script(src=`${GLOBAL.config.server.host}/mid-long-term/public/javascripts/${tempPath[0]}.bundle.js`)

@@ -22,33 +22,33 @@ router.get('/index', async(req, res)=>{
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     let yearFroms = await parseYear(data)
-    res.render('manage/year', {
-        breadcrumb: [
-          {
-            id: 'mid-long-term',
-            name: '中長程計畫',
-          },
-          {
-            id: res.locals.typeId,
-            name: typeName
-          },
-          {
-            id: res.locals.campusId,
-            name: campusName
-          }
-        ],
-        id: req.session.userId,
-        user: res.locals.user,
-        map: map.campus,
-        type: {
+    res.render('year', {
+      breadcrumb: [
+        {
+          id: 'mid-long-term',
+          name: '中長程計畫',
+        },
+        {
           id: res.locals.typeId,
           name: typeName
         },
-        campus: {
+        {
           id: res.locals.campusId,
           name: campusName
-        },
-        yearFroms: yearFroms,
+        }
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      map: map.campus,
+      type: {
+        id: res.locals.typeId,
+        name: typeName
+      },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName
+      },
+      yearFroms: yearFroms,
     })
 
   }catch(err){
@@ -58,7 +58,7 @@ router.get('/index', async(req, res)=>{
 
 
 // router.get('/review', (req,res)=>{
-// //TODO render the manage/edit without edition permission
+// //TODO render the edit without edition permission
 // })
 
 // router.get('/edit', (req,res)=>{

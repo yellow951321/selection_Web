@@ -25,24 +25,36 @@ router.get('/index', async(req, res) => {
       type: res.locals.typeId,
       campus: res.locals.campusId,
     })
-    res.render('manage/graph', {
-      GLOBAL: {
-        channel: {
+    res.render('graph', {
+      breadcrumb: [
+        {
           id: 'mid-long-term',
           name: '中長程計畫',
         },
-        id: req.session.userId,
-        user: res.locals.user,
-        type: {
+        {
           id: res.locals.typeId,
-          name: typeName,
+          name: typeName
         },
-        campus: {
+        {
           id: res.locals.campusId,
-          name: campusName,
-        },
-        graph: '統計圖表',
+          name: campusName
+        }
+      ],
+      channel: {
+        id: 'mid-long-term',
+        name: '中長程計畫',
       },
+      id: req.session.userId,
+      user: res.locals.user,
+      type: {
+        id: res.locals.typeId,
+        name: typeName,
+      },
+      campus: {
+        id: res.locals.campusId,
+        name: campusName,
+      },
+      graph: '統計圖表',
     })
   } catch(err){
     console.log(err)

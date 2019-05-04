@@ -1,7 +1,7 @@
 extends component/layout
 
 append head
-  link(rel='stylesheet', href='/mid-long-term/static/stylesheets/playground.css')
+  +authCss('playground.css')
 
 append content
 
@@ -35,10 +35,10 @@ append content
               .ui.container.center.aligned.choice-block
                 button.ui.button.filter.filter__choice 選擇
         .reserved.ui.transition.hidden
-          if GLOBAL['dimension']
-            .reserved__dimension=GLOBAL['dimension']
-            .reserved__item=GLOBAL['item']
-            .reserved__detail=GLOBAL['detail']
+          if dimension
+            .reserved__dimension=dimension
+            .reserved__item=item
+            .reserved__detail=detail
 
   .page-svg.ui.container
 
@@ -48,4 +48,4 @@ append content
 
 append script
   script(src='https://d3js.org/d3.v5.min.js')
-  script(src='/mid-long-term/static/javascripts/draw.bundle.js')
+  +authJS('draw.js')

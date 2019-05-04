@@ -74,11 +74,7 @@ app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
     res.status(304).redirect('/auth/channel')
   else
-    res.render('login', {
-      GLOBAL: {
-        config: app.locals.Global.config,
-      },
-    })
+    res.render('login')
 })
 
 app.get('/channel', async(req, res)=> {
@@ -143,11 +139,7 @@ app.get('/logout', async(req, res)=>{
 })
 
 app.get('/signup', (req, res)=>{
-  res.render('signup', {
-    GLOBAL: {
-      config: app.locals.Global.config,
-    },
-  })
+  res.render('signup')
 })
 
 app.post('/signup', async(req, res)=>{
