@@ -1,4 +1,4 @@
-extends component/layout
+extends mixins/layout
 
 append head
   +midLongCss('review')
@@ -9,7 +9,7 @@ append content
 		#advice.ui.small.modal
 			.ui.form.segment.filter
 				.three.fields
-          include mixins/_filter
+          include mixins/_filterthreefield
           +filter('教學','研究','產學','社會責任','大學治理及公共性')
 			.actions
 				button.ui.negative.button 取消
@@ -20,7 +20,7 @@ append content
 	#page-message.ui.container.center.aligned.transition.hidden.save-message
 		.ui.floating.message
 
-	include component/editNodes/review.pug
+	include editnodes/review.pug
 	#page-audit.ui.container.pusher
 		for val in contents
 			+renderReviewNode(val)

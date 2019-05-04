@@ -1,4 +1,4 @@
-extends component/layout
+extends mixins/layout
 
 append head
   +midLongCss('graph')
@@ -8,7 +8,7 @@ append content
   #page-filter.ui.container.pusher
         .ui.form.segment
           .five.fields
-            include mixins/_filter
+            include mixins/_filterthreefield
             +filter('全部','教學','研究','產學','社會責任','大學治理及公共性')
             .field
               label 百分點

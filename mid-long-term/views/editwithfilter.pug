@@ -1,10 +1,10 @@
-extends component/layout
+extends mixins/layout
 
 append head
-  +midLongCss('editWithFilter')
+  +midLongCss('editwithfilter')
 
 append content
-  include mixins/_sureDelete
+  include mixins/_suredelete
 
   //- content
   //- page edit
@@ -14,14 +14,14 @@ append content
   #page-filter.ui.container.pusher
     .ui.form.segment.filter
       .four.fields
-        include mixins/_filter
+        include mixins/_filterthreefield
         +filter('教學','研究','產學','社會責任','大學治理及公共性')
         .field
           .ui.container.center.aligned.choice-block
             button.ui.button.filter.filter__choice 選擇
 
   #page-edit.ui.container
-    include component/filter
+    include mixins/filter
 
   #footer.ui.container.center.aligned.transition.hidden
     .ui.floating.message.transition.hidden
