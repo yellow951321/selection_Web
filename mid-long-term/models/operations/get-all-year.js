@@ -11,8 +11,6 @@ export default async(info={}) => {
       },
       attributes: [
         'dataId',
-        'campusId',
-        'typeId',
         'yearFrom',
         'yearTo',
         'userId',

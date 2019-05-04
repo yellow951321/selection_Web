@@ -3,7 +3,7 @@ import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
-import { midLongTermFromNumber, midLongTermFromWord, } from 'projectRoot/data/newMap/mapping.js'
+import { midLongTermFromNumber, midLongTermFromWord, } from 'lib/static/javascripts/mapping/label.js'
 
 const router = express.Router({
   // case sensitive for route path

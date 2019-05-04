@@ -29,10 +29,9 @@ export default async(typeId) => {
       return {
         id: data.campusId,
         name: campusMap[data.typeId].campus[data.campusId],
-        time: data.content[0].dataValues.lastUpdateTime,
+        time: data.content.length != 0 ? data.content[0].dataValues.lastUpdateTime : '-1--1--1',
       }
     })
-
     return {
       campuses: data,
       typeName: campusMap[typeId].type,
