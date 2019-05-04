@@ -168,7 +168,7 @@ const midLongTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
   entry: {
     'campus': path.join(midLongTermCssSrcRoot, 'campus.scss'),
     'edit': path.join(midLongTermCssSrcRoot, 'edit.scss'),
-    'editWithFilter' : path.join(midLongTermCssSrcRoot, 'editWithFilter.scss'),
+    'editWithFilter' : path.join(midLongTermCssSrcRoot, 'editwithfilter.scss'),
     'graph': path.join(midLongTermCssSrcRoot, 'graph.scss'),
     'review': path.join(midLongTermCssSrcRoot, 'review.scss'),
     'type': path.join(midLongTermCssSrcRoot, 'type.scss'),
