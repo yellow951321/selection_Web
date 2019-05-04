@@ -7,15 +7,15 @@ append head
 append content
   .ui.center.aligned.container
     form.ui.form(method='POST', action=`${GLOBAL.config.server.host}/auth/login`)
-      h1 LOGIN
+      h1 登入
       .field
-        label.interface account:
+        label.interface 帳號:
         input.account(type='text', name='username', value='', placeholder="account", minlength="3", maxlength="25")
       .field
-        label.interface password:
+        label.interface 密碼:
         input.password(type='password', name='password', value='', placeholder="password", minlength="6", maxlength="25")
       if error
         .field
           .ui.red.basic.label=error
-      button.ui.primary.button(type='submit') login
-      a.ui.button(href=`${GLOBAL.config.server.host}/auth/signup`) sign up
+      button.ui.primary.button(type='submit') 登入
+      a.ui.button(href=`${GLOBAL.config.server.host}/auth/signup`) 註冊

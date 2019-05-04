@@ -146,7 +146,6 @@ router.post('/conflict', async(req, res) => {
 
 router.post('/check', async(req, res) => {
   try{
-    console.log(123)
     let data = await Content.findOne({
       where:{
         contentId: req.body.contentId,

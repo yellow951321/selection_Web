@@ -38,6 +38,9 @@ router.get('/index', async(req, res) => {
         {
           id: res.locals.campusId,
           name: campusName
+        },
+        {
+          name: '圖表'
         }
       ],
       channel: {
