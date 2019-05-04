@@ -57,7 +57,6 @@ const countOneCampusMethod = async(info) => {
 
 
   }catch(err) {
-    console.log(new Error(err))
   }
 }
 
@@ -91,7 +90,6 @@ const countAllCampusMethod = async() => {
 
     return numberOfEachGroupMethod
   }catch(err){
-    console.log(new Error(err))
   }
 }
 
@@ -160,7 +158,6 @@ const countAllCampusMethodCorToOneCampus = async(info) => {
 
 
   }catch(err) {
-    console.log(new Error(err))
   }
 }
 
@@ -299,27 +296,11 @@ const countOneCampusMethodCorToAspectKey = async(info) =>{
     return numberOfEachGroupMethod
 
   }catch(err){
-    console.log(new Error(err))
   }
 }
 
 const countCampusAll = async(info={}) => {
   try{
-    // let data = await Data.findOne({
-    //   where:{
-    //     campusId: info.campus,
-    //     yearFrom: info.year,
-    //     yearTo: info.year,
-    //     typeId: info.type,
-    //     userId: info.userId,
-    //   },
-    //   attributes: ['dataId', ],
-    // }).then(data => {
-    //   if(data != null)
-    //     return data = data.dataId
-    //   else
-    //     throw new Error('No specific Data')
-    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
@@ -363,29 +344,11 @@ const countCampusAll = async(info={}) => {
     return dataOfEachGroupMethod
 
   }catch(err) {
-    console.log(err)
   }
 }
 
 const countCampusRespectToAspect = async(info={}) => {
   try{
-    // let data = await Data.findOne({
-    //   where:{
-    //     campusId: info.campus,
-    //     yearFrom: info.year,
-    //     yearTo: info.year,
-    //     typeId: info.type,
-    //     userId: info.userId,
-
-    //   },
-    //   attributes: ['dataId', ],
-    // }).then(data => {
-    //   if(data != null)
-    //     return data = data.dataId
-    //   else
-    //     throw new Error('No specific Data')
-    // })
-
     var GroupOfEachMethod = await Content.findAll({
       where:{
         dataId: info.dataId,
@@ -429,28 +392,11 @@ const countCampusRespectToAspect = async(info={}) => {
     return numberOfEachGroupMethod
 
   }catch(err) {
-    console.log(err)
   }
 }
 
 const countCampusRespectToKey = async(info={}) => {
   try{
-    // let data = await Data.findOne({
-    //   where:{
-    //     campusId: info.campus,
-    //     yearFrom: info.year,
-    //     yearTo: info.year,
-    //     typeId: info.type,
-    //     userId: info.userId,
-
-    //   },
-    //   attributes: ['dataId', ],
-    // }).then(data => {
-    //   if(data != null)
-    //     return data = data.dataId
-    //   else
-    //     throw new Error('No specific Data')
-    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
@@ -496,28 +442,11 @@ const countCampusRespectToKey = async(info={}) => {
     return numberOfEachGroupMethod
 
   }catch(err) {
-    console.log(err)
   }
 }
 
 const countCampusRespectToMethod = async(info={}) => {
   try{
-    // let data = await Data.findOne({
-    //   where:{
-    //     campusId: info.campus,
-    //     yearFrom: info.year,
-    //     yearTo: info.year,
-    //     typeId: info.type,
-    //     userId: info.userId,
-
-    //   },
-    //   attributes: ['dataId', ],
-    // }).then(data => {
-    //   if(data != null)
-    //     return data = data.dataId
-    //   else
-    //     throw new Error('No specific Data')
-    // })
 
     var GroupOfEachMethod = await Content.findAll({
       where:{
@@ -564,7 +493,6 @@ const countCampusRespectToMethod = async(info={}) => {
     return numberOfEachGroupMethod
 
   }catch(err) {
-    console.log(err)
   }
 }
 
