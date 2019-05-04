@@ -6,7 +6,7 @@ import {Op, } from 'sequelize'
 
 
 
-const findTypeAll = async(userId) => {
+const findTypeAll = async() => {
   try{
     // find all data with the given userId and year
     let val = await Data.findAll({
@@ -34,7 +34,7 @@ const findTypeAll = async(userId) => {
   }
 }
 
-const findCampusAll = async(userId, typeId) => {
+const findCampusAll = async({}, typeId) => {
   try{
     // find all data with the given userId and typeId
     let val = await Data.findAll({

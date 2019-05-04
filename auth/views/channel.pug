@@ -2,22 +2,21 @@ extends mixins/_layout
 
 //- css
 append head
-  +authCss('box.css')
-  +authCss('manage.css')
+  +authCss('channel')
 
 append content
   section#header.ui.top.fixed.menu.header
     .title
       .breadcrumb
         .ui.huge.breadcrumb
-          a.section(href=`/auth/channel`)=user
+          a.section(href=`${GLOBAL.config.server.host}/auth/channel`)=user
     .right.menu
       block buttons
-      a.logout.ui.item(href=`/auth/logout`) 登出
+      a.logout.ui.item(href=`${GLOBAL.config.server.host}/auth/logout`) 登出
 
   #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
       .column
-        a.blue.square-box(href=`/mid-long-term/index`) 中長程計畫
+        a.blue.square-box(href=`${GLOBAL.config.server.host}/mid-long-term/index`) 中長程計畫
       .column
-        a.blue.square-box(href=`/shortTerm/index`) 短程計畫(詳版)
+        a.blue.square-box(href=`${GLOBAL.config.server.host}/shortTerm/index`) 短程計畫(詳版)

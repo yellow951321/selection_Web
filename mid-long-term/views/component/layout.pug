@@ -1,8 +1,8 @@
 extends ../../../lib/views/layout
 append head
-  include ../mixins/_authCss
-  +authCss('manage.css')
-  +authCss('style.css')
+  include ../mixins/_midLongCss
+  +midLongCss('manage')
+  +midLongCss('style')
 
 append content
   //- header
@@ -16,4 +16,4 @@ append content
 append footer
 
 append script
-  include ../mixins/_authJavascript
+  include ../mixins/_midLongJavascript

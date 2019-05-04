@@ -1,6 +1,6 @@
 const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
 const Sequelize = require('sequelize')
-const User = requrie('./User')
+const User = require('./User')
 
 const dataSchema = {
   dataId: {

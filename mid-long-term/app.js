@@ -58,8 +58,8 @@ app.use('/:typeId', (req, res, next)=>{
   if(typeof typeId === 'number')
     res.locals.typeId = typeId
   else{
-    res.status(500).render('error', {
-      status: 500,
+    res.status(400).render('error', {
+      status: 400,
       message: 'invaliad type',
     })
   }
@@ -72,8 +72,8 @@ app.use('/:typeId/:campusId', (req, res, next)=>{
   if(typeof campusId === 'number')
     res.locals.campusId = campusId
   else{
-    res.status(500).render('error', {
-      status: 500,
+    res.status(400).render('error', {
+      status: 400,
       message: 'invaliad campus',
     })
   }
@@ -86,8 +86,8 @@ app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
   if(typeof dataId === 'number')
     res.locals.dataId = dataId
   else{
-    res.status(500).render('error', {
-      status: 500,
+    res.status(400).render('error', {
+      status: 400,
       message: 'invalid data',
     })
   }

@@ -1,3 +1,15 @@
+@import 'lib/static/stylesheets/layout';
+@import 'component/style.scss';
+@import 'component/manage.scss';
+
+.channel {
+  padding: 100px 0 0 0;
+}
+
+.channel a {
+  padding: 100px
+}
+
 .box-container {
   margin-top: 1em;
   font-size: 8px;

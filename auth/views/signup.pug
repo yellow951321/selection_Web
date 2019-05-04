@@ -2,7 +2,7 @@ extends mixins/_layout
 
 append head
   title Login
-  +authCss('signup.css')
+  +authCss('signup')
 
 append content
   .ui.center.aligned.container
@@ -18,4 +18,4 @@ append content
       a#back.ui.button(href=`${GLOBAL.config.server.host}/auth/login`) Back
 
 append script
-  +authJS('signup.js')
+  +authJS('signup')

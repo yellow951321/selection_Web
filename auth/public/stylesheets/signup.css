@@ -1,9 +1,0 @@
-body {
-    padding: 10px;
-    font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-.account, .password {
-    width:300px !important;
-    height:40px !important;
-}

@@ -1,0 +1,13 @@
+@import 'lib/static/stylesheets/layout';
+@import 'component/style.scss';
+@import 'component/manage.scss';
+
+.account, .password {
+    width:300px !important;
+    height:40px !important;
+}
+
+body {
+    padding: 10px;
+    font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
+}

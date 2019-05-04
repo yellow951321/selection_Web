@@ -1,4 +1,3 @@
-import fs from 'fs'
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
@@ -21,7 +20,7 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   // disable cache
   etag: false,
   // handle missing extension for static file
-  extensions: ['css', 'js',],
+  extensions: ['css', 'js', ],
   // when 404, pass handle to other middleware
   fallthrough: true,
   // static file can be cached
