@@ -162,9 +162,27 @@ const authCssConfig = Object.assign({}, webpackCssConfigTemplate, {
   },
 })
 
+const midLongTermCssSrcRoot = path.join(config.projectRoot, 'mid-long-term/static/stylesheets')
+const midLongTermCssDisRoot = path.join(config.projectRoot, 'mid-long-term/public/stylesheets')
+const midLongTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
+  entry: {
+    'box': path.join(midLongTermCssSrcRoot, 'box.scss'),
+    'manage': path.join(midLongTermCssSrcRoot, 'manage.scss'),
+    'playground' : path.join(midLongTermCssSrcRoot, 'playground.scss'),
+    'style': path.join(midLongTermCssSrcRoot, 'style.scss'),
+    'yearBox': path.join(midLongTermCssSrcRoot, 'yearBox.scss'),
+  },
+  output: {
+    path: midLongTermCssDisRoot,
+    filename: '[name].do-not-use.js',
+  },
+})
+
+
 module.exports = [
   authJsConfig,
   authCssConfig,
   midLongTermJsConfig,
   shortTermConfig,
+  midLongTermCssConfig,
 ]

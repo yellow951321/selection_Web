@@ -1,7 +1,7 @@
 import path from 'path'
 import express from 'express'
 
-import {authUser, } from 'projectRoot/lib/middleware/auth.js'
+import authUser from 'lib/middleware/auth.js'
 
 import config from 'projectRoot/config.js'
 // import User from 'projectRoot/auth/models/schemas/user.js'

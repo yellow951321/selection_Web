@@ -5,13 +5,13 @@ import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 
 User.hasMany(Data, {
   as: 'data',
-  foreignkey: 'userId',
+  foreignKey: 'userId',
   sourceKey: 'userId',
 })
 
 Data.hasMany(Content, {
   as: 'content',
-  foreignkey: 'dataId',
+  foreignKey: 'dataId',
   sourceKey: 'dataId',
 })
 
