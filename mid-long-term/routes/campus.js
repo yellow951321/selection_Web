@@ -1,8 +1,10 @@
 import express from 'express'
 
-import { findCampusAll, findLastModifiedTimeOfCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
+import { findLastModifiedTimeOfCampus, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, getFromWord, } from 'projectRoot/data/operation/mapping'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
+
+import getAllCampus from 'mid-long-term/models/operations/get-all-campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -15,19 +17,7 @@ const router = express.Router({
 
 router.get('/index', async(req, res)=>{
   try{
-    let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
-
-    campuses = await Promise.all(campuses.map(async data => {
-      let time = await findLastModifiedTimeOfCampus(data)
-      time = JSON.stringify(time).split('T')
-      time = time[0].split('"')
-      return {
-        id: data,
-        name: campusMap[res.locals.typeId].campus[data],
-        time: time[1],
-      }
-    }))
-
+    let campuses = await getAllCampus(res.locals.typeId)
     let typeName = campusMap[res.locals.typeId].type
 
     res.render('manage/campus', {

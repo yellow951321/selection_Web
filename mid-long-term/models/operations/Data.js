@@ -2,93 +2,6 @@
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
-import {Op, } from 'sequelize'
-
-
-
-const findTypeAll = async(userId) => {
-  try{
-    // find all data with the given userId and year
-    let val = await Data.findAll({
-      where: {
-        // userId: userId,
-      },
-      attributes: [
-        'dataId',
-        'campusId',
-        'typeId',
-        'yearFrom',
-        'yearTo',
-        'userId',
-      ],
-    })
-    // transfer data into column type only
-    val = val.map((data) => data.dataValues.typeId)
-    val = val.filter((value, index, self)=>{
-      return self.indexOf(value) === index
-    })
-    return val
-  }
-  catch(err){
-    throw err
-  }
-}
-
-const findCampusAll = async(userId, typeId) => {
-  try{
-    // find all data with the given userId and typeId
-    let val = await Data.findAll({
-      where:{
-        // userId: userId,
-        typeId: typeId,
-      },
-      attributes: [
-        'dataId',
-        'campusId',
-        'typeId',
-        'yearFrom',
-        'yearTo',
-        'userId',
-      ],
-    })
-
-    // transfer data into column campusId only
-    val = val.map(data => data.dataValues.campusId)
-    val = val.filter((value, index, self) => {
-      return self.indexOf(value) === index
-    })
-    return val
-  }catch(err){
-    console.log(err)
-  }
-}
-
-const findYearAll = async(info={}) => {
-  try{
-    let val = await Data.findAll({
-      where:{
-        // userId: info.userId,
-        typeId: info.typeId,
-        campusId: info.campusId,
-      },
-      attributes: [
-        'dataId',
-        'campusId',
-        'typeId',
-        'yearFrom',
-        'yearTo',
-        'userId',
-      ],
-    })
-
-    val.map(data => data.dataValues)
-
-    return val
-
-  }catch(err) {
-    console.log(err)
-  }
-}
 
 const findCampusOne = async(info={}) =>{
   try{
@@ -96,7 +9,6 @@ const findCampusOne = async(info={}) =>{
       where:{
         campusId: info.campusId,
         typeId: info.type,
-        // userId: info.userId,
       },
     })
     if(campus == null)
@@ -150,11 +62,11 @@ const parseInfo = async(dataId) => {
     let lastModifiedYear = -1, lastModifiedMonth = -1, lastModifiedDate = -1
     data.map(e => {
       if(e.isChecked == 0 && e.isConflicted == 0){
-        numUnreview = numUnreview +1
+        numUnreview = numUnreview + 1
       }else if(e.isChecked == 1){
-        numChecked = numChecked +1
+        numChecked = numChecked + 1
       }else if(e.isChecked == 0 && e.isConflicted == 1){
-        numUnsolved = numUnsolved +1
+        numUnsolved = numUnsolved + 1
       }
 
       let arr = e.updateTime.split('-')
@@ -245,40 +157,6 @@ const parseYear = async(data) => {
   }
 }
 
-
-const findLastModifiedTimeOfCampus = async(campusId) => {
-  try{
-    let dataId = await Data.findAll({
-      where: {
-        campusId: campusId,
-      },
-      attributes: ['dataId', ],
-    })
-
-    dataId = dataId.map(d => {
-      return d.dataValues.dataId
-    })
-
-    let content = await Content.max('updateTime', {
-      where: {
-        dataId: {
-          [Op.or]: dataId,
-        },
-      },
-    })
-    return content
-
-  } catch(err){
-    console.log(err)
-  }
-}
-
-
-
-const projectCreate = () => {
-  // wait for shou
-}
-
 const projectDelete = async(dataId) => {
   try {
     return Data.destroy({
@@ -296,13 +174,8 @@ const projectDelete = async(dataId) => {
 }
 
 export {
-  findTypeAll,
-  findCampusAll,
-  findYearAll,
   parseYear,
   findCampusOne,
   insertCampus,
-  projectCreate,
   projectDelete,
-  findLastModifiedTimeOfCampus,
 }

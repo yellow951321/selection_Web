@@ -1,9 +1,9 @@
 import express from 'express'
 
-import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import {map, } from 'projectRoot/data/operation/mapping.js'
+import { parseYear, } from 'projectRoot/mid-long-term/models/operations/Data.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-
+import getAllYear from 'mid-long-term/models/operations/get-all-year.js'
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -15,7 +15,7 @@ const router = express.Router({
 
 router.get('/index', async(req, res)=>{
   try{
-    let data = await findYearAll({
+    let data = await getAllYear({
       typeId: res.locals.typeId,
       campusId: res.locals.campusId,
     })
@@ -56,17 +56,5 @@ router.get('/index', async(req, res)=>{
   }
 })
 
-
-// router.get('/review', (req,res)=>{
-// //TODO render the manage/edit without edition permission
-// })
-
-// router.get('/edit', (req,res)=>{
-//   try {
-//     res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.year}/index`)
-//   } catch(err) {
-//     console.log(err)
-//   }
-// })
 
 export default router
