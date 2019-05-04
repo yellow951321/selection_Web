@@ -1,7 +1,8 @@
-extends ../../layout
-
+extends ../../../lib/views/layout
 append head
-  link(rel='stylesheet', href='/mid-long-term/static/stylesheets/manage.css')
+  include ../mixins/_midLongCss
+  +midLongCss('manage')
+  +midLongCss('style')
 
 append content
   //- header
@@ -13,7 +14,6 @@ append content
       a.logout.ui.item(href=`/auth/logout`) 登出
 
 append footer
-  //- footer
-  .ui.vertical.footer.segment
-    p v1.0.0
+
 append script
+  include ../mixins/_midLongJavascript

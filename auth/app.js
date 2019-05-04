@@ -8,7 +8,7 @@ import config from 'projectRoot/config.js'
 
 const app = express()
 
-app.locals.Global = {config: config, }
+app.locals.GLOBAL = {config: config, }
 app.set('views', path.join(config.projectRoot, 'auth/views'))
 app.set('view engine', 'pug')
 
@@ -73,11 +73,7 @@ app.get('/login', async(req, res)=>{
   if(req.session && req.session.userId)
     res.status(304).redirect('/auth/channel')
   else
-    res.render('login', {
-      GLOBAL: {
-        config: app.locals.Global.config,
-      },
-    })
+    res.render('login')
 })
 
 app.get('/channel', async(req, res)=> {
@@ -88,9 +84,7 @@ app.get('/channel', async(req, res)=> {
       },
     })
     res.render('channel', {
-      GLOBAL:{
-        user: user.account,
-      },
+      user: user.account,
     })
   }
   else
@@ -144,11 +138,7 @@ app.get('/logout', async(req, res)=>{
 })
 
 app.get('/signup', (req, res)=>{
-  res.render('signup', {
-    GLOBAL: {
-      config: app.locals.Global.config,
-    },
-  })
+  res.render('signup')
 })
 
 app.post('/signup', async(req, res)=>{

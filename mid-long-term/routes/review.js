@@ -87,7 +87,7 @@ router.get('/', async(req, res) => {
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
 
-    res.render('manage/review.pug', {
+    res.render('review.pug', {
       id: req.session.userId,
       user: res.locals.user,
       type: {

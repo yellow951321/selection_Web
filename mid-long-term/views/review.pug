@@ -31,7 +31,7 @@ append content
 
 	include component/editNodes/review.pug
 	#page-audit.ui.container.pusher
-		for val in GLOBAL['contents']
+		for val in contents
 			+renderReviewNode(val)
 	#page-message.ui.container.center.aligned.transition.hidden.save-message
 		.ui.floating.message
@@ -40,4 +40,4 @@ append content
 
 
 append script
-	script(src='/mid-long-term/static/javascripts/review.bundle.js')
+	+midLongJS('review')

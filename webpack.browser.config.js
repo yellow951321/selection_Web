@@ -170,12 +170,12 @@ const midLongTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
     'manage': path.join(midLongTermCssSrcRoot, 'manage.scss'),
     'playground' : path.join(midLongTermCssSrcRoot, 'playground.scss'),
     'style': path.join(midLongTermCssSrcRoot, 'style.scss'),
-    'yearBox': path.join(midLongTermCssSrcRoot, 'yearBox.scss')
+    'yearBox': path.join(midLongTermCssSrcRoot, 'yearBox.scss'),
   },
   output: {
     path: midLongTermCssDisRoot,
-    filename: '[name].do-not-use.js'
-  }
+    filename: '[name].do-not-use.js',
+  },
 })
 
 

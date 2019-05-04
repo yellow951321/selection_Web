@@ -71,7 +71,7 @@ router.get('/edit', async(req, res) => {
 
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
-    res.render('manage/edit', {
+    res.render('edit', {
       breadcrumb: [
         {
           id: 'mid-long-term',
@@ -97,8 +97,7 @@ router.get('/edit', async(req, res) => {
       campus: {
         id: res.locals.campusId,
         name: campusName
-      },
-      yearFroms: yearFroms,
+      }
     })
   } catch (err) {
     console.log(err)

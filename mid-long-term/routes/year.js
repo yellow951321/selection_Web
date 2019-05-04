@@ -23,7 +23,7 @@ router.get('/index', async(req, res)=>{
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     let yearFroms = await parseYear(data)
-    res.render('manage/year', {
+    res.render('year', {
         breadcrumb: [
           {
             id: 'mid-long-term',
@@ -49,7 +49,7 @@ router.get('/index', async(req, res)=>{
           id: res.locals.campusId,
           name: campusName
         },
-        yearFroms: yearFroms,
+        yearFroms: yearFroms
     })
 
   }catch(err){

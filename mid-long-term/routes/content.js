@@ -64,10 +64,8 @@ router.get('/filter', async(req, res)=>{
       }
       return temp
     }))
-    res.render('manage/component/editNodes/own', {
-      GLOBAL :{
-        contents : data,
-      },
+    res.render('component/editNodes/own', {
+      contents : data,
     })
   }
   catch (err){
@@ -119,10 +117,8 @@ router.get('/check', async(req, res) => {
       temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
       return temp
     }))
-    res.render('manage/component/editNodes/check', {
-      GLOBAL :{
-        contents : data,
-      },
+    res.render('component/editNodes/check', {
+      contents : data,
     })
   }
   catch (err){
@@ -220,10 +216,8 @@ router.post('/add', async(req, res)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
-    res.render('manage/component/editNodes/newEdit', {
-      GLOBAL: {
-        index: data.dataValues.contentId,
-      },
+    res.render('component/editNodes/newEdit', {
+      index: data.dataValues.contentId,
     })
   }catch(err) {
     res.status(404)

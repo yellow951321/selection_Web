@@ -49,4 +49,4 @@ form.ui.form.segment.editNode
       .field
         label 摘要
         textarea.summary(name="", rows="2")
-      input.node-index(type='hidden' value=GLOBAL['index'])
+      input.node-index(type='hidden' value=index)
