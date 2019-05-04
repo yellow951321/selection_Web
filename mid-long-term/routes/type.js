@@ -2,8 +2,6 @@ import express from 'express'
 
 import getAllType from 'mid-long-term/models/operations/get-all-type.js'
 
-
-
 const router = express.Router()
 
 router.get('/index', async(req, res, next)=>{

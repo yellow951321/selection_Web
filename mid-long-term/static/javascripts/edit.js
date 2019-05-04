@@ -1,7 +1,6 @@
 import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
 
 // variables
-const header = document.getElementById('header')
 const footer = document.getElementById('footer')
 const pageEdit = document.getElementById('page-edit')
 const pageFilter = document.getElementById('page-filter')

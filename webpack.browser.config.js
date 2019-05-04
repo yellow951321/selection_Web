@@ -166,11 +166,14 @@ const midLongTermCssSrcRoot = path.join(config.projectRoot, 'mid-long-term/stati
 const midLongTermCssDisRoot = path.join(config.projectRoot, 'mid-long-term/public/stylesheets')
 const midLongTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
   entry: {
-    'box': path.join(midLongTermCssSrcRoot, 'box.scss'),
-    'manage': path.join(midLongTermCssSrcRoot, 'manage.scss'),
-    'playground' : path.join(midLongTermCssSrcRoot, 'playground.scss'),
-    'style': path.join(midLongTermCssSrcRoot, 'style.scss'),
-    'yearBox': path.join(midLongTermCssSrcRoot, 'yearBox.scss'),
+    'campus': path.join(midLongTermCssSrcRoot, 'campus.scss'),
+    'edit': path.join(midLongTermCssSrcRoot, 'edit.scss'),
+    'editWithFilter' : path.join(midLongTermCssSrcRoot, 'editWithFilter.scss'),
+    'graph': path.join(midLongTermCssSrcRoot, 'graph.scss'),
+    'review': path.join(midLongTermCssSrcRoot, 'review.scss'),
+    'type': path.join(midLongTermCssSrcRoot, 'type.scss'),
+    'year': path.join(midLongTermCssSrcRoot, 'year.scss'),
+    'error': path.join(midLongTermCssSrcRoot, 'error.scss'),
   },
   output: {
     path: midLongTermCssDisRoot,

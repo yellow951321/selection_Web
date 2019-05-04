@@ -1,5 +1,8 @@
 extends component/layout
 
+append head
+  +midLongCss('error')
+
 block content
   .ui.center.aligned.container
     h1.ui.header= message

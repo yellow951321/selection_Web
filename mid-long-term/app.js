@@ -5,7 +5,6 @@ import authUser from 'lib/middleware/auth.js'
 
 import config from 'projectRoot/config.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-// import User from 'projectRoot/auth/models/schemas/user.js'
 import typeRouter from 'mid-long-term/routes/type.js'
 import reviewRouter from 'mid-long-term/routes/review.js'
 import campusRouter from 'mid-long-term/routes/campus.js'
@@ -109,7 +108,7 @@ app.use('/:typeId/:campusId/:dataId/content', contentRouter)
 
 app.use('/:typeId/:campusId/:dataId/review', reviewRouter)
 
-app.use((err, req, res, next) => {
+app.use((err, {}, res, {}) => {
   res.render('error', {
     message: err,
     error: err,
