@@ -113,7 +113,7 @@ router.get('/filter', async(req, res)=>{
     })
   }catch(err){
     if(!err.status){
-      err = new Error("Error occurred in mid-long-term/routes/graph.js filter router", err)
+      err = new Error("Error occurred in mid-long-term/routes/graph.js filter router")
       err.status = 500
       next(err)
     }

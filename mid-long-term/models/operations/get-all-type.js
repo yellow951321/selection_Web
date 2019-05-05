@@ -17,6 +17,6 @@ export default async() => {
     })
   }
   catch(err){
-    throw new Error('Error occur in mid-long-term/models/operations/get-all-type.js', err)
+    throw new Error('Error occur in mid-long-term/models/operations/get-all-type.js')
   }
 }

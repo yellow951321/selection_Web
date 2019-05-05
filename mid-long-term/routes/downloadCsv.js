@@ -41,7 +41,7 @@ router.get('/index', async(req, res)=>{
     })
   } catch (err) {
     if(!err.status){
-      err = new Error("Error occurred in downloadCsv.js" ,err)
+      err = new Error("Error occurred in downloadCsv.js")
       err.status = 500
     }
     next(err)

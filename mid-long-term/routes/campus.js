@@ -37,7 +37,7 @@ router.get('/index', async(req, res, next)=>{
 
   }catch(err){
     if(!err.status){
-      err = new Error('Error occurred in mid-long-term/routes/campus.js', err)
+      err = new Error('Error occurred in mid-long-term/routes/campus.js')
       err.status = 500
     }
     next(err)

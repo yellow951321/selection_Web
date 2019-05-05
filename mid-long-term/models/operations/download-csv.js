@@ -73,7 +73,7 @@ export default async(dataId) => {
 
   }catch(err){
     if(!err.status){
-      err = new Error('Error occurred in mid-long-term/models/operations/download-csv.js', err)
+      err = new Error('Error occurred in mid-long-term/models/operations/download-csv.js')
       err.status = 500
     }
     throw err

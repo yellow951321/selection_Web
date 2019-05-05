@@ -1,6 +1,5 @@
 import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
 

@@ -47,7 +47,7 @@ export default async(typeId) => {
 
   }catch(err){
     if(!err.status){
-      err = new Error('faile at get-all-campus.js', err)
+      err = new Error('faile at get-all-campus.js')
       err.status = 500
     }
     throw err

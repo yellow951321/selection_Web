@@ -19,14 +19,16 @@ append content
   //- content
   //- page select
   #page-management.ui.container.pusher
-    if yearFroms.length
-      each yearFrom in yearFroms
+    if data.length
+      - let currentYear = 0
+      each dataObj in data
         .year.ui.container
-          h1.yearFrom.header= yearFrom.year
-          each yearTo in yearFrom.info
-            +renderYear(yearTo)
-
-
+          if currentYear === dataObj.yearFrom
+            +renderYear(dataObj)
+          else
+            - currentYear = dataObj.yearFrom
+            h1.yearFrom.header= dataObj.yearFrom
+            +renderYear(dataObj)
     else
       .ui.center.aligned.container
         div 請點擊右上角新增來新增專案
