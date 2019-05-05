@@ -75,9 +75,9 @@ router.post('/delete', async(req, res, next)=>{
   }
 })
 
-router.get('/edit', async(req, res, next) => {
+router.get('/:dataId/edit', async(req, res, next) => {
   try {
-    const dataId = Number(req.query.dataId);
+    const dataId = Number(req.params.dataId);
     if(Number.isNaN(dataId)){
       const err = new Error('invalid argument while entrying edit page')
       err.status = 400

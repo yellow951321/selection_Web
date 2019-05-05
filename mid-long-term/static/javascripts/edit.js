@@ -1,4 +1,4 @@
-import {map }from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, midLongTermFromWord}from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const footer = document.getElementById('footer')
@@ -37,20 +37,13 @@ class UnsavedAlert{
 
 class Filter{
   constructor(){
-    this.selectedDimension = ''
+    this.selectedAspect = ''
     this.selectedkeypoint = ''
     this.selectedmethod = ''
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
     this.deleteForm = document.getElementById('delete')
     this.dataId = pageFilter.querySelector('.dataId').innerHTML
-
-    const pathSplit = window.location.pathname.split('/')
-    this.selected= {
-      type: pathSplit[2],
-      campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-    }
 
     //alert user when unsaved data exists
     this.unsaveAlert = new UnsavedAlert()
@@ -68,23 +61,12 @@ class Filter{
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
         table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }</option>`
+        table[aspectIndex]['keypoint'][keypointIndex] = ''
+        for(let methodIndex in keypoint.method){
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ keypoint.method[methodIndex].midLongTerm }</option>`
+        }
       }
     }
-    // Reflect.ownKeys(schema).forEach((dimension) => {
-    //   table['keypoint'][dimension] = ''
-    //   if(schema[dimension] instanceof Object){
-    //     Reflect.ownKeys(schema[dimension]).forEach((keypoint) =>{
-    //       Reflect.ownKeys(schema[dimension][keypoint]).forEach((method) =>{
-    //         if(table['method'][dimension] === undefined)
-    //           table['method'][dimension] = {}
-    //         if(table['method'][dimension][keypoint] === undefined)
-    //           table['method'][dimension][keypoint] = ''
-    //         table['method'][dimension][keypoint] += `<option value='${ method }'>${ method }</option>`
-    //       })
-    //       table['keypoint'][dimension] += `<option value='${ keypoint }'>${ keypoint }</option>`
-    //     })
-    //   }
-    // })
     return table
   }
 
@@ -107,18 +89,17 @@ class Filter{
 
   // filter for the dimension, keypoint, and method
   static editMode(that){
-    const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
+    const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
     const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
     const method = pageFilter.querySelector('.filter.filter__detail').firstChild
     // query parameter for GET
     let parameters = {
-      dataId: that.dataId,
-      dimension: dimension.value,
-      item: keypoint.value,
+      aspect: aspect.value,
+      keypoint: keypoint.value,
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
+    fetch(`/mid-long-term/content/${that.dataId}/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +107,7 @@ class Filter{
     })
       .then(res => res.text())
       .then(data => {
-        that.selectedDimension = dimension.value
+        that.selectedAspect = aspect.value
         that.selectedkeypoint = keypoint.value
         that.selectedmethod = method.value
         footer.classList.remove('hidden')
@@ -168,49 +149,46 @@ class Filter{
   }
 
   static checkMode(that){
-    fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+    fetch(`/mid-long-term/content/${that.dataId}/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-      .then(res => res.text())
-      .then(data => {
-        pageEdit.innerHTML = ''
-        pageEdit.insertAdjacentHTML('beforeend', data)
+    .then(res => res.text())
+    .then(data => {
+      pageEdit.innerHTML = ''
+      pageEdit.insertAdjacentHTML('beforeend', data)
 
-        // add eventListener to check and change button
-        Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
-          button.addEventListener('click', Filter.checkNodeClicked(that))
-        })
-
-        Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
-          button.addEventListener('click', Filter.changeNodeClicked(that))
-        })
-
-        footer.classList.add('hidden')
-        footer.classList.add('transition')
+      // add eventListener to check and change button
+      Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
+        button.addEventListener('click', Filter.checkNodeClicked(that))
       })
-      .catch(err => {
-        const message = footer.querySelector('.message')
-        message.classList.remove('green')
-        message.classList.add('red')
-        message.innerHTML = `<p>${err.message}</p>`
-        that.fadeOut(that.pageMessage)
+
+      Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
+        button.addEventListener('click', Filter.changeNodeClicked(that))
       })
+
+      footer.classList.add('hidden')
+      footer.classList.add('transition')
+    })
+    .catch(err => {
+      const message = footer.querySelector('.message')
+      message.classList.remove('green')
+      message.classList.add('red')
+      message.innerHTML = `<p>${err.message}</p>`
+      that.fadeOut(that.pageMessage)
+    })
   }
 
   // handle add content button clicked
   static addContentClicked(that){
     const message = footer.querySelector('.message')
     return () => {
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/add`, {
+      fetch(`/mid-long-term/content/${that.dataId}/add`, {
         method: 'POST',
         body: JSON.stringify({
-          type: that.selected.type,
-          campus: that.selected.campus,
-          dataId: that.selected.dataId,
-          dimension: that.selectedDimension,
+          aspect: that.selectedAspect,
           keypoint: that.selectedkeypoint,
           method: that.selectedmethod,
         }),
@@ -239,24 +217,24 @@ class Filter{
 
   // dropdown on change
   // dropdown dimension on change
-  static dimensionDropdownOnChanged(that){
+  static aspectDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
-      const defaultkeypoint = Object.keys(schema[event.target.value])[0]
-      keypoint.innerHTML = that.htmlTable['keypoint'][event.target.value]
+      const defaultkeypoint = 0;
+      keypoint.innerHTML = that.htmlTable[event.target.value]['table']
       keypoint.value = defaultkeypoint
-      method.innerHTML = that.htmlTable['method'][event.target.value][keypoint.value]
+      method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
     }
   }
   // dropndown keypoint on change
   static keypointDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
-      const dimensionName = editNode.querySelector('.filter__dimension').querySelector('.text').innerHTML
+      const aspect = editNode.querySelector('.filter__dimension').firstChild.value
       const method = editNode.querySelector('.filter__detail').firstChild
-      method.innerHTML = that.htmlTable['method'][dimensionName][event.target.value]
+      method.innerHTML = that.htmlTable[aspect]['keypoint'][event.target.value]
     }
   }
 
@@ -277,7 +255,7 @@ class Filter{
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
       const note = editNode.querySelector('.note').value
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/save`, {
+      fetch(`/mid-long-term/content/save`, {
         method: 'POST',
         body: JSON.stringify({
           page: {
@@ -341,7 +319,7 @@ class Filter{
     return () =>{
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/delete`, {
+      fetch(`/mid-long-term/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
           contentId,
@@ -381,7 +359,7 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/check`, {
+      fetch(`/mid-long-term/content/${that.dataId}/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId,
@@ -414,11 +392,14 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      const aspect = editNode.querySelector('.conflictedAspect').innerHTML
-      const keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
-      const method = editNode.querySelector('.conflictedMethod').innerHTML
+      let aspect = editNode.querySelector('.conflictedAspect').innerHTML
+      let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
+      let method = editNode.querySelector('.conflictedMethod').innerHTML
 
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/change`, {
+      method = midLongTermFromWord({aspect, keypoint, method}).method;
+      keypoint = midLongTermFromWord({aspect, keypoint}).keypoint;
+      aspect = midLongTermFromWord({aspect}).aspect;
+      fetch(`/mid-long-term/content/change`, {
         method: 'POST',
         body: JSON.stringify({
           contentId,
@@ -486,7 +467,7 @@ window.addEventListener('beforeunload', (e) => {
 })
 
 // add event listener to dropdowns
-pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
+pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 
 // add event listener to the add content button

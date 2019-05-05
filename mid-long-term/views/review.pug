@@ -4,31 +4,30 @@ append head
   +midLongCss('review')
 
 append content
-	//- popup advice filter
-	.ui.container
-		#advice.ui.small.modal
-			.ui.form.segment.filter
-				.three.fields
+  .ui.container
+    #advice.ui.small.modal
+      .ui.form.segment.filter
+        .three.fields
           include mixins/_filterthreefield
           +filter('教學','研究','產學','社會責任','大學治理及公共性')
-			.actions
-				button.ui.negative.button 取消
-				button.ui.positive.button 確認
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 確認
 
-	//- content
-	//- page edit
-	#page-message.ui.container.center.aligned.transition.hidden.save-message
-		.ui.floating.message
+  //- content
+  //- page edit
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
 
-	include editnodes/review.pug
-	#page-audit.ui.container.pusher
-		for val in contents
-			+renderReviewNode(val)
-	#page-message.ui.container.center.aligned.transition.hidden.save-message
-		.ui.floating.message
+  include mixins/editnodes/review.pug
+  #page-audit.ui.container.pusher
+    for val in contents
+      +renderReviewNode(val)
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
 
-	#page-edit.ui.container
+  #page-edit.ui.container
 
 
 append script
-	+midLongJS('review')
+  +midLongJS('review')

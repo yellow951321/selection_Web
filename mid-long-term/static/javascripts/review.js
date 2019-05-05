@@ -1,27 +1,16 @@
-import {map }from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+import {map, midLongTermFromNumber }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
-const header = document.getElementById('header')
-const footer = document.getElementById('footer')
-const pageEdit = document.getElementById('page-edit')
-const pageFilter = document.getElementById('page-filter')
 const pageAdvice = document.querySelector('#advice')
 
 class Filter{
   constructor(){
-    this.selectedDimension = ''
-    this.selectedItem = ''
-    this.selectedDetail = ''
+    this.selectedAspect = ''
+    this.selectedkeypoint = ''
+    this.selectedmethod = ''
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
     this.targetNode = null
-
-    const pathSplit = window.location.pathname.split('/')
-    this.selected= {
-      type: pathSplit[2],
-      campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-    }
   }
 
   // build htmltable
@@ -30,21 +19,21 @@ class Filter{
       item: {},
       detail: {},
     }
-    Reflect.ownKeys(schema).forEach((dimension) => {
-      table['item'][dimension] = ''
-      if(schema[dimension] instanceof Object){
-        Reflect.ownKeys(schema[dimension]).forEach((item) =>{
-          Reflect.ownKeys(schema[dimension][item]).forEach((detail) =>{
-            if(table['detail'][dimension] === undefined)
-              table['detail'][dimension] = {}
-            if(table['detail'][dimension][item] === undefined)
-              table['detail'][dimension][item] = ''
-            table['detail'][dimension][item] += `<option value='${ detail }'>${ detail }</option>`
-          })
-          table['item'][dimension] += `<option value='${ item }'>${ item }</option>`
-        })
+    for(let aspectIndex in map){
+      let aspect = map[aspectIndex]
+      table[aspectIndex] = {
+        table: '',
+        keypoint: [],
+      };
+      for(let keypointIndex in aspect.keypoint){
+        let keypoint = aspect.keypoint[keypointIndex]
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }</option>`
+        table[aspectIndex]['keypoint'][keypointIndex] = ''
+        for(let methodIndex in keypoint.method){
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ keypoint.method[methodIndex].midLongTerm }</option>`
+        }
       }
-    })
+    }
     return table
   }
 
@@ -66,10 +55,10 @@ class Filter{
       const keyointLabel = that.targetNode.querySelector('.conflictedKeypoint')
       const methodLabel = that.targetNode.querySelector('.conflictedMethod')
 
-      let conflictedAspect = pageAdvice.querySelector('.filter.filter__dimension').firstChild.value
-      let conflictedKeypoint = pageAdvice.querySelector('.filter.filter__item').firstChild.value
-      let conflictedMethod = pageAdvice.querySelector('.filter.filter__detail').firstChild.value
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/conflict`, {
+      let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
+      let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
+      let conflictedMethod = Number(pageAdvice.querySelector('.filter.filter__detail').firstChild.value)
+      fetch(`/mid-long-term/review/conflict`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.targetNode.querySelector('.node-index').value,
@@ -86,6 +75,10 @@ class Filter{
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')
+          conflictedMethod = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint, method: conflictedMethod}).method
+          conflictedKeypoint = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint}).keypoint
+          conflictedAspect = midLongTermFromNumber({aspect: conflictedAspect}).aspect
+
           aspectLabel.innerHTML = conflictedAspect
           keyointLabel.innerHTML = conflictedKeypoint
           methodLabel.innerHTML = conflictedMethod
@@ -103,7 +96,7 @@ class Filter{
     return (event) => {
       event.preventDefault()
       let node = event.target.parentNode.parentNode.parentNode.parentNode
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/check`, {
+      fetch(`/mid-long-term/review/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: node.querySelector('.node-index').value,
@@ -131,24 +124,24 @@ class Filter{
   }
   // dropdown on change
   // dropdown dimension on change
-  static dimensionDropdownOnChanged(that){
+  static aspectDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
-      const item = editNode.querySelector('.filter__item').firstChild
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      const defaultItem = Object.keys(schema[event.target.value])[0]
-      item.innerHTML = that.htmlTable['item'][event.target.value]
-      item.value = defaultItem
-      detail.innerHTML = that.htmlTable['detail'][event.target.value][item.value]
+      const keypoint = editNode.querySelector('.filter__item').firstChild
+      const method = editNode.querySelector('.filter__detail').firstChild
+      const defaultkeypoint = 0;
+      keypoint.innerHTML = that.htmlTable[event.target.value]['table']
+      keypoint.value = defaultkeypoint
+      method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
     }
   }
   // dropndown item on change
-  static itemDropdownOnChanged(that){
+  static keypointDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
-      const dimensionName = editNode.querySelector('.filter__dimension').querySelector('.text').innerHTML
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      detail.innerHTML = that.htmlTable['detail'][dimensionName][event.target.value]
+      const aspect = editNode.querySelector('.filter__dimension').firstChild.value
+      const method = editNode.querySelector('.filter__detail').firstChild
+      method.innerHTML = that.htmlTable[aspect]['keypoint'][event.target.value]
     }
   }
 
@@ -213,7 +206,7 @@ Array.apply(null, document.querySelectorAll('.check')).forEach((button) => {
   button.addEventListener('click', Filter.check(filter))
 })
 
-pageAdvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-pageAdvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
+pageAdvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
+pageAdvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 pageAdvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
 pageAdvice.querySelector('.positive').addEventListener('click', Filter.recommend(filter))

@@ -2,11 +2,11 @@ mixin filter(...items)
   .field
     label 構面
     select.filter.filter__dimension.ui.selection.dropdown
-      each item in items
+      each item, index in items
         -if(item==='全部')
             option(value=`All`)= item
         -else
-            option(value=`${item}`)= item
+            option(value=`${index}`)= item
   .field
     label 推動重點
     select.filter.filter__item.ui.selection.dropdown
