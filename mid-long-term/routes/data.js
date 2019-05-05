@@ -45,6 +45,7 @@ router.post('/delete', async(req, res, next)=>{
     if(Number.isNaN(dataId)){
       const err = new Error('invalid argument while deleting data')
       err.status = 400
+      throw err
     }
 
     const data = await Data.findOne({
@@ -81,6 +82,7 @@ router.get('/:dataId/edit', async(req, res, next) => {
     if(Number.isNaN(dataId)){
       const err = new Error('invalid argument while entrying edit page')
       err.status = 400
+      throw err
     }
 
     let data = await Data.findOne({

@@ -16,7 +16,7 @@ router.get('/index', async(req, res, next)=>{
       ],
       id: req.session.userId,
       user: res.locals.user,
-      types: types,
+      types,
     })
   }catch(err) {
     if(!err.status){

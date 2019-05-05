@@ -39,7 +39,6 @@ router.get('/index', async(req, res)=>{
       data
     })
   }catch(err){
-    console.error(err)
     if(!err.staus){
       err =  new Error("Error occurred in mid-long-term/routes/year.js")
       err.stauts = 500

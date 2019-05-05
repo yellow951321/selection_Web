@@ -69,7 +69,7 @@ app.use('/:typeId', (req, res, next)=>{
   }
   else{
     const err = new Error('invalid argument')
-    err.status(400)
+    err.status = 400
     next(err)
   }
 },
@@ -83,7 +83,7 @@ app.use('/:typeId/:campusId', (req, res, next)=>{
   }
   else{
     const err = new Error('invalid argument')
-    err.status(400)
+    err.status = 400
     next(err)
   }
 },
@@ -97,7 +97,7 @@ app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
   }
   else{
     const err = new Error('invalid argument')
-    err.status(400)
+    err.status = 400
     next(err)
   }
 })
