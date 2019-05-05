@@ -50,7 +50,7 @@ async function getYearDetail(data) {
   data.unchecked = numTotal !== 0 ? (numUnchecked / numTotal * 100).toFixed(0) : 0
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
-  data.lastUpdateTime = numTotal !== 0 ? lastUpdateTime[0].dataValues.lastUpdateTime : 0
+  data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
 
   return data
 }

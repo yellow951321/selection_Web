@@ -60,6 +60,9 @@ app.use('/content', contentRouter)
 
 app.use('/review', reviewRouter)
 
+app.use('/download', downloadRouter)
+
+
 // resolve choice page
 app.use('/:typeId', (req, res, next)=>{
   let typeId = Number(req.params.typeId)
@@ -104,7 +107,7 @@ app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
 
 app.use('/:typeId/:campusId/:dataId/graph', graphRouter)
 
-app.use('/:typeId/:campusId/:dataId/download', downloadRouter)
+
 
 app.use((err, {}, res, {}) => {
   res.render('error', {

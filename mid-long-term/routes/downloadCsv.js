@@ -11,9 +11,15 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/:dataId/index', async(req, res)=>{
   try {
-    const filePath = createCsv(res.locals.dataId)
+    const dataId = Number(req.params.dataId);
+    if(Number.isNaN(dataId)){
+      const err = new Error('invalid argument while entrying edit page')
+      err.status = 400
+      throw err
+    }
+    const filePath = await createCsv(dataId)
     // send requested output file
     const options = {
       root: '/',
