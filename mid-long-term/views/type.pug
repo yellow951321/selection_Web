@@ -6,14 +6,12 @@ append head
 
 //- append buttons in the header
 append buttons
-  a.add.ui.item 新增
+  a#add-data.ui.item 新增
 
 append content
   //- popup addproject
   include mixins/_projectCreation.pug
 
-  content
-  page select
   #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
       for val in types

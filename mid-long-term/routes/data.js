@@ -2,8 +2,8 @@ import express from 'express'
 
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
-import projectDelete from 'mid-long-term/models/operations/project-delete.js'
-import projectCreate from 'mid-long-term/models/operations/project-create.js'
+import dataDelete from 'mid-long-term/models/operations/data-delete.js'
+import dataCreate from 'mid-long-term/models/operations/data-create.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 
@@ -16,11 +16,10 @@ const router = express.Router({
   strict: false,
 })
 
-router.post('/add', async(req, res)=>{
+router.post('/add', async(req, res, next)=>{
   try{
-    let campusName = campusMap[req.body.type].campus.indexOf(req.body.campus)
-    projectCreate({
-      campusId: campusName,
+    await dataCreate({
+      campusId: req.body.campus,
       yearFrom: req.body.yearFrom,
       yearTo: req.body.yearTo,
       typeId: req.body.type,
@@ -29,7 +28,13 @@ router.post('/add', async(req, res)=>{
     res.redirect(`/mid-long-term/${req.body.type}/index`)
 
   }catch(err){
-    console.log(err)
+    if(err.status)
+      next(err)
+    else {
+      err = new Error('Failed to POST at route `/mid-long-term/data/add`.')
+      err.status = 500
+      next(err)
+    }
   }
 })
 
@@ -44,12 +49,11 @@ router.delete('/delete', async(req, res)=>{
     })
     if(dataValues != null) {
       await projectDelete(dataValues.dataId)
-      console.log('deletion procedure is conpleted')
       res.send('OK')
     }else
       throw new Error('No specified dataId')
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 })
 
@@ -100,7 +104,7 @@ router.get('/edit', async(req, res) => {
       }
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 })
 
