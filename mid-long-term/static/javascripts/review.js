@@ -1,4 +1,4 @@
-import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+import {map }from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
 
 // variables
 const header = document.getElementById('header')

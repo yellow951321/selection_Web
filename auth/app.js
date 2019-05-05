@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
+import syncSession from 'auth/models/operations/sync-session.js'
 
 const app = express()
 
@@ -47,30 +48,17 @@ app.use(async(req, {}, next) => {
   try {
     let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
 
-    // sessionId will be reset after restarting server
-    // we need to update session after every connection
-    if(sessionId !== req.session.id){
-      let data = await Session.findOne({
-        where: {
-          sessionId,
-        },
-      })
-      if(data !== null){
-        if(Number(data.expiration) > Date.now()){
-          req.session.userId = data.userId
-          await data.update({
-            sessionId: req.session.id,
-          })
-        }
-        else{
-          await data.destroy()
-        }
-      }
-    }
+    await syncSession(req, sessionId)
     next()
   }
   catch (err) {
-    next(err)
+    if(err.status)
+      next(err)
+    else {
+      err = new Error('Failed to setup session.')
+      err.status = 500
+      next(err)
+    }
   }
 })
 
@@ -78,38 +66,51 @@ app.route('/login')
   .get(async(req, res, next)=>{
     try {
       if(req.session && req.session.userId)
-        res.status(304).redirect('/auth/channel')
+        res.redirect('/auth/channel')
       else
         res.render('login')
     }
     catch(err){
-      next(err)
+      if(err.status)
+        next(err)
+      else {
+        err = new Error('Failed to GET at route `/auth/login`.')
+        next(err)
+      }
     }
   })
-  .post(async(req, res)=>{
+  .post(async(req, res, next)=>{
     try{
-      const doc = await User.findOne({
+      const data = await User.findOne({
         where:{
           account: req.body.username,
           password: req.body.password,
         },
       })
-      if(doc != null){
-        req.session.userId = doc.dataValues.userId
+      if(data != null){
+        req.session.userId = data.userId
 
         Session.create({
           sessionId: req.session.id,
           expiration: Number(req.session.cookie.expires),
-          userId: doc.userId,
+          userId: data.userId,
         })
 
         res.redirect('/auth/login')
       }else{
-        throw new Error(`No account matched ${req.body.username}`)
+        const err = new Error(`No account matched ${req.body.username}.`)
+        err.status = 401
+        throw err
       }
     }
     catch(err){
-      res.status(400).render('login', {error: err.message, })
+      if(err.status)
+        next(err)
+      else {
+        err = new Error('Failed to perform POST at route `/auth/login`')
+        err.status = 400
+        next(err)
+      }
     }
   })
 
@@ -133,7 +134,7 @@ app.get('/channel', async(req, res, next)=> {
   }
 })
 
-app.get('/logout', async(req, res)=>{
+app.get('/logout', async(req, res, next)=>{
   try {
     // remove session and remove the login record in the database
     await Session.destroy({
@@ -145,37 +146,60 @@ app.get('/logout', async(req, res)=>{
 
     res.redirect('/auth/login')
   } catch (err) {
-    res.status(500).render('error', {
-      'message': err.message,
-      'status': 500,
-    })
+    if(err.status)
+      next(err)
+    else {
+      err = new Error('Failed to GET at route `/auth/logout`.')
+      err.status = 500
+      next(err)
+    }
   }
 })
 
-app.get('/signup', (req, res)=>{
-  res.render('signup')
+app.route('/signup')
+  .get(({}, res)=>{
+    try {
+      res.render('signup')
+    }
+    catch (err) {
+      if(err.status)
+        next(err)
+      else {
+        err = new Error('Failed to GET at route `/auth/singup`')
+        err.status = 500
+        next(err)
+      }
+    }
+  })
+  .post(async(req, res)=>{
+    try{
+      const user = await User.create({
+        account : req.body.account,
+        password: req.body.password,
+      })
+      if(user)
+        res.redirect('/auth/login')
+      else
+        throw new Error()
+    }
+    catch (err){
+      if(err.status)
+        next(err)
+      else {
+        err = new Error('Failed to POST at route `/auth/signup`.')
+        err.status = 500
+        next(err)
+      }
+    }
+  })
+
+app.use(({}, {}, next)=>{
+  const err = new Error('Page not found.')
+  err.status = 404
+  next(err)
+})
+app.use((err, {}, res, {})=>{
+  res.render('error', err)
 })
 
-app.post('/signup', async(req, res)=>{
-  try{
-    const user = await User.create({
-      account : req.body.account,
-      password: req.body.password,
-    })
-    if(user)
-      res.redirect('/auth/login')
-    else
-      throw new Error('sign up failed')
-  }
-  catch (err){
-    res.status(400).render('error', {
-      status: 400,
-      message: err.message,
-    })
-  }
-})
-
-app.use((err, req, res, next)=>{
-
-})
 export default app

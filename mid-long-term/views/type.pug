@@ -1,24 +1,22 @@
-extends component/layout
+extends mixins/layout
 
 //- css
 append head
   +midLongCss('type')
 
-//- append buttons in the header
 append buttons
-  a#add-data.ui.item 新增
+  //- append buttons in the header
+  include mixins/_addbutton
 
 append content
   //- popup addproject
-  include mixins/_projectCreation.pug
+  include mixins/_projectcreation.pug
 
   #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
       for val in types
         .column
           a.blue.square-box(href=`${GLOBAL.config.server.host}/mid-long-term/${val.id}/index`)=val.name
-
-append buttons
 
 append script
   +midLongJS('type')

@@ -1,4 +1,4 @@
-extends component/layout
+extends mixins/layout
 
 //- css
 append head
@@ -6,23 +6,17 @@ append head
 
 //- append buttons in the header
 append buttons
-  a.add.ui.item 新增
+  //- append buttons in the header
+  include mixins/_addbutton
 
 append content
   //- pop up deleteproject
-  .ui.container
-    #delete.ui.small.modal
-      .header 確定要刪除嗎
-      .content
-        p 確定要刪除這筆資料嗎
-      .actions
-        button.ui.negative.button 取消
-        button.ui.positive.button 刪除
+  include mixins/_suredelete
 
   //- popup addproject
-  include mixins/_projectCreation.pug
+  include mixins/_projectcreation.pug
 
-  include mixins/_renderCampus.pug
+  include mixins/_rendercampus.pug
   //- content
   //- page management
   #page-management.ui.container.pusher

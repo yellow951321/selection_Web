@@ -39,42 +39,69 @@ router.post('/add', async(req, res, next)=>{
 })
 
 
-router.delete('/delete', async(req, res)=>{
+router.post('/delete', async(req, res, next)=>{
   try{
-    const {dataValues, } = await Data.findOne({
+    const dataId = Number(req.body.dataId);
+    if(Number.isNaN(dataId)){
+      const err = new Error('invalid argument while deleting data')
+      err.status = 400
+    }
+
+    const data = await Data.findOne({
       where: {
-        dataId: res.locals.dataId,
+        dataId,
       },
       attributes: ['dataId', ],
     })
-    if(dataValues != null) {
-      await projectDelete(dataValues.dataId)
-      res.send('OK')
-    }else
-      throw new Error('No specified dataId')
+    if(data != null) {
+      await dataDelete(data.dataId, req.session.userId)
+      res.redirect('/mid-long-term/index')
+    }else{
+      const err = new Error('No specified dataId')
+      err.status = 400
+      throw err
+    }
   } catch (err) {
-    next(err)
+    if(err.status){
+      next(err)
+    }
+    else{
+      if(!err.status){
+        err = new Error('fail to delete data')
+        err.status = 500
+      }
+      next(err)
+    }
   }
 })
 
-router.get('/edit', async(req, res) => {
+router.get('/edit', async(req, res, next) => {
   try {
-    let checkData = await Data.findOne({
+    const dataId = Number(req.query.dataId);
+    if(Number.isNaN(dataId)){
+      const err = new Error('invalid argument while entrying edit page')
+      err.status = 400
+    }
+
+    let data = await Data.findOne({
       where: {
-        dataId: res.locals.dataId,
+        dataId,
       },
       attributes: [
         'dataId',
         'userId',
+        'campusId',
+        'typeId',
       ],
     })
-    if(checkData.dataValues.userId !== req.session.userId){
-      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/review`)
+
+    if(data.userId !== req.session.userId){
+      res.redirect(`/mid-long-term/${data.typeId}/${data.campusId}/${data.dataId}/review`)
       return
     }
 
-    let typeName = campusMap[res.locals.typeId].type
-    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
+    let typeName = campusMap[data.typeId].type
+    let campusName = campusMap[data.typeId].campus[data.campusId]
     res.render('edit', {
       breadcrumb: [
         {
@@ -82,24 +109,24 @@ router.get('/edit', async(req, res) => {
           name: '中長程計畫',
         },
         {
-          id: res.locals.typeId,
+          id: data.typeId,
           name: typeName
         },
         {
-          id: res.locals.campusId,
+          id: data.campusId,
           name: campusName
         }
       ],
       id: req.session.userId,
       user: res.locals.user,
-      dataId: res.locals.dataId,
+      dataId: data.dataId,
       map: campusMap,
       type: {
-        id: res.locals.typeId,
+        id: data.typeId,
         name: typeName
       },
       campus: {
-        id: res.locals.campusId,
+        id: data.campusId,
         name: campusName
       }
     })

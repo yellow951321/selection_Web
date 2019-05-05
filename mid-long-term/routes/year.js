@@ -45,7 +45,11 @@ router.get('/index', async(req, res)=>{
     })
 
   }catch(err){
-    throw new Error("error occurred in year.js", err)
+    if(!err.staus){
+      err =  new Error("error occurred in year.js", err)
+      err.staus = 500
+    }
+    throw err
   }
 })
 

@@ -1,12 +1,12 @@
 extends ../../../lib/views/layout
 append head
-  include ../mixins/_midLongCss
+  include _midlongcss
 
 append content
   //- header
   section#header.ui.top.fixed.menu.header
     .title
-      include ../mixins/_breadcrumb.pug
+      include _breadcrumb.pug
     .right.menu
       block buttons
       a.logout.ui.item(href=`${GLOBAL.config.server.host}/auth/logout`) 登出
@@ -14,4 +14,4 @@ append content
 append footer
 
 append script
-  include ../mixins/_midLongJavascript
+  include _midlongjavascript

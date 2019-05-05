@@ -4,15 +4,20 @@ import parseYear from 'mid-long-term/models/operations/parse-year.js'
 
 export default async(info={}) => {
   try{
+    let typeId = Number(info.typeId)
+    let campusId = Number(info.campusId)
+    if(Number.isNaN(typeId) || Number.isNaN(campusId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
     let data = await Data.findAll({
       where:{
-        typeId: info.typeId,
-        campusId: info.campusId,
+        typeId,
+        campusId,
       },
       attributes: [
         'dataId',
-        'campusId',
-        'typeId',
         'yearFrom',
         'yearTo',
         'userId',
@@ -28,7 +33,11 @@ export default async(info={}) => {
     }
 
   }catch(err) {
-    throw new Error('Error occurred in get-all-year.js', err)
+    if(!err.status){
+      err = new Error('Error occurred in get-all-year.js', err)
+      err.status = 500
+    }
+    throw err
   }
 }
 

@@ -64,7 +64,7 @@ router.get('/filter', async(req, res)=>{
       }
       return temp
     }))
-    res.render('component/editNodes/own', {
+    res.render('mixins/editnodes/own', {
       contents : data,
     })
   }
@@ -117,7 +117,7 @@ router.get('/check', async(req, res) => {
       temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
       return temp
     }))
-    res.render('component/editNodes/check', {
+    res.render('mixins/editnodes/check', {
       contents : data,
     })
   }
@@ -216,7 +216,7 @@ router.post('/add', async(req, res)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
-    res.render('component/editNodes/newEdit', {
+    res.render('mixins/editnodes/newedit', {
       index: data.dataValues.contentId,
     })
   }catch(err) {

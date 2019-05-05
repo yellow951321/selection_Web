@@ -1,4 +1,4 @@
-import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+import {map }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const footer = document.getElementById('footer')
@@ -38,8 +38,8 @@ class UnsavedAlert{
 class Filter{
   constructor(){
     this.selectedDimension = ''
-    this.selectedItem = ''
-    this.selectedDetail = ''
+    this.selectedkeypoint = ''
+    this.selectedmethod = ''
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
     this.deleteForm = document.getElementById('delete')
@@ -58,25 +58,33 @@ class Filter{
 
   // build htmltable
   buildTables(){
-    let table = {
-      item: {},
-      detail: {},
-    }
-    Reflect.ownKeys(schema).forEach((dimension) => {
-      table['item'][dimension] = ''
-      if(schema[dimension] instanceof Object){
-        Reflect.ownKeys(schema[dimension]).forEach((item) =>{
-          Reflect.ownKeys(schema[dimension][item]).forEach((detail) =>{
-            if(table['detail'][dimension] === undefined)
-              table['detail'][dimension] = {}
-            if(table['detail'][dimension][item] === undefined)
-              table['detail'][dimension][item] = ''
-            table['detail'][dimension][item] += `<option value='${ detail }'>${ detail }</option>`
-          })
-          table['item'][dimension] += `<option value='${ item }'>${ item }</option>`
-        })
+    let table = [];
+    for(let aspectIndex in map){
+      let aspect = map[aspectIndex]
+      table[aspectIndex] = {
+        table: '',
+        keypoint: [],
+      };
+      for(let keypointIndex in aspect.keypoint){
+        let keypoint = aspect.keypoint[keypointIndex]
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }</option>`
       }
-    })
+    }
+    // Reflect.ownKeys(schema).forEach((dimension) => {
+    //   table['keypoint'][dimension] = ''
+    //   if(schema[dimension] instanceof Object){
+    //     Reflect.ownKeys(schema[dimension]).forEach((keypoint) =>{
+    //       Reflect.ownKeys(schema[dimension][keypoint]).forEach((method) =>{
+    //         if(table['method'][dimension] === undefined)
+    //           table['method'][dimension] = {}
+    //         if(table['method'][dimension][keypoint] === undefined)
+    //           table['method'][dimension][keypoint] = ''
+    //         table['method'][dimension][keypoint] += `<option value='${ method }'>${ method }</option>`
+    //       })
+    //       table['keypoint'][dimension] += `<option value='${ keypoint }'>${ keypoint }</option>`
+    //     })
+    //   }
+    // })
     return table
   }
 
@@ -97,17 +105,17 @@ class Filter{
     }
   }
 
-  // filter for the dimension, item, and detail
+  // filter for the dimension, keypoint, and method
   static editMode(that){
     const dimension = pageFilter.querySelector('.filter.filter__dimension').firstChild
-    const item = pageFilter.querySelector('.filter.filter__item').firstChild
-    const detail = pageFilter.querySelector('.filter.filter__detail').firstChild
+    const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
+    const method = pageFilter.querySelector('.filter.filter__detail').firstChild
     // query parameter for GET
     let parameters = {
       dataId: that.dataId,
       dimension: dimension.value,
-      item: item.value,
-      detail: detail.value,
+      item: keypoint.value,
+      method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
     fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/content/filter?${parameters}`, {
@@ -119,8 +127,8 @@ class Filter{
       .then(res => res.text())
       .then(data => {
         that.selectedDimension = dimension.value
-        that.selectedItem = item.value
-        that.selectedDetail = detail.value
+        that.selectedkeypoint = keypoint.value
+        that.selectedmethod = method.value
         footer.classList.remove('hidden')
         footer.classList.remove('transition')
 
@@ -203,8 +211,8 @@ class Filter{
           campus: that.selected.campus,
           dataId: that.selected.dataId,
           dimension: that.selectedDimension,
-          item: that.selectedItem,
-          detail: that.selectedDetail,
+          keypoint: that.selectedkeypoint,
+          method: that.selectedmethod,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -234,21 +242,21 @@ class Filter{
   static dimensionDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
-      const item = editNode.querySelector('.filter__item').firstChild
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      const defaultItem = Object.keys(schema[event.target.value])[0]
-      item.innerHTML = that.htmlTable['item'][event.target.value]
-      item.value = defaultItem
-      detail.innerHTML = that.htmlTable['detail'][event.target.value][item.value]
+      const keypoint = editNode.querySelector('.filter__item').firstChild
+      const method = editNode.querySelector('.filter__detail').firstChild
+      const defaultkeypoint = Object.keys(schema[event.target.value])[0]
+      keypoint.innerHTML = that.htmlTable['keypoint'][event.target.value]
+      keypoint.value = defaultkeypoint
+      method.innerHTML = that.htmlTable['method'][event.target.value][keypoint.value]
     }
   }
-  // dropndown item on change
-  static itemDropdownOnChanged(that){
+  // dropndown keypoint on change
+  static keypointDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
       const dimensionName = editNode.querySelector('.filter__dimension').querySelector('.text').innerHTML
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      detail.innerHTML = that.htmlTable['detail'][dimensionName][event.target.value]
+      const method = editNode.querySelector('.filter__detail').firstChild
+      method.innerHTML = that.htmlTable['method'][dimensionName][event.target.value]
     }
   }
 
@@ -479,7 +487,7 @@ window.addEventListener('beforeunload', (e) => {
 
 // add event listener to dropdowns
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
+pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 
 // add event listener to the add content button
 footer.querySelector('.add-content').addEventListener('click', Filter.addContentClicked(filter))
@@ -492,7 +500,7 @@ pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Fil
 pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
 
 // if reserved exsists,which means this page was rendered by clicking the graph
-// we need to filter the reserved dimension, item, and detail
+// we need to filter the reserved dimension, item, and method
 if(reserved.querySelector('.reserved__dimension') !== null){
   let dim = reserved.querySelector('.reserved__dimension').innerHTML
   let itm = reserved.querySelector('.reserved__item').innerHTML
