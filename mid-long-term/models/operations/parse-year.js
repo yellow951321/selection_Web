@@ -32,19 +32,24 @@ const parseInfo = async(dataId) => {
       attributes: [
         [Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ],
       ],
+    }).then(d => {
+      if(d.length == 0){
+        return null
+      }
+      else
+        return d[0].dataValues.lastUpdateTime
     })
-    console.log(numChecked)
-    console.log(numUnreview)
-    console.log(numUnsolved)
-    let total = numChecked+numUnsolved+numUnreview
-    let unChecked = ((numUnreview/total)*100).toFixed(0)
-    let isChecked = ((numChecked/total)*100).toFixed(0)
-    let unsolved = ((numUnsolved/total)*100).toFixed(0)
+
+    const total = numChecked+numUnsolved+numUnreview
+
+    const unChecked = total !== 0 ? ((numUnreview/total)*100).toFixed(0) : 0
+    const isChecked = total !== 0 ? ((numChecked/total)*100).toFixed(0) : 0
+    const unsolved = total !== 0 ? ((numUnsolved/total)*100).toFixed(0) : 0
     return {
       unChecked,
       isChecked,
       unsolved,
-      updateTime: time[0].dataValues.lastUpdateTime,
+      updateTime: time,
     }
   } catch(err) {
     throw new Error('Error occurred in parse-year.js parseInfo', err)
@@ -64,7 +69,7 @@ export default async(data) => {
         },
       })
 
-      if(t.hasOwnProperty(data.yearFrom)){
+      if(t.hasOwnProperty(data.yearFrom)) {
         t[data.yearFrom].push({
           year: data.yearTo,
           dataId: data.dataId,
@@ -105,3 +110,16 @@ export default async(data) => {
     throw new Error('Error ocurred in parse-year.js', err)
   }
 }
+
+
+// f = async(dataId, userId) => {
+//   let info = await parseInfo(dataId)
+//   let user = await User.findOne({
+//     where: {
+//       userId: data.userId,
+//     },
+//   })
+//   return {info, user, }
+// }
+
+// Promise.all(data.map(data=>f(data.dataId, data.userId)))

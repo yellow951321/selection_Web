@@ -4,6 +4,7 @@ import Data from 'projectRoot/mid-long-term/models/schemas/Data'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
 
+
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -18,6 +19,7 @@ router.get('/index', async(req, res) => {
 
 router.get('/filter', async(req, res)=>{
   try{
+
     let aspect = getFromWord(map, { dimension: req.query.dimension, })
     let keypoint = getFromWord(map, {item: req.query.item, })
     let method = getFromWord(map, { detail: req.query.detail, })
@@ -69,12 +71,11 @@ router.get('/filter', async(req, res)=>{
     })
   }
   catch (err){
-	  res.status(409).render('error', {
-      message : err,
-      error: {
-		  status: err.status,
-      },
-	  })
+	  if(!err.status){
+      err = new Error("Error occurred in filter of mid-long-term/routes/content.js", err)
+      err.status = 500
+    }
+    next(err)
   }
 })
 
@@ -122,12 +123,11 @@ router.get('/check', async(req, res) => {
     })
   }
   catch (err){
-	  res.status(409).render('error', {
-      message : err,
-      error: {
-		  status: err.status,
-      },
-	  })
+	  if(!err.status){
+      err = new Error("Error occurred in check route of mid-long-term/routes/content.js", err)
+      err.status = 500
+    }
+    next(err)
   }
 })
 
@@ -150,10 +150,16 @@ router.post('/check', async(req, res) => {
       res.send('completed')
     }
     else{
-      throw new Error('save failed')
+      let err = new Error('save failed')
+      err.status = 404
+      throw err
     }
   } catch(err) {
-    res.sendStatus(404)
+    if(!err.status) {
+      err = new Error("Error occurred in mid-long-term/routes/content.js", err)
+      err.status = 500
+    }
+    next(err)
   }
 })
 
