@@ -6,7 +6,6 @@ mixin renderYear(obj)
       .ui.row
         .sixteen.wide.column
           if obj.user.id == id
-            - console.log(obj.user.id)
             a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/data/${obj.dataId}/edit`) 編輯
           else
             a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/review/${obj.dataId}/index`) 檢閱

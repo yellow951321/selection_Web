@@ -18,7 +18,6 @@ export default async(dataId, userId) => {
       ],
     })
     if(data.userId !== userId){
-      console.log(data.userId)
       const err = new Error('Unauthorized')
       err.status = 401
       throw err
