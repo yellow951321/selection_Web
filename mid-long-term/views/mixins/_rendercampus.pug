@@ -1,3 +1,6 @@
 mixin renderCampus(campus)
   a.blue.square-box(href=`${GLOBAL.config.server.host}/mid-long-term/${type.id}/${campus.id}/index`)=campus.name
-    p.lastModified=`最後更新時間:${campus.time}`
+    if campus.time
+      p.lastModified=`最後更新時間:${campus.time}`
+    else
+      p.lastModified='尚無資料'

@@ -2,8 +2,8 @@ import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
-import { midLongTermFromNumber, midLongTermFromWord, } from 'lib/static/javascripts/mapping/label.js'
+import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -14,19 +14,121 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/', async(req, res) => {
+router.post('/check', async(req, res, next) => {
   try{
+    let contentId = Number(req.body.contentId)
+    if(Number.isNaN(contentId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+    let data = await Content.findOne({
+      where:{
+        contentId,
+      },
+      attributes:[
+        'contentId',
+      ],
+    })
+    let newData = await data.update({
+      reviewerId: req.session.userId,
+      isChecked: 1,
+    })
+
+    if(newData){
+      res.send('completed')
+    }
+    else{
+      throw new Error('failed')
+    }
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('ckeck failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.post('/conflict', async(req, res, next) => {
+  try{
+    let contentId = Number(req.body.contentId)
+    if(Number.isNaN(contentId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
+    let data = await Content.findOne({
+      where:{
+        contentId,
+      },
+      attributes:[
+        'contentId',
+      ],
+    })
+    let conflictedAspect = Number(req.body.conflictedAspect)
+    let conflictedKeypoint = Number(req.body.conflictedKeypoint)
+    let conflictedMethod = Number(req.body.conflictedMethod)
+
+    let newData = await data.update({
+      conflictedAspect,
+      conflictedKeypoint,
+      conflictedMethod,
+      isConflicted: 1,
+      reviewerId: req.session.userId,
+    })
+    if(newData){
+      res.send('completed')
+    }
+    else{
+      throw new Error('failed')
+    }
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('conflict failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.use('/:dataId', (req, res, next) => {
+  let dataId = Number(req.params.dataId)
+  if(typeof dataId === 'number'){
+    res.locals.dataId = dataId
+    next()
+  }
+  else{
+    const err = new Error('invalid argument')
+    err.status = 400
+    next(err)
+  }
+})
+
+router.get('/:dataId/index', async(req, res, next) => {
+  try{
+    let dataId = Number(res.locals.dataId)
+    if(Number.isNaN(dataId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     let checkData = await Data.findOne({
       where:{
-        dataId: res.locals.dataId,
-      }
-      ,
+        dataId,
+      },
       attributes: [
         'dataId',
+        'typeId',
+        'campusId'
       ],
     })
     if(checkData.dataValues.userId === req.session.userId){
-      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/edit/file`)
+      res.redirect(`/mid-long-term/data/${dataId}/edit`)
       return
     }
     let data = await Content.findAll({
@@ -55,24 +157,16 @@ router.get('/', async(req, res) => {
         'updateTime',
       ],
     })
+
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
-      temp.aspect = getFromNum(map, {dimension: temp.aspect, })
-      temp.keypoint = getFromNum(map, {item: temp.keypoint, })
-      temp.method = getFromNum(map, {detail: temp.method, })
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect }).aspect
 
-      // temp.aspect = midLongTermFromNumber({aspect: temp.aspect })
-      // temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
-      // temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
-
-
-      temp.conflictedAspect = getFromNum(map, {dimension: temp.conflictedAspect, })
-      temp.conflictedKeypoint = getFromNum(map, {item: temp.conflictedKeypoint, })
-      temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
-
-      // temp.conflictedAspect = midLongTermFromNumber({aspect: temp.aspect})
-      // temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
-      // temp.conflictedMethod = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
+      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
+      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
+      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
       if(temp.reviewerId){
         temp.reviewerId = await User.findOne({
           where: {
@@ -84,90 +178,35 @@ router.get('/', async(req, res) => {
       }
       return temp
     }))
-    let typeName = campusMap[res.locals.typeId].type
-    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
+    let typeName = campusMap[checkData.typeId].type
+    let campusName = campusMap[checkData.typeId]['campus'][checkData.campusId]
 
     res.render('review.pug', {
+      breadcrumb: [
+        {
+          id: 'mid-long-term',
+          name: '中長程計畫',
+        },
+        {
+          id: checkData.typeId,
+          name: typeName
+        },
+        {
+          id: checkData.campusId,
+          name: campusName
+        }
+      ],
       id: req.session.userId,
       user: res.locals.user,
-      type: {
-        id: res.locals.typeId,
-        name: typeName
-      },
-      campus: {
-        id: res.locals.campusId,
-        name: campusName
-      },
       contents: data,
     })
   }
   catch(err){
-    res.sendStatus(404)
-  }
-})
-
-router.post('/conflict', async(req, res) => {
-  try{
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let conflictedAspect = getFromWord(map, {dimension: req.body.conflictedAspect, })
-    let conflictedKeypoint = getFromWord(map, {item: req.body.conflictedKeypoint, })
-    let conflictedMethod = getFromWord(map, {detail: req.body.conflictedMethod, })
-
-    // let conflictedAspect = midLongTermFromWord({ aspect: req.body.conflictedAspect, })
-    // let conflictedKeypoint = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint})
-    // let conflictedMethod = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint, method: req.body.conflictedMethod})
-
-    let newData = await data.update({
-      conflictedAspect,
-      conflictedKeypoint,
-      conflictedMethod,
-      isConflicted: 1,
-      reviewerId: req.session.userId,
-    })
-
-    if(newData){
-      res.send('completed')
+    if(!err.status){
+      const err = new Error('enter review page failed')
+      err.status = 500
     }
-    else{
-      throw new Error('failed')
-    }
-  }
-  catch(err){
-    res.status(404)
-  }
-})
-
-router.post('/check', async(req, res) => {
-  try{
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let newData = await data.update({
-      reviewerId: req.session.userId,
-      isChecked: 1,
-    })
-
-    if(newData){
-      res.send('completed')
-    }
-    else{
-      throw new Error('failed')
-    }
-  }
-  catch(err){
-
+    next(err)
   }
 })
 

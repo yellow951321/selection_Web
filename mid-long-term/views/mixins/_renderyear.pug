@@ -5,18 +5,22 @@ mixin renderYear(obj)
         h3.column.yearHeader= obj.yearTo
       .ui.row
         .sixteen.wide.column
-          if obj.userId === id
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/data/edit?dataId=${obj.dataId}`) 編輯
+          if obj.user.id == id
+            - console.log(obj.user.id)
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/data/${obj.dataId}/edit`) 編輯
           else
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/${obj.dataId}/review`) 檢閱
-          a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/${obj.dataId}/graph/index`) 圖表
-          a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/${obj.dataId}/download/index`) 下載
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/review/${obj.dataId}/index`) 檢閱
+          a.ui.button.option(href=`#`) 圖表
+          a.ui.button.option(href=`#`) 下載
           button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
       .ui.row.userTimeRow
         p.userTime
-          span= `編輯者: ${obj.user}`
+          span= `編輯者: ${obj.user.name}`
           br
-          span= `最後更新時間： ${obj.lastUpdateTime}`
+          if obj.time
+            span= `最後更新時間： ${obj.time}`
+          else
+            span 尚無資料
       if obj.unchecked > 0
         .ui.row
           .sixteen.wide.column

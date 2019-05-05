@@ -12,7 +12,7 @@ async function getYearDetail(data) {
     lastUpdateTime,
   ] = await Promise.all([
     User.findOne({
-      attributes: ['account', ],
+      attributes: ['account', 'userId', ],
       where: {
         userId: data.userId,
       },
@@ -46,7 +46,7 @@ async function getYearDetail(data) {
   ])
 
   const numTotal = numUnchecked + numChecked + numConfliced
-  data.user = user.account
+  data.user = {id: user.userId, name: user.account, }
   data.unchecked = numTotal !== 0 ? (numUnchecked / numTotal * 100).toFixed(0) : 0
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
