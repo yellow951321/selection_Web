@@ -128,7 +128,7 @@ router.get('/:dataId/index', async(req, res, next) => {
       ],
     })
     if(checkData.dataValues.userId === req.session.userId){
-      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/edit/file`)
+      res.redirect(`/mid-long-term/data/${dataId}/edit`)
       return
     }
     let data = await Content.findAll({

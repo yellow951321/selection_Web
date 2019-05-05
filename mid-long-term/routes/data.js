@@ -96,7 +96,7 @@ router.get('/:dataId/edit', async(req, res, next) => {
     })
 
     if(data.userId !== req.session.userId){
-      res.redirect(`/mid-long-term/${data.typeId}/${data.campusId}/${data.dataId}/review`)
+      res.redirect(`/mid-long-term/review/${dataId}/index`)
       return
     }
 

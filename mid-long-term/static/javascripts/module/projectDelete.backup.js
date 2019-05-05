@@ -1,6 +1,4 @@
-// backup for show delete confirm pop up 
-
-
+// backup for show delete confirm pop up
 class Delete {
     constructor(){
       this.deleteForm = document.getElementById('delete')
@@ -46,5 +44,5 @@ class Delete {
     }
   }
   // init
-  
+
   let del = new Delete()

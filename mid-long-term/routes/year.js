@@ -1,6 +1,7 @@
 import express from 'express'
 
 import getAllYear from 'mid-long-term/models/operations/get-all-year.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -12,6 +13,8 @@ const router = express.Router({
 
 router.get('/index', async(req, res)=>{
   try{
+    const typeName = campusMap[res.locals.typeId].type
+    const campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     const data = await getAllYear({
       typeId: res.locals.typeId,
       campusId: res.locals.campusId
@@ -24,11 +27,11 @@ router.get('/index', async(req, res)=>{
         },
         {
           id: res.locals.typeId,
-          name: 'type',
+          name: typeName,
         },
         {
           id: res.locals.campusId,
-          name: 'campusName'
+          name: campusName,
         }
       ],
       id: req.session.userId,
@@ -38,10 +41,10 @@ router.get('/index', async(req, res)=>{
   }catch(err){
     console.error(err)
     if(!err.staus){
-      err =  new Error("error occurred in year.js", err)
-      err.staus = 500
+      err =  new Error("Error occurred in mid-long-term/routes/year.js")
+      err.stauts = 500
     }
-    throw err
+    next(err)
   }
 })
 

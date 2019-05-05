@@ -277,6 +277,7 @@ class Filter{
       })
         .then(res => res.text())
         .then(res => {
+          console.log(res)
           if(res === 'completed'){
             message.classList.remove('red')
             message.classList.add('green')

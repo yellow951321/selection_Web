@@ -8,6 +8,7 @@ import {
 
 import {map, getFromWord, getFromNum, } from 'projectRoot/data/operation/mapping.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -20,11 +21,8 @@ const router = express.Router({
 
 router.get('/index', async(req, res) => {
   try {
-    let typeName = getFromNum(map, {type: res.locals.typeId, })
-    let campusName = getFromNum(map, {
-      type: res.locals.typeId,
-      campus: res.locals.campusId,
-    })
+    let typeName = cmapusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId].cmapus[res.locals.campusId]
     res.render('graph', {
       breadcrumb: [
         {
@@ -38,6 +36,9 @@ router.get('/index', async(req, res) => {
         {
           id: res.locals.campusId,
           name: campusName
+        },
+        {
+          name: '圖表'
         }
       ],
       channel: {
@@ -57,7 +58,11 @@ router.get('/index', async(req, res) => {
       graph: '統計圖表',
     })
   } catch(err){
-    console.log(err)
+    if(!err.status){
+      err = new Error("Error occurred in mid-long-term/routes/graph.js", err)
+      err.status = 500
+      next(err)
+    }
   }
 })
 
@@ -107,7 +112,11 @@ router.get('/filter', async(req, res)=>{
       },
     })
   }catch(err){
-    console.log(new Error(err))
+    if(!err.status){
+      err = new Error("Error occurred in mid-long-term/routes/graph.js filter router")
+      err.status = 500
+      next(err)
+    }
   }
 })
 

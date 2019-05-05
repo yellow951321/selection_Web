@@ -1,8 +1,9 @@
 import express from 'express'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data'
+import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
 import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+
 
 const router = express.Router({
   // case sensitive for route path
@@ -73,7 +74,7 @@ router.post('/save', async(req, res, next)=>{
     }
   } catch(err) {
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('save failed')
       err.status = 500
     }
     next(err)
@@ -312,7 +313,9 @@ router.route('/:dataId/check')
       res.send('completed')
     }
     else{
-      throw new Error('save failed')
+      let err = new Error('save failed')
+      err.status = 404
+      throw err
     }
   } catch(err) {
     if(!err.status){

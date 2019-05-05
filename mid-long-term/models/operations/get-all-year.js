@@ -12,7 +12,7 @@ async function getYearDetail(data) {
     lastUpdateTime,
   ] = await Promise.all([
     User.findOne({
-      attributes: ['account', ],
+      attributes: ['account', 'userId', ],
       where: {
         userId: data.userId,
       },
@@ -46,11 +46,11 @@ async function getYearDetail(data) {
   ])
 
   const numTotal = numUnchecked + numChecked + numConfliced
-  data.user = user.account
-  data.unchecked = (numUnchecked / numTotal * 100).toFixed(0)
-  data.checked = (numChecked / numTotal * 100).toFixed(0)
-  data.confliced = (numConfliced / numTotal * 100).toFixed(0)
-  data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
+  data.user = {id: user.userId, name: user.account, }
+  data.unchecked = numTotal !== 0 ? (numUnchecked / numTotal * 100).toFixed(0) : 0
+  data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
+  data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
+  data.lastUpdateTime = numTotal !== 0 ? lastUpdateTime[0].dataValues.lastUpdateTime : 0
 
   return data
 }
@@ -95,9 +95,8 @@ export default async(info={}) => {
     })
     return data
   }catch(err) {
-    
     if(!err.status){
-      err = new Error('Error occurred in get-all-year.js', err)
+      err = new Error('Error occurred in get-all-year.js')
       err.status = 500
     }
     throw err
