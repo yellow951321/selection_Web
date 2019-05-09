@@ -477,12 +477,18 @@ window.addEventListener('beforeunload', (e) => {
   return true
 })
 
+const goTop = () => {
+  document.documentElement.scrollTop = 0
+}
+
 // add event listener to dropdowns
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
 
 // add event listener to the add content button
 footer.querySelector('.add-content').addEventListener('click', Filter.addContentClicked(filter))
+
+footer.querySelector('.arrow').addEventListener('click', goTop)
 
 // add event listener to the choice content button
 pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.chooseMode(filter))
