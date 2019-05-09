@@ -131,6 +131,14 @@ class Filter{
           message.classList.add('hidden')
         }
 
+        // don't show add content button while show all content under certain label
+        if(Number(that.selectedAspect) === -1 || Number(that.selectedkeypoint) === -1 || Number(that.selectedkeypoint) === -1){
+          footer.querySelector('.add-content').classList.add('hidden')
+        }
+        else{
+          footer.querySelector('.add-content').classList.remove('hidden')
+        }
+
         // add eventListener to save and delete and changeLabel button
         pageEdit.querySelectorAll('.changeLabel').forEach((button)=> {
           button.addEventListener('click', Filter.showChangeLabel(that))

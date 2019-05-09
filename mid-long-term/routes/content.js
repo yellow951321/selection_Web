@@ -173,23 +173,35 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let aspect = req.query.aspect;
-    let keypoint = req.query.keypoint;
-    let method = req.query.method;
+    let aspect = Number(req.query.aspect);
+    let keypoint = Number(req.query.keypoint);
+    let method = Number(req.query.method);
 
-    if(Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
+    if(Number.isNaN(aspect)){
       const err = new Error('invalid argument');
       err.status = 400
       throw err
     }
 
+    /** if any of the value of the three type of label is -1
+     *  ,which means show all the content under this label
+     *  ,we need to set special condition
+    */
+    let whereCondition = {
+      dataId: res.locals.dataId,
+    }
+    if(aspect !== -1){
+      whereCondition['aspect'] = aspect
+      if(keypoint !== -1){
+        whereCondition['keypoint'] = keypoint
+        if(method !== -1){
+          whereCondition['method'] = method
+        }
+      }
+    }
+
     let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-        aspect,
-        keypoint,
-        method,
-      },
+      where: whereCondition,
       attributes: [
         'contentId',
         'title1',
@@ -225,6 +237,9 @@ router.get('/:dataId/filter', async(req, res, next)=>{
         })
         temp.reviewerId = temp.reviewerId.dataValues.account
       }
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
     res.render('mixins/editnodes/own', {

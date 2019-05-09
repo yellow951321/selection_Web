@@ -11,7 +11,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/:dataId/index', async(req, res)=>{
+router.get('/:dataId/index', async(req, res, next)=>{
   try {
     const dataId = Number(req.params.dataId);
     if(Number.isNaN(dataId)){
@@ -20,6 +20,7 @@ router.get('/:dataId/index', async(req, res)=>{
       throw err
     }
     const filePath = await createCsv(dataId)
+
     // send requested output file
     const options = {
       root: '/',
@@ -31,14 +32,14 @@ router.get('/:dataId/index', async(req, res)=>{
     }
     res.sendFile(filePath, options, (err) => {
       if(err){
-        err = new Error("Error occurred in res.sendFile of mid-long-term/routes/downloadCsv.js", err)
+        err = new Error("sen file failed")
         err.status = 500
         throw err
       }
       else{
         fs.unlink(filePath, (err) => {
           if(err){
-            err = new Error("Error occurred in fs.unlink of mid-long-term/routes/downloadCsv.js", err)
+            err = new Error("file unlink failed")
             err.status = 500
             throw err
           }

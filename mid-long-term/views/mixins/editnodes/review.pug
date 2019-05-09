@@ -19,31 +19,35 @@ mixin renderReviewNode(val)
 			else
 				.eight.wide.field
 					label=`已經由${val.reviewerId}審查通過`
-		.fields
+		.six.fields
 			if val.isChecked == 0
-				.eight.wide.field
+				.field
 					label 原構面
-					.aspect=val.aspect
+					.ui.large.label.aspect=val.aspect
+				.field
 					label 原推動重點
-					.keypoint=val.keypoint
+					.ui.large.label.keypoint=val.keypoint
+				.field
 					label 原推動作法
-					.method=val.method
-				.eight.wide.field
+					.ui.large.label.method=val.method
+				.field
 					label 建議構面
 					if val.conflictedAspect
-						.conflictedAspect=val.conflictedAspect
+						.ui.large.label.conflictedAspect=val.conflictedAspect
 					else
-						.conflictedAspect
+						.ui.large.label.conflictedAspect='尚未建議'
+				.field
 					label 建議推動重點
 					if val.conflictedKeypoint
-						.conflictedKeypoint=val.conflictedKeypoint
+						.ui.large.label.conflictedKeypoint=val.conflictedKeypoint
 					else
-						.conflictedKeypoint
+						.ui.large.label.conflictedKeypoint='尚未建議'
+				.field
 					label 建議推動作法
 					if val.conflictedMethod
-						.conflictedMethod=val.conflictedMethod
+						.ui.large.label.conflictedMethod=val.conflictedMethod
 					else
-						.conflictedMethod
+						.ui.large.label.conflictedMethod='尚未建議'
 			else
 				.five.wide.field
 					label 構面
