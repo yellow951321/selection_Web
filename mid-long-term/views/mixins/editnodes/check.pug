@@ -9,22 +9,22 @@ for val in contents
 					.eight.wide.field
 						label 結束頁
 						input.page__end(type='number' value=val.pageTo disabled)
-				.four.wide.field
-					.ui.container.center.aligned.choice-block
-						button.ui.button.change(type='submit') 修改
-				.four.wide.field
-					.ui.container.center.aligned.choice-block
-						button.ui.button.check(type='submit') 保持
+			.four.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.change(type='submit') 修改
+			.four.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.check(type='submit') 保持
 		.fields
 			.five.wide.field
 				label 建議構面
-				.conflictedAspect=val.conflictedAspect
+				.ui.large.label.conflictedAspect=val.conflictedAspect
 			.five.wide.field
 				label 建議推動重點
-				.conflictedKeypoint=val.conflictedKeypoint
+				.ui.large.label.conflictedKeypoint=val.conflictedKeypoint
 			.five.wide.field
 				label 建議推動作法
-				.conflictedMethod=val.conflictedMethod
+				.ui.large.label.conflictedMethod=val.conflictedMethod
 		.fields
 			.four.wide.field
 				label 大標題

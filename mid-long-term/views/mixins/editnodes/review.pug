@@ -1,4 +1,4 @@
-mixin renderReviewNode(val)
+for val in contents
 	form.ui.form.segment.editNode
 		.fields
 			.eight.wide.field
@@ -18,7 +18,7 @@ mixin renderReviewNode(val)
 						button.ui.button.check(type='submit') 確認
 			else
 				.eight.wide.field
-					label=`已經由${val.reviewerId}審查通過`
+					.ui.green.large.label=`已經由${val.reviewerId}審核`
 		.six.fields
 			if val.isChecked == 0
 				.field
@@ -51,13 +51,13 @@ mixin renderReviewNode(val)
 			else
 				.five.wide.field
 					label 構面
-					.aspect=val.aspect
+					.ui.large.label.aspect=val.aspect
 				.five.wide.field
 					label 推動重點
-					.keypoint=val.keypoint
+					.ui.large.label.keypoint=val.keypoint
 				.five.wide.field
 					label 推動作法
-					.method=val.method
+					.ui.large.label.method=val.method
 		.fields
 			.four.wide.field
 				label 大標題

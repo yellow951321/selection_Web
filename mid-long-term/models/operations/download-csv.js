@@ -35,7 +35,7 @@ export default async(dataId) => {
 
     let data = await Content.findAll({
       where: {
-        dataId: dataId,
+        dataId,
       },
       attributes:[
         'pageFrom',
@@ -86,7 +86,6 @@ export default async(dataId) => {
     return filePath
 
   }catch(err){
-    console.log(err)
     if(!err.status){
       err = new Error('Error occurred in mid-long-term/models/operations/download-csv.js')
       err.status = 500

@@ -236,7 +236,7 @@ class Filter{
   // dropdown dimension on change
   static aspectDropdownOnChanged(that){
     return (event) => {
-      const editNode = event.target.parentNode.parentNode.parentNode
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
       const defaultkeypoint = 0;
@@ -253,14 +253,16 @@ class Filter{
         method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
       }
       // handle show all option
-      keypoint.innerHTML += `<option value='-1'>全部</option>`
-      method.innerHTML += `<option value='-1'>全部</option>`
+      if(editNode.classList.contains('filter')){
+        keypoint.innerHTML += `<option value='-1'>全部</option>`
+        method.innerHTML += `<option value='-1'>全部</option>`
+      }
     }
   }
   // dropndown keypoint on change
   static keypointDropdownOnChanged(that){
     return (event) => {
-      const editNode = event.target.parentNode.parentNode.parentNode
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const aspect = editNode.querySelector('.filter__dimension').firstChild.value
       const method = editNode.querySelector('.filter__detail').firstChild
       if(Number(event.target.value) === -1){
@@ -271,7 +273,24 @@ class Filter{
         editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
       }
       // handle show all option
-      method.innerHTML += `<option value='-1'>全部</option>`
+      if(editNode.classList.contains('filter')){
+        method.innerHTML += `<option value='-1'>全部</option>`
+      }
+    }
+  }
+  static modeDropdownOnChanged(that){
+    return (event) => {
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
+      if(event.target.value === 'edit'){
+        editNode.querySelector('.aspectBlock').classList.remove('visbility--hidden')
+        editNode.querySelector('.keypointBlock').classList.remove('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+      }
+      else if(event.target.value === 'check'){
+        editNode.querySelector('.aspectBlock').classList.add('visbility--hidden')
+        editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
     }
   }
 
@@ -480,8 +499,6 @@ class Filter{
     return (event) => {
       event.preventDefault()
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
-      // const contentId = editNode.querySelector('.node-index').value
-      // const message = that.pageMessage.querySelector('.message')
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML
@@ -540,6 +557,7 @@ window.addEventListener('beforeunload', (e) => {
 })
 
 // add event listener to dropdowns
+pageFilter.querySelector('.filter.filter__mode').firstChild.addEventListener('change', Filter.modeDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 pageChange.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))

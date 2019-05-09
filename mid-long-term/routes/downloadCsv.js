@@ -1,6 +1,8 @@
 import express from 'express'
 import fs from 'fs'
 import createCsv from 'mid-long-term/models/operations/download-csv.js'
+import Data from 'mid-long-term/models/schemas/Data.js'
+import campusMap from 'projectRoot/lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -21,13 +23,24 @@ router.get('/:dataId/index', async(req, res, next)=>{
     }
     const filePath = await createCsv(dataId)
 
+    let data = await Data.findOne({
+      where: {
+        dataId,
+      },
+      attribute: [
+        'yearFrom',
+        'yearTo',
+        'campusId',
+        'typeId',
+      ]
+    })
     // send requested output file
     const options = {
       root: '/',
       dotfiles: 'deny',
       headers: {
         'content-type': 'text/csv',
-        'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campusName)}.csv`,
+        'Content-Disposition': `attachment;filename=${encodeURIComponent(campusMap[data.typeId]['campus'][data.campusId])}${data.yearFrom}to${data.yearTo}.csv`,
       },
     }
     res.sendFile(filePath, options, (err) => {
@@ -47,6 +60,7 @@ router.get('/:dataId/index', async(req, res, next)=>{
       }
     })
   } catch (err) {
+    console.log(err)
     if(!err.status){
       err = new Error("Error occurred in downloadCsv.js")
       err.status = 500

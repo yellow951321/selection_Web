@@ -2,6 +2,7 @@ import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
+import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 
@@ -182,47 +183,8 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       err.status = 400
       throw err
     }
+    let data = await getContent(aspect, keypoint, method, res.locals.dataId)
 
-    /** if any of the value of the three type of label is -1
-     *  ,which means show all the content under this label
-     *  ,we need to set special condition
-    */
-    let whereCondition = {
-      dataId: res.locals.dataId,
-    }
-    if(aspect !== -1){
-      whereCondition['aspect'] = aspect
-      if(keypoint !== -1){
-        whereCondition['keypoint'] = keypoint
-        if(method !== -1){
-          whereCondition['method'] = method
-        }
-      }
-    }
-
-    let data = await Content.findAll({
-      where: whereCondition,
-      attributes: [
-        'contentId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'content',
-        'summary',
-        'note',
-        'pageFrom',
-        'pageTo',
-        'aspect',
-        'keypoint',
-        'method',
-        'isChecked',
-        'reviewerId',
-        'isConflicted',
-        'updateTime',
-        'dataId',
-      ],
-    })
     if(data.length === 0 || typeof data === 'null'){
       res.send('')
       return
@@ -248,7 +210,6 @@ router.get('/:dataId/filter', async(req, res, next)=>{
   }
   catch (err){
     if(!err.status){
-      console.log(err)
       err = new Error('filter failed')
       err.status = 500
     }
@@ -384,7 +345,7 @@ router.post('/:dataId/add', async(req, res, next)=>{
     })
   }catch(err) {
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('add content failed')
       err.status = 500
     }
     next(err)
