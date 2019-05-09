@@ -130,6 +130,15 @@ class Filter{
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
       const defaultkeypoint = 0;
+      // if the label is 5 or 6 remove keypoint and method choice
+      if(Number(event.target.value) === 5 || Number(event.target.value) === 6){
+        editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
+      else {
+        editNode.querySelector('.keypointBlock').classList.remove('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+      }
       keypoint.innerHTML = that.htmlTable[event.target.value]['table']
       keypoint.value = defaultkeypoint
       method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]

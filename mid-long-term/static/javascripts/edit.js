@@ -4,6 +4,7 @@ import {map, midLongTermFromWord}from 'projectRoot/lib/static/javascripts/mappin
 const footer = document.getElementById('footer')
 const pageEdit = document.getElementById('page-edit')
 const pageFilter = document.getElementById('page-filter')
+const pageChange = document.getElementById('changeSelect')
 const reserved = pageFilter.querySelector('.reserved')
 
 // function for unsaved content alert
@@ -44,6 +45,7 @@ class Filter{
     this.pageMessage = document.getElementById('page-message')
     this.deleteForm = document.getElementById('delete')
     this.dataId = pageFilter.querySelector('.dataId').innerHTML
+    this.selectedChangeLabelNode = null;
 
     //alert user when unsaved data exists
     this.unsaveAlert = new UnsavedAlert()
@@ -60,10 +62,13 @@ class Filter{
       };
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
-        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }</option>`
+        let keypointLabel = `${ aspect.label }${ keypoint.label }`
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
-          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ keypoint.method[methodIndex].midLongTerm }</option>`
+          let method = keypoint.method[methodIndex];
+          let methodLabel = `${keypointLabel}${method.label}`
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
         }
       }
     }
@@ -107,9 +112,9 @@ class Filter{
     })
       .then(res => res.text())
       .then(data => {
-        that.selectedAspect = aspect.value
-        that.selectedkeypoint = keypoint.value
-        that.selectedmethod = method.value
+        that.selectedAspect = Number(aspect.value)
+        that.selectedkeypoint = Number(keypoint.value)
+        that.selectedmethod = Number(method.value)
         footer.classList.remove('hidden')
         footer.classList.remove('transition')
 
@@ -126,7 +131,11 @@ class Filter{
           message.classList.add('hidden')
         }
 
-        // add eventListener to save and delete button
+        // add eventListener to save and delete and changeLabel button
+        pageEdit.querySelectorAll('.changeLabel').forEach((button)=> {
+          button.addEventListener('click', Filter.showChangeLabel(that))
+        })
+
         pageEdit.querySelectorAll('.save').forEach((button)=> {
           button.addEventListener('click', Filter.saveContent(that))
         })
@@ -220,6 +229,15 @@ class Filter{
   static aspectDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
+      // if the label is 5 or 6 remove keypoint and method choice
+      if(Number(event.target.value) === 5 || Number(event.target.value) === 6){
+        editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
+      else {
+        editNode.querySelector('.keypointBlock').classList.remove('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+      }
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
       const defaultkeypoint = 0;
@@ -277,7 +295,6 @@ class Filter{
       })
         .then(res => res.text())
         .then(res => {
-          console.log(res)
           if(res === 'completed'){
             message.classList.remove('red')
             message.classList.add('green')
@@ -299,7 +316,60 @@ class Filter{
         })
     }
   }
-
+  //handle change label
+  static showChangeLabel(that){
+    return (event) =>{
+      event.preventDefault()
+      $('#changeSelect').modal({
+        onApprove : function(){return false},
+      }).modal('show')
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
+      that.selectedChangeLabelNode = editNode
+    }
+  }
+  static changeLabel(that){
+    return () => {
+      if(aspect === that.selectedAspect && keypoint === that.selectedkeypoint && method === that.selectedmethod)
+        return;
+      let aspect = Number(pageChange.querySelector('.filter.filter__dimension').firstChild.value)
+      let keypoint = Number(pageChange.querySelector('.filter.filter__item').firstChild.value)
+      let method = Number(pageChange.querySelector('.filter.filter__detail').firstChild.value)
+      const message = that.pageMessage.querySelector('.message')
+      fetch(`/mid-long-term/content/change`, {
+        method: 'POST',
+        body: JSON.stringify({
+          contentId: that.selectedChangeLabelNode.querySelector('.node-index').value,
+          aspect,
+          keypoint,
+          method,
+          isChecked: 0,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.text())
+        .then(data => {
+          $('#changeSelect').modal({
+            onApprove : function(){return false},
+          }).modal('hide')
+          if(data !== 'completed'){
+            throw new Error('更改標籤失敗')
+          }
+          that.selectedChangeLabelNode.parentNode.removeChild(that.selectedChangeLabelNode)
+          message.classList.remove('red')
+          message.classList.add('green')
+          message.innerHTML = `<p>更改標籤成功</p>`
+          that.fadeOut(that.pageMessage)
+        })
+        .catch(err => {
+          message.classList.remove('green')
+          message.classList.add('red')
+          message.innerHTML = `<p>${err.message}</p>`
+          that.fadeOut(that.pageMessage)
+        })
+    }
+  }
   // handle delete
   // show delete confirm popup
   static showDeleteConfirm(that){
@@ -407,6 +477,7 @@ class Filter{
           aspect,
           keypoint,
           method,
+          isChecked: 1,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -470,6 +541,8 @@ window.addEventListener('beforeunload', (e) => {
 // add event listener to dropdowns
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
+pageChange.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
+pageChange.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 
 // add event listener to the add content button
 footer.querySelector('.add-content').addEventListener('click', Filter.addContentClicked(filter))
@@ -477,9 +550,13 @@ footer.querySelector('.add-content').addEventListener('click', Filter.addContent
 // add event listener to the choice content button
 pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.chooseMode(filter))
 
+// add event listener to the change label button
+pageChange.querySelector('.positive').addEventListener('click', Filter.changeLabel(filter))
+
 // initialize dropdown
 // pageFilter.querySelector('[data-value="研究"]').click()
 pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
+pageChange.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
 
 // if reserved exsists,which means this page was rendered by clicking the graph
 // we need to filter the reserved dimension, item, and method

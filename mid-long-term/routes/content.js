@@ -42,6 +42,12 @@ router.post('/save', async(req, res, next)=>{
       ]
     })
 
+    if(data === null){
+      const err = new Error('data not found')
+      err.status = 404
+      throw err
+    }
+
     if(data.userId !== Number(req.session.userId)){
       const err = new Error('Unauthorized')
       err.status = 401
@@ -99,7 +105,7 @@ router.delete('/delete', async(req, res)=>{
   }
   catch(err){
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('delete failed')
       err.status = 500
     }
     next(err)
@@ -112,6 +118,7 @@ router.post('/change', async(req, res) => {
     let aspect = Number(req.body.aspect)
     let keypoint = Number(req.body.keypoint)
     let method = Number(req.body.method)
+    let isChecked = Number(req.body.isChecked)
 
     if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
       const err = new Error('invalid argument')
@@ -126,9 +133,8 @@ router.post('/change', async(req, res) => {
         'contentId',
       ],
     })
-
     let savedData = await data.update({
-      isChecked: 1,
+      isChecked,
       isConflicted: 0,
       aspect,
       keypoint,
@@ -165,7 +171,7 @@ router.use('/:dataId', (req, res, next) => {
   }
 })
 
-router.get('/:dataId/filter', async(req, res)=>{
+router.get('/:dataId/filter', async(req, res, next)=>{
   try{
     let aspect = req.query.aspect;
     let keypoint = req.query.keypoint;
@@ -205,12 +211,13 @@ router.get('/:dataId/filter', async(req, res)=>{
         'dataId',
       ],
     })
-    if(data === []){
-      res.send('empty')
+    if(data.length === 0 || typeof data === 'null'){
+      res.send('')
+      return
     }
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
-      if(temp.reviewerId){
+      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
         temp.reviewerId = await User.findOne({
           where: {
             userId: temp.reviewerId,
@@ -226,6 +233,7 @@ router.get('/:dataId/filter', async(req, res)=>{
   }
   catch (err){
     if(!err.status){
+      console.log(err)
       err = new Error('filter failed')
       err.status = 500
     }
@@ -265,8 +273,9 @@ router.route('/:dataId/check')
         'conflictedMethod',
       ],
     })
-    if(data === []){
-      res.send('empty')
+    if(data.length === 0){
+      res.send('')
+      return
     }
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
@@ -314,7 +323,7 @@ router.route('/:dataId/check')
     }
     else{
       let err = new Error('save failed')
-      err.status = 404
+      err.status = 500
       throw err
     }
   } catch(err) {

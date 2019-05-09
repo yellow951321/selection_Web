@@ -97,6 +97,12 @@ router.get('/:dataId/edit', async(req, res, next) => {
       ],
     })
 
+    if(data === null){
+      const err = new Error('data not found')
+      err.status = 404
+      throw err
+    }
+
     if(data.userId !== req.session.userId){
       res.redirect(`/mid-long-term/review/${dataId}/index`)
       return
@@ -133,6 +139,10 @@ router.get('/:dataId/edit', async(req, res, next) => {
       }
     })
   } catch (err) {
+    if(!err.status){
+      const err = new Error('entry edit page failed')
+      err.status = 500
+    }
     next(err)
   }
 })

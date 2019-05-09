@@ -9,12 +9,15 @@ each val in contents
 					.eight.wide.field
 						label 結束頁
 						input.page__end(type='number' value=val.pageTo)
-			.nine.wide.field
+			.seven.wide.field
 				label 審查者
 				if val.isChecked == 1
 					.ui.green.large.label=`已經由${val.reviewerId}審核`
 				else
 					.ui.red.large.label=`尚未審核`
+			.two.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.changeLabel(type='submit') 改變標籤
 			.two.wide.field
 				.ui.container.center.aligned.choice-block
 					button.ui.button.save(type='submit') 儲存

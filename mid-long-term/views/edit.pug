@@ -9,11 +9,14 @@ append content
 
   //- popup advice filter
   .ui.container
-    #advice.ui.small.modal
+    #changeSelect.ui.small.modal
       .ui.form.segment.filter
         .three.fields
           include mixins/_filterthreefield
-          +filter('教學','研究','產學','社會責任','大學治理及公共性')
+          +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類')
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 確認
 
   //- content
   //- page edit
@@ -24,7 +27,7 @@ append content
     .dataId.transition.hidden=dataId
     .ui.form.segment.filter
       .five.fields
-        +filter('教學','研究','產學','社會責任','大學治理及公共性')
+        +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類')
         .field
           label 模式
           select.filter.filter__mode.ui.selection.dropdown

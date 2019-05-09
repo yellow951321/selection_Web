@@ -127,6 +127,12 @@ router.get('/:dataId/index', async(req, res, next) => {
         'campusId'
       ],
     })
+
+    if(checkData === null){
+      res.redirect('/auth/channel')
+      return
+    }
+
     if(checkData.dataValues.userId === req.session.userId){
       res.redirect(`/mid-long-term/data/${dataId}/edit`)
       return
@@ -167,14 +173,12 @@ router.get('/:dataId/index', async(req, res, next) => {
       temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
       temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
       temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
-      if(temp.reviewerId){
+      if(typeof temp.reviewerId === 'number'){
         temp.reviewerId = await User.findOne({
           where: {
             userId: temp.reviewerId,
           },
-        })
-
-        temp.reviewerId = temp.reviewerId.dataValues.account
+        }).account
       }
       return temp
     }))
