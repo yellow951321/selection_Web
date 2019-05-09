@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
 
-export default new Sequelize('sinicaShortTerm', `${config.databse.user}`, `${config.database.password}`, {
+export default new Sequelize('sinicaShortTerm', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port

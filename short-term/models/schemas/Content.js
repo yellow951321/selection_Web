@@ -1,4 +1,4 @@
-const { sequelizeShortTerm, } = require('../operations/connect')
+import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
 const Sequelize = require('sequelize')
 
 // todo require('./Data)
@@ -94,6 +94,6 @@ const contentSchema = {
   },
 }
 
-const Content = sequelizeShortTerm.define('content', contentSchema)
+const Content = shortTermDB.define('content', contentSchema)
 
-module.exports = Content
+export default Content
