@@ -229,21 +229,24 @@ class Filter{
   static aspectDropdownOnChanged(that){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode
+      const keypoint = editNode.querySelector('.filter__item').firstChild
+      const method = editNode.querySelector('.filter__detail').firstChild
+      const defaultkeypoint = 0;
       // if the label is 5 or 6 remove keypoint and method choice
-      if(Number(event.target.value) === 5 || Number(event.target.value) === 6){
+      if(Number(event.target.value) === 5 || Number(event.target.value) === 6 || Number(event.target.value) === -1){
         editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
         editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
       }
       else {
         editNode.querySelector('.keypointBlock').classList.remove('visbility--hidden')
         editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+        keypoint.innerHTML = that.htmlTable[event.target.value]['table']
+        keypoint.value = defaultkeypoint
+        method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
       }
-      const keypoint = editNode.querySelector('.filter__item').firstChild
-      const method = editNode.querySelector('.filter__detail').firstChild
-      const defaultkeypoint = 0;
-      keypoint.innerHTML = that.htmlTable[event.target.value]['table']
-      keypoint.value = defaultkeypoint
-      method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
+      // handle show all option
+      keypoint.innerHTML += `<option value='-1'>全部</option>`
+      method.innerHTML += `<option value='-1'>全部</option>`
     }
   }
   // dropndown keypoint on change
@@ -252,7 +255,15 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode
       const aspect = editNode.querySelector('.filter__dimension').firstChild.value
       const method = editNode.querySelector('.filter__detail').firstChild
-      method.innerHTML = that.htmlTable[aspect]['keypoint'][event.target.value]
+      if(Number(event.target.value) === -1){
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
+      else {
+        method.innerHTML = that.htmlTable[aspect]['keypoint'][event.target.value]
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+      }
+      // handle show all option
+      method.innerHTML += `<option value='-1'>全部</option>`
     }
   }
 
@@ -461,43 +472,25 @@ class Filter{
     return (event) => {
       event.preventDefault()
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
-      const contentId = editNode.querySelector('.node-index').value
-      const message = that.pageMessage.querySelector('.message')
+      // const contentId = editNode.querySelector('.node-index').value
+      // const message = that.pageMessage.querySelector('.message')
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML
-
       method = midLongTermFromWord({aspect, keypoint, method}).method;
       keypoint = midLongTermFromWord({aspect, keypoint}).keypoint;
       aspect = midLongTermFromWord({aspect}).aspect;
-      fetch(`/mid-long-term/content/change`, {
-        method: 'POST',
-        body: JSON.stringify({
-          contentId,
-          aspect,
-          keypoint,
-          method,
-          isChecked: 1,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(res => res.text())
-        .then(res => {
-          if(res === 'completed'){
-            editNode.parentNode.removeChild(editNode)
-          }
-          else{
-            throw new Error('delete failed')
-          }
-        })
-        .catch(err => {
-          message.classList.remove('green')
-          message.classList.add('red')
-          message.innerHTML = `<p>${err.message}</p>`
-          that.fadeOut(that.pageMessage)
-        })
+
+      let aspectSelect =  pageChange.querySelector('.filter.filter__dimension')
+      aspectSelect.querySelector(`[data-value="${aspect}"]`).click()
+      let keypointSelect =  pageChange.querySelector('.filter.filter__item')
+      keypointSelect.querySelector(`[data-value="${keypoint}"]`).click()
+      let methodSelect = pageChange.querySelector('.filter.filter__detail')
+      methodSelect.querySelector(`[data-value="${method}"]`).click()
+      $('#changeSelect').modal({
+        onApprove : function(){return false},
+      }).modal('show')
+      that.selectedChangeLabelNode = editNode
     }
   }
 
