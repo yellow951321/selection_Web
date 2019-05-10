@@ -61,9 +61,9 @@ export default async(dataId) => {
       .catch(err => {throw err})
 
     for(let val of data) {
-      let method = midLongTermFromNumber({aspect: aspect, keypoint: keypoint, method: method, }).method
-      let keypoint = midLongTermFromNumber({aspect: aspect, keypoint: keypoint, }).keypoint
-      let aspect = midLongTermFromNumber({aspect: aspect, }).aspect
+      let method = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, method: val.method, }).method
+      let keypoint = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, }).keypoint
+      let aspect = midLongTermFromNumber({aspect: val.aspect, }).aspect
 
       outputObject.push({
         pageFrom: val.pageFrom,

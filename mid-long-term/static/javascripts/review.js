@@ -4,6 +4,7 @@ import {map, midLongTermFromNumber }from 'projectRoot/lib/static/javascripts/map
 const pageAdvice = document.getElementById('advice')
 const pageFilter = document.getElementById('page-filter')
 const pageAudit = document.getElementById('page-audit')
+const footer = document.getElementById('footer')
 
 class Filter{
   constructor(){
@@ -30,10 +31,13 @@ class Filter{
       };
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
-        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }</option>`
+        let keypointLabel = `${ aspect.label }${ keypoint.label }`
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
-          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ keypoint.method[methodIndex].midLongTerm }</option>`
+          let method = keypoint.method[methodIndex];
+          let methodLabel = `${keypointLabel}${method.label}`
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
         }
       }
     }
@@ -66,7 +70,6 @@ class Filter{
       isChecked = 0
     }
     else{
-      console.log('i am here')
       isChecked = 1
     }
     // query parameter for GET
@@ -89,6 +92,13 @@ class Filter{
         that.selectedkeypoint = Number(keypoint.value)
         that.selectedmethod = Number(method.value)
         pageAudit.innerHTML = ''
+        if(data === ''){
+          footer.classList.remove('hidden')
+          return
+        }
+        else{
+          footer.classList.add('hidden')
+        }
         // if there is no project in this campus yet
         pageAudit.insertAdjacentHTML('beforeend', data)
 

@@ -340,8 +340,17 @@ router.post('/:dataId/add', async(req, res, next)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
+    data.method = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint, method: data.method}).method
+    data.keypoint = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint}).keypoint
+    data.aspect = midLongTermFromNumber({aspect: data.aspect}).aspect
+
     res.render('mixins/editnodes/newedit', {
-      index: data.dataValues.contentId,
+      content: {
+        aspect: data.aspect,
+        keypoint: data.keypoint,
+        method: data.method,
+        contentId: data.contentId,
+      },
     })
   }catch(err) {
     if(!err.status){

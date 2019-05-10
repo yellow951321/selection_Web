@@ -20,6 +20,16 @@ form.ui.form.segment.editNode
 		.two.wide.field
 			.ui.container.center.aligned.choice-block
 				button.ui.button.delete(type='submit') 刪除
+	.three.fields
+			.field
+				label 構面
+				.ui.large.tag.label=content.aspect
+			.field
+				label 推動重點
+				.ui.large.tag.label=content.keypoint
+			.field
+				label 具體作法
+				.ui.large.tag.label=content.method
 	.fields
 		.four.wide.field
 			label 大標題
@@ -41,4 +51,4 @@ form.ui.form.segment.editNode
 		textarea.summary(name="", rows="2")
 		label 備註
 		textarea.note(name="", rows="1")
-	input.node-index(type='hidden' value=index)
+	input.node-index(type='hidden' value=content.contentId)

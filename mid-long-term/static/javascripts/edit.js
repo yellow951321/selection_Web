@@ -114,7 +114,7 @@ class Filter{
       .then(data => {
         that.selectedAspect = Number(aspect.value)
         that.selectedkeypoint = Number(keypoint.value)
-        that.selectedmethod = Number(method.value)
+        that.selectedMethod = Number(method.value)
         footer.classList.remove('hidden')
         footer.classList.remove('transition')
 
@@ -132,7 +132,7 @@ class Filter{
         }
 
         // don't show add content button while show all content under certain label
-        if(Number(that.selectedAspect) === -1 || Number(that.selectedkeypoint) === -1 || Number(that.selectedkeypoint) === -1){
+        if(Number(that.selectedAspect) === -1 || Number(that.selectedkeypoint) === -1 || Number(that.selectedMethod) === -1){
           footer.querySelector('.add-content').classList.add('hidden')
         }
         else{
@@ -207,7 +207,7 @@ class Filter{
         body: JSON.stringify({
           aspect: that.selectedAspect,
           keypoint: that.selectedkeypoint,
-          method: that.selectedmethod,
+          method: that.selectedMethod,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -367,7 +367,7 @@ class Filter{
   }
   static changeLabel(that){
     return () => {
-      if(aspect === that.selectedAspect && keypoint === that.selectedkeypoint && method === that.selectedmethod)
+      if(aspect === that.selectedAspect && keypoint === that.selectedkeypoint && method === that.selectedMethod)
         return;
       let aspect = Number(pageChange.querySelector('.filter.filter__dimension').firstChild.value)
       let keypoint = Number(pageChange.querySelector('.filter.filter__item').firstChild.value)
@@ -556,6 +556,10 @@ window.addEventListener('beforeunload', (e) => {
   return true
 })
 
+const goTop = () => {
+  document.documentElement.scrollTop = 0
+}
+
 // add event listener to dropdowns
 pageFilter.querySelector('.filter.filter__mode').firstChild.addEventListener('change', Filter.modeDropdownOnChanged(filter))
 pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
@@ -565,6 +569,8 @@ pageChange.querySelector('.filter.filter__item').firstChild.addEventListener('ch
 
 // add event listener to the add content button
 footer.querySelector('.add-content').addEventListener('click', Filter.addContentClicked(filter))
+
+document.getElementById('arrow').addEventListener('click', goTop)
 
 // add event listener to the choice content button
 pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.chooseMode(filter))
