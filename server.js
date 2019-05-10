@@ -7,7 +7,7 @@ import logger from 'morgan'
 import config from 'projectRoot/config.js'
 import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
-// import shortTerm from 'short-term/app.js'
+import shortTerm from 'short-term/app.js'
 const isDevMode = process.env.NODE_ENV == 'development'
 
 const server = express()
@@ -65,7 +65,7 @@ server.use(session({
 
 server.use('/auth', auth)
 server.use('/mid-long-term', midLongTerm)
-// server.use('/short-term', shortTerm)
+server.use('/short-term', shortTerm)
 
 
 server.use((req, res) => {
