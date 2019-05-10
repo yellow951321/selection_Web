@@ -1,14 +1,14 @@
-mixin renderReviewNode(val)
+for val in contents
 	form.ui.form.segment.editNode
 		.fields
 			.eight.wide.field
 				.fields
 					.eight.wide.field
 						label 開始頁
-						input.page__start(type='number' value=val.pageFrom disabled)
+						p.page__start=val.pageFrom
 					.eight.wide.field
 						label 結束頁
-						input.page__end(type='number' value=val.pageTo disabled)
+						p.page__end=val.pageTo
 			if val.isChecked == 0
 				.four.wide.field
 					.ui.container.center.aligned.choice-block
@@ -18,61 +18,67 @@ mixin renderReviewNode(val)
 						button.ui.button.check(type='submit') 確認
 			else
 				.eight.wide.field
-					label=`已經由${val.reviewerId}審查通過`
-		.fields
+					.ui.green.large.label=`已經由${val.reviewerId}審核`
+		.six.fields
 			if val.isChecked == 0
-				.eight.wide.field
+				.field
 					label 原構面
-					.aspect=val.aspect
+					.ui.large.tag.label.aspect=val.aspect
+				.field
 					label 原推動重點
-					.keypoint=val.keypoint
+					.ui.large.tag.label.keypoint=val.keypoint
+				.field
 					label 原推動作法
-					.method=val.method
-				.eight.wide.field
+					.ui.large.tag.label.method=val.method
+				.field
 					label 建議構面
 					if val.conflictedAspect
-						.conflictedAspect=val.conflictedAspect
+						.ui.orange.large.tag.label.conflictedAspect=val.conflictedAspect
 					else
-						.conflictedAspect
+						.ui.orange.large.tag.label.conflictedAspect='尚未建議'
+				.field
 					label 建議推動重點
 					if val.conflictedKeypoint
-						.conflictedKeypoint=val.conflictedKeypoint
+						.ui.orange.large.tag.label.conflictedKeypoint=val.conflictedKeypoint
 					else
-						.conflictedKeypoint
+						.ui.orange.large.tag.label.conflictedKeypoint='尚未建議'
+				.field
 					label 建議推動作法
 					if val.conflictedMethod
-						.conflictedMethod=val.conflictedMethod
+						.ui.orange.large.tag.label.conflictedMethod=val.conflictedMethod
 					else
-						.conflictedMethod
+						.ui.orange.large.tag.label.conflictedMethod='尚未建議'
 			else
 				.five.wide.field
 					label 構面
-					.aspect=val.aspect
+					.ui.large.tag.label.aspect=val.aspect
 				.five.wide.field
 					label 推動重點
-					.keypoint=val.keypoint
+					.ui.large.tag.label.keypoint=val.keypoint
 				.five.wide.field
 					label 推動作法
-					.method=val.method
+					.ui.large.tag.label.method=val.method
 		.fields
 			.four.wide.field
 				label 大標題
-				input.title1(value = val.title1 disabled)
+				p.title1=val.title1
 			.four.wide.field
 				label 中標題
-				input.title2(value = val.title2 disabled)
+				p.title2=val.title2
 			.four.wide.field
 				label 小標題
-				input.title3(value = val.title3 disabled)
+				p.title3=val.title3
 			.four.wide.field
 				label 最小標題
-				input.title4(value = val.title4 disabled)
+				p.title4=val.title4
 		.field
 			label 內容
-			textarea.content(name="", rows="5" disabled)= val.content
+			p.content= val.content
 		.field
-			label 摘要
-			textarea.summary(name="", rows="2" disabled)= val.summary
-			label 備註
-			textarea.note(name="", rows="1" disabled)= val.note
+			if val.summary
+				label 摘要
+				p.summary=val.summary
+			if val.note
+				label 備註
+				p.note=val.note
 		input.node-index(type='hidden' value = val.contentId)

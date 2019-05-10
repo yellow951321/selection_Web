@@ -1,8 +1,10 @@
 import express from 'express'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data'
+import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
+import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
+import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+
 
 const router = express.Router({
   // case sensitive for route path
@@ -13,48 +15,183 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res) => {
-})
-
-router.get('/filter', async(req, res)=>{
+router.post('/save', async(req, res, next)=>{
   try{
-    let aspect = getFromWord(map, { dimension: req.query.dimension, })
-    let keypoint = getFromWord(map, {item: req.query.item, })
-    let method = getFromWord(map, { detail: req.query.detail, })
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-        aspect,
-        keypoint,
-        method,
+    let contentId = Number(req.body.contentId)
+    if(Number.isNaN(contentId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
+    let content = await Content.findOne({
+      where:{
+        contentId,
       },
       attributes: [
         'contentId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'content',
-        'summary',
-        'note',
-        'pageFrom',
-        'pageTo',
-        'aspect',
-        'keypoint',
-        'method',
-        'isChecked',
-        'reviewerId',
-        'isConflicted',
-        'updateTime',
-        'dataId',
+        'dataId'
       ],
     })
-    if(data === []){
-      res.send('empty')
+    // privillige check
+    let data = await Data.findOne({
+      where:{
+        dataId: content.dataId
+      },
+      attributes: [
+        'userId',
+      ]
+    })
+
+    if(data === null){
+      const err = new Error('data not found')
+      err.status = 404
+      throw err
+    }
+
+    if(data.userId !== Number(req.session.userId)){
+      const err = new Error('Unauthorized')
+      err.status = 401
+      throw err
+    }
+
+    let savedContent = await content.update({
+      content: req.body.content,
+      summary: req.body.summary,
+      note: req.body.note,
+      reviewerId: req.body.auditor,
+      title1: req.body.title1,
+      title2: req.body.title2,
+      title3: req.body.title3,
+      title4: req.body.title4,
+      pageFrom: req.body.page.start,
+      pageTo: req.body.page.end,
+      contentId: req.body.contentId,
+      isChecked: 0,
+      isConflicted: 0,
+      conflictedAspect: null,
+      conflictedKeypoint: null,
+      conflictedMethod: null,
+    })
+    if(savedContent){
+      res.send('completed')
+    }
+    else{
+      throw new Error('save failed')
+    }
+  } catch(err) {
+    if(!err.status){
+      err = new Error('save failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.delete('/delete', async(req, res)=>{
+  try{
+    let contentId = Number(req.body.contentId)
+    if(Number.isNaN(contentId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
+    await Content.destroy({
+      where:{
+        contentId,
+      },
+    })
+    res.send('completed')
+  }
+  catch(err){
+    if(!err.status){
+      err = new Error('delete failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.post('/change', async(req, res) => {
+  try{
+    let contentId = Number(req.body.contentId)
+    let aspect = Number(req.body.aspect)
+    let keypoint = Number(req.body.keypoint)
+    let method = Number(req.body.method)
+    let isChecked = Number(req.body.isChecked)
+
+    if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+    let data = await Content.findOne({
+      where:{
+        contentId,
+      },
+      attributes:[
+        'contentId',
+      ],
+    })
+    let savedData = await data.update({
+      isChecked,
+      isConflicted: 0,
+      aspect,
+      keypoint,
+      method,
+      conflictedAspect: null,
+      conflictedKeypoint: null,
+      conflictedMethod: null,
+    })
+    if(savedData){
+      res.send('completed')
+    }
+    else{
+      throw new Error('save failed')
+    }
+  } catch(err) {
+    if(!err.status){
+      err = new Error('filter failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.use('/:dataId', (req, res, next) => {
+  let dataId = Number(req.params.dataId)
+  if(typeof dataId === 'number'){
+    res.locals.dataId = dataId
+    next()
+  }
+  else{
+    const err = new Error('invalid argument')
+    err.status = 400
+    next(err)
+  }
+})
+
+router.get('/:dataId/filter', async(req, res, next)=>{
+  try{
+    let aspect = Number(req.query.aspect);
+    let keypoint = Number(req.query.keypoint);
+    let method = Number(req.query.method);
+
+    if(Number.isNaN(aspect)){
+      const err = new Error('invalid argument');
+      err.status = 400
+      throw err
+    }
+    let data = await getContent(aspect, keypoint, method, res.locals.dataId)
+
+    if(data.length === 0 || typeof data === 'null'){
+      res.send('')
+      return
     }
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
-      if(temp.reviewerId){
+      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
         temp.reviewerId = await User.findOne({
           where: {
             userId: temp.reviewerId,
@@ -62,6 +199,9 @@ router.get('/filter', async(req, res)=>{
         })
         temp.reviewerId = temp.reviewerId.dataValues.account
       }
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
     res.render('mixins/editnodes/own', {
@@ -69,17 +209,23 @@ router.get('/filter', async(req, res)=>{
     })
   }
   catch (err){
-	  res.status(409).render('error', {
-      message : err,
-      error: {
-		  status: err.status,
-      },
-	  })
+    if(!err.status){
+      err = new Error('filter failed')
+      err.status = 500
+    }
+    next(err)
   }
 })
 
-router.get('/check', async(req, res) => {
+router.route('/:dataId/check')
+.get(async(req, res, next) => {
   try{
+    let dataId = Number(res.locals.dataId)
+    if(Number.isNaN(dataId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
     let data = await Content.findAll({
       where: {
         dataId: res.locals.dataId,
@@ -103,18 +249,15 @@ router.get('/check', async(req, res) => {
         'conflictedMethod',
       ],
     })
-    if(data === []){
-      res.send('empty')
+    if(data.length === 0){
+      res.send('')
+      return
     }
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
-      temp.aspect = getFromNum(map, {dimension: temp.aspect, })
-      temp.keypoint = getFromNum(map, {item: temp.keypoint, })
-      temp.method = getFromNum(map, {detail: temp.method, })
-
-      temp.conflictedAspect = getFromNum(map, {dimension: temp.conflictedAspect, })
-      temp.conflictedKeypoint = getFromNum(map, {item: temp.conflictedKeypoint, })
-      temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
+      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
+      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
+      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
       return temp
     }))
     res.render('mixins/editnodes/check', {
@@ -122,20 +265,25 @@ router.get('/check', async(req, res) => {
     })
   }
   catch (err){
-	  res.status(409).render('error', {
-      message : err,
-      error: {
-		  status: err.status,
-      },
-	  })
+    if(!err.status){
+      const err = new Error('enter review page failed')
+      err.status = 500
+    }
+    next(err)
   }
 })
-
-router.post('/check', async(req, res) => {
+.post(async(req, res) => {
   try{
+    let contentId = Number(req.body.contentId)
+    if(Number.isNaN(contentId)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     let data = await Content.findOne({
       where:{
-        contentId: req.body.contentId,
+        contentId,
       },
       attributes:[
         'contentId',
@@ -150,54 +298,30 @@ router.post('/check', async(req, res) => {
       res.send('completed')
     }
     else{
-      throw new Error('save failed')
+      let err = new Error('save failed')
+      err.status = 500
+      throw err
     }
   } catch(err) {
-    res.sendStatus(404)
+    if(!err.status){
+      const err = new Error('enter review page failed')
+      err.status = 500
+    }
+    next(err)
   }
 })
 
-router.post('/change', async(req, res) => {
+router.post('/:dataId/add', async(req, res, next)=>{
   try{
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let aspect = getFromWord(map, { dimension: req.body.aspect, })
-    let keypoint = getFromWord(map, {item: req.body.keypoint, })
-    let method = getFromWord(map, { detail: req.body.method, })
+    let aspect = req.body.aspect;
+    let keypoint = req.body.keypoint;
+    let method = req.body.method;
 
-    let savedData = await data.update({
-      isChecked: 1,
-      isConflicted: 0,
-      aspect,
-      keypoint,
-      method,
-      conflictedAspect: null,
-      conflictedKeypoint: null,
-      conflictedMethod: null,
-    })
-    if(savedData){
-      res.send('completed')
+    if(Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
+      const err = new Error('invalid argument');
+      err.status = 400
+      throw err
     }
-    else{
-      throw new Error('save failed')
-    }
-  } catch(err) {
-    console.log(err)
-    res.sendStatus(404)
-  }
-})
-
-router.post('/add', async(req, res)=>{
-  try{
-    let aspect = getFromWord(map, { dimension: req.body.dimension, })
-    let keypoint = getFromWord(map, {item: req.body.item, })
-    let method = getFromWord(map, { detail: req.body.detail, })
 
     let data = await Content.create({
       dataId: res.locals.dataId,
@@ -216,68 +340,24 @@ router.post('/add', async(req, res)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
+    data.method = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint, method: data.method}).method
+    data.keypoint = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint}).keypoint
+    data.aspect = midLongTermFromNumber({aspect: data.aspect}).aspect
+
     res.render('mixins/editnodes/newedit', {
-      index: data.dataValues.contentId,
+      content: {
+        aspect: data.aspect,
+        keypoint: data.keypoint,
+        method: data.method,
+        contentId: data.contentId,
+      },
     })
   }catch(err) {
-    res.status(404)
-  }
-})
-
-router.post('/save', async(req, res)=>{
-  try{
-    // @TODO check if this user have privilige to modify
-
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let savedData = await data.update({
-      content: req.body.content,
-      summary: req.body.summary,
-      note: req.body.note,
-      reviewerId: req.body.auditor,
-      title1: req.body.title1,
-      title2: req.body.title2,
-      title3: req.body.title3,
-      title4: req.body.title4,
-      pageFrom: req.body.page.start,
-      pageTo: req.body.page.end,
-      contentId: req.body.contentId,
-      isChecked: 0,
-      isConflicted: 0,
-      conflictedAspect: null,
-      conflictedKeypoint: null,
-      conflictedMethod: null,
-    })
-    if(savedData){
-      res.send('completed')
+    if(!err.status){
+      err = new Error('add content failed')
+      err.status = 500
     }
-    else{
-      throw new Error('save failed')
-    }
-  } catch(err) {
-    res.status(404)
+    next(err)
   }
 })
-
-
-router.delete('/delete', async(req, res)=>{
-  try{
-    let result = await Content.destroy({
-      where:{
-        contentId: req.body.contentId,
-      },
-    })
-    res.send('completed')
-  }
-  catch(err){
-    res.status(404)
-  }
-})
-
 export default router

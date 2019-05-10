@@ -8,8 +8,8 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 import typeRouter from 'mid-long-term/routes/type.js'
 import reviewRouter from 'mid-long-term/routes/review.js'
 import campusRouter from 'mid-long-term/routes/campus.js'
-import dataRouter from 'mid-long-term/routes/year.js'
-import fileRouter from 'mid-long-term/routes/file.js'
+import yearRouter from 'mid-long-term/routes/year.js'
+import dataRouter from 'mid-long-term/routes/data.js'
 import contentRouter from 'mid-long-term/routes/content.js'
 import downloadRouter from 'mid-long-term/routes/downloadCsv.js'
 import graphRouter from 'mid-long-term/routes/graph.js'
@@ -54,6 +54,16 @@ app.use(authUser)
 
 app.use('/', typeRouter)
 
+app.use('/data', dataRouter)
+
+app.use('/content', contentRouter)
+
+app.use('/review', reviewRouter)
+
+app.use('/download', downloadRouter)
+
+
+// resolve choice page
 app.use('/:typeId', (req, res, next)=>{
   let typeId = Number(req.params.typeId)
   if(typeof typeId === 'number'){
@@ -61,10 +71,9 @@ app.use('/:typeId', (req, res, next)=>{
     next()
   }
   else{
-    res.status(400).render('error', {
-      status: 400,
-      message: 'invaliad type',
-    })
+    const err = new Error('invalid argument')
+    err.status = 400
+    next(err)
   }
 },
 campusRouter)
@@ -76,13 +85,12 @@ app.use('/:typeId/:campusId', (req, res, next)=>{
     next()
   }
   else{
-    res.status(400).render('error', {
-      status: 400,
-      message: 'invaliad campus',
-    })
+    const err = new Error('invalid argument')
+    err.status = 400
+    next(err)
   }
 },
-dataRouter)
+yearRouter)
 
 app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
   let dataId = Number(req.params.dataId)
@@ -91,22 +99,15 @@ app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
     next()
   }
   else{
-    res.status(400).render('error', {
-      status: 400,
-      message: 'invalid data',
-    })
+    const err = new Error('invalid argument')
+    err.status = 400
+    next(err)
   }
 })
 
 app.use('/:typeId/:campusId/:dataId/graph', graphRouter)
 
-app.use('/:typeId/:campusId/:dataId/download', downloadRouter)
 
-app.use('/:typeId/:campusId/:dataId/file', fileRouter)
-
-app.use('/:typeId/:campusId/:dataId/content', contentRouter)
-
-app.use('/:typeId/:campusId/:dataId/review', reviewRouter)
 
 app.use((err, {}, res, {}) => {
   res.render('error', {

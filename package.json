@@ -28,7 +28,8 @@
     "s": "npm run start",
     "w": "npm run watch",
     "ws": "npm run watch:server-js",
-    "wb": "npm run watch:browser-js"
+    "wb": "npm run watch:browser-js",
+    "t" : "webpack --watch --config webpack.transfer.config.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
