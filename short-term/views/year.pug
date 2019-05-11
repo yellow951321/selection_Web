@@ -1,0 +1,28 @@
+extends mixins/layout
+
+//- css
+append head
+  +midLongCss('year')
+
+append buttons
+  //- append buttons in the header
+  include mixins/_addbutton
+
+append content
+  //- pop up deleteproject
+  include mixins/_suredelete
+
+  //- popup addproject
+  include mixins/_projectcreation.pug
+
+  include mixins/_renderyear.pug
+  //- content
+  //- page select
+  #page-management.ui.middle.aligned.center.aligned.grid.container.pusher
+    .two.column.row
+      for val in years
+        .column
+          +renderYear(val)
+
+append script
+  +midLongJS('year')

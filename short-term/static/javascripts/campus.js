@@ -1,0 +1,1 @@
+import 'mid-long-term/static/javascripts/module/projectCreation'

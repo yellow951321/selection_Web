@@ -81,6 +81,23 @@ const midLongTermJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   },
 })
 
+const shortTermJsSrcRoot = path.join(config.projectRoot, 'short-term/static/javascripts')
+const shortTermJsDistRoot = path.join(config.projectRoot, 'short-term/public/javascripts')
+const shortTermJsConfig = Object.assign({}, webpackJsConfigTemplate, {
+  entry: {
+    'campus': path.join(shortTermJsSrcRoot, 'campus.js'),
+    'draw': path.join(shortTermJsSrcRoot, 'draw.js'),
+    'edit': path.join(shortTermJsSrcRoot, 'edit.js'),
+    'review': path.join(shortTermJsSrcRoot, 'review.js'),
+    'type': path.join(shortTermJsSrcRoot, 'type.js'),
+    'year': path.join(shortTermJsSrcRoot, 'year.js'),
+  },
+  output: {
+    path: shortTermJsDistRoot,
+    filename: '[name].bundle.js',
+  },
+})
+
 const shortTermSrcRoot = path.join(config.projectRoot, 'short-term/static/javascripts')
 const shortTermDistRoot = path.join(config.projectRoot, 'short-term/public/javascripts')
 const shortTermConfig = Object.assign({}, webpackJsConfigTemplate, {
@@ -182,10 +199,31 @@ const midLongTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
 })
 
 
+const shortTermCssSrcRoot = path.join(config.projectRoot, 'short-term/static/stylesheets')
+const shortTermCssDisRoot = path.join(config.projectRoot, 'short-term/public/stylesheets')
+const shortTermCssConfig = Object.assign({}, webpackCssConfigTemplate, {
+  entry: {
+    'campus': path.join(shortTermCssSrcRoot, 'campus.scss'),
+    'edit': path.join(shortTermCssSrcRoot, 'edit.scss'),
+    'editWithFilter' : path.join(shortTermCssSrcRoot, 'editwithfilter.scss'),
+    'graph': path.join(shortTermCssSrcRoot, 'graph.scss'),
+    'review': path.join(shortTermCssSrcRoot, 'review.scss'),
+    'type': path.join(shortTermCssSrcRoot, 'type.scss'),
+    'year': path.join(shortTermCssSrcRoot, 'year.scss'),
+    'error': path.join(shortTermCssSrcRoot, 'error.scss'),
+  },
+  output: {
+    path: shortTermCssDisRoot,
+    filename: '[name].do-not-use.js',
+  },
+})
+
 module.exports = [
   authJsConfig,
   authCssConfig,
   midLongTermJsConfig,
   shortTermConfig,
   midLongTermCssConfig,
+  shortTermCssConfig,
+  shortTermJsConfig,
 ]

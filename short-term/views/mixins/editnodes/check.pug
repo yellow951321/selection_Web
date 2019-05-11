@@ -1,0 +1,51 @@
+for val in contents
+	form.ui.form.segment.editNode
+		.fields
+			.eight.wide.field
+				.fields
+					.eight.wide.field
+						label 開始頁
+						p.page__start=val.pageFrom
+					.eight.wide.field
+						label 結束頁
+						p.page__end=val.pageTo
+			.four.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.change(type='submit') 修改
+			.four.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.check(type='submit') 保持
+		.fields
+			.five.wide.field
+				label 建議構面
+				.ui.large.tag.label.conflictedAspect=val.conflictedAspect
+			.five.wide.field
+				label 建議推動重點
+				.ui.large.tag.label.conflictedKeypoint=val.conflictedKeypoint
+			.five.wide.field
+				label 建議推動作法
+				.ui.large.tag.label.conflictedMethod=val.conflictedMethod
+		.fields
+			.four.wide.field
+				label 大標題
+				p.title1val.title1
+			.four.wide.field
+				label 中標題
+				p.title2= val.title2
+			.four.wide.field
+				label 小標題
+				p.title3= val.title3
+			.four.wide.field
+				label 最小標題
+				p.title4= val.title4
+		.field
+			label 內容
+			p.content(name="", rows="5")= val.content
+		.field
+			if val.summary
+				label 摘要
+				p.summary(name="", rows="2")= val.summary
+			if val.note
+				label 備註
+				p.note(name="", rows="1")= val.note
+		input.node-index(type='hidden' value = val.contentId)

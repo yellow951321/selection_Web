@@ -2,8 +2,8 @@ import express from 'express'
 import { createObjectCsvWriter, } from 'csv-writer'
 import fs from 'fs'
 import uniqueFilename from 'unique-filename'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import Data from 'projectRoot/short-term/models/schemas/Data.js'
+import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import {map, getFromNum, } from 'projectRoot/data/operation/mapping.js'
 
 const router = express.Router({

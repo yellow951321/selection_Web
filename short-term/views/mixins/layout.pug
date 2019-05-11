@@ -1,0 +1,17 @@
+extends ../../../lib/views/layout
+append head
+  include _midlongcss
+
+append content
+  //- header
+  section#header.ui.top.fixed.menu.header
+    .title
+      include _breadcrumb.pug
+    .right.menu
+      block buttons
+      a.logout.ui.item(href=`${GLOBAL.config.server.host}/auth/logout`) 登出
+
+append footer
+
+append script
+  include _midlongjavascript

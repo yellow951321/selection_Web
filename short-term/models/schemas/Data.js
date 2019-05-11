@@ -1,6 +1,7 @@
-const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
+import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
 const Sequelize = require('sequelize')
-const User = require('./User')
+import User from 'projectRoot/auth/models/schemas/user.js'
+
 
 const dataSchema = {
   dataId: {
@@ -34,6 +35,6 @@ const dataSchema = {
   },
 }
 
-const Data = sequelizeShortTerm.define('data', dataSchema)
+const Data = shortTermDB.define('data', dataSchema)
 
-module.exports = Data
+export default Data

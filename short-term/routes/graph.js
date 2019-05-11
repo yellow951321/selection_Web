@@ -4,7 +4,7 @@ import {
   countCampusAll,
   countCampusRespectToAspect,
   countCampusRespectToKey,
-  countCampusRespectToMethod, } from 'projectRoot/mid-long-term/models/operations/draw.js'
+  countCampusRespectToMethod, } from 'projectRoot/short-term/models/operations/draw.js'
 
 import {map, getFromWord, getFromNum, } from 'projectRoot/data/operation/mapping.js'
 
@@ -27,7 +27,7 @@ router.get('/index', async(req, res) => {
     res.render('manage/graph', {
       GLOBAL: {
         channel: {
-          id: 'mid-long-term',
+          id: 'short-term',
           name: '中長程計畫',
         },
         id: req.session.userId,

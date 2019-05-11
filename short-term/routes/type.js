@@ -1,6 +1,6 @@
 import express from 'express'
 
-import getAllType from 'mid-long-term/models/operations/get-all-type.js'
+import getAllType from 'short-term/models/operations/get-all-type.js'
 
 const router = express.Router()
 
@@ -10,13 +10,18 @@ router.get('/index', async(req, res, next)=>{
     res.render('type', {
       breadcrumb: [
         {
-          id: 'mid-long-term',
-          name: '中長程計畫',
+          id: 'short-term',
+          name: '短程計畫',
+        },
+        {
+          id: res.locals.yearId,
+          name: res.locals.yearId,
         },
       ],
       id: req.session.userId,
       user: res.locals.user,
       types: types,
+      year: res.locals.yearId,
     })
   }catch(err) {
     next(err)

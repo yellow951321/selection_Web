@@ -1,0 +1,15 @@
+mixin filter(...items)
+  .field.aspectBlock
+    label 構面
+    select.filter.filter__dimension.ui.selection.dropdown
+      each item, index in items
+        -if(item==='全部')
+            option(value=`-1`)= item
+        -else
+            option(value=`${index}`)= item
+  .field.keypointBlock
+      label 推動重點
+      select.filter.filter__item.ui.selection.dropdown
+  .field.methodBlock
+      label 具體作法
+      select.filter.filter__detail.ui.selection.dropdown

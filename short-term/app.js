@@ -8,8 +8,8 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 import typeRouter from 'short-term/routes/type.js'
 import yearRouter from 'short-term/routes/year.js'
 // import reviewRouter from 'short-term/routes/review.js'
-// import campusRouter from 'short-term/routes/campus.js'
-// import dataRouter from 'short-term/routes/year.js'
+import campusRouter from 'short-term/routes/campus.js'
+import dataRouter from 'short-term/routes/data.js'
 // import fileRouter from 'short-term/routes/file.js'
 // import contentRouter from 'short-term/routes/content.js'
 // import downloadRouter from 'short-term/routes/downloadCsv.js'
@@ -55,7 +55,30 @@ app.use(authUser)
 
 app.use('/', yearRouter)
 
-app.use(':yearId/:typeId', (req, res, next)=>{
+app.use('/data', dataRouter)
+
+// app.use('/content', contentRouter)
+
+// app.use('/review', reviewRouter)
+
+// app.use('/download', downloadRouter)
+
+app.use('/:yearId', (req, res, next)=>{
+  let yearId = Number(req.params.yearId)
+  if(typeof yearId === 'number'){
+    res.locals.yearId = yearId
+    next()
+  }
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invaliad type',
+    })
+  }
+},
+typeRouter)
+
+app.use('/:yearId/:typeId', (req, res, next)=>{
   let typeId = Number(req.params.typeId)
   if(typeof typeId === 'number'){
     res.locals.typeId = typeId
@@ -68,9 +91,9 @@ app.use(':yearId/:typeId', (req, res, next)=>{
     })
   }
 },
-typeRouter)
+campusRouter)
 
-// app.use('/:typeId/:campusId', (req, res, next)=>{
+// app.use('/:yearId/:typeId/:campusId', (req, res, next)=>{
 //   let campusId = Number(req.params.campusId)
 //   if(typeof campusId === 'number'){
 //     res.locals.campusId = campusId
@@ -85,7 +108,7 @@ typeRouter)
 // },
 // dataRouter)
 
-// app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
+// app.use('/:yearId/:typeId/:campusId/:dataId', (req, res, next)=>{
 //   let dataId = Number(req.params.dataId)
 //   if(typeof dataId === 'number'){
 //     res.locals.dataId = dataId
