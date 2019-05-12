@@ -98,18 +98,6 @@ const shortTermJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   },
 })
 
-const shortTermSrcRoot = path.join(config.projectRoot, 'short-term/static/javascripts')
-const shortTermDistRoot = path.join(config.projectRoot, 'short-term/public/javascripts')
-const shortTermConfig = Object.assign({}, webpackJsConfigTemplate, {
-  entry: {
-    'year': path.join(shortTermSrcRoot, 'manage/year.js'),
-  },
-  output: {
-    path: shortTermDistRoot,
-    filename: '[name].bundle.js',
-  },
-})
-
 const webpackCssConfigTemplate = {
   devtool: isDevMode ? 'inline-sourcemap' : false,
   mode:    isDevMode ? 'development' : 'production',
@@ -222,8 +210,7 @@ module.exports = [
   authJsConfig,
   authCssConfig,
   midLongTermJsConfig,
-  shortTermConfig,
   midLongTermCssConfig,
-  shortTermCssConfig,
   shortTermJsConfig,
+  shortTermCssConfig,
 ]
