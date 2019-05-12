@@ -1,7 +1,7 @@
 extends mixins/layout
 
 append head
-  +midLongCss('editwithfilter')
+  +shortCss('editwithfilter')
 
 append content
   include mixins/_suredelete
@@ -29,4 +29,4 @@ append content
     button.add-content.ui.blue.button 新增
 
 append script
-  +midLongJS('edit')
+  +shortJS('edit')

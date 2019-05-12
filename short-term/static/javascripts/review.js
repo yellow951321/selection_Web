@@ -1,4 +1,4 @@
-import {map, midLongTermFromNumber }from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, shortTermFromNumber }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const pageAdvice = document.getElementById('advice')
@@ -32,12 +32,12 @@ class Filter{
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
         let keypointLabel = `${ aspect.label }${ keypoint.label }`
-        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.shortTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
           let method = keypoint.method[methodIndex];
           let methodLabel = `${keypointLabel}${method.label}`
-          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.shortTerm }(${methodLabel})</option>`
         }
       }
     }
@@ -79,8 +79,9 @@ class Filter{
       method: method.value,
       isChecked,
     }
+    console.log(parameters)
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/review/${that.dataId}/filter?${parameters}`, {
+    fetch(`/short-term/review/${that.dataId}/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -140,7 +141,7 @@ class Filter{
       let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
       let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
       let conflictedMethod = Number(pageAdvice.querySelector('.filter.filter__detail').firstChild.value)
-      fetch(`/mid-long-term/review/conflict`, {
+      fetch(`/short-term/review/conflict`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.targetNode.querySelector('.node-index').value,
@@ -157,9 +158,9 @@ class Filter{
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')
-          conflictedMethod = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint, method: conflictedMethod}).method
-          conflictedKeypoint = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint}).keypoint
-          conflictedAspect = midLongTermFromNumber({aspect: conflictedAspect}).aspect
+          conflictedMethod = shortTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint, method: conflictedMethod}).method
+          conflictedKeypoint = shortTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint}).keypoint
+          conflictedAspect = shortTermFromNumber({aspect: conflictedAspect}).aspect
 
           aspectLabel.innerHTML = conflictedAspect
           keyointLabel.innerHTML = conflictedKeypoint
@@ -178,7 +179,7 @@ class Filter{
     return (event) => {
       event.preventDefault()
       let node = event.target.parentNode.parentNode.parentNode.parentNode
-      fetch(`/mid-long-term/review/check`, {
+      fetch(`/short-term/review/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: node.querySelector('.node-index').value,

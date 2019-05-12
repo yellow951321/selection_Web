@@ -1,4 +1,4 @@
-import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+import schema from 'projectRoot/short-term/static/javascripts/src/schema.js'
 
 //global variable
 var savedData = null
@@ -94,7 +94,7 @@ const retrieveSpecficData = (that)=>{
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
+    fetch(`/short-term/${selected.typeId}/${selected.campusId}/${selected.dataId}/graph/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -223,7 +223,7 @@ const drawBarChart = (data, info)=>{
     .enter()
     .append('a')
     .attr('href', d => {
-      return `/mid-long-term/${info.id}/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`
+      return `/short-term/${info.id}/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`
     })
 
   bar.append('rect')
@@ -449,7 +449,7 @@ const drawBoxPlot = (data, info) => {
     .data(data)
     .on('click', (d) => {
       console.log(d)
-      document.location.href = `/mid-long-term/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`
+      document.location.href = `/short-term/${info.typeId}/${info.campusId}/${info.dataId}/${d.methodId}`
       return
     })
   d3.selectAll('.y.axis .tick text')

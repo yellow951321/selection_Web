@@ -1,7 +1,6 @@
 import express from 'express'
 
-// import getAllYear from 'short-term/models/operations/get-all-year.js'
-import campusMap from 'lib/static/javascripts/mapping/campus.js'
+import getAllYear from 'short-term/models/operations/get-all-year.js'
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -13,10 +12,11 @@ const router = express.Router({
 
 router.get('/index', async(req, res)=>{
   try{
-    // const data = await getAllYear({
-    //   typeId: res.locals.typeId,
-    //   campusId: res.locals.campusId
-    // })
+    const data = await getAllYear()
+    let years = []
+    data.forEach(d => {
+      years.push(d.year)
+    })
     res.render('year', {
       breadcrumb: [
         {
@@ -26,8 +26,7 @@ router.get('/index', async(req, res)=>{
       ],
       id: req.session.userId,
       user: res.locals.user,
-      data: [],
-      years: [107, 108],
+      years,
     })
   }catch(err){
     throw new Error("error occurred in year.js", err)

@@ -2,7 +2,7 @@ extends mixins/layout
 
 //- css
 append head
-  +midLongCss('year')
+  +shortCss('year')
 
 append buttons
   //- append buttons in the header
@@ -18,11 +18,10 @@ append content
   include mixins/_renderyear.pug
   //- content
   //- page select
-  #page-management.ui.middle.aligned.center.aligned.grid.container.pusher
-    .two.column.row
-      for val in years
-        .column
-          +renderYear(val)
+  //- #page-management.ui.middle.aligned.center.aligned.grid.container.pusher
+  #page-management.ui.grid.container.pusher
+    for val in years
+      +renderYear(val)
 
 append script
-  +midLongJS('year')
+  +shortJS('year')

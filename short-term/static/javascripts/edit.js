@@ -1,4 +1,4 @@
-import {map, midLongTermFromWord}from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, shortTermFromWord}from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const footer = document.getElementById('footer')
@@ -63,12 +63,12 @@ class Filter{
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
         let keypointLabel = `${ aspect.label }${ keypoint.label }`
-        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.shortTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
           let method = keypoint.method[methodIndex];
           let methodLabel = `${keypointLabel}${method.label}`
-          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.shortTerm }(${methodLabel})</option>`
         }
       }
     }
@@ -104,7 +104,7 @@ class Filter{
       method: method.value,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/mid-long-term/content/${that.dataId}/filter?${parameters}`, {
+    fetch(`/short-term/content/${that.dataId}/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ class Filter{
   }
 
   static checkMode(that){
-    fetch(`/mid-long-term/content/${that.dataId}/check`, {
+    fetch(`/short-term/content/${that.dataId}/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ class Filter{
   static addContentClicked(that){
     const message = footer.querySelector('.message')
     return () => {
-      fetch(`/mid-long-term/content/${that.dataId}/add`, {
+      fetch(`/short-term/content/${that.dataId}/add`, {
         method: 'POST',
         body: JSON.stringify({
           aspect: that.selectedAspect,
@@ -311,7 +311,7 @@ class Filter{
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
       const note = editNode.querySelector('.note').value
-      fetch(`/mid-long-term/content/save`, {
+      fetch(`/short-term/content/save`, {
         method: 'POST',
         body: JSON.stringify({
           page: {
@@ -373,7 +373,7 @@ class Filter{
       let keypoint = Number(pageChange.querySelector('.filter.filter__item').firstChild.value)
       let method = Number(pageChange.querySelector('.filter.filter__detail').firstChild.value)
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/content/change`, {
+      fetch(`/short-term/content/change`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.selectedChangeLabelNode.querySelector('.node-index').value,
@@ -428,7 +428,7 @@ class Filter{
     return () =>{
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/content/delete`, {
+      fetch(`/short-term/content/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
           contentId,
@@ -468,7 +468,7 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/content/${that.dataId}/check`, {
+      fetch(`/short-term/content/${that.dataId}/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId,
@@ -502,9 +502,9 @@ class Filter{
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML
-      method = midLongTermFromWord({aspect, keypoint, method}).method;
-      keypoint = midLongTermFromWord({aspect, keypoint}).keypoint;
-      aspect = midLongTermFromWord({aspect}).aspect;
+      method = shortTermFromWord({aspect, keypoint, method}).method;
+      keypoint = shortTermFromWord({aspect, keypoint}).keypoint;
+      aspect = shortTermFromWord({aspect}).aspect;
 
       let aspectSelect =  pageChange.querySelector('.filter.filter__dimension')
       aspectSelect.querySelector(`[data-value="${aspect}"]`).click()

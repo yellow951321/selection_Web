@@ -2,7 +2,7 @@ extends mixins/layout
 
 //- css
 append head
-  +midLongCss('type')
+  +shortCss('type')
 
 append buttons
   //- append buttons in the header
@@ -19,4 +19,4 @@ append content
           a.blue.square-box(href=`${GLOBAL.config.server.host}/short-term/${year}/${val.id}/index`)=val.name
 
 append script
-  +midLongJS('type')
+  +shortJS('type')
