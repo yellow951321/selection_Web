@@ -1,8 +1,7 @@
 
 import Content from 'projectRoot/mid-long-term/models/schemas/Content'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data'
 import User from 'projectRoot/auth/models/schemas/user.js'
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
+import {map, getFromWord, } from 'projectRoot/data/operation/mapping'
 
 
 const isString = (x) => {
@@ -51,7 +50,7 @@ export default async(info = {}) => {
         'dataId',
       ],
     })
-    if(data === []){
+    if(data.length === 0){
       return 'empty'
     }
     data = await Promise.all(data.map(async(data) => {
@@ -68,11 +67,13 @@ export default async(info = {}) => {
     }))
     return data
   } catch(err) {
-    if(!err.status){
-      err = new Error('Error occurred in content-filter.js', err)
+    if(err.status)
+      throw err
+    else {
+      err = new Error('Error occurred in content-filter.js')
       err.status = 500
+      throw err
     }
-    throw err
   }
 }
 

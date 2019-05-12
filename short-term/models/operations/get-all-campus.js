@@ -95,7 +95,6 @@ export default async(info={}) => {
     })
     return data
   }catch(err) {
-    console.log(err)
     if(!err.status){
       err = new Error('Error occurred in get-all-campus.js')
       err.status = 500
