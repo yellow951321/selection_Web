@@ -18,7 +18,9 @@ export default async(info={}) =>{
     const campus = await Data.findOne({
       where:{
         campusId: info.campusId,
-        typeId: info.type,
+        typeId: info.typeId,
+        yearFrom: info.yearFrom,
+        yearTo: info.yearTo,
       },
     })
 
