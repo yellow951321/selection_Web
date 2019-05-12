@@ -157,7 +157,7 @@ app.get('/logout', async(req, res, next)=>{
 })
 
 app.route('/signup')
-  .get(({}, res)=>{
+  .get(({}, res, next)=>{
     try {
       res.render('signup')
     }
@@ -171,7 +171,7 @@ app.route('/signup')
       }
     }
   })
-  .post(async(req, res)=>{
+  .post(async(req, res, next)=>{
     try{
       const user = await User.create({
         account : req.body.account,
