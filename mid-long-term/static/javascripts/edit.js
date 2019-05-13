@@ -218,6 +218,8 @@ class Filter{
           pageEdit.insertAdjacentHTML('beforeend', data)
           pageEdit.lastChild.querySelector('.save').addEventListener('click', Filter.saveContent(that))
           pageEdit.lastChild.querySelector('.delete').addEventListener('click', Filter.showDeleteConfirm(that))
+          pageEdit.lastChild.querySelector('.changeLabel').addEventListener('click', Filter.showChangeLabel(that))
+
           message.classList.add('transition')
           message.classList.add('hidden')
 
