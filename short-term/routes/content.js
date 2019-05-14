@@ -245,6 +245,9 @@ router.route('/:dataId/check')
         'pageFrom',
         'pageTo',
         'contentId',
+        'aspect',
+        'keypoint',
+        'method',
         'conflictedAspect',
         'conflictedKeypoint',
         'conflictedMethod',
@@ -259,6 +262,10 @@ router.route('/:dataId/check')
       temp.conflictedMethod = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
       temp.conflictedKeypoint = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
       temp.conflictedAspect = shortTermFromNumber({aspect: temp.conflictedAspect}).aspect
+
+      temp.method = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = shortTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
     res.render('mixins/editnodes/check', {

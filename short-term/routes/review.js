@@ -80,6 +80,7 @@ router.post('/conflict', async(req, res, next) => {
       isConflicted: 1,
       reviewerId: req.session.userId,
     })
+    console.log(newData)
     if(newData){
       res.send('completed')
     }
@@ -139,51 +140,6 @@ router.get('/:dataId/index', async(req, res, next) => {
       res.redirect(`/short-term/data/${dataId}/edit`)
       return
     }
-    // let data = await Content.findAll({
-    //   where: {
-    //     dataId: res.locals.dataId,
-    //   },
-    //   attributes: [
-    //     'contentId',
-    //     'dataId',
-    //     'title1',
-    //     'title2',
-    //     'title3',
-    //     'title4',
-    //     'note',
-    //     'content',
-    //     'pageFrom',
-    //     'pageTo',
-    //     'aspect',
-    //     'keypoint',
-    //     'method',
-    //     'isChecked',
-    //     'conflictedAspect',
-    //     'conflictedKeypoint',
-    //     'conflictedMethod',
-    //     'reviewerId',
-    //     'updateTime',
-    //   ],
-    // })
-
-    // data = await Promise.all(data.map(async(data) => {
-    //   let temp = data.dataValues
-    //   temp.method = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-    //   temp.keypoint = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-    //   temp.aspect = shortTermFromNumber({aspect: temp.aspect }).aspect
-
-    //   temp.conflictedMethod = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-    //   temp.conflictedKeypoint = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-    //   temp.conflictedAspect = shortTermFromNumber({aspect: temp.conflictedAspect}).aspect
-    //   if(typeof temp.reviewerId === 'number'){
-    //     temp.reviewerId = await User.findOne({
-    //       where: {
-    //         userId: temp.reviewerId,
-    //       },
-    //     }).account
-    //   }
-    //   return temp
-    // }))
     let typeName = campusMap[checkData.typeId].type
     let campusName = campusMap[checkData.typeId]['campus'][checkData.campusId]
 
@@ -267,6 +223,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
 
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
+      console.log(temp)
       temp.method = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
       temp.keypoint = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
       temp.aspect = shortTermFromNumber({aspect: temp.aspect }).aspect

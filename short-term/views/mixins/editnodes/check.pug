@@ -15,16 +15,25 @@ for val in contents
 			.four.wide.field
 				.ui.container.center.aligned.choice-block
 					button.ui.button.check(type='submit') 保持
-		.fields
-			.five.wide.field
+		.six.fields
+			.field
+				label 原構面
+				.ui.large.tag.label.aspect=val.aspect
+			.field
+				label 原推動重點
+				.ui.large.tag.label.keypoint=val.keypoint
+			.field
+				label 原推動作法
+				.ui.large.tag.label.method=val.method
+			.field
 				label 建議構面
-				.ui.large.tag.label.conflictedAspect=val.conflictedAspect
-			.five.wide.field
+				.orange.ui.large.tag.label.conflictedAspect=val.conflictedAspect
+			.field
 				label 建議推動重點
-				.ui.large.tag.label.conflictedKeypoint=val.conflictedKeypoint
-			.five.wide.field
+				.orange.ui.large.tag.label.conflictedKeypoint=val.conflictedKeypoint
+			.field
 				label 建議推動作法
-				.ui.large.tag.label.conflictedMethod=val.conflictedMethod
+				.orange.ui.large.tag.label.conflictedMethod=val.conflictedMethod
 		.fields
 			.four.wide.field
 				label 大標題
