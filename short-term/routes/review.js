@@ -223,7 +223,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
 
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
-      console.log(temp)
+
       temp.method = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
       temp.keypoint = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
       temp.aspect = shortTermFromNumber({aspect: temp.aspect }).aspect

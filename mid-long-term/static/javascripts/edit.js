@@ -175,7 +175,21 @@ class Filter{
     .then(res => res.text())
     .then(data => {
       pageEdit.innerHTML = ''
-      pageEdit.insertAdjacentHTML('beforeend', data)
+
+      const message = footer.querySelector('.message')
+      footer.classList.remove('hidden')
+      if(data === ''){
+        message.classList.remove('transition')
+        message.classList.remove('hidden')
+      }
+      else{
+        pageEdit.insertAdjacentHTML('beforeend', data)
+        message.classList.add('transition')
+        message.classList.add('hidden')
+      }
+
+      // don't show add content button while show all content under certain label
+      footer.querySelector('.add-content').classList.add('hidden')
 
       // add eventListener to check and change button
       Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
@@ -185,9 +199,6 @@ class Filter{
       Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
         button.addEventListener('click', Filter.changeNodeClicked(that))
       })
-
-      footer.classList.add('hidden')
-      footer.classList.add('transition')
     })
     .catch(err => {
       const message = footer.querySelector('.message')
