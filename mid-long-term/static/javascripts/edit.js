@@ -478,7 +478,7 @@ class Filter{
   static checkNodeClicked(that){
     return (event) => {
       event.preventDefault()
-      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
       fetch(`/mid-long-term/content/${that.dataId}/check`, {

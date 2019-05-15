@@ -18,9 +18,12 @@ each val in contents
 			.two.wide.field
 				.ui.container.center.aligned.choice-block
 					button.ui.button.changeLabel(type='submit') 改變標籤
-			.two.wide.field
-				.ui.container.center.aligned.choice-block
-					button.ui.button.save(type='submit') 儲存
+			if val.isChecked == 1
+				.two.wide.field
+			else
+				.two.wide.field
+					.ui.container.center.aligned.choice-block
+						button.ui.button.save(type='submit') 儲存
 			.two.wide.field
 				.ui.container.center.aligned.choice-block
 					button.ui.button.delete(type='submit') 刪除

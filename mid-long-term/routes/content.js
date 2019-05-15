@@ -183,12 +183,13 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       err.status = 400
       throw err
     }
-    let data = await getContent(aspect, keypoint, method, res.locals.dataId)
+    let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 
     if(data.length === 0 || typeof data === 'null'){
       res.send('')
       return
     }
+
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
       if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
@@ -204,6 +205,8 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
+
+    console.log(data)
     res.render('mixins/editnodes/own', {
       contents : data,
     })
