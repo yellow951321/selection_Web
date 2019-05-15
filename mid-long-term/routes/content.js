@@ -206,7 +206,6 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       return temp
     }))
 
-    console.log(data)
     res.render('mixins/editnodes/own', {
       contents : data,
     })
