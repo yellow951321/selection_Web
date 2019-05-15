@@ -62,11 +62,15 @@ class Filter{
       };
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
+        if(keypoint.midLongTerm == '')
+          continue;
         let keypointLabel = `${ aspect.label }${ keypoint.label }`
         table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
           let method = keypoint.method[methodIndex];
+          if(method.midLongTerm == '')
+            continue;
           let methodLabel = `${keypointLabel}${method.label}`
           table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
         }
