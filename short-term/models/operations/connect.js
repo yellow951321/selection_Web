@@ -37,7 +37,7 @@ export default new Sequelize('sinicaShortTerm', `${config.database.user}`, `${co
   pool: {
     max: 5,
     min: 0,
-    acquire: 30000,
-    idle: 30000,
+    acquire: 1000000,
+    idle: 200000,
   },
 })

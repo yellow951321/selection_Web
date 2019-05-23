@@ -158,25 +158,36 @@ const createNewDataAndContent = async (info={}, contents) => {
   try{
     let typeId = info.type == '大學' ? 0 : 1
     let campusId = getFromWord(map, {type: info.type, campus: info.campus})
-    // const data = await shortTermData.create({
-    //   campusId: campusId,
-    //   userId: 6,
-    //   typeId: typeId,
-    //   year: info.year
-    // })
+    info.year = info.year instanceof Number ? info.year : Number(info.year)
+    console.log(info.campus + 'OK')
+    const data = await shortTermData.create({
+      campusId: campusId,
+      userId: 6,
+      typeId: typeId,
+      year: info.year
+    })
     await Promise.all( contents.map( async contentInfo => {
       let id = shortTermFromWord({ aspect: contentInfo.aspect, keypoint: contentInfo.keypoint, method: contentInfo.method })
-      console.log(id)
-      // await shortTermContent.create({
-      //   aspect: id.aspect,
-      //   keypoint: id.keypoint,
-      //   method: id.method,
-      //   title1: contentInfo.title,
-      //   pageFrom: contentInfo.pageFrom,
-      //   pageTo: contentInfo.pageTo,
-      //   content: contentInfo.content,
-      //   dataId: data.dataId
-      // })
+      id.aspect = id.aspect instanceof Number ? id.aspect : Number(id.aspect)
+      id.keypoint = id.keypoint instanceof Number ? id.keypoint : Number(id.keypoint)
+      id.method = id.method instanceof Number ? id.method : Number(id.method)
+      contentInfo.pageFrom = contentInfo.pageFrom instanceof Number ? contentInfo.pageFrom : isNaN(Number(contentInfo.pageFrom)) ? 0 : Number(contentInfo.pageFrom)
+      if(isNaN(contentInfo.pageTo))
+        contentInfo.pageTo = contentInfo.pageFrom
+      contentInfo.pageTo = contentInfo.pageTo instanceof Number ? contentInof.pageTo : Number(contentInfo.pageTo)
+      await shortTermContent.create({
+        aspect: id.aspect,
+        keypoint: id.keypoint,
+        method: id.method,
+        title1: contentInfo.title,
+        pageFrom: contentInfo.pageFrom,
+        pageTo: contentInfo.pageTo,
+        content: contentInfo.content,
+        dataId: data.dataId,
+        isChecked: 0,
+        isConflicted: 0,
+        updateTime: Date.now()
+      })
     }))
   }catch(err){
     console.log(err)
@@ -317,7 +328,7 @@ const buildTemplate = (json) => {
 
 const t = async () => {
 
-  for(let i =0 ;i<1;i++){
+  for(let i =0 ;i<6;i++){
     const jsonFiles = await new Promise((res,rej)=>{
       fs.readdir(`${root}/${i+1}`, (err, files) => {
         if(err)
@@ -326,14 +337,6 @@ const t = async () => {
       })
     })
 
-    // await Promise.all(  jsonFiles.map( async filename => {
-    //   const result = await readJson(`${root}/${i+1}`,'中原大學.json')
-    //   await createNewDataAndContent({
-    //     campus: result.campus,
-    //     year: result.year,
-    //     type: result.type,
-    //   },result.contents)
-    // }))
     await Promise.all( jsonFiles.map(async filename => {
       const data = await new Promise((res,rej) => {
         readFile(`${root}/${i+1}/${filename}`, 'utf-8', (err, data) => {
