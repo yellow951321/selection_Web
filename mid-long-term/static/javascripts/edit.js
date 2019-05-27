@@ -27,7 +27,8 @@ class UnsavedAlert{
     targetNode.querySelector('.title4').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.content').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
-    targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode))
+    if(targetNode.querySelector('.note'))
+      targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode));
   }
   afterSaving(targetNode){
     if(targetNode.classList.contains('editNode--unsaved')){
@@ -161,6 +162,7 @@ class Filter{
         })
       })
       .catch(err => {
+        console.log(err)
         const message = footer.querySelector('.message')
         message.classList.remove('green')
         message.classList.add('red')

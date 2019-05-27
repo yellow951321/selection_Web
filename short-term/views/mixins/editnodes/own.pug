@@ -47,25 +47,25 @@ each val in contents
 			.four.wide.field
 				label 大標題
 				if val.isChecked == 1
-					p.tilte1= val.title1
+					p.title1= val.title1
 				else
 					input.title1(value = val.title1)
 			.four.wide.field
 				label 中標題
 				if val.isChecked == 1
-					p.tilte2= val.title2
+					p.title2= val.title2
 				else
 					input.title2(value = val.title2)
 			.four.wide.field
 				label 小標題
 				if val.isChecked == 1
-					p.tilte3= val.title3
+					p.title3= val.title3
 				else
 					input.title3(value = val.title3)
 			.four.wide.field
 				label 最小標題
 				if val.isChecked == 1
-					p.tilte4= val.title4
+					p.title4= val.title4
 				else
 					input.title4(value = val.title4)
 		.field
@@ -75,15 +75,15 @@ each val in contents
 			else
 				textarea.content(name="", rows="5")= val.content
 		.field
-			label 摘要
 			if val.isChecked == 1
 				if val.summary
+					label 摘要
 					p.summary= val.summary
 			else
 				textarea.summary(name="", rows="2")= val.summary
-			label 備註
 			if val.isChecked == 1
 				if val.note
+					label 備註
 					p.note= val.note
 			else
 				textarea.note(name="", rows="1")= val.note

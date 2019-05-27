@@ -214,7 +214,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
       data = await getContent(aspect, keypoint, method, dataId, 1)
     }
     else{
-      data = await getContent(aspect, keypoint, method, dataId, 0)
+      data = await getContent(aspect, keypoint, method, dataId, 0, 0)
     }
     if(data.length === 0 || typeof data === 'null'){
       res.send('')

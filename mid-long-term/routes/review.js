@@ -138,51 +138,6 @@ router.get('/:dataId/index', async(req, res, next) => {
       res.redirect(`/mid-long-term/data/${dataId}/edit`)
       return
     }
-    // let data = await Content.findAll({
-    //   where: {
-    //     dataId: res.locals.dataId,
-    //   },
-    //   attributes: [
-    //     'contentId',
-    //     'dataId',
-    //     'title1',
-    //     'title2',
-    //     'title3',
-    //     'title4',
-    //     'note',
-    //     'content',
-    //     'pageFrom',
-    //     'pageTo',
-    //     'aspect',
-    //     'keypoint',
-    //     'method',
-    //     'isChecked',
-    //     'conflictedAspect',
-    //     'conflictedKeypoint',
-    //     'conflictedMethod',
-    //     'reviewerId',
-    //     'updateTime',
-    //   ],
-    // })
-
-    // data = await Promise.all(data.map(async(data) => {
-    //   let temp = data.dataValues
-    //   temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-    //   temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-    //   temp.aspect = midLongTermFromNumber({aspect: temp.aspect }).aspect
-
-    //   temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-    //   temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-    //   temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
-    //   if(typeof temp.reviewerId === 'number'){
-    //     temp.reviewerId = await User.findOne({
-    //       where: {
-    //         userId: temp.reviewerId,
-    //       },
-    //     }).account
-    //   }
-    //   return temp
-    // }))
     let typeName = campusMap[checkData.typeId].type
     let campusName = campusMap[checkData.typeId]['campus'][checkData.campusId]
 
@@ -253,7 +208,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
       data = await getContent(aspect, keypoint, method, dataId, 1)
     }
     else{
-      data = await getContent(aspect, keypoint, method, dataId, 0)
+      data = await getContent(aspect, keypoint, method, dataId, 0, 0)
     }
     if(data.length === 0 || typeof data === 'null'){
       res.send('')

@@ -133,9 +133,6 @@ class Filter{
     const message = that.pageMessage.querySelector('.message')
     return (event) => {
       event.preventDefault()
-      const aspectLabel = that.targetNode.querySelector('.conflictedAspect')
-      const keyointLabel = that.targetNode.querySelector('.conflictedKeypoint')
-      const methodLabel = that.targetNode.querySelector('.conflictedMethod')
 
       let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
       let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
@@ -157,13 +154,7 @@ class Filter{
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')
-          conflictedMethod = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint, method: conflictedMethod}).method
-          conflictedKeypoint = midLongTermFromNumber({aspect: conflictedAspect, keypoint: conflictedKeypoint}).keypoint
-          conflictedAspect = midLongTermFromNumber({aspect: conflictedAspect}).aspect
-
-          aspectLabel.innerHTML = conflictedAspect
-          keyointLabel.innerHTML = conflictedKeypoint
-          methodLabel.innerHTML = conflictedMethod
+          that.targetNode.parentNode.removeChild(that.targetNode);
         })
         .catch(err => {
           message.classList.remove('green')
