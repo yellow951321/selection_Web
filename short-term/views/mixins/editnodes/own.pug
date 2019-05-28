@@ -73,18 +73,20 @@ each val in contents
 			if val.isChecked == 1
 				p.content= val.content
 			else
-				textarea.content(name="", rows="5")= val.content
+				textarea.resizs_none.content(name="", rows="5")= val.content
 		.field
 			if val.isChecked == 1
 				if val.summary
 					label 摘要
 					p.summary= val.summary
 			else
-				textarea.summary(name="", rows="2")= val.summary
+				label 摘要
+				textarea.resizs_none.summary(name="", rows="2")= val.summary
 			if val.isChecked == 1
 				if val.note
 					label 備註
 					p.note= val.note
 			else
-				textarea.note(name="", rows="1")= val.note
+				label 摘要
+				textarea.resizs_none.note(name="", rows="1")= val.note
 		input.node-index(type='hidden', value = val.contentId)

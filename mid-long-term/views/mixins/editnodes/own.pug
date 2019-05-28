@@ -75,16 +75,18 @@ each val in contents
 			else
 				textarea.content(name="", rows="5")= val.content
 		.field
-			label 摘要
 			if val.isChecked == 1
 				if val.summary
+					label 摘要
 					p.summary= val.summary
 			else
+				label 摘要
 				textarea.summary(name="", rows="2")= val.summary
 			if val.isChecked == 1
 				if val.note
 					label 備註
 					p.note= val.note
 			else
+				label 備註
 				textarea.note(name="", rows="1")= val.note
 		input.node-index(type='hidden', value = val.contentId)

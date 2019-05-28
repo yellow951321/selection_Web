@@ -517,7 +517,7 @@ class Filter{
   static changeNodeClicked(that){
     return (event) => {
       event.preventDefault()
-      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML
