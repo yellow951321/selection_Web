@@ -26,8 +26,10 @@ class UnsavedAlert{
     targetNode.querySelector('.title3').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.title4').addEventListener('change', this.haveUnsaved(targetNode))
     targetNode.querySelector('.content').addEventListener('change', this.haveUnsaved(targetNode))
-    targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
-    targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode))
+    if(targetNode.querySelector('.summary'))
+      targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
+    if(targetNode.querySelector('.note'))
+      targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode));
   }
   afterSaving(targetNode){
     if(targetNode.classList.contains('editNode--unsaved')){
@@ -515,7 +517,7 @@ class Filter{
   static changeNodeClicked(that){
     return (event) => {
       event.preventDefault()
-      const editNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML

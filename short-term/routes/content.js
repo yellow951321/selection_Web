@@ -132,8 +132,15 @@ router.post('/change', async(req, res) => {
       },
       attributes:[
         'contentId',
+        'isConflicted'
       ],
     })
+
+    // check if the change label request is from the conflicted status or edit status
+    // if it's change status to checked
+    if(data.isConflicted === 1)
+      isChecked = 1
+
     let savedData = await data.update({
       isChecked,
       isConflicted: 0,
