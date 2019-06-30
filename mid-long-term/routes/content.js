@@ -211,6 +211,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     })
   }
   catch (err){
+    console.log(err)
     if(!err.status){
       err = new Error('filter failed')
       err.status = 500
