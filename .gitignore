@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# bundle file for jasmine
+spec/bin/*
+
 .vscode
 *.swp
 package-lock.json
