@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
     "develop": "cross-env NODE_ENV=development npm-run-all --parallel watch nodemon browser-sync",
-    "test": "jasmine",
+    "test": "cross-env NODE_ENV=production webpack --config webpack.test.config.js && jasmine",
     "nodemon": "cross-env NODE_ENV=development nodemon --config nodemon.config.json bin/server.bundle.js",
     "browser-sync": "browser-sync --config browser-sync.config.js start",
     "lint": "npm-run-all --parallel lint:*",
@@ -15,7 +15,6 @@
     "build": "cross-env NODE_ENV=production npm-run-all --parallel build:*",
     "build:server-js": "cross-env NODE_ENV=production webpack --config webpack.server.config.js",
     "build:browser-js": "cross-env NODE_ENV=production webpack --config webpack.browser.config.js",
-    "build:test-js": "cross-env NODE_ENV=production webpack --config webpack.test.config.js",
     "watch": "npm-run-all --parallel watch:*",
     "watch:server-js": "webpack --watch --config webpack.server.config.js",
     "watch:browser-js": "webpack --watch --config webpack.browser.config.js",

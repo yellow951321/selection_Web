@@ -1,7 +1,7 @@
 import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
+import dataSave from 'projectRoot/mid-long-term/models/operations/data-save.js'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
@@ -23,39 +23,8 @@ router.post('/save', async(req, res, next)=>{
       err.status = 400
       throw err
     }
-
-    let content = await Content.findOne({
-      where:{
-        contentId,
-      },
-      attributes: [
-        'contentId',
-        'dataId'
-      ],
-    })
-    // privillige check
-    let data = await Data.findOne({
-      where:{
-        dataId: content.dataId
-      },
-      attributes: [
-        'userId',
-      ]
-    })
-
-    if(data === null){
-      const err = new Error('data not found')
-      err.status = 404
-      throw err
-    }
-
-    if(data.userId !== Number(req.session.userId)){
-      const err = new Error('Unauthorized')
-      err.status = 401
-      throw err
-    }
-
-    let savedContent = await content.update({
+    let savedContent = await dataSave({
+      userId: req.session.userId,
       content: req.body.content,
       summary: req.body.summary,
       note: req.body.note,
@@ -67,21 +36,16 @@ router.post('/save', async(req, res, next)=>{
       pageFrom: req.body.page.start,
       pageTo: req.body.page.end,
       contentId: req.body.contentId,
-      isChecked: 0,
-      isConflicted: 0,
-      conflictedAspect: null,
-      conflictedKeypoint: null,
-      conflictedMethod: null,
     })
     if(savedContent){
       res.send('completed')
     }
     else{
-      throw new Error('save failed')
+      throw new Error('mid-long-term content save router error')
     }
   } catch(err) {
     if(!err.status){
-      err = new Error('save failed')
+      err = new Error('mid-long-term content save router error')
       err.status = 500
     }
     next(err)
@@ -121,7 +85,7 @@ router.post('/change', async(req, res) => {
     let method = Number(req.body.method)
     let isChecked = Number(req.body.isChecked)
 
-    if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
+    if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method) || Number.isNaN(isChecked)){
       const err = new Error('invalid argument')
       err.status = 400
       throw err
@@ -235,32 +199,7 @@ router.route('/:dataId/check')
       err.status = 400
       throw err
     }
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-        isConflicted: 1,
-        isChecked: 0,
-      },
-      attributes:[
-        'content',
-        'summary',
-        'note',
-        'reviewerId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'pageFrom',
-        'pageTo',
-        'contentId',
-        'aspect',
-        'keypoint',
-        'method',
-        'conflictedAspect',
-        'conflictedKeypoint',
-        'conflictedMethod',
-      ],
-    })
+    let data = await getContent(-1, -1, -1, res.locals.dataId, 0, 1)
     if(data.length === 0){
       res.send('')
       return

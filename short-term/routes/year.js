@@ -10,7 +10,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
     const data = await getAllYear()
     let years = []
@@ -29,7 +29,11 @@ router.get('/index', async(req, res)=>{
       years,
     })
   }catch(err){
-    throw new Error("error occurred in year.js", err)
+    if(!err.staus){
+      err =  new Error("Error occurred in mid-long-term/routes/year.js")
+      err.stauts = 500
+    }
+    next(err)
   }
 })
 
