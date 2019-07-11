@@ -76,3 +76,4 @@ mid-long-term/public/*
 short-term/public/*
 webpack.transfer.config.js
 
+key/*

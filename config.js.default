@@ -7,10 +7,10 @@ const config = {
   },
   'server': {
     'domain': 'localhost',
-    'port': 3000,
+    'port': 4430,
     'secret': 'deepest and darkest secret',
     get host() {
-      return `http://${config.server.domain}:${config.server.port}`
+      return `https://${config.server.domain}:${config.server.port}`
     }
   },
   'projectRoot': '',

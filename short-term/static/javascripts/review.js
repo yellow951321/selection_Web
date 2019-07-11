@@ -1,4 +1,4 @@
-import {map, shortTermFromNumber }from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, shortTermFromNumber, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const pageAdvice = document.getElementById('advice')
@@ -28,14 +28,14 @@ class Filter{
       table[aspectIndex] = {
         table: '',
         keypoint: [],
-      };
+      }
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
         let keypointLabel = `${ aspect.label }${ keypoint.label }`
         table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.shortTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
-          let method = keypoint.method[methodIndex];
+          let method = keypoint.method[methodIndex]
           let methodLabel = `${keypointLabel}${method.label}`
           table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.shortTerm }(${methodLabel})</option>`
         }
@@ -65,7 +65,7 @@ class Filter{
     const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
     const method = pageFilter.querySelector('.filter.filter__detail').firstChild
     const message = that.pageMessage.querySelector('.message')
-    let isChecked;
+    let isChecked
     if(mode === 'audit'){
       isChecked = 0
     }
@@ -138,7 +138,7 @@ class Filter{
       let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
       let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
       let conflictedMethod = Number(pageAdvice.querySelector('.filter.filter__detail').firstChild.value)
-      fetch(`/short-term/review/conflict`, {
+      fetch('/short-term/review/conflict', {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.targetNode.querySelector('.node-index').value,
@@ -171,7 +171,7 @@ class Filter{
     return (event) => {
       event.preventDefault()
       let node = event.target.parentNode.parentNode.parentNode.parentNode
-      fetch(`/short-term/review/check`, {
+      fetch('/short-term/review/check', {
         method: 'POST',
         body: JSON.stringify({
           contentId: node.querySelector('.node-index').value,
@@ -204,7 +204,7 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
-      const defaultkeypoint = 0;
+      const defaultkeypoint = 0
       // if the label is 5 or 6 remove keypoint and method choice
       if(Number(event.target.value) === 5 || Number(event.target.value) === 6 || Number(event.target.value) === -1){
         editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
@@ -219,8 +219,8 @@ class Filter{
       }
       // handle show all option
       if(editNode.classList.contains('filter')){
-        keypoint.innerHTML += `<option value='-1'>全部</option>`
-        method.innerHTML += `<option value='-1'>全部</option>`
+        keypoint.innerHTML += '<option value=\'-1\'>全部</option>'
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
       }
     }
   }
@@ -239,7 +239,7 @@ class Filter{
       }
       // handle show all option
       if(editNode.classList.contains('filter')){
-        method.innerHTML += `<option value='-1'>全部</option>`
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
       }
     }
   }
