@@ -156,43 +156,6 @@ app.get('/logout', async(req, res, next)=>{
   }
 })
 
-app.route('/signup')
-  .get(({}, res, next)=>{
-    try {
-      res.render('signup')
-    }
-    catch (err) {
-      if(err.status)
-        next(err)
-      else {
-        err = new Error('Failed to GET at route `/auth/singup`')
-        err.status = 500
-        next(err)
-      }
-    }
-  })
-  .post(async(req, res, next)=>{
-    try{
-      const user = await User.create({
-        account : req.body.account,
-        password: req.body.password,
-      })
-      if(user)
-        res.redirect('/auth/login')
-      else
-        throw new Error()
-    }
-    catch (err){
-      if(err.status)
-        next(err)
-      else {
-        err = new Error('Failed to POST at route `/auth/signup`.')
-        err.status = 500
-        next(err)
-      }
-    }
-  })
-
 app.use(({}, {}, next)=>{
   const err = new Error('Page not found.')
   err.status = 404
