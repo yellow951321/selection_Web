@@ -158,7 +158,6 @@ router.get('/:dataId/index', async(req, res, next) => {
       ],
       id: req.session.userId,
       user: res.locals.user,
-      // contents: data,
     })
   }
   catch(err){

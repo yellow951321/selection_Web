@@ -11,7 +11,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
     const typeName = campusMap[res.locals.typeId].type
     const campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]

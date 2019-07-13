@@ -60,7 +60,6 @@ router.get('/:dataId/index', async(req, res, next)=>{
       }
     })
   } catch (err) {
-    console.log(err)
     if(!err.status){
       err = new Error("Error occurred in downloadCsv.js")
       err.status = 500
