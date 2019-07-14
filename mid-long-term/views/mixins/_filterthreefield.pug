@@ -4,9 +4,9 @@ mixin filter(...items)
     select.filter.filter__dimension.ui.selection.dropdown
       each item, index in items
         -if(item==='全部')
-            option(value=`-1`)= item
+          option(value=`-1`)= item
         -else
-            option(value=`${index}`)= item
+          option(value=`${index}`)= item
   .field.keypointBlock
       label 推動重點
       select.filter.filter__item.ui.selection.dropdown

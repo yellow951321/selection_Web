@@ -123,7 +123,7 @@ router.post('/change', async(req, res) => {
     }
   } catch(err) {
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('filter failed2')
       err.status = 500
     }
     next(err)
@@ -183,7 +183,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
   }
   catch (err){
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('filter failed1')
       err.status = 500
     }
     next(err)
