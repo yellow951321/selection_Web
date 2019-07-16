@@ -33,6 +33,7 @@ export default async(typeId) => {
 
     // transfer data into column campusId only
     data = data.map(data => {
+      console.log(JSON.stringify(data.dataValues))
       return {
         id: data.campusId,
         name: campusMap[data.typeId].campus[data.campusId],

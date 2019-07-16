@@ -1,7 +1,13 @@
-import Sequelize from 'sequelize'
+/**
+ * @file Define the connection between client and the database server.
+ */
 
+// Import Sequelize from sequelize module
+import Sequelize from 'sequelize'
+// The configuration of this project defined in ${root}/config.js
 import config from 'projectRoot/config.js'
 
+// The defined const Sequelize Object
 const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
@@ -42,6 +48,7 @@ const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.
     idle: 30000,
   },
 })
+
 
 export default UserDB
 

@@ -1,11 +1,38 @@
+/**
+ * @namespace shortTermRoute
+ */
+
+// /**
+//  * @file
+//  * @module app/content
+//  * @requires express
+//  * @requires module:Content
+//  * @requires 'projectRoot/short-term/models/schemas/Data.js'
+//  * @requires 'projectRoot/auth/models/schemas/user.js'
+//  * @requires module:get-content
+//  * @requires 'projectRoot/lib/static/javascripts/mapping/label.js'
+//  */
+//import express module
 import express from 'express'
+// import Content module
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
+// import Data module
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
+// import User module
 import User from 'projectRoot/auth/models/schemas/user.js'
+// import function in get-content.js named getContent
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
+// import one of functions in label.js named shortTermFromNumber
 import { shortTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
-
+/**
+ * Express route class
+ * @name content/Router
+ * @function router
+ * @param {object} [options] - The custimized setting of Router()
+ * @inner
+ * @see https://expressjs.com/
+ */
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -14,9 +41,19 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-
+/**
+ * set A '/index' route, method GET
+ * @name post/save
+ * @function
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware
+ * @thorws - Throws an error if any error occurred in here
+ */
 router.post('/save', async(req, res, next)=>{
   try{
+    /**
+     *
+     */
     let contentId = Number(req.body.contentId)
     if(Number.isNaN(contentId)){
       const err = new Error('invalid argument')

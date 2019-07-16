@@ -1,5 +1,16 @@
+/**
+ * @module Data
+ * @type {Sequelize.model}
+ * @requires 'projectRoot/short-term/models/operations/connect.js'
+ * @requires sequelize
+ * @requires 'projectRoot/auth/models/schemas/user.js'
+ * @see http://docs.sequelizejs.com/
+ */
+// import shortTermDB module
 import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
+// import the seqeulize module
 const Sequelize = require('sequelize')
+// import User module
 import User from 'projectRoot/auth/models/schemas/user.js'
 
 
@@ -34,7 +45,9 @@ const dataSchema = {
     allowNull: false,
   },
 }
-
+/**
+ * @const {Sequelize.model} Data
+ */
 const Data = shortTermDB.define('data', dataSchema)
 
 export default Data
