@@ -1,8 +1,21 @@
+<<<<<<< HEAD
 import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
+=======
+/**
+ * @module Content
+ * @type {Sequelize.models}
+ * @requires 'projectRoot/short-term/models/operations/connect.js'
+ * @requires sequelize
+ * @see http://docs.sequelizejs.com/
+ */
+// import the shortTermDB module
+import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
+// import the sequelize module
+>>>>>>> master
 const Sequelize = require('sequelize')
 
 // todo require('./Data)
-
+// The schema of Content
 const contentSchema = {
   contentId: {
     type: Sequelize.INTEGER(32).UNSIGNED,
@@ -94,6 +107,12 @@ const contentSchema = {
   },
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * @const {Sequelize.models} Content
+ */
+>>>>>>> master
 const Content = shortTermDB.define('content', contentSchema)
 
 export default Content

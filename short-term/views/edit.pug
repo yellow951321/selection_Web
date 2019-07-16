@@ -1,0 +1,54 @@
+extends mixins/layout
+
+append head
+  +shortCss('edit')
+
+append content
+  //- popup delete content
+  include mixins/_suredelete
+
+  //- popup advice filter
+  .ui.container
+    #changeSelect.ui.small.modal
+      .ui.form.segment
+        .three.fields
+          include mixins/_filterthreefield
+          +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類')
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 確認
+
+  //- content
+  //- page edit
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-filter.ui.container.pusher
+    .dataId.transition.hidden=dataId
+    .ui.form.segment.filter
+      .five.fields
+        +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類','全部')
+        .field
+          label 模式
+          select.filter.filter__mode.ui.selection.dropdown
+            option(value='edit') 編輯
+            option(value='check') 待確認
+        .field
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+    .reserved.ui.transition.hidden
+      if aspect
+        .reserved__dimension=aspect
+        .reserved__item=keypoint
+        .reserved__detail=method
+
+  #page-edit.ui.container
+
+  #footer.ui.container.center.aligned.transition.hidden
+    .ui.floating.message.transition.hidden
+      p 尚未新增任何資料
+    i.add-content.ui.plus.circle.icon.transition
+  i#arrow.arrow.alternate.circle.up.icon
+
+append script
+  +shortJS('edit')

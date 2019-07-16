@@ -1,6 +1,22 @@
+/**
+ * @file Check the session of the user
+ */
+/**
+ * Import Module Session
+ */
 import Session from 'auth/models/schemas/session.js'
-import { nextTick, } from 'q'
 
+
+/**
+ * Synchronize the session which is used in auth/app.js.
+ * It will check the session of the user is exits or not.
+ * If it is expired, then destroy the session of the user
+ * in the database. Otherwirse, update the session in the
+ * database
+ * @func syncSession
+ * @param {number} req - The request object of express
+ * @param {number} sessionId - The sessionId parsed by cookieParser
+ */
 export default async(req, sessionId) => {
   try{
     // sessionId will be reset after restarting server
@@ -29,11 +45,11 @@ export default async(req, sessionId) => {
     }
   }catch(err) {
     if(err.status)
-      next(err)
+      throw err
     else {
       err = new Error('Failed in syncSession.')
       err.status = 500
-      next(err)
+      throw err
     }
   }
 }

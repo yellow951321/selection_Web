@@ -72,4 +72,6 @@ auth/public/*
 mid-long-term/public/*
 short-term/public/*
 webpack.transfer.config.js
+data/operation/csv-to-db/csv-data
+error-data.json
 

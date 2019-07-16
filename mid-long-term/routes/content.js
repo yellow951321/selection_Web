@@ -2,6 +2,7 @@ import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
+import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 
@@ -131,8 +132,15 @@ router.post('/change', async(req, res) => {
       },
       attributes:[
         'contentId',
+        'isConflicted',
       ],
     })
+
+    // check if the change label request is from the conflicted status or edit status
+    // if it's change status to checked
+    if(data.isConflicted === 1)
+      isChecked = 1
+
     let savedData = await data.update({
       isChecked,
       isConflicted: 0,
@@ -173,48 +181,22 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let aspect = req.query.aspect;
-    let keypoint = req.query.keypoint;
-    let method = req.query.method;
+    let aspect = Number(req.query.aspect);
+    let keypoint = Number(req.query.keypoint);
+    let method = Number(req.query.method);
 
-    if(Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
+    if(Number.isNaN(aspect)){
       const err = new Error('invalid argument');
       err.status = 400
       throw err
     }
+    let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-        aspect,
-        keypoint,
-        method,
-      },
-      attributes: [
-        'contentId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'content',
-        'summary',
-        'note',
-        'pageFrom',
-        'pageTo',
-        'aspect',
-        'keypoint',
-        'method',
-        'isChecked',
-        'reviewerId',
-        'isConflicted',
-        'updateTime',
-        'dataId',
-      ],
-    })
     if(data.length === 0 || typeof data === 'null'){
       res.send('')
       return
     }
+
     data = await Promise.all(data.map(async(data) => {
       let temp = data.dataValues
       if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
@@ -225,15 +207,19 @@ router.get('/:dataId/filter', async(req, res, next)=>{
         })
         temp.reviewerId = temp.reviewerId.dataValues.account
       }
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
+
     res.render('mixins/editnodes/own', {
       contents : data,
     })
   }
   catch (err){
+    console.log(err)
     if(!err.status){
-      console.log(err)
       err = new Error('filter failed')
       err.status = 500
     }
@@ -268,6 +254,9 @@ router.route('/:dataId/check')
         'pageFrom',
         'pageTo',
         'contentId',
+        'aspect',
+        'keypoint',
+        'method',
         'conflictedAspect',
         'conflictedKeypoint',
         'conflictedMethod',
@@ -282,6 +271,10 @@ router.route('/:dataId/check')
       temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
       temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
       temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
+
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
       return temp
     }))
     res.render('mixins/editnodes/check', {
@@ -364,12 +357,21 @@ router.post('/:dataId/add', async(req, res, next)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
+    data.method = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint, method: data.method}).method
+    data.keypoint = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint}).keypoint
+    data.aspect = midLongTermFromNumber({aspect: data.aspect}).aspect
+
     res.render('mixins/editnodes/newedit', {
-      index: data.dataValues.contentId,
+      content: {
+        aspect: data.aspect,
+        keypoint: data.keypoint,
+        method: data.method,
+        contentId: data.contentId,
+      },
     })
   }catch(err) {
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('add content failed')
       err.status = 500
     }
     next(err)

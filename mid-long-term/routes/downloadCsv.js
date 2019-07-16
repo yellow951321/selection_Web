@@ -1,6 +1,8 @@
 import express from 'express'
 import fs from 'fs'
 import createCsv from 'mid-long-term/models/operations/download-csv.js'
+import Data from 'mid-long-term/models/schemas/Data.js'
+import campusMap from 'projectRoot/lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -11,7 +13,7 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/:dataId/index', async(req, res)=>{
+router.get('/:dataId/index', async(req, res, next)=>{
   try {
     const dataId = Number(req.params.dataId);
     if(Number.isNaN(dataId)){
@@ -20,25 +22,37 @@ router.get('/:dataId/index', async(req, res)=>{
       throw err
     }
     const filePath = await createCsv(dataId)
+
+    let data = await Data.findOne({
+      where: {
+        dataId,
+      },
+      attribute: [
+        'yearFrom',
+        'yearTo',
+        'campusId',
+        'typeId',
+      ]
+    })
     // send requested output file
     const options = {
       root: '/',
       dotfiles: 'deny',
       headers: {
         'content-type': 'text/csv',
-        'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campusName)}.csv`,
+        'Content-Disposition': `attachment;filename=${encodeURIComponent(campusMap[data.typeId]['campus'][data.campusId])}${data.yearFrom}to${data.yearTo}.csv`,
       },
     }
     res.sendFile(filePath, options, (err) => {
       if(err){
-        err = new Error("Error occurred in res.sendFile of mid-long-term/routes/downloadCsv.js", err)
+        err = new Error("sen file failed")
         err.status = 500
         throw err
       }
       else{
         fs.unlink(filePath, (err) => {
           if(err){
-            err = new Error("Error occurred in fs.unlink of mid-long-term/routes/downloadCsv.js", err)
+            err = new Error("file unlink failed")
             err.status = 500
             throw err
           }
@@ -46,6 +60,7 @@ router.get('/:dataId/index', async(req, res)=>{
       }
     })
   } catch (err) {
+    console.log(err)
     if(!err.status){
       err = new Error("Error occurred in downloadCsv.js")
       err.status = 500

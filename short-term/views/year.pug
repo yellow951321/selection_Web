@@ -1,0 +1,27 @@
+extends mixins/layout
+
+//- css
+append head
+  +shortCss('year')
+
+append buttons
+  //- append buttons in the header
+  include mixins/_addbutton
+
+append content
+  //- pop up deleteproject
+  include mixins/_suredelete
+
+  //- popup addproject
+  include mixins/_projectcreation.pug
+
+  include mixins/_renderyear.pug
+  //- content
+  //- page select
+  //- #page-management.ui.middle.aligned.center.aligned.grid.container.pusher
+  #page-management.ui.grid.container.pusher
+    for val in years
+      +renderYear(val)
+
+append script
+  +shortJS('year')

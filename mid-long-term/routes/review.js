@@ -2,6 +2,7 @@ import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import User from 'projectRoot/auth/models/schemas/user.js'
+import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
@@ -137,51 +138,6 @@ router.get('/:dataId/index', async(req, res, next) => {
       res.redirect(`/mid-long-term/data/${dataId}/edit`)
       return
     }
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-      },
-      attributes: [
-        'contentId',
-        'dataId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'note',
-        'content',
-        'pageFrom',
-        'pageTo',
-        'aspect',
-        'keypoint',
-        'method',
-        'isChecked',
-        'conflictedAspect',
-        'conflictedKeypoint',
-        'conflictedMethod',
-        'reviewerId',
-        'updateTime',
-      ],
-    })
-
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-      temp.aspect = midLongTermFromNumber({aspect: temp.aspect }).aspect
-
-      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
-      if(typeof temp.reviewerId === 'number'){
-        temp.reviewerId = await User.findOne({
-          where: {
-            userId: temp.reviewerId,
-          },
-        }).account
-      }
-      return temp
-    }))
     let typeName = campusMap[checkData.typeId].type
     let campusName = campusMap[checkData.typeId]['campus'][checkData.campusId]
 
@@ -202,12 +158,90 @@ router.get('/:dataId/index', async(req, res, next) => {
       ],
       id: req.session.userId,
       user: res.locals.user,
-      contents: data,
+      // contents: data,
     })
   }
   catch(err){
     if(!err.status){
       const err = new Error('enter review page failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.get('/:dataId/filter', async(req, res, next) => {
+  try{
+    let dataId = Number(res.locals.dataId)
+    let aspect = Number(req.query.aspect);
+    let keypoint = Number(req.query.keypoint);
+    let method = Number(req.query.method);
+    if(Number.isNaN(aspect)){
+      const err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
+    let checkData = await Data.findOne({
+      where:{
+        dataId,
+      },
+      attributes: [
+        'dataId',
+        'typeId',
+        'campusId'
+      ],
+    })
+
+    if(checkData === null){
+      res.redirect('/auth/channel')
+      return
+    }
+
+    if(checkData.dataValues.userId === req.session.userId){
+      res.redirect(`/mid-long-term/data/${dataId}/edit`)
+      return
+    }
+
+    let data;
+    if(Number(req.query.isChecked) === 1){
+      data = await getContent(aspect, keypoint, method, dataId, 1)
+    }
+    else{
+      data = await getContent(aspect, keypoint, method, dataId, 0, 0)
+    }
+    if(data.length === 0 || typeof data === 'null'){
+      res.send('')
+      return
+    }
+
+    data = await Promise.all(data.map(async(data) => {
+      let temp = data.dataValues
+      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
+      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
+      temp.aspect = midLongTermFromNumber({aspect: temp.aspect }).aspect
+
+      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
+      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
+      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
+      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
+        temp.reviewerId = await User.findOne({
+          where: {
+            userId: temp.reviewerId,
+          },
+        })
+        temp.reviewerId = temp.reviewerId.account
+      }
+      return temp
+    }))
+
+    res.render('mixins/editnodes/review.pug', {
+      contents: data,
+    })
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('get review filter failed')
       err.status = 500
     }
     next(err)

@@ -1,10 +1,10 @@
 import express from 'express'
 
 import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
+import { findYearAll, parseYear, projectDelete, } from 'projectRoot/short-term/models/operations/Data.js'
 import { TSArrayType, } from 'babel-types'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import Data from 'projectRoot/short-term/models/schemas/Data.js'
+import Content from 'projectRoot/short-term/models/schemas/Content.js'
 
 
 const router = express.Router({
@@ -58,7 +58,7 @@ router.get('/edit', async(req, res) => {
     res.render('manage/edit', {
       GLOBAL: {
         channel: {
-          id: 'mid-long-term',
+          id: 'short-term',
           name: '中長程計畫',
         },
         id: req.session.userId,
