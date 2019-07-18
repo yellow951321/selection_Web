@@ -4,6 +4,7 @@ import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 import dataDelete from 'mid-long-term/models/operations/data-delete.js'
 import dataCreate from 'mid-long-term/models/operations/data-create.js'
+import dataAddPost from 'mid-long-term/operations/data-add-post.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 
@@ -18,7 +19,7 @@ const router = express.Router({
 
 router.post('/add', async(req, res, next)=>{
   try{
-    await dataCreate({
+    await dataAddPost({
       campusId: req.body.campus,
       yearFrom: req.body.yearFrom,
       yearTo: req.body.yearTo,
