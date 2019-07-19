@@ -1,10 +1,9 @@
 import express from 'express'
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
-import { shortTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
+import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -219,26 +218,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
       return
     }
 
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-
-      temp.method = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-      temp.keypoint = shortTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-      temp.aspect = shortTermFromNumber({aspect: temp.aspect }).aspect
-
-      temp.conflictedMethod = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-      temp.conflictedKeypoint = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-      temp.conflictedAspect = shortTermFromNumber({aspect: temp.conflictedAspect}).aspect
-      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
-        temp.reviewerId = await User.findOne({
-          where: {
-            userId: temp.reviewerId,
-          },
-        })
-        temp.reviewerId = temp.reviewerId.account
-      }
-      return temp
-    }))
+    data = await labelFromNumber(data)
 
     res.render('mixins/editnodes/review.pug', {
       contents: data,

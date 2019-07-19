@@ -54,7 +54,6 @@
     "jasmine-es6": "^0.4.3",
     "jsdom": "^13.2.0",
     "mini-css-extract-plugin": "^0.6.0",
-    "mocha": "^5.2.0",
     "mongoose": "^5.4.3",
     "morgan": "~1.9.0",
     "mysql2": "^1.6.4",
@@ -76,7 +75,7 @@
     "@babel/preset-env": "^7.4.2",
     "eslint": "^5.12.0",
     "eslint-config-google": "^0.11.0",
-    "jasmine": "^3.4.0",
+    "mocha": "^6.1.4",
     "nodemon": "^1.18.9",
     "webpack-cli": "^3.3.0"
   }

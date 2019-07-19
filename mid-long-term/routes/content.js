@@ -1,9 +1,8 @@
 import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
 import dataSave from 'projectRoot/mid-long-term/models/operations/data-save.js'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
-import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
 
 const router = express.Router({
@@ -161,22 +160,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       return
     }
 
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
-        temp.reviewerId = await User.findOne({
-          where: {
-            userId: temp.reviewerId,
-          },
-        })
-        temp.reviewerId = temp.reviewerId.dataValues.account
-      }
-      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
-      return temp
-    }))
-
+    data = await labelFromNumber(data);
     res.render('mixins/editnodes/own', {
       contents : data,
     })
@@ -204,17 +188,7 @@ router.route('/:dataId/check')
       res.send('')
       return
     }
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
-
-      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-      temp.aspect = midLongTermFromNumber({aspect: temp.aspect}).aspect
-      return temp
-    }))
+    data = await labelFromNumber(data)
     res.render('mixins/editnodes/check', {
       contents : data,
     })
@@ -295,10 +269,8 @@ router.post('/:dataId/add', async(req, res, next)=>{
       isConflicted: 0,
       updateTime: Date.now(),
     })
-    data.method = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint, method: data.method}).method
-    data.keypoint = midLongTermFromNumber({aspect: data.aspect, keypoint: data.keypoint}).keypoint
-    data.aspect = midLongTermFromNumber({aspect: data.aspect}).aspect
 
+    data = await labelFromNumber(data);
     res.render('mixins/editnodes/newedit', {
       content: {
         aspect: data.aspect,
