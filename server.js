@@ -18,9 +18,17 @@ let options = {
   cert: fs.readFileSync('key/server.cert'),
 }
 
+let options = {
+  key: fs.readFileSync('key/private.key'),
+  ca: fs.readFileSync('key/ca_bundle.crt'),
+  cert: fs.readFileSync('key/certificate.crt'),
+}
+
 const httpsExpressServer = express()
 const httpsServer = https.createServer(options, httpsExpressServer)
 httpsServer.listen(config.server.port)
+//http.createServer(server)
+//server.listen(config.server.port)
 
 if(isDevMode){
   httpsExpressServer.use(logger('dev'))
@@ -73,6 +81,14 @@ httpsExpressServer.use(session({
 httpsExpressServer.use('/auth', auth)
 httpsExpressServer.use('/mid-long-term', midLongTerm)
 httpsExpressServer.use('/short-term', shortTerm)
+httpsExpressServer.use('/.well-known', async(req, res, next)=> {
+  try{
+    res.send('TxW8yW_TwklmhaK3mQDy2QJwTTPHDRFl1bfj5wdJeLY._ZFHxgVyOdaDiygbg4eJnYhtMExAtTE72Aa0ZMC_e7I')
+  }
+  catch(err){
+    next(err)
+  }
+})
 
 
 httpsExpressServer.use((req, res) => {
