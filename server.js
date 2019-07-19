@@ -13,12 +13,6 @@ import fs from 'fs'
 const isDevMode = process.env.NODE_ENV == 'development'
 
 let options = {
-  key: fs.readFileSync('key/server.key'),
-  // ca: fs.readFileSync('cert.csr'),
-  cert: fs.readFileSync('key/server.cert'),
-}
-
-let options = {
   key: fs.readFileSync('key/private.key'),
   ca: fs.readFileSync('key/ca_bundle.crt'),
   cert: fs.readFileSync('key/certificate.crt'),
