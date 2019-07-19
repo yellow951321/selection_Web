@@ -1,7 +1,7 @@
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
 
-export default async(info = {})=> {
+export default async(info)=> {
   try{
     let content = await Content.findOne({
       where:{
