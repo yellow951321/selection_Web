@@ -270,7 +270,6 @@ router.post('/:dataId/add', async(req, res, next)=>{
       updateTime: Date.now(),
     })
     data = await labelFromNumber(data)
-
     res.render('mixins/editnodes/newedit', {
       content: {
         aspect: data.aspect,

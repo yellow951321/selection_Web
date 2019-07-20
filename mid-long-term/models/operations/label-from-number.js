@@ -2,11 +2,15 @@ import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mappi
 import User from 'projectRoot/auth/models/schemas/user.js'
 
 export default async(data) => {
+  let inputIsNotArray = false
   if(!(data instanceof Array)){
     data = [ data, ]
+    inputIsNotArray = true
   }
   data = await Promise.all(data.map(async(data) => {
     let temp = data.dataValues
+    if(data.contentId)
+      temp.contentId = data.contentId
     temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method, }).method
     temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, }).keypoint
     temp.aspect = midLongTermFromNumber({aspect: temp.aspect, }).aspect
@@ -26,5 +30,7 @@ export default async(data) => {
     }
     return temp
   }))
+  if(inputIsNotArray)
+    return data[0]
   return data
 }
