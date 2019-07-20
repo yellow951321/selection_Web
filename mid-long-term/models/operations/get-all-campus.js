@@ -4,8 +4,6 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 export default async(typeId) => {
   try{
-    typeId= Number(typeId)
-
     if(Number.isNaN(typeId)){
       const err = new Error('Invalid arguments in data-create.')
       err.status = 400
@@ -47,7 +45,7 @@ export default async(typeId) => {
 
   }catch(err){
     if(!err.status){
-      err = new Error('faile at get-all-campus.js')
+      err = new Error('fail at get-all-campus.js')
       err.status = 500
     }
     throw err

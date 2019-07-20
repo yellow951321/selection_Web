@@ -4,17 +4,9 @@ const config = require('./config')
 
 const isDevMode = process.env.NODE_ENV === 'development'
 
-module.exports = {
+const webpackJsConfigTemplate = {
   devtool: isDevMode ? 'inline-sourcemap' : false,
   mode:    isDevMode ? 'development' : 'production',
-  entry:   [
-    'babel-polyfill',
-    path.join(config.projectRoot, '/spec/spec.js'),
-  ],
-  output: {
-    path:      path.join(config.projectRoot, 'spec/bin'),
-    filename: 'test.bundle.js',
-  },
   target: 'node',
   externals: [nodeExternals(), ],
   resolve: {
@@ -33,11 +25,12 @@ module.exports = {
         exclude: /(node_modules)/,
         use:     [
           {
-            loader:  'babel-loader',
+            loader: 'babel-loader',
             options: {
               cacheDirectory: true,
               presets:        ['@babel/preset-env', ],
               babelrc:        false,
+              plugins:        ['babel-plugin-rewire', ],
             },
           },
         ],
@@ -45,3 +38,22 @@ module.exports = {
     ],
   },
 }
+
+const midLongTermOperationSrcRoot = path.join(config.projectRoot, 'test/static/mid-long-term/models/operations')
+const midLongTermOperationDIstRoot = path.join(config.projectRoot, 'test/public/mid-long-term')
+
+const midLongTermConfig = Object.assign({}, webpackJsConfigTemplate, {
+  entry: [
+    'babel-polyfill',
+    path.join(midLongTermOperationSrcRoot, 'label-from-number.js'),
+    path.join(midLongTermOperationSrcRoot, 'get-all-campus.js'),
+  ],
+  output: {
+    path: midLongTermOperationDIstRoot,
+    filename: 'mid-long-term-opration.test.js',
+  },
+})
+
+module.exports = [
+  midLongTermConfig,
+]
