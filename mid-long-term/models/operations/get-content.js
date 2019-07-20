@@ -11,7 +11,7 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
 
   if(aspect !== -1){
     whereCondition['aspect'] = aspect
-    if(keypoint !== -1){
+    if(keypoint !== -1 & aspect < 5){
       whereCondition['keypoint'] = keypoint
       if(method !== -1){
         whereCondition['method'] = method
