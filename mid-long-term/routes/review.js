@@ -1,9 +1,10 @@
 import express from 'express'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
+import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
+import contentUpdate from 'projectRoot/mid-long-term/models/operations/content-update.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,20 +18,10 @@ const router = express.Router({
 router.post('/check', async(req, res, next) => {
   try{
     let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-    let data = await Content.findOne({
-      where:{
-        contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let newData = await data.update({
+
+    numberValid([contentId])
+
+    let newData = await contentUpdate(contentId, {
       reviewerId: req.session.userId,
       isChecked: 1,
     })
@@ -54,25 +45,13 @@ router.post('/check', async(req, res, next) => {
 router.post('/conflict', async(req, res, next) => {
   try{
     let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    let data = await Content.findOne({
-      where:{
-        contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
     let conflictedAspect = Number(req.body.conflictedAspect)
     let conflictedKeypoint = Number(req.body.conflictedKeypoint)
     let conflictedMethod = Number(req.body.conflictedMethod)
 
-    let newData = await data.update({
+    numberValid([contentId, conflictedAspect, conflictedKeypoint, conflictedMethod])
+
+    let newData = await contentUpdate(contentId, {
       conflictedAspect,
       conflictedKeypoint,
       conflictedMethod,
@@ -111,11 +90,8 @@ router.use('/:dataId', (req, res, next) => {
 router.get('/:dataId/index', async(req, res, next) => {
   try{
     let dataId = Number(res.locals.dataId)
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+
+    numberValid([dataId])
 
     let checkData = await Data.findOne({
       where:{
@@ -174,11 +150,8 @@ router.get('/:dataId/filter', async(req, res, next) => {
     let aspect = Number(req.query.aspect);
     let keypoint = Number(req.query.keypoint);
     let method = Number(req.query.method);
-    if(Number.isNaN(aspect)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+    
+    numberValid([aspect])
 
     let checkData = await Data.findOne({
       where:{
@@ -201,13 +174,8 @@ router.get('/:dataId/filter', async(req, res, next) => {
       return
     }
 
-    let data;
-    if(Number(req.query.isChecked) === 1){
-      data = await getContent(aspect, keypoint, method, dataId, 1)
-    }
-    else{
-      data = await getContent(aspect, keypoint, method, dataId, 0, 0)
-    }
+    let data = await getContent(aspect, keypoint, method, dataId, Number(req.query.isChecked), 0)
+
     if(data.length === 0 || typeof data === 'null'){
       res.send('')
       return

@@ -37,7 +37,7 @@ export default async(info={}) =>{
       where:{
         campusId: info.campusId,
         typeId: info.typeId,
-        year: info, year,
+        year: info.year,
       },
     })
     /*

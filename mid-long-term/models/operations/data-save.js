@@ -3,7 +3,13 @@ import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 export default async(info = {})=> {
   try{
-    let content = await Content.findOne({
+    if(Number.isNaN(info.contentId)){
+      let err = new Error('contentId is not a number')
+      err.status = 400
+    }
+
+    let content, data
+    content = await Content.findOne({
       where:{
         contentId: info.contentId,
       },
@@ -12,15 +18,28 @@ export default async(info = {})=> {
         'dataId',
       ],
     })
+
+    if(Number.isNaN(content.dataId)){
+      let err = new Error('dataId is not a number')
+      err.status = 400
+    }
+
     // privillige check
-    let data = await Data.findOne({
-      where:{
-        dataId: content.dataId,
-      },
-      attributes: [
-        'userId',
-      ],
-    })
+    try{
+      data = await Data.findOne({
+        where:{
+          dataId: content.dataId,
+        },
+        attributes: [
+          'userId',
+        ],
+      })
+    }
+    catch(err){
+      err = new Error('data fetch error')
+      err.status = 500
+      throw err
+    }
 
     if(data === null){
       const err = new Error('data not found')
@@ -33,7 +52,6 @@ export default async(info = {})=> {
       err.status = 401
       throw err
     }
-
     let savedContent = await content.update({
       content: info.content,
       summary: info.summary,
@@ -52,7 +70,6 @@ export default async(info = {})=> {
       conflictedKeypoint: null,
       conflictedMethod: null,
     })
-
     return savedContent
   }
   catch(err){

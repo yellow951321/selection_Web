@@ -19,6 +19,7 @@ import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import dataSave from 'projectRoot/short-term/models/operations/data-save.js'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
+<<<<<<< HEAD
 
 /**
  * Express route class
@@ -28,6 +29,12 @@ import labelFromNumber from 'projectRoot/short-term/models/operations/label-from
  * @inner
  * @see https://expressjs.com/
  */
+=======
+import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
+import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
+import contentDelete from 'projectRoot/short-term/models/operations/content-delete.js'
+
+>>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -46,6 +53,7 @@ const router = express.Router({
  */
 router.post('/save', async(req, res, next)=>{
   try{
+<<<<<<< HEAD
     /**
      *
      */
@@ -56,6 +64,9 @@ router.post('/save', async(req, res, next)=>{
       throw err
     }
     let savedContent = await dataSave({
+=======
+    await dataSave({
+>>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
       userId: req.session.userId,
       content: req.body.content,
       summary: req.body.summary,
@@ -69,12 +80,7 @@ router.post('/save', async(req, res, next)=>{
       pageTo: req.body.page.end,
       contentId: req.body.contentId,
     })
-    if(savedContent){
-      res.send('completed')
-    }
-    else{
-      throw new Error('save failed')
-    }
+    res.send('completed')
   } catch(err) {
     if(!err.status){
       err = new Error('save failed')
@@ -86,18 +92,7 @@ router.post('/save', async(req, res, next)=>{
 
 router.delete('/delete', async(req, res)=>{
   try{
-    let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    await Content.destroy({
-      where:{
-        contentId,
-      },
-    })
+    await contentDelete(req.body.contentId)
     res.send('completed')
   }
   catch(err){
@@ -117,11 +112,8 @@ router.post('/change', async(req, res) => {
     let method = Number(req.body.method)
     let isChecked = Number(req.body.isChecked)
 
-    if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+    numberValid([contentId, aspect, keypoint, method, isChecked])
+
     let data = await Content.findOne({
       where:{
         contentId,
@@ -177,23 +169,16 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let aspect = Number(req.query.aspect);
-    let keypoint = Number(req.query.keypoint);
-    let method = Number(req.query.method);
+    const aspect = Number(req.query.aspect);
+    const keypoint = Number(req.query.keypoint);
+    const method = Number(req.query.method);
 
-    if(Number.isNaN(aspect)){
-      const err = new Error('invalid argument');
-      err.status = 400
-      throw err
-    }
     let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 
-    if(data.length === 0 || typeof data === 'null'){
+    if(data === 'empty data'){
       res.send('')
       return
     }
-
-    data = await labelFromNumber(data)
     res.render('mixins/editnodes/own', {
       contents : data,
     })
@@ -210,18 +195,12 @@ router.get('/:dataId/filter', async(req, res, next)=>{
 router.route('/:dataId/check')
 .get(async(req, res, next) => {
   try{
-    let dataId = Number(res.locals.dataId)
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
     let data = await getContent(-1, -1, -1, res.locals.dataId, 0, 1)
-    if(data.length === 0){
+
+    if(data === 'empty data'){
       res.send('')
-      return
+      return 
     }
-    data = await labelFromNumber(data)
     res.render('mixins/editnodes/check', {
       contents : data,
     })
@@ -236,34 +215,11 @@ router.route('/:dataId/check')
 })
 .post(async(req, res) => {
   try{
-    let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    let data = await Content.findOne({
-      where:{
-        contentId,
-      },
-      attributes:[
-        'contentId',
-        'isChecked',
-      ],
-    })
-    let savedData = await data.update({
+    await contentUpdate(req.body.contentId,{
       isChecked: 1,
       isConflicted: 0,
     })
-    if(savedData){
-      res.send('completed')
-    }
-    else{
-      let err = new Error('save failed')
-      err.status = 500
-      throw err
-    }
+    res.send('completed')
   } catch(err) {
     if(!err.status){
       const err = new Error('enter review page failed')
@@ -279,11 +235,7 @@ router.post('/:dataId/add', async(req, res, next)=>{
     let keypoint = req.body.keypoint;
     let method = req.body.method;
 
-    if(Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
-      const err = new Error('invalid argument');
-      err.status = 400
-      throw err
-    }
+    numberValid([aspect, keypoint, method])
 
     let data = await Content.create({
       dataId: res.locals.dataId,
