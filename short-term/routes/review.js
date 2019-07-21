@@ -2,7 +2,6 @@ import express from 'express'
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
 import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
 import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
 
@@ -183,12 +182,8 @@ router.get('/:dataId/filter', async(req, res, next) => {
     
     data = await getContent(aspect, keypoint, method, dataId, Number(req.query.isChecked), 0)
 
-    if(data.length === 0 || typeof data === 'null'){
+    if(data === 'empty data')
       res.send('')
-      return
-    }
-
-    data = await labelFromNumber(data)
 
     res.render('mixins/editnodes/review.pug', {
       contents: data,
