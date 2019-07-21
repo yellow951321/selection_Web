@@ -121,9 +121,9 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let aspect = Number(req.query.aspect);
-    let keypoint = Number(req.query.keypoint);
-    let method = Number(req.query.method);
+    const aspect = Number(req.query.aspect);
+    const keypoint = Number(req.query.keypoint);
+    const method = Number(req.query.method);
 
     let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 

@@ -58,7 +58,7 @@ export default async(data) => {
         temp.conflictedKeypoint = shortTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, }).keypoint
         temp.conflictedAspect = shortTermFromNumber({aspect: temp.conflictedAspect, }).aspect
       }
-      if(!Number.isNaN(data.reviewerId) && data.reviewerId !== 0){
+      if(Number.isNaN(data.reviewerId) && data.reviewerId !== 0){
         temp.reviewerId = data.reviewerId
         temp.reviewerId = await User.findOne({
           where: {
