@@ -52,6 +52,7 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
   if(isChecked != -1){
     whereCondition['isChecked'] = isChecked
   }
+
   let data = await Content.findAll({
     where: whereCondition,
     attributes: [
@@ -78,6 +79,7 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
       'dataId',
     ],
   })
+
   if(data.length === 0 || typeof data === 'null'){
     return 'empty data'
   }

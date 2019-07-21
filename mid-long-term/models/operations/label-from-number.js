@@ -9,46 +9,45 @@ export default async(data) => {
       inputIsNotArray = true
     }
     data = await Promise.all(data.map(async(data) => {
-      let temp = {}
+      let temp = data.dataValues
 
-      if(!Number.isNaN(data.contentId))
+      if(typeof data.contentId === 'number')
         temp.contentId = data.contentId
       else{
         let err = new Error('contentID is not a number')
         err.status = 400
       }
-
-      if(!Number.isNaN(data.aspect))
+      if(typeof data.aspect === 'number')
         temp.aspect = data.aspect
       else{
         let err = new Error('aspect is not a number')
         err.status = 400
       }
-      if(!Number.isNaN(data.keypoint))
+      if(typeof data.keypoint === 'number')
         temp.keypoint = data.keypoint
       else{
         let err = new Error('keypoint is not a number')
         err.status = 400
       }
-      if(!Number.isNaN(data.method))
+      if(typeof data.method === 'number')
         temp.method = data.method
       else{
         let err = new Error('method is not a number')
         err.status = 400
       }
-
       temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method, }).method
       temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, }).keypoint
       temp.aspect = midLongTermFromNumber({aspect: temp.aspect, }).aspect
 
-      if(!Number.isNaN(temp.conflictedAspect)){
-        if(!Number.isNaN(data.conflictedKeypoint))
+      if(typeof data.conflictedAspect === 'number'){
+        temp.conflictedAspect = data.conflictedAspect
+        if(typeof data.conflictedKeypoint === 'number')
           temp.conflictedKeypoint = data.conflictedKeypoint
         else{
           let err = new Error('conflictedKeypoint is not a number')
           err.status = 400
         }
-        if(!Number.isNaN(data.conflictedMethod))
+        if(typeof data.conflictedMethod === 'number')
           temp.conflictedMethod = data.conflictedMethod
         else{
           let err = new Error('conflictedKeypoint is not a number')
@@ -58,7 +57,7 @@ export default async(data) => {
         temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, }).keypoint
         temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect, }).aspect
       }
-      if(Number.isNaN(data.reviewerId) && data.reviewerId !== 0){
+      if(typeof data.reviewerId === 'number' && data.reviewerId !== 0){
         temp.reviewerId = data.reviewerId
         temp.reviewerId = await User.findOne({
           where: {
@@ -78,7 +77,7 @@ export default async(data) => {
     return data
   }
   catch(err){
-    if(Number.isNaN(err.status)){
+    if(typeof err.status === 'number'){
       let err = new Error('operation lebel-fron-number failed')
       err.status = 500
     }

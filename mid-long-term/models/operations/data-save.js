@@ -9,22 +9,15 @@ export default async(info = {})=> {
     }
 
     let content, data
-    try{
-      content = await Content.findOne({
-        where:{
-          contentId: info.contentId,
-        },
-        attributes: [
-          'contentId',
-          'dataId',
-        ],
-      })
-    }
-    catch(err){
-      err = new Error('content fetch error')
-      err.status = 500
-      throw err
-    }
+    content = await Content.findOne({
+      where:{
+        contentId: info.contentId,
+      },
+      attributes: [
+        'contentId',
+        'dataId',
+      ],
+    })
 
     if(Number.isNaN(content.dataId)){
       let err = new Error('dataId is not a number')
@@ -59,7 +52,6 @@ export default async(info = {})=> {
       err.status = 401
       throw err
     }
-
     let savedContent = await content.update({
       content: info.content,
       summary: info.summary,
@@ -78,7 +70,6 @@ export default async(info = {})=> {
       conflictedKeypoint: null,
       conflictedMethod: null,
     })
-
     return savedContent
   }
   catch(err){

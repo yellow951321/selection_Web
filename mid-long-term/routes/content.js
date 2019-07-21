@@ -150,6 +150,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     }
 
     data = await labelFromNumber(data);
+    console.log(data)
     res.render('mixins/editnodes/own', {
       contents : data,
     })

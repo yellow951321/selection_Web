@@ -90,8 +90,6 @@ router.get('/:dataId/index', async(req, res, next) => {
   try{
     let dataId = Number(res.locals.dataId)
 
-    numberValid([contentId])
-
     let checkData = await Data.findOne({
       where:{
         dataId,
@@ -155,8 +153,6 @@ router.get('/:dataId/filter', async(req, res, next) => {
     let keypoint = Number(req.query.keypoint);
     let method = Number(req.query.method);
 
-    numberValid([contentId])
-
     let checkData = await Data.findOne({
       where:{
         dataId,
@@ -179,8 +175,8 @@ router.get('/:dataId/filter', async(req, res, next) => {
     }
 
     let data;
-    
-    data = await getContent(aspect, keypoint, method, dataId, Number(req.query.isChecked), 0)
+    console.log(dataId)
+    data = await getContent(aspect, keypoint, method, dataId, Number(req.query.isChecked))
 
     if(data === 'empty data')
       res.send('')

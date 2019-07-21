@@ -36,7 +36,7 @@ mixin renderYear(obj)
       if obj.confliced > 0
         .ui.row
           .sixteen.wide.column
-            #unsolved.ui.orange.progress(data-percent=`${obj.confliced}`)
+            #unsolved.ui.yellow.progress.warning(data-percent=`${obj.confliced}`)
               .bar
                 .progress
               .label 尚未確認
