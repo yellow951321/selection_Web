@@ -3,11 +3,7 @@ import Sequelize from 'sequelize'
 // import config
 import config from 'projectRoot/config.js'
 
-<<<<<<< HEAD
 export default new Sequelize('sinicaShortTerm', `${config.database.user}`, `${config.database.password}`, {
-=======
-const shortTermDB = new Sequelize('sinicaShortTerm', `${config.database.user}`, `${config.database.password}`, {
->>>>>>> master
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -95,6 +91,4 @@ const shortTermDB = new Sequelize('sinicaShortTerm', `${config.database.user}`, 
     idle: 30000,
   },
 })
- * @see  http://docs.sequelizejs.com/
- */
-export default shortTermDB
+*/

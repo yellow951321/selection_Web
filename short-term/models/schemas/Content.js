@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
-=======
 /**
  * @module Content
  * @type {Sequelize.models}
@@ -11,7 +8,6 @@ import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
 // import the shortTermDB module
 import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
 // import the sequelize module
->>>>>>> master
 const Sequelize = require('sequelize')
 
 // todo require('./Data)
@@ -107,12 +103,9 @@ const contentSchema = {
   },
 }
 
-<<<<<<< HEAD
-=======
 /**
  * @const {Sequelize.models} Content
  */
->>>>>>> master
 const Content = shortTermDB.define('content', contentSchema)
 
 export default Content

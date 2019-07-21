@@ -1,9 +1,6 @@
 /**
  * @file Check the session of the user
  */
-/**
- * Import Module Session
- */
 import Session from 'auth/models/schemas/session.js'
 
 
@@ -13,7 +10,7 @@ import Session from 'auth/models/schemas/session.js'
  * If it is expired, then destroy the session of the user
  * in the database. Otherwirse, update the session in the
  * database
- * @func syncSession
+ * @function syncSession
  * @param {number} req - The request object of express
  * @param {number} sessionId - The sessionId parsed by cookieParser
  */

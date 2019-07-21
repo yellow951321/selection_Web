@@ -9,6 +9,7 @@
  * @requires 'auth/models/schemas/session.js'
  * @requires 'auth/models/operations/sync-session.js'
  */
+
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
@@ -60,18 +61,28 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
   },
 }))
 /**
- * check the sessionId in the cookie if its status is 'login' (stored in database) automatically login
+ * Check the sessionId in the cookie if its status is `login` or not.(stored in database)
+ * automatically login
+ * @name checkSession
+ * @inner
+ * @function
  */
 app.use(async(req, {}, next) => {
   try {
-    // Parse a cookie value as a signed cookie
+    /** Parse a cookie value as a signed cookie*/
     let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
-    // check the request session with syncSession
+    /** Check the request session with syncSession*/
     await syncSession(req, sessionId)
-    // pass this request to the next route
+    /** Pass this request to the next route*/
     next()
   }
   catch (err) {
+    /**
+     * Check the error message whether having error status or not.
+     * If the error message contains the status code, representing this error has been identified.
+     * It no need to setup another error status code.
+     * Otherwise, we set its status code to 500.
+     */
     if(err.status)
       next(err)
     else {
@@ -84,9 +95,16 @@ app.use(async(req, {}, next) => {
 
 /**
  * The login route
+ * @name login
+ * @inner
+ * @function
  */
 app.route('/login')
-  // if the request have been loginned, it will redirect to /auth/channel/
+  /**
+   * If the request have been loginned,
+   * it will redirect to /auth/channel.
+   * Otherwise, It will redirect to `/login route`.
+   */
   .get(async(req, res, next)=>{
     try {
       if(req.session && req.session.userId)
@@ -95,6 +113,12 @@ app.route('/login')
         res.render('login')
     }
     catch(err){
+    /**
+     * Check the error message whether having error status or not.
+     * If the error message contains the status code, representing this error has been identified.
+     * It no need to setup another error status code.
+     * Otherwise, we set its status code to 500.
+     */
       if(err.status)
         next(err)
       else {
@@ -103,35 +127,57 @@ app.route('/login')
       }
     }
   })
-  // if the request hasn't loginned, create a session to this user
+  /**
+   * Get a `POST` method request,
+   * it will check whether the user is existed or not.
+   * if existed, it will create a session to the user
+   * and store the session to the database.
+   */
   .post(async(req, res, next)=>{
     try{
-      // find the user whether it has sign up in database
+      /** Find the user whether it has signed up or not*/
       const data = await User.findOne({
         where:{
           account: req.body.username,
           password: req.body.password,
         },
       })
+      /**
+       * If the user is exitsted, create a new session to the database.
+       * It will store three properties
+       * 1. {number} sessionId - A unique hash id to this session
+       * 2. {number} exiration - The time to record how long this session will be expired.
+       * 3. {number} userId - The ID of user
+      */
       if(data != null){
-        // create a session of the user to the database
+        /** Create a session of the user to the database */
         req.session.userId = data.userId
         Session.create({
           sessionId: req.session.id,
           expiration: Number(req.session.cookie.expires),
           userId: data.userId,
         })
-        // redirect to /auth/login
+        /** Redirect to /auth/login*/
         res.redirect('/auth/login')
       }else{
-        // error handling
+        /**
+         * Error handling
+         * If there is no username match request,
+         * it will throw a error message with status
+         * code,`401`
+        */
         const err = new Error(`No account matched ${req.body.username}.`)
         err.status = 401
         throw err
       }
     }
     catch(err){
-      // error handling
+    /**
+     * Check the error message whether having error status or not.
+     * If the error message contains the status code, representing this error has been identified.
+     * It no need to setup another error status code.
+     * Otherwise, we set its status code to `400`.
+     */
       if(err.status)
         next(err)
       else {
@@ -144,48 +190,73 @@ app.route('/login')
 
 /**
  * The /channel route
+ * @name channel
+ * @inner
+ * @function
  */
 app.get('/channel', async(req, res, next)=> {
   try {
-    if(req.session && req.session.userId){ // check the session whether is existed.
-      // find the information of the user
+    /**
+     * Check the session of request
+     * If session and userId are existed,
+     * find username by the userId then render
+     * the `channel.pug` back
+     * Otherwise, Redirect to /auth/channel
+     */
+    if(req.session && req.session.userId){
+      /**
+       * Find the information of the user by userId
+       */
       let user = await User.findOne({
         where:{
           userId: req.session.userId,
         },
       })
-      // render a channel page back
+      /**
+       * Render a `channel.pug` back
+       * with `user.account` information.
+       */
       res.render('channel', {
         user: user.account,
       })
     }
     else
-      // if not, redirect to /auth/channel
       res.redirect('/auth/channel')
   }
   catch (err){
-    // error handling
+    /** Pass thie error message to next route */
     next(err)
   }
 })
 
 /**
- * The /logout route
+ * The logout route
+ * @name logout
+ * @function
  */
 app.get('/logout', async(req, res, next)=>{
   try {
-    // remove session and remove the login record in the database
+    /**
+     * Remove session in the database
+     */
     await Session.destroy({
       where: {
         sessionId: req.session.id,
       },
     })
-    // remove the session in the request
+    /**
+     * remove the session in the request,
+     * then redirect to `/auth/login` route.
+     */
     req.session.destroy()
-    // redirect to /auth/login
     res.redirect('/auth/login')
   } catch (err) {
-    // error handling - pass to the error handling route
+    /**
+     * Check the error message whether having error status or not.
+     * If the error message contains the status code, representing this error has been identified.
+     * It no need to setup another error status code.
+     * Otherwise, we set its status code to `500`.
+     */
     if(err.status)
       next(err)
     else {
@@ -196,11 +267,11 @@ app.get('/logout', async(req, res, next)=>{
   }
 })
 /**
- * @todo need to be remove in the future
- * @name route/signup
+ * Sign up route, it will be removed in the future
+ * @name signup
  * @inner
  * @function
- * @param {string} path - Express path
+ * @todo it will be removed in the future.
  */
 app.route('/signup')
   .get(({}, res, next)=>{
@@ -240,7 +311,7 @@ app.route('/signup')
   })
 /**
  * The error handling route
- * @name route/errorHandling
+ * @name errorHandling
  * @inner
  * @function
  * @param {string} path - Express path
@@ -254,7 +325,7 @@ app.use(({}, {}, next)=>{
 })
 /**
  * The error handling route used to render the error page
- * @name route/errorRender
+ * @name errorRender
  * @inner
  * @function
  * @param {string} path - Express path

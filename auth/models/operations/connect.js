@@ -2,9 +2,7 @@
  * @file Define the connection between client and the database server.
  */
 
-// Import Sequelize from sequelize module
 import Sequelize from 'sequelize'
-// The configuration of this project defined in ${root}/config.js
 import config from 'projectRoot/config.js'
 
 // The defined const Sequelize Object

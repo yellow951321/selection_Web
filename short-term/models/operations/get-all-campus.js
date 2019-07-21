@@ -10,7 +10,7 @@
  * @requires 'lib/static/javascripts/mapping/campus.js'
  */
 
- // import  association.js module
+// import  association.js module
 import {Data, Content, User, } from 'short-term/models/association.js'
 // import the sequelize
 import Sequelize from 'sequelize'

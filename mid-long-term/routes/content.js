@@ -190,7 +190,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
       err.status = 400
       throw err
     }
-    let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
+    let data = await getContent(aspect, keypoint, method, res.locals.dataId, req.query.isChecked, 0)
 
     if(data.length === 0 || typeof data === 'null'){
       res.send('')

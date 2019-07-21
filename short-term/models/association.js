@@ -2,7 +2,7 @@
  * Define a association relatioin betwoeen Data and Content
  */
 
- // import User Module
+// import User Module
 import User from 'projectRoot/auth/models/schemas/user.js'
 // import Data Module
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
