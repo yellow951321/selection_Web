@@ -6,6 +6,7 @@ import dataDelete from 'mid-long-term/models/operations/data-delete.js'
 import dataCreate from 'mid-long-term/models/operations/data-create.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
+import find from 'projectRoot/lib/db-op/find.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -48,20 +49,33 @@ router.post('/delete', async(req, res, next)=>{
       throw err
     }
 
-    const data = await Data.findOne({
-      where: {
-        dataId,
-      },
-      attributes: ['dataId', ],
+    const data = await find({
+      findType       : 'one',
+      interface      : Data,
+      whereCondition : {
+                          dataId,
+                        },
+      attributes     : ['dataId', ],
+      allowNull : false
     })
-    if(data != null) {
-      await dataDelete(data.dataId, req.session.userId)
-      res.redirect('/mid-long-term/index')
-    }else{
-      const err = new Error('No specified dataId')
-      err.status = 400
-      throw err
-    }
+
+    await dataDelete(data.dataId, req.session.userId)
+    res.redirect('/mid-long-term/index')
+
+    // const data = await Data.findOne({
+    //   where: {
+    //     dataId,
+    //   },
+    //   attributes: ['dataId', ],
+    // })
+    // if(data != null) {
+    //   await dataDelete(data.dataId, req.session.userId)
+    //   res.redirect('/mid-long-term/index')
+    // }else{
+    //   const err = new Error('No specified dataId')
+    //   err.status = 400
+    //   throw err
+    // }
   } catch (err) {
     if(err.status){
       next(err)
@@ -70,6 +84,9 @@ router.post('/delete', async(req, res, next)=>{
       if(!err.status){
         err = new Error('fail to delete data')
         err.status = 500
+      }else if(err.status == 404){
+        err = new Error('No specified dataId')
+        err.status = 400
       }
       next(err)
     }
@@ -85,23 +102,38 @@ router.get('/:dataId/edit', async(req, res, next) => {
       throw err
     }
 
-    let data = await Data.findOne({
-      where: {
+    let data = await find({
+      findType : 'one',
+      interface: Data,
+      whereCondition: {
         dataId,
       },
-      attributes: [
+      attributes : [
         'dataId',
         'userId',
         'campusId',
         'typeId',
       ],
+      allowNull : false
     })
 
-    if(data === null){
-      const err = new Error('data not found')
-      err.status = 404
-      throw err
-    }
+    // let data = await Data.findOne({
+    //   where: {
+    //     dataId,
+    //   },
+    //   attributes: [
+    //     'dataId',
+    //     'userId',
+    //     'campusId',
+    //     'typeId',
+    //   ],
+    // })
+
+    // if(data === null){
+    //   const err = new Error('data not found')
+    //   err.status = 404
+    //   throw err
+    // }
 
     if(data.userId !== req.session.userId){
       res.redirect(`/mid-long-term/review/${dataId}/index`)

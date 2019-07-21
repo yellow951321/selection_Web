@@ -1,4 +1,4 @@
-import {map, midLongTermFromWord}from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, midLongTermFromWord, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const footer = document.getElementById('footer')
@@ -29,7 +29,7 @@ class UnsavedAlert{
     if(targetNode.querySelector('.summary'))
       targetNode.querySelector('.summary').addEventListener('change', this.haveUnsaved(targetNode))
     if(targetNode.querySelector('.note'))
-      targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode));
+      targetNode.querySelector('.note').addEventListener('change', this.haveUnsaved(targetNode))
   }
   afterSaving(targetNode){
     if(targetNode.classList.contains('editNode--unsaved')){
@@ -47,7 +47,7 @@ class Filter{
     this.pageMessage = document.getElementById('page-message')
     this.deleteForm = document.getElementById('delete')
     this.dataId = pageFilter.querySelector('.dataId').innerHTML
-    this.selectedChangeLabelNode = null;
+    this.selectedChangeLabelNode = null
 
     //alert user when unsaved data exists
     this.unsaveAlert = new UnsavedAlert()
@@ -55,24 +55,24 @@ class Filter{
 
   // build htmltable
   buildTables(){
-    let table = [];
+    let table = []
     for(let aspectIndex in map){
       let aspect = map[aspectIndex]
       table[aspectIndex] = {
         table: '',
         keypoint: [],
-      };
+      }
       for(let keypointIndex in aspect.keypoint){
         let keypoint = aspect.keypoint[keypointIndex]
         if(keypoint.midLongTerm == '')
-          continue;
+          continue
         let keypointLabel = `${ aspect.label }${ keypoint.label }`
         table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
         table[aspectIndex]['keypoint'][keypointIndex] = ''
         for(let methodIndex in keypoint.method){
-          let method = keypoint.method[methodIndex];
+          let method = keypoint.method[methodIndex]
           if(method.midLongTerm == '')
-            continue;
+            continue
           let methodLabel = `${keypointLabel}${method.label}`
           table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
         }
@@ -178,41 +178,41 @@ class Filter{
         'Content-Type': 'application/json',
       },
     })
-    .then(res => res.text())
-    .then(data => {
-      pageEdit.innerHTML = ''
+      .then(res => res.text())
+      .then(data => {
+        pageEdit.innerHTML = ''
 
-      const message = footer.querySelector('.message')
-      footer.classList.remove('hidden')
-      if(data === ''){
-        message.classList.remove('transition')
-        message.classList.remove('hidden')
-      }
-      else{
-        pageEdit.insertAdjacentHTML('beforeend', data)
-        message.classList.add('transition')
-        message.classList.add('hidden')
-      }
+        const message = footer.querySelector('.message')
+        footer.classList.remove('hidden')
+        if(data === ''){
+          message.classList.remove('transition')
+          message.classList.remove('hidden')
+        }
+        else{
+          pageEdit.insertAdjacentHTML('beforeend', data)
+          message.classList.add('transition')
+          message.classList.add('hidden')
+        }
 
-      // don't show add content button while show all content under certain label
-      footer.querySelector('.add-content').classList.add('hidden')
+        // don't show add content button while show all content under certain label
+        footer.querySelector('.add-content').classList.add('hidden')
 
-      // add eventListener to check and change button
-      Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
-        button.addEventListener('click', Filter.checkNodeClicked(that))
+        // add eventListener to check and change button
+        Array.apply(null, pageEdit.querySelectorAll('.check')).forEach((button)=> {
+          button.addEventListener('click', Filter.checkNodeClicked(that))
+        })
+
+        Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
+          button.addEventListener('click', Filter.changeNodeClicked(that))
+        })
       })
-
-      Array.apply(null, pageEdit.querySelectorAll('.change')).forEach((button)=> {
-        button.addEventListener('click', Filter.changeNodeClicked(that))
+      .catch(err => {
+        const message = footer.querySelector('.message')
+        message.classList.remove('green')
+        message.classList.add('red')
+        message.innerHTML = `<p>${err.message}</p>`
+        that.fadeOut(that.pageMessage)
       })
-    })
-    .catch(err => {
-      const message = footer.querySelector('.message')
-      message.classList.remove('green')
-      message.classList.add('red')
-      message.innerHTML = `<p>${err.message}</p>`
-      that.fadeOut(that.pageMessage)
-    })
   }
 
   // handle add content button clicked
@@ -258,7 +258,7 @@ class Filter{
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       const keypoint = editNode.querySelector('.filter__item').firstChild
       const method = editNode.querySelector('.filter__detail').firstChild
-      const defaultkeypoint = 0;
+      const defaultkeypoint = 0
       // if the label is 5 or 6 remove keypoint and method choice
       if(Number(event.target.value) === 5 || Number(event.target.value) === 6 || Number(event.target.value) === -1){
         editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
@@ -273,8 +273,8 @@ class Filter{
       }
       // handle show all option
       if(editNode.classList.contains('filter')){
-        keypoint.innerHTML += `<option value='-1'>全部</option>`
-        method.innerHTML += `<option value='-1'>全部</option>`
+        keypoint.innerHTML += '<option value=\'-1\'>全部</option>'
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
       }
     }
   }
@@ -293,7 +293,7 @@ class Filter{
       }
       // handle show all option
       if(editNode.classList.contains('filter')){
-        method.innerHTML += `<option value='-1'>全部</option>`
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
       }
     }
   }
@@ -330,7 +330,7 @@ class Filter{
       const contentId = editNode.querySelector('.node-index').value
       const summary = editNode.querySelector('.summary').value
       const note = editNode.querySelector('.note').value
-      fetch(`/mid-long-term/content/save`, {
+      fetch('/mid-long-term/content/save', {
         method: 'POST',
         body: JSON.stringify({
           page: {
@@ -387,12 +387,12 @@ class Filter{
   static changeLabel(that){
     return () => {
       if(aspect === that.selectedAspect && keypoint === that.selectedkeypoint && method === that.selectedMethod)
-        return;
+        return
       let aspect = Number(pageChange.querySelector('.filter.filter__dimension').firstChild.value)
       let keypoint = Number(pageChange.querySelector('.filter.filter__item').firstChild.value)
       let method = Number(pageChange.querySelector('.filter.filter__detail').firstChild.value)
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/content/change`, {
+      fetch('/mid-long-term/content/change', {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.selectedChangeLabelNode.querySelector('.node-index').value,
@@ -416,7 +416,7 @@ class Filter{
           that.selectedChangeLabelNode.parentNode.removeChild(that.selectedChangeLabelNode)
           message.classList.remove('red')
           message.classList.add('green')
-          message.innerHTML = `<p>更改標籤成功</p>`
+          message.innerHTML = '<p>更改標籤成功</p>'
           that.fadeOut(that.pageMessage)
         })
         .catch(err => {
@@ -447,7 +447,7 @@ class Filter{
     return () =>{
       const contentId = editNode.querySelector('.node-index').value
       const message = that.pageMessage.querySelector('.message')
-      fetch(`/mid-long-term/content/delete`, {
+      fetch('/mid-long-term/content/delete', {
         method: 'DELETE',
         body: JSON.stringify({
           contentId,
@@ -521,13 +521,13 @@ class Filter{
       let aspect = editNode.querySelector('.conflictedAspect').innerHTML
       let keypoint = editNode.querySelector('.conflictedKeypoint').innerHTML
       let method = editNode.querySelector('.conflictedMethod').innerHTML
-      method = midLongTermFromWord({aspect, keypoint, method}).method;
-      keypoint = midLongTermFromWord({aspect, keypoint}).keypoint;
-      aspect = midLongTermFromWord({aspect}).aspect;
+      method = midLongTermFromWord({aspect, keypoint, method, }).method
+      keypoint = midLongTermFromWord({aspect, keypoint, }).keypoint
+      aspect = midLongTermFromWord({aspect, }).aspect
 
-      let aspectSelect =  pageChange.querySelector('.filter.filter__dimension')
+      let aspectSelect = pageChange.querySelector('.filter.filter__dimension')
       aspectSelect.querySelector(`[data-value="${aspect}"]`).click()
-      let keypointSelect =  pageChange.querySelector('.filter.filter__item')
+      let keypointSelect = pageChange.querySelector('.filter.filter__item')
       keypointSelect.querySelector(`[data-value="${keypoint}"]`).click()
       let methodSelect = pageChange.querySelector('.filter.filter__detail')
       methodSelect.querySelector(`[data-value="${method}"]`).click()

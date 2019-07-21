@@ -1,9 +1,8 @@
 import express from 'express'
 import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
-import { midLongTermFromNumber } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
@@ -158,7 +157,6 @@ router.get('/:dataId/index', async(req, res, next) => {
       ],
       id: req.session.userId,
       user: res.locals.user,
-      // contents: data,
     })
   }
   catch(err){
@@ -215,26 +213,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
       return
     }
 
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-      temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method}).method
-      temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint}).keypoint
-      temp.aspect = midLongTermFromNumber({aspect: temp.aspect }).aspect
-
-      temp.conflictedMethod = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint, method: temp.conflictedMethod}).method
-      temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.conflictedAspect, keypoint: temp.conflictedKeypoint}).keypoint
-      temp.conflictedAspect = midLongTermFromNumber({aspect: temp.conflictedAspect}).aspect
-      if(typeof temp.reviewerId === 'number' && temp.reviewerId !== 0){
-        temp.reviewerId = await User.findOne({
-          where: {
-            userId: temp.reviewerId,
-          },
-        })
-        temp.reviewerId = temp.reviewerId.account
-      }
-      return temp
-    }))
-
+    data = await labelFromNumber(data)
     res.render('mixins/editnodes/review.pug', {
       contents: data,
     })

@@ -266,57 +266,6 @@ app.get('/logout', async(req, res, next)=>{
     }
   }
 })
-/**
- * Sign up route, it will be removed in the future
- * @name signup
- * @inner
- * @function
- * @todo it will be removed in the future.
- */
-app.route('/signup')
-  .get(({}, res, next)=>{
-    try {
-      res.render('signup')
-    }
-    catch (err) {
-      if(err.status)
-        next(err)
-      else {
-        err = new Error('Failed to GET at route `/auth/singup`')
-        err.status = 500
-        next(err)
-      }
-    }
-  })
-  .post(async(req, res, next)=>{
-    try{
-      const user = await User.create({
-        account : req.body.account,
-        password: req.body.password,
-      })
-      if(user)
-        res.redirect('/auth/login')
-      else
-        throw new Error()
-    }
-    catch (err){
-      if(err.status)
-        next(err)
-      else {
-        err = new Error('Failed to POST at route `/auth/signup`.')
-        err.status = 500
-        next(err)
-      }
-    }
-  })
-/**
- * The error handling route
- * @name errorHandling
- * @inner
- * @function
- * @param {string} path - Express path
- * @param {callback} middleware - Express middleware
- */
 app.use(({}, {}, next)=>{
   // create a error message with page not found
   const err = new Error('Page not found.')

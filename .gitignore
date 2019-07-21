@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# bundle file for test
+test/public/*
+
 .vscode
 *.swp
 package-lock.json
@@ -75,3 +78,4 @@ webpack.transfer.config.js
 data/operation/csv-to-db/csv-data
 error-data.json
 
+key/*
