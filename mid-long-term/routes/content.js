@@ -3,7 +3,8 @@ import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 import dataSave from 'projectRoot/mid-long-term/models/operations/data-save.js'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
-
+import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
+import contentUpdate from 'projectRoot/mid-long-term/models/operations/content-update.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,11 +18,9 @@ const router = express.Router({
 router.post('/save', async(req, res, next)=>{
   try{
     let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+
+    numberValid([contentId])
+
     let savedContent = await dataSave({
       userId: req.session.userId,
       content: req.body.content,
@@ -54,11 +53,7 @@ router.post('/save', async(req, res, next)=>{
 router.delete('/delete', async(req, res)=>{
   try{
     let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+    numberValid([contentId])
 
     await Content.destroy({
       where:{
@@ -84,11 +79,8 @@ router.post('/change', async(req, res) => {
     let method = Number(req.body.method)
     let isChecked = Number(req.body.isChecked)
 
-    if(Number.isNaN(contentId) || Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method) || Number.isNaN(isChecked)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+    numberValid([contentId, aspect, keypoint, method, isChecked])
+
     let data = await Content.findOne({
       where:{
         contentId,
@@ -148,11 +140,8 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     let keypoint = Number(req.query.keypoint);
     let method = Number(req.query.method);
 
-    if(Number.isNaN(aspect)){
-      const err = new Error('invalid argument');
-      err.status = 400
-      throw err
-    }
+    numberValid([aspect])
+
     let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 
     if(data.length === 0 || typeof data === 'null'){
@@ -178,11 +167,9 @@ router.route('/:dataId/check')
 .get(async(req, res, next) => {
   try{
     let dataId = Number(res.locals.dataId)
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+    
+    numberValid([dataId])
+
     let data = await getContent(-1, -1, -1, res.locals.dataId, 0, 1)
     if(data.length === 0){
       res.send('')
@@ -204,25 +191,14 @@ router.route('/:dataId/check')
 .post(async(req, res) => {
   try{
     let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+   
+    numberValid([contentId])
 
-    let data = await Content.findOne({
-      where:{
-        contentId,
-      },
-      attributes:[
-        'contentId',
-        'isChecked',
-      ],
-    })
-    let savedData = await data.update({
+    let savedData = await contentUpdate(contentId,{
       isChecked: 1,
       isConflicted: 0,
     })
+
     if(savedData){
       res.send('completed')
     }
@@ -246,11 +222,7 @@ router.post('/:dataId/add', async(req, res, next)=>{
     let keypoint = req.body.keypoint;
     let method = req.body.method;
 
-    if(Number.isNaN(aspect) || Number.isNaN(keypoint) || Number.isNaN(method)){
-      const err = new Error('invalid argument');
-      err.status = 400
-      throw err
-    }
+    numberValid([aspect, keypoint, method])
 
     let data = await Content.create({
       dataId: res.locals.dataId,
