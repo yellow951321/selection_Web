@@ -13,7 +13,7 @@ import fs, { readFile, readFileSync } from 'fs'
 import Readline from 'readline'
 import { promised } from 'q';
 
-const root = '/home/nober/git/selection_Web/data/json-data'
+const root = '/home/nober/git/selection_Web/data'
 
 const readCsv = async (root,filename='') => {
   try{
@@ -134,6 +134,16 @@ const parseData = (data) => {
                 contents.push({
                   pageFrom,
                   pageTo,
+                  aspect,
+                  keypoint,
+                  method,
+                  title: c.title,
+                  content: c.paragraph
+                })
+              }else {
+                contents.push({
+                  pageFrom: 0,
+                  pageTo: 0,
                   aspect,
                   keypoint,
                   method,
@@ -361,4 +371,46 @@ const t = async () => {
   // console.log(result)
 }
 
-t()
+const t_2 = async () => {
+
+  const template = buildTemplate(readFileSync(`${root}/json-data/1/中原大學.json`))
+  await Promise.all( [
+    (async () => {
+      const data = await new Promise((res,rej)=>{
+        readFile(`${root}/json-mod-data/json-data/國立暨南國際大學.json`, 'utf-8', (err, data)=>{
+          if(err)
+            rej(new Error(err))
+          res(data)
+        })
+      })
+      const modifiedData = modifiedKey(data, template)
+      const result = parseData(modifiedData)
+      // fs.writeFileSync('./國立暨南國際大學.json', JSON.stringify(result,null, 2))
+      await createNewDataAndContent({
+        campus: result.campus,
+        year: result.year,
+        type: result.type
+      },result.contents)
+    })(),
+    (async () => {
+      const data = await new Promise((res,rej)=>{
+        readFile(`${root}/json-mod-data/json-data/靜宜大學.json`, 'utf-8', (err, data)=>{
+          if(err)
+            rej(new Error(err))
+          res(data)
+        })
+      })
+      const modifiedData = modifiedKey(data, template)
+      const result = parseData(modifiedData)
+      // fs.writeFileSync('./靜宜大學.json', JSON.stringify(result, null, 2))
+      await createNewDataAndContent({
+        campus: result.campus,
+        year: result.year,
+        type: result.type
+      },result.contents)
+    })()
+  ])
+
+}
+
+t_2()

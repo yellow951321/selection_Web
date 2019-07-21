@@ -44,37 +44,37 @@ export default async (filename, root_dir, typeData = '') => {
       throw new Error('wrong type data')
     }
     //create the data
-    // const data = await fnData
-    // .create(tempData)
-    // .then( data => data.dataValues )
+    const data = await fnData
+    .create(tempData)
+    .then( data => data.dataValues )
     // console.log(data)
     const {result,wrongResult} = await readCsv(root_dir + filename)
     // console.log(result[0])
-    // await Promise.all( result.map( async (d) => {
-    //   await fnContent.create({
-    //     title1: d.title1,
-    //     title2: d.title2,
-    //     title3: d.title3,
-    //     title4: d.title4,
-    //     content: d.content,
-    //     summary: d.summary,
-    //     pageFrom: d.pageFrom,
-    //     pageTo: d.pageTo,
-    //     isChecked: 0,
-    //     isConflicted: 0,
-    //     aspect: d.aspect,
-    //     keypoint: d.keypoint,
-    //     method: d.method,
-    //     updateTime: Date.now(),
-    //     dataId: data.dataId,
-    //   }).catch( (err) => {
-    //     console.log(data.campusId)
-    //     console.log(`occurred error`)
-    //     console.log(d)
-    //     console.log(err)
-    //     console.log("===============================")
-    //   })
-    // }))
+    await Promise.all( result.map( async (d) => {
+      await fnContent.create({
+        title1: d.title1,
+        title2: d.title2,
+        title3: d.title3,
+        title4: d.title4,
+        content: d.content,
+        summary: d.summary,
+        pageFrom: d.pageFrom,
+        pageTo: d.pageTo,
+        isChecked: 0,
+        isConflicted: 0,
+        aspect: d.aspect,
+        keypoint: d.keypoint,
+        method: d.method,
+        updateTime: Date.now(),
+        dataId: data.dataId,
+      }).catch( (err) => {
+        console.log(data.campusId)
+        console.log(`occurred error`)
+        console.log(d)
+        console.log(err)
+        console.log("===============================")
+      })
+    }))
     // console.log(wrongResult)
     let temp = {
       info: tempData}

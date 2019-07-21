@@ -6,7 +6,7 @@ import dataDelete from 'mid-long-term/models/operations/data-delete.js'
 import dataCreate from 'mid-long-term/models/operations/data-create.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
-import find from 'projectRoot/lib/db-op/find.js'
+import {findOne, findAll} from 'projectRoot/lib/db-op/find.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -49,12 +49,11 @@ router.post('/delete', async(req, res, next)=>{
       throw err
     }
 
-    const data = await find({
-      findType       : 'one',
+    const data = await findOne({
       interface      : Data,
       whereCondition : {
                           dataId,
-                        },
+                       },
       attributes     : ['dataId', ],
       allowNull : false
     })
@@ -102,8 +101,7 @@ router.get('/:dataId/edit', async(req, res, next) => {
       throw err
     }
 
-    let data = await find({
-      findType : 'one',
+    let data = await findOne({
       interface: Data,
       whereCondition: {
         dataId,
