@@ -3,24 +3,50 @@ import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
 export default async(info = {})=> {
   try{
-    let content = await Content.findOne({
-      where:{
-        contentId: info.contentId,
-      },
-      attributes: [
-        'contentId',
-        'dataId',
-      ],
-    })
+    if(Number.isNaN(info.contentId)){
+      let err = new Error('contentId is not a number')
+      err.status = 400
+    }
+
+    let content, data
+    try{
+      content = await Content.findOne({
+        where:{
+          contentId: info.contentId,
+        },
+        attributes: [
+          'contentId',
+          'dataId',
+        ],
+      })
+    }
+    catch(err){
+      err = new Error('content fetch error')
+      err.status = 500
+      throw err
+    }
+
+    if(Number.isNaN(content.dataId)){
+      let err = new Error('dataId is not a number')
+      err.status = 400
+    }
+
     // privillige check
-    let data = await Data.findOne({
-      where:{
-        dataId: content.dataId,
-      },
-      attributes: [
-        'userId',
-      ],
-    })
+    try{
+      data = await Data.findOne({
+        where:{
+          dataId: content.dataId,
+        },
+        attributes: [
+          'userId',
+        ],
+      })
+    }
+    catch(err){
+      err = new Error('data fetch error')
+      err.status = 500
+      throw err
+    }
 
     if(data === null){
       const err = new Error('data not found')

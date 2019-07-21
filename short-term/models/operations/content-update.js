@@ -1,6 +1,11 @@
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
 export default async(contentId, updatedData) => {
   try{
+    if(Number.isNaN(contentId)){
+      let err = new Error('contentId is not a number')
+      err.status = 400
+      throw err
+    }
     let data = await Content.findOne({
       where:{
         contentId,
@@ -10,8 +15,18 @@ export default async(contentId, updatedData) => {
         'isChecked',
       ],
     })
-        
+      .catch(()=>{
+        let err = new Error('content fetch failed')
+        err.status = 400
+        throw err
+      })
+
     let newData = await data.update(updatedData)
+      .catch(()=>{
+        let err = new Error('data update failed')
+        err.status = 400
+        throw err
+      })
     return newData
   }
   catch(err){

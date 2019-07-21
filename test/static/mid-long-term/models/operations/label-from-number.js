@@ -8,9 +8,9 @@ import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-f
 const expect = chai.expect
 const sandbox = sinon.createSandbox();
 
-describe('chai test', () => {
+describe('label-from-number.js', () => {
 
-    context('test label-from-number',()=>{
+    context('test labelFromNumber',()=>{
         it('should return an object ', async ()=>{
             let mappingStub = sinon.stub().callsFake(()=>{
                 return {
@@ -25,11 +25,6 @@ describe('chai test', () => {
             })
 
             expect(output).to.be.an('object')
-            expect(output).to.deep.equal({
-                method: 'testMethod',
-                keypoint: 'testKeypoint',
-                aspect: 'testAspect'
-            })
             expect(mappingStub).to.have.been.calledThrice
 
             labelFromNumber.__ResetDependency__('midLongTermFromNumber')

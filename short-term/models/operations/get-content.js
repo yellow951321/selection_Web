@@ -1,14 +1,40 @@
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
+import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
 
 export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflicted=-1) => {
   /** if any of the value of the three type of label is -1
      *  ,which means show all the content under this label
      *  ,we need to set special condition
     */
+  if(Number.isNaN(dataId)){
+    let err = new Error('dataId is not a number')
+    err.status = 400
+  }
+
+  if(Number.isNaN(aspect)){
+    let err = new Error('aspect is not a number')
+    err.status = 400
+  }
+  if(Number.isNaN(keypoint)){
+    let err = new Error('keypoint is not a number')
+    err.status = 400
+  }
+  if(Number.isNaN(method)){
+    let err = new Error('method is not a number')
+    err.status = 400
+  }
+  if(Number.isNaN(isConflicted)){
+    let err = new Error('isConflicted is not a number')
+    err.status = 400
+  }
+  if(Number.isNaN(isChecked)){
+    let err = new Error('isChecked is not a number')
+    err.status = 400
+  }
+
   let whereCondition = {
     dataId,
   }
-
   if(aspect !== -1){
     whereCondition['aspect'] = aspect
     if(keypoint !== -1){
@@ -52,6 +78,10 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
       'dataId',
     ],
   })
+  if(data.length === 0 || typeof data === 'null'){
+    return 'empty data'
+  }
 
+  data = await labelFromNumber(data)
   return data
 }

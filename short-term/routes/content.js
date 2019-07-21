@@ -5,6 +5,7 @@ import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
 import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
 import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
+import contentDelete from 'projectRoot/short-term/models/operations/content-delete.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -17,11 +18,7 @@ const router = express.Router({
 
 router.post('/save', async(req, res, next)=>{
   try{
-    let contentId = Number(req.body.contentId)
-
-    numberValid([contentId])
-
-    let savedContent = await dataSave({
+    await dataSave({
       userId: req.session.userId,
       content: req.body.content,
       summary: req.body.summary,
@@ -35,12 +32,7 @@ router.post('/save', async(req, res, next)=>{
       pageTo: req.body.page.end,
       contentId: req.body.contentId,
     })
-    if(savedContent){
-      res.send('completed')
-    }
-    else{
-      throw new Error('save failed')
-    }
+    res.send('completed')
   } catch(err) {
     if(!err.status){
       err = new Error('save failed')
@@ -52,15 +44,7 @@ router.post('/save', async(req, res, next)=>{
 
 router.delete('/delete', async(req, res)=>{
   try{
-    let contentId = Number(req.body.contentId)
-
-    numberValid([contentId])
-
-    await Content.destroy({
-      where:{
-        contentId,
-      },
-    })
+    await contentDelete(req.body.contentId)
     res.send('completed')
   }
   catch(err){
@@ -141,16 +125,12 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     let keypoint = Number(req.query.keypoint);
     let method = Number(req.query.method);
 
-    numberValid([aspect])
-
     let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
 
-    if(data.length === 0 || typeof data === 'null'){
+    if(data === 'empty data'){
       res.send('')
       return
     }
-
-    data = await labelFromNumber(data)
     res.render('mixins/editnodes/own', {
       contents : data,
     })
@@ -167,16 +147,12 @@ router.get('/:dataId/filter', async(req, res, next)=>{
 router.route('/:dataId/check')
 .get(async(req, res, next) => {
   try{
-    let dataId = Number(res.locals.dataId)
-
-    numberValid([dataId])
-
     let data = await getContent(-1, -1, -1, res.locals.dataId, 0, 1)
-    if(data.length === 0){
+
+    if(data === 'empty data'){
       res.send('')
-      return
+      return 
     }
-    data = await labelFromNumber(data)
     res.render('mixins/editnodes/check', {
       contents : data,
     })
@@ -191,23 +167,11 @@ router.route('/:dataId/check')
 })
 .post(async(req, res) => {
   try{
-    let contentId = Number(req.body.contentId)
-
-    numberValid([dataId])
-
-    let savedData = await contentUpdate(contentId,{
+    await contentUpdate(req.body.contentId,{
       isChecked: 1,
       isConflicted: 0,
     })
-
-    if(savedData){
-      res.send('completed')
-    }
-    else{
-      let err = new Error('save failed')
-      err.status = 500
-      throw err
-    }
+    res.send('completed')
   } catch(err) {
     if(!err.status){
       const err = new Error('enter review page failed')
