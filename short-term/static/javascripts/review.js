@@ -79,7 +79,6 @@ class Filter{
       method: method.value,
       isChecked,
     }
-    console.log(parameters)
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
     fetch(`/short-term/review/${that.dataId}/filter?${parameters}`, {
       method: 'GET',
