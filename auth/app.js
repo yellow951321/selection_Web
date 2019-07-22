@@ -127,7 +127,7 @@ app.get('/channel', async(req, res, next)=> {
       })
     }
     else
-      res.redirect('/auth/channel')
+      res.redirect('/auth/login')
   }
   catch (err){
     next(err)

@@ -10,7 +10,8 @@ mixin renderYear(obj)
           else
             a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/review/${obj.dataId}/index`) 檢閱
           a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/download/${obj.dataId}/index`) 下載
-          button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
+          if obj.user.id == id
+            button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
       .ui.row.userTimeRow
         p.userTime
           span= `編輯者: ${obj.user.name}`
