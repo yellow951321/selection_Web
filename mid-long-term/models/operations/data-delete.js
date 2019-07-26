@@ -5,29 +5,53 @@ export default async(dataId, userId) => {
     dataId = Number(dataId)
     userId = Number(userId)
     if(Number.isNaN(dataId)){
-      const err = new Error('invalid dataId')
+      const err = new Error('dataId is NaN')
       err.status = 400
       throw err
     }
-    let data = await Data.findOne({
-      where: {
-        dataId: dataId,
-      },
-      attribute: [
-        'userId',
-      ],
-    })
+    if(Number.isNaN(userId)){
+      const err = new Error('userId is NaN')
+      err.status = 400
+      throw err
+    }
+    let data, output
+    try{
+      data = await Data.findOne({
+        where: {
+          dataId: dataId,
+        },
+        attribute: [
+          'userId',
+        ],
+      })
+    }catch(err){
+      err = new new Error('data fetch failed.')
+      err.status = 500
+    }
+
+    if(data === null){
+      const err = new Error('No specified dataId')
+      err.status = 400
+      throw err
+    }
     if(data.userId !== userId){
       // const err = new Error('Unauthorized')
       // err.status = 401
       // throw err
       return 'Unauthorized'
     }
-    let output = await Data.destroy({
-      where: {
-        dataId: dataId,
-      },
-    })
+
+    try{
+      output = await Data.destroy({
+        where: {
+          dataId: dataId,
+        },
+      })
+    }
+    catch(err){
+      err = new new Error('data delete failed.')
+      err.status = 500
+    }
     return output
   }catch (err) {
     if(!err.status){

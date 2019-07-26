@@ -1,11 +1,8 @@
 import express from 'express'
-
-import Data from 'projectRoot/short-term/models/schemas/Data.js'
-
 import dataDelete from 'short-term/models/operations/data-delete.js'
 import dataCreate from 'short-term/models/operations/data-create.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-
+import contentAuth from 'projectRoot/short-term/models/operations/content-auth.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -40,79 +37,55 @@ router.post('/add', async(req, res, next)=>{
 
 router.post('/delete', async(req, res, next)=>{
   try{
-    const dataId = Number(req.body.dataId);
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument while deleting data')
-      err.status = 400
-      throw err
-    }
-
-    const data = await Data.findOne({
-      where: {
-        dataId,
-      },
-      attributes: ['dataId', ],
-    })
-    if(data != null) {
-      const result = await dataDelete(data.dataId, req.session.userId)
-      if(result === 'Unauthorized')
-        res.redirect('/auth/unauthor')
-      else
-        res.redirect('/short-term/index')
-    }else{
-      const err = new Error('No specified dataId')
-      err.status = 400
-      throw err
-    }
+    const result = await dataDelete(req.body.dataId, req.session.userId)
+    if(result === 'Unauthorized')
+      res.redirect('/auth/unauthor')
+    else
+      res.redirect('/short-term/index')
   } catch (err) {
-    if(err.status){
-      next(err)
+    if(!err.status){
+      err = new Error('fail to delete data')
+      err.status = 500
     }
-    else{
-      if(!err.status){
-        err = new Error('fail to delete data')
-        err.status = 500
-      }
-      next(err)
-    }
+    next(err)
   }
 })
 
-router.get('/:dataId/edit', async(req, res, next) => {
-  try {
-    const dataId = Number(req.params.dataId);
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument while entrying edit page')
-      err.status = 400
-      throw err
-    }
-
-    let data = await Data.findOne({
-      where: {
-        dataId,
-      },
-      attributes: [
-        'dataId',
-        'userId',
-        'campusId',
-        'typeId',
-        'year',
-      ],
+router.use('/:dataId', async(req, res, next) => {
+  try{
+    let result = await contentAuth({
+      dataId: req.params.dataId,
+      userId: req.session.userId
     })
-
-    if(data === null){
+    if(result === 'empty data'){
       const err = new Error('data not found')
       err.status = 404
       throw err
     }
 
-    if(data.userId !== req.session.userId){
+    if(result === 'as a reviewer'){
       res.redirect(`/short-term/review/${dataId}/index`)
       return
     }
 
-    let typeName = campusMap[data.typeId].type
-    let campusName = campusMap[data.typeId].campus[data.campusId]
+    res.locals.year = result.info.year
+    res.locals.typeId = result.info.typeId
+    res.locals.campusId = result.info.campusId
+    next()
+  }
+  catch(err){
+    if(typeof err.status !== 'number'){
+      err = new Error('invalid argument')
+      err.status = 400
+    }
+    next(err)
+  }
+})
+
+router.get('/:dataId/edit', async(req, res, next) => {
+  try {
+    let typeName = campusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     res.render('edit', {
       breadcrumb: [
         {
@@ -120,28 +93,28 @@ router.get('/:dataId/edit', async(req, res, next) => {
           name: '計畫申請書',
         },
         {
-          id: data.year,
-          name: data.year,
+          id: res.locals.year,
+          name: res.locals.year,
         },
         {
-          id: data.typeId,
+          id: res.locals.typeId,
           name: typeName
         },
         {
-          id: data.campusId,
+          id: res.locals.campusId,
           name: campusName
         }
       ],
       id: req.session.userId,
       user: res.locals.user,
-      dataId: data.dataId,
+      dataId: req.params.dataId,
       map: campusMap,
       type: {
-        id: data.typeId,
+        id: res.locals.typeId,
         name: typeName
       },
       campus: {
-        id: data.campusId,
+        id: res.locals.campusId,
         name: campusName
       }
     })

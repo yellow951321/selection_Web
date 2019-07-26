@@ -2,32 +2,40 @@ import {Data, Content, } from 'mid-long-term/models/association.js'
 import Sequelize from 'sequelize'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
-export default async(typeId) => {
+export default async(info) => {
   try{
-    if(Number.isNaN(typeId)){
-      const err = new Error('Invalid arguments in data-create.')
+    info.typeId = Number(info.typeId)
+    if(Number.isNaN(info.typeId)){
+      const err = new Error('typeId is NaN.')
       err.status = 400
       throw err
     }
-    // find all data with the given userId and typeId
-    let data = await Data.findAll({
-      where:{
-        typeId: typeId,
-      },
-      attributes: [
-        'campusId',
-        'typeId',
-      ],
-      group: ['campusId', ],
-      include: [
-        {
-          model: Content,
-          as: 'content',
-          attributes: [[Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ], ],
-        },
 
-      ],
-    })
+    let data
+    try{
+      data = await Data.findAll({
+        where:{
+          typeId: info.typeId,
+        },
+        attributes: [
+          'campusId',
+          'typeId',
+        ],
+        group: ['campusId', ],
+        include: [
+          {
+            model: Content,
+            as: 'content',
+            attributes: [[Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ], ],
+          },
+
+        ],
+      })
+    }catch(err){
+      err = new Error('data fetch failed')
+      err.status = 500
+      throw err
+    }
 
     // transfer data into column campusId only
     data = data.map(data => {
@@ -40,9 +48,8 @@ export default async(typeId) => {
 
     return {
       campuses: data,
-      typeName: campusMap[typeId].type,
+      typeName: campusMap[info.typeId].type,
     }
-
   }catch(err){
     if(!err.status){
       err = new Error('fail at get-all-campus.js')
