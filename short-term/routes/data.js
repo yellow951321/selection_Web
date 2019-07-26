@@ -54,8 +54,11 @@ router.post('/delete', async(req, res, next)=>{
       attributes: ['dataId', ],
     })
     if(data != null) {
-      await dataDelete(data.dataId, req.session.userId)
-      res.redirect('/short-term/index')
+      const result = await dataDelete(data.dataId, req.session.userId)
+      if(result === 'Unauthorized')
+        res.redirect('/auth/unauthor')
+      else
+        res.redirect('/short-term/index')
     }else{
       const err = new Error('No specified dataId')
       err.status = 400

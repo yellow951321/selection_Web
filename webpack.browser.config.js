@@ -160,6 +160,7 @@ const authCssConfig = Object.assign({}, webpackCssConfigTemplate, {
     'login':   path.join(authCssSrcRoot, 'login.scss'),
     'signup':  path.join(authCssSrcRoot, 'signup.scss'),
     'channel': path.join(authCssSrcRoot, 'channel.scss'),
+    'unauthor': path.join(authCssSrcRoot, 'unauthor.scss'),
   },
   output: {
     path: authCssDistRoot,
