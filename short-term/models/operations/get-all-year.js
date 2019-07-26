@@ -2,19 +2,29 @@ import Data from 'short-term/models/schemas/Data.js'
 
 export default async() => {
   try{
-    // find all data with the given userId and year
-    let data = await Data.findAll({
-      attributes: ['year', ],
-      group: ['year', ],
+    let data
+    try{
+      data = await Data.findAll({
+        attributes: ['year', ],
+        group: ['year', ],
+      })
+    }
+    catch(err){
+      err = new Error('data fetch failed.')
+      err.status = 500
+      throw err
+    }
+    let years = []
+    data.map(data => {
+      years.push(data.year)
     })
-
-    return data.map(d => {
-      return {
-        year: d.year,
-      }
-    })
+    return years
   }
   catch(err){
-    throw new Error('Error occur in short-term/models/operations/get-all-year.js')
+    if(typeof err.status !== 'number'){
+      err = new Error('Error occur in short-term/models/operations/get-all-year.js')
+      err.status = 500
+    }
+    throw err 
   }
 }

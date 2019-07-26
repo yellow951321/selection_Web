@@ -1,5 +1,5 @@
-import Content from 'projectRoot/short-term/models/schemas/Content.js'
-import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
+import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
 export default async(info) => {
 

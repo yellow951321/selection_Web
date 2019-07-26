@@ -13,7 +13,9 @@ const router = express.Router({
 
 router.get('/index', async(req, res, next)=>{
   try{
-    let {campuses, typeName} = await getAllCampus(res.locals.typeId)
+    let {campuses, typeName} = await getAllCampus({
+      typeId: res.locals.typeId,
+    })
 
     res.render('campus', {
       breadcrumb: [

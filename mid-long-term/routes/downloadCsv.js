@@ -15,26 +15,10 @@ const router = express.Router({
 
 router.get('/:dataId/index', async(req, res, next)=>{
   try {
-    const dataId = Number(req.params.dataId);
-    if(Number.isNaN(dataId)){
-      const err = new Error('invalid argument while entrying edit page')
-      err.status = 400
-      throw err
-    }
-    const filePath = await createCsv(dataId)
-
-    let data = await Data.findOne({
-      where: {
-        dataId,
-      },
-      attribute: [
-        'yearFrom',
-        'yearTo',
-        'campusId',
-        'typeId',
-      ]
+    const {filePath, data} = await createCsv({
+      dataId: req.params.dataId
     })
-    // send requested output file
+
     const options = {
       root: '/',
       dotfiles: 'deny',
@@ -45,7 +29,7 @@ router.get('/:dataId/index', async(req, res, next)=>{
     }
     res.sendFile(filePath, options, (err) => {
       if(err){
-        err = new Error("sen file failed")
+        err = new Error("send file failed")
         err.status = 500
         throw err
       }
