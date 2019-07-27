@@ -12,8 +12,6 @@ import campusRouter from 'short-term/routes/campus.js'
 import dataRouter from 'short-term/routes/data.js'
 import contentRouter from 'short-term/routes/content.js'
 import downloadRouter from 'short-term/routes/downloadCsv.js'
-// import graphRouter from 'short-term/routes/graph.js'
-
 
 const app = express()
 app.locals.GLOBAL = {
@@ -63,7 +61,7 @@ app.use('/review', reviewRouter)
 app.use('/download', downloadRouter)
 
 app.use('/:yearId', (req, res, next)=>{
-  let yearId = Number(req.params.yearId)
+  const yearId = Number(req.params.yearId)
   if(typeof yearId === 'number'){
     res.locals.yearId = yearId
     next()
@@ -78,7 +76,7 @@ app.use('/:yearId', (req, res, next)=>{
 typeRouter)
 
 app.use('/:yearId/:typeId', (req, res, next)=>{
-  let typeId = Number(req.params.typeId)
+  const typeId = Number(req.params.typeId)
   if(typeof typeId === 'number'){
     res.locals.typeId = typeId
     next()
@@ -92,23 +90,11 @@ app.use('/:yearId/:typeId', (req, res, next)=>{
 },
 campusRouter)
 
-
-// app.use('/:typeId/:campusId/:dataId/graph', graphRouter)
-
-// app.use('/:typeId/:campusId/:dataId/download', downloadRouter)
-
-// app.use('/:typeId/:campusId/:dataId/file', fileRouter)
-
-// app.use('/:typeId/:campusId/:dataId/content', contentRouter)
-
-// app.use('/:typeId/:campusId/:dataId/review', reviewRouter)
-
 app.use((err, {}, res, {}) => {
   res.render('error', {
     message: err,
     error: err,
   })
 })
-
 
 export default app
