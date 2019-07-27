@@ -4,7 +4,7 @@
 		- let route = GLOBAL.config.server.host
 		each value, index in breadcrumb
 			.divider /
-			- route = route + `/${value.id}`
+			- route = `${route}/${value.id}`
 			if index != breadcrumb.length - 1
 				a.section(href=`${route}/index`)= value.name
 			else

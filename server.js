@@ -1,4 +1,3 @@
-// import http from 'http'
 import express from 'express'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'

@@ -46,7 +46,7 @@ export default async(info) => {
     let result = {
       info:{
         typeId: checkData.typeId,
-        campusId: checkData.campusId, 
+        campusId: checkData.campusId,
       },
     }
     if(checkData.userId !== info.userId){

@@ -1,6 +1,6 @@
 // const { sequelizeShortTerm, } = require(`${process.env.ROOT}/db/mariadb`)
 import midLongTermDB from 'projectRoot/mid-long-term/models/operations/connect.js'
-const Sequelize = require('sequelize')
+import Sequelize from 'sequelize'
 
 // todo require('./Data)
 
