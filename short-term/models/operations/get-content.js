@@ -56,29 +56,37 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
      *  ,which means show all the content under this label
      *  ,we need to set special condition
     */
+  dataId = Number(dataId)
+  aspect = Number(aspect)
+  method = Number(method)
+  dataId = Number(dataId)
+  isChecked = Number(isChecked)
+  isConflicted = Number(isConflicted)
+
   if(Number.isNaN(dataId)){
-    let err = new Error('dataId is not a number')
+    let err = new Error('dataId is NaN')
     err.status = 400
   }
 
   if(Number.isNaN(aspect)){
-    let err = new Error('aspect is not a number')
+    let err = new Error('aspect is NaN')
     err.status = 400
   }
   if(Number.isNaN(keypoint)){
-    let err = new Error('keypoint is not a number')
+    let err = new Error('keypoint is NaN')
     err.status = 400
   }
   if(Number.isNaN(method)){
-    let err = new Error('method is not a number')
+    let err = new Error('method is NaN')
     err.status = 400
   }
-  if(Number.isNaN(isConflicted)){
-    let err = new Error('isConflicted is not a number')
+  if(isConflicted !== 1 && isConflicted !== -1 && isConflicted !== 0){
+    let err = new Error('isConflicted is not a valid option')
     err.status = 400
   }
-  if(Number.isNaN(isChecked)){
-    let err = new Error('isChecked is not a number')
+
+  if(isChecked !== 1 && isChecked !== -1 && isChecked !== 0){
+    let err = new Error('isChecked is not a valid option')
     err.status = 400
   }
 

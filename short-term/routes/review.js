@@ -1,9 +1,8 @@
 import express from 'express'
-import Data from 'projectRoot/short-term/models/schemas/Data.js'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
 import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
+import contentAuth from 'projectRoot/short-term/models/operations/content-auth.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -16,15 +15,10 @@ const router = express.Router({
 
 router.post('/check', async(req, res, next) => {
   try{
-    let contentId = Number(req.body.contentId)
-
-    numberValid([contentId])
-
-    let newData = await contentUpdate(contentId, {
+    let newData = await contentUpdate(req.body.contentId, {
       reviewerId: req.session.userId,
       isChecked: 1,
     })
-
     if(newData){
       res.send('completed')
     }
@@ -43,17 +37,10 @@ router.post('/check', async(req, res, next) => {
 
 router.post('/conflict', async(req, res, next) => {
   try{
-    let contentId = Number(req.body.contentId)
-    let conflictedAspect = Number(req.body.conflictedAspect)
-    let conflictedKeypoint = Number(req.body.conflictedKeypoint)
-    let conflictedMethod = Number(req.body.conflictedMethod)
-
-    numberValid([contentId, conflictedAspect, conflictedKeypoint, conflictedMethod])
-
-    let newData = await contentUpdate(contentId, {
-      conflictedAspect,
-      conflictedKeypoint,
-      conflictedMethod,
+    let newData = await contentUpdate(req.body.contentId, {
+      conflictedAspect: req.body.conflictedAspect,
+      conflictedKeypoint: req.body.conflictedKeypoint,
+      conflictedMethod: req.body.conflictedMethod,
       isConflicted: 1,
       reviewerId: req.session.userId,
     })
@@ -73,46 +60,41 @@ router.post('/conflict', async(req, res, next) => {
   }
 })
 
-router.use('/:dataId', (req, res, next) => {
-  let dataId = Number(req.params.dataId)
-  if(typeof dataId === 'number'){
-    res.locals.dataId = dataId
+router.use('/:dataId', async (req, res, next) => {
+  try{
+    let result = await contentAuth({
+      dataId: req.params.dataId,
+      userId: req.session.userId
+    })
+    if(result === 'empty data'){
+      res.redirect('/auth/channel')
+      return
+    }
+
+    if(result === 'as an editor'){
+      res.redirect(`/short-term/data/${req.params.dataId}/edit`)
+      return
+    }
+
+    res.locals.year = result.info.year
+    res.locals.typeId = result.info.typeId
+    res.locals.campusId = result.info.campusId
     next()
   }
-  else{
-    const err = new Error('invalid argument')
-    err.status = 400
+  catch(err){
+    if(typeof err.status !== 'number'){
+      err = new Error('invalid argument')
+      err.status = 400
+    }
     next(err)
   }
 })
 
 router.get('/:dataId/index', async(req, res, next) => {
   try{
-    let dataId = Number(res.locals.dataId)
-
-    let checkData = await Data.findOne({
-      where:{
-        dataId,
-      },
-      attributes: [
-        'dataId',
-        'typeId',
-        'campusId',
-        'year',
-      ],
-    })
-
-    if(checkData === null){
-      res.redirect('/auth/channel')
-      return
-    }
-
-    if(checkData.dataValues.userId === req.session.userId){
-      res.redirect(`/short-term/data/${dataId}/edit`)
-      return
-    }
-    let typeName = campusMap[checkData.typeId].type
-    let campusName = campusMap[checkData.typeId]['campus'][checkData.campusId]
+    
+    let typeName = campusMap[res.locals.typeId].type
+    let campusName = campusMap[res.locals.typeId]['campus'][res.locals.campusId]
 
     res.render('review.pug', {
       breadcrumb: [
@@ -121,20 +103,21 @@ router.get('/:dataId/index', async(req, res, next) => {
           name: '計畫申請書',
         },
         {
-          id: checkData.year,
-          name: checkData.year,
+          id: res.locals.year,
+          name: res.locals.year,
         },
         {
-          id: checkData.typeId,
+          id: res.locals.typeId,
           name: typeName
         },
         {
-          id: checkData.campusId,
+          id: res.locals.campusId,
           name: campusName
         }
       ],
       id: req.session.userId,
       user: res.locals.user,
+      dataId: req.params.dataId,
     })
   }
   catch(err){
@@ -148,38 +131,13 @@ router.get('/:dataId/index', async(req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next) => {
   try{
-    let dataId = Number(res.locals.dataId)
-    let aspect = Number(req.query.aspect);
-    let keypoint = Number(req.query.keypoint);
-    let method = Number(req.query.method);
-
-    let checkData = await Data.findOne({
-      where:{
-        dataId,
-      },
-      attributes: [
-        'dataId',
-        'typeId',
-        'campusId'
-      ],
-    })
-
-    if(checkData === null){
-      res.redirect('/auth/channel')
-      return
-    }
-
-    if(checkData.dataValues.userId === req.session.userId){
-      res.redirect(`/short-term/data/${dataId}/edit`)
-      return
-    }
-
     let data;
-    console.log(dataId)
-    data = await getContent(aspect, keypoint, method, dataId, Number(req.query.isChecked))
+    data = await getContent(req.query.aspect, req.query.keypoint, req.query.method, req.params.dataId, Number(req.query.isChecked))
 
-    if(data === 'empty data')
+    if(data === 'empty data'){
       res.send('')
+      return 
+    }
 
     res.render('mixins/editnodes/review.pug', {
       contents: data,

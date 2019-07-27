@@ -12,11 +12,11 @@
 
 import express from 'express'
 import path from 'path'
-import cookieParser from 'cookie-parser'
-import User from 'auth/models/schemas/user.js'
-import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
+import login from 'auth/models/operations/login.js'
+import getUserInfo from 'auth/models/operations/get-user-info.js'
 import syncSession from 'auth/models/operations/sync-session.js'
+import deleteSession from 'auth/models/operations/delete-session.js'
 
 const app = express()
 
@@ -69,27 +69,15 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
  */
 app.use(async(req, {}, next) => {
   try {
-    /** Parse a cookie value as a signed cookie*/
-    let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
-    /** Check the request session with syncSession*/
-    await syncSession(req, sessionId)
-    /** Pass this request to the next route*/
+    await syncSession(req)
     next()
   }
   catch (err) {
-    /**
-     * Check the error message whether having error status or not.
-     * If the error message contains the status code, representing this error has been identified.
-     * It no need to setup another error status code.
-     * Otherwise, we set its status code to 500.
-     */
-    if(err.status)
-      next(err)
-    else {
+    if(typeof err.status !== 'number'){
       err = new Error('Failed to setup session.')
       err.status = 500
-      next(err)
     }
+    next(err)
   }
 })
 
@@ -113,18 +101,11 @@ app.route('/login')
         res.render('login')
     }
     catch(err){
-    /**
-     * Check the error message whether having error status or not.
-     * If the error message contains the status code, representing this error has been identified.
-     * It no need to setup another error status code.
-     * Otherwise, we set its status code to 500.
-     */
-      if(err.status)
-        next(err)
-      else {
+      if(typeof err.status !== 'number'){
         err = new Error('Failed to GET at route `/auth/login`.')
-        next(err)
+        err.status = 500
       }
+      next(err)
     }
   })
   /**
@@ -135,56 +116,15 @@ app.route('/login')
    */
   .post(async(req, res, next)=>{
     try{
-      /** Find the user whether it has signed up or not*/
-      const data = await User.findOne({
-        where:{
-          account: req.body.username,
-          password: req.body.password,
-        },
-      })
-      /**
-       * If the user is exitsted, create a new session to the database.
-       * It will store three properties
-       * 1. {number} sessionId - A unique hash id to this session
-       * 2. {number} exiration - The time to record how long this session will be expired.
-       * 3. {number} userId - The ID of user
-      */
-      if(data != null){
-        /** Create a session of the user to the database */
-        req.session.userId = data.userId
-        Session.create({
-          sessionId: req.session.id,
-          expiration: Number(req.session.cookie.expires),
-          userId: data.userId,
-        })
-        /** Redirect to /auth/login*/
-        res.redirect('/auth/login')
-      }else{
-        /**
-         * Error handling
-         * If there is no username match request,
-         * it will throw a error message with status
-         * code,`401`
-        */
-        const err = new Error(`No account matched ${req.body.username}.`)
-        err.status = 401
-        throw err
-      }
+      await login(req)
+      res.redirect('/auth/login')
     }
     catch(err){
-    /**
-     * Check the error message whether having error status or not.
-     * If the error message contains the status code, representing this error has been identified.
-     * It no need to setup another error status code.
-     * Otherwise, we set its status code to `400`.
-     */
-      if(err.status)
-        next(err)
-      else {
+      if(typeof err.status !== 'number'){
         err = new Error('Failed to perform POST at route `/auth/login`')
-        err.status = 400
-        next(err)
+        err.status = 500
       }
+      next(err)
     }
   })
 
@@ -204,13 +144,8 @@ app.get('/channel', async(req, res, next)=> {
      * Otherwise, Redirect to /auth/channel
      */
     if(req.session && req.session.userId){
-      /**
-       * Find the information of the user by userId
-       */
-      let user = await User.findOne({
-        where:{
-          userId: req.session.userId,
-        },
+      let user = await getUserInfo({
+        userId: req.session.userId,
       })
       /**
        * Render a `channel.pug` back
@@ -221,10 +156,13 @@ app.get('/channel', async(req, res, next)=> {
       })
     }
     else
-      res.redirect('/auth/channel')
+      res.redirect('/auth/login')
   }
   catch (err){
-    /** Pass thie error message to next route */
+    if(typeof err.status !== 'number'){
+      err = new Error('failed to GET at route `/auth/channel`')
+      err.status = 500
+    }
     next(err)
   }
 })
@@ -236,34 +174,16 @@ app.get('/channel', async(req, res, next)=> {
  */
 app.get('/logout', async(req, res, next)=>{
   try {
-    /**
-     * Remove session in the database
-     */
-    await Session.destroy({
-      where: {
-        sessionId: req.session.id,
-      },
-    })
-    /**
-     * remove the session in the request,
-     * then redirect to `/auth/login` route.
-     */
-    req.session.destroy()
+    // remove session and remove the login record in the database
+    await deleteSession(req)
+
     res.redirect('/auth/login')
   } catch (err) {
-    /**
-     * Check the error message whether having error status or not.
-     * If the error message contains the status code, representing this error has been identified.
-     * It no need to setup another error status code.
-     * Otherwise, we set its status code to `500`.
-     */
-    if(err.status)
-      next(err)
-    else {
+    if(typeof err.status !== 'number'){
       err = new Error('Failed to GET at route `/auth/logout`.')
       err.status = 500
-      next(err)
     }
+    next(err)
   }
 })
 app.use(({}, {}, next)=>{
@@ -281,8 +201,10 @@ app.use(({}, {}, next)=>{
  * @param {callback} middleware - Express middleware
  */
 app.use((err, {}, res, {})=>{
-  // render the error page
-  res.render('error', err)
+  res.render('error', {
+    message: err.message,
+    status: err.status,
+  })
 })
 
 

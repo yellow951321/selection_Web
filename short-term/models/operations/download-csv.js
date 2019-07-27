@@ -19,24 +19,30 @@ import uniqueFilename from 'unique-filename'
 import {createObjectCsvWriter, } from 'csv-writer'
 // import Content module
 import Content from 'short-term/models/schemas/Content.js'
-// import the label module
+import Data from 'short-term/models/schemas/Data.js'
 import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
-export default async(dataId) => {
+export default async(info) => {
   try{
-    // declare a temp path for the file needed to be downloaded
-    let tmpDir = '/tmp/selection_Web'
-    /*
-    check the path of tmpDir is existed or not
-    If it is not existed, create a directory for it.
-    */
-    if(!fs.existsSync(tmpDir))
-      fs.mkdirSync(tmpDir)
-    /*
-    create a unique filename with the given path
-     */
-    let filePath = uniqueFilename(tmpDir)
-    // setup csvWriter
+    info.dataId = Number(info.dataId)
+    if(Number.isNaN(info.dataId)){
+      const err = new Error('dataId is NaN')
+      err.status = 400
+      throw err
+    }
+    let tmpDir, filePath
+    try{
+      tmpDir = '/tmp/selection_Web'
+      if(!fs.existsSync(tmpDir))
+        fs.mkdirSync(tmpDir)
+    
+      filePath = uniqueFilename(tmpDir)
+    }catch(err){
+      err = new Error('create file failed')
+      err.status = 507
+      throw err
+    }
+
     const csvWriter = createObjectCsvWriter({
       // define the destination to be store
       path: filePath,
@@ -58,33 +64,34 @@ export default async(dataId) => {
     })
     // an array to store the content
     let outputObject = []
-    // find the all content by given the dataId
-    let data = await Content.findAll({
-      where: {
-        dataId,
-      },
-      attributes:[
-        'pageFrom',
-        'pageTo',
-        'contentId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'content',
-        'summary',
-        'note',
-        'aspect',
-        'keypoint',
-        'method',
-      ],
-    })
-      .then(data => {
-        if(data == null)
-          return []
-        return data.map(val => val.dataValues)
+    let data
+
+    try{
+      data = await Content.findAll({
+        where: {
+          dataId,
+        },
+        attributes:[
+          'pageFrom',
+          'pageTo',
+          'contentId',
+          'title1',
+          'title2',
+          'title3',
+          'title4',
+          'content',
+          'summary',
+          'note',
+          'aspect',
+          'keypoint',
+          'method',
+        ],
       })
-      .catch(err => {throw err})
+    }catch(err){
+      err = new Error('data fetch failed')
+      err.status = 500
+      throw err
+    }
 
     /*
       Rearrange the structure of the content into desired structure
@@ -109,10 +116,36 @@ export default async(dataId) => {
         note: val.note,
       })
     }
-    // write the content to the pre-set path
-    await csvWriter.writeRecords(outputObject)
-    // return the file path of the desired data
-    return filePath
+
+    try{
+      await csvWriter.writeRecords(outputObject)
+    }catch(err){
+      err = new Error('create Csv file failed')
+      err.status = 500
+      throw err
+    }
+
+    try{
+      data = await Data.findOne({
+        where: {
+          dataId: info.dataId,
+        },
+        attribute: [
+          'year',
+          'campusId',
+          'typeId',
+        ],
+      })
+    }catch(err){
+      err = new Error('data featch failed')
+      err.status = 500
+      throw err
+    }
+
+    return {
+      filePath: filePath,
+      data: data,
+    }
 
   }catch(err){
     // error handling

@@ -1,5 +1,4 @@
 import express from 'express'
-
 import getAllYear from 'short-term/models/operations/get-all-year.js'
 const router = express.Router({
   // case sensitive for route path
@@ -12,11 +11,8 @@ const router = express.Router({
 
 router.get('/index', async(req, res, next)=>{
   try{
-    const data = await getAllYear()
-    let years = []
-    data.forEach(d => {
-      years.push(d.year)
-    })
+    const years = await getAllYear()
+
     res.render('year', {
       breadcrumb: [
         {

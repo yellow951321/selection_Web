@@ -17,38 +17,52 @@ export default async(dataId, userId) => {
     userId = Number(userId)
     // check the dataId is isNaN or not
     if(Number.isNaN(dataId)){
-      const err = new Error('invalid dataId')
+      const err = new Error('dataId is NaN')
       err.status = 400
       throw err
     }
-    // find the data needed to be deleted
-    let data = await Data.findOne({
-      where: {
-        dataId: dataId,
-      },
-      attribute: [
-        'userId',
-      ],
-    })
-    /*
-    Check whether the userId of data is identical to the userId or not.
-    It is only permitted when the user owns the data
-    */
+    if(Number.isNaN(userId)){
+      const err = new Error('userId is NaN')
+      err.status = 400
+      throw err
+    }
+    let data, output
+    try{
+      data = await Data.findOne({
+        where: {
+          dataId: dataId,
+        },
+        attribute: [
+          'userId',
+        ],
+      })
+    }catch(err){
+      err = new new Error('data fetch failed.')
+      err.status = 500
+    }
+
+    if(data === null){
+      const err = new Error('No specified dataId')
+      err.status = 400
+      throw err
+    }
     if(data.userId !== userId){
       const err = new Error('Unauthorized')
       err.status = 401
       throw err
     }
-    /*
-    if the userId is identical to the data.userId,
-    delete the data. WARNING : there is no remedy
-    to recover the data back
-    */
-    let output = await Data.destroy({
-      where: {
-        dataId: dataId,
-      },
-    })
+
+    try{
+      output = await Data.destroy({
+        where: {
+          dataId: dataId,
+        },
+      })
+    }
+    catch(err){
+      err = new new Error('data delete failed.')
+      err.status = 500
+    }
     return output
   }catch (err) {
     // error handling

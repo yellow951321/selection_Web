@@ -1,4 +1,4 @@
-import Content from 'projectRoot/short-term/models/schemas/Content.js'
+import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
 
 export default async(info) => {
   try{

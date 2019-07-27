@@ -2,37 +2,70 @@ import Data from 'mid-long-term/models/schemas/Data.js'
 
 export default async(info={}) =>{
   try{
-    const campusId = Number(info.campusId)
-    const typeId = Number(info.typeId)
-    const userId = Number(info.userId)
-    const yearFrom = Number(info.yearFrom)
-    const yearTo = Number(info.yearTo)
+    info.campusId = Number(info.campusId)
+    info.typeId = Number(info.typeId)
+    info.userId = Number(info.userId)
+    info.yearFrom = Number(info.yearFrom)
+    info.yearTo = Number(info.yearTo)
 
-    if(Number.isNaN(campusId) || Number.isNaN(typeId) || Number.isNaN(userId) || Number.isNaN(yearFrom) || Number.isNaN(yearTo)) {
-      const err = new Error('Invalid arguments in data-create.')
+    if(Number.isNaN(info.campusId)){
+      const err = new Error('campusId is NaN')
       err.status = 400
       throw err
     }
-
-
-    const campus = await Data.findOne({
-      where:{
-        campusId: info.campusId,
-        typeId: info.typeId,
-        yearFrom: info.yearFrom,
-        yearTo: info.yearTo,
-      },
-    })
-
-    if(campus === null){
-      Data.create({
-        campusId,
-        typeId,
-        userId,
-        yearFrom,
-        yearTo,
-      })
+    if(Number.isNaN(info.typeId)){
+      const err = new Error('typeId is NaN')
+      err.status = 400
+      throw err
     }
+    if(Number.isNaN(info.userId)){
+      const err = new Error('userId is NaN')
+      err.status = 400
+      throw err
+    }
+    if(Number.isNaN(info.yearFrom)){
+      const err = new Error('yearFrom is NaN')
+      err.status = 400
+      throw err
+    }
+    if(Number.isNaN(info.yearTo)){
+      const err = new Error('yearTo is NaN')
+      err.status = 400
+      throw err
+    }
+    let campus, result
+    try{
+      campus = await Data.findOne({
+        where:{
+          campusId: info.campusId,
+          typeId: info.typeId,
+          yearFrom: info.yearFrom,
+          yearTo: info.yearTo,
+        },
+      })
+    }catch(err){
+      err = new Error('data fetch fail')
+      err.status = 500
+      throw err
+    }
+
+    try{
+      if(campus === null){
+        result = await Data.create({
+          campusId: info.campusId,
+          typeId: info.typeId,
+          userId: info.userId,
+          yearFrom: info.yearFrom,
+          yearTo: info.yearTo,
+        })
+      }
+    }catch(err){
+      err = new Error('data create fail')
+      err.status = 500
+      throw err
+    }
+
+    return result
   }catch(err) {
     if(!err.status){
       err = new Error('Failed to create data.')

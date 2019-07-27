@@ -320,8 +320,8 @@ class Filter{
 
       const message = that.pageMessage.querySelector('.message')
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode
-      const startPage = editNode.querySelector('.page__start').value
-      const endPage = editNode.querySelector('.page__end').value
+      const pageFrom = editNode.querySelector('.page__start').value
+      const pageTo = editNode.querySelector('.page__end').value
       const title1 = editNode.querySelector('.title1').value
       const title2 = editNode.querySelector('.title2').value
       const title3 = editNode.querySelector('.title3').value
@@ -333,10 +333,8 @@ class Filter{
       fetch('/mid-long-term/content/save', {
         method: 'POST',
         body: JSON.stringify({
-          page: {
-            start: startPage,
-            end: endPage,
-          },
+          pageFrom,
+          pageTo,
           contentId,
           title1,
           title2,
