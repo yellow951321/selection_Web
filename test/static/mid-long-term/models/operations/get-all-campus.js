@@ -25,13 +25,12 @@ describe('chai test', () => {
                 }]
             })
 
-            let output = await getAllCampus(0)
+            let output = await getAllCampus({typeId: 0})
 
             expect(output).to.be.an('object')
             expect(output).to.have.property('campuses')
             expect(output).to.have.property('typeName')
             expect(dbStub).to.have.been.calledOnce
-
             dbStub.restore();
         })
 
@@ -45,10 +44,11 @@ describe('chai test', () => {
                     }
                 }]
             })
-            getAllCampus(null).catch((err)=>{
+            try{
+                await getAllCampus(null)
+            }catch(err){
                 expect(err).to.have.property('status').to.equals(500)
-            })
-
+            }
             dbStub.restore();
         })
     })
