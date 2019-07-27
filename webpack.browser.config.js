@@ -56,7 +56,6 @@ const authJsDistRoot = path.join(config.projectRoot, 'auth/public/javascripts')
 const authJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: {
     'login': path.join(authJsSrcRoot, 'login.js'),
-    'signup': path.join(authJsSrcRoot, 'signup.js'),
   },
   output: {
     path: authJsDistRoot,
@@ -158,7 +157,6 @@ const authCssDistRoot = path.join(config.projectRoot, 'auth/public/stylesheets')
 const authCssConfig = Object.assign({}, webpackCssConfigTemplate, {
   entry: {
     'login':   path.join(authCssSrcRoot, 'login.scss'),
-    'signup':  path.join(authCssSrcRoot, 'signup.scss'),
     'channel': path.join(authCssSrcRoot, 'channel.scss'),
     'unauthor': path.join(authCssSrcRoot, 'unauthor.scss'),
   },
