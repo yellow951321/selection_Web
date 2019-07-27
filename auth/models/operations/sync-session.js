@@ -2,13 +2,13 @@ import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
 import cookieParser from 'cookie-parser'
 
-export default async(req) => {
+export default async(info) => {
   try{
-    let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
+    let sessionId = cookieParser.signedCookies(info.cookies, config.server.secret)['sekiro']
     // sessionId will be reset after restarting server
     // we need to update session after every connection
 
-    if(sessionId !== req.session.id){
+    if(sessionId !== info.sessionId){
       let data
       try{
         data = await Session.findOne({
@@ -25,17 +25,22 @@ export default async(req) => {
         err.status = 500
         throw err
       }
-
       try{
         if(data !== null){
           if(Number(data.expiration) > Date.now()){
-            req.session.userId = data.userId
             await data.update({
-              sessionId: req.session.id,
+              sessionId: info.sessionId,
             })
+            return {
+              message: 'sync success',
+              userId: data.userId,
+            }
           }
           else{
             await data.destroy()
+            return {
+              message: 'session expired',
+            }
           }
         }
       }catch(err){
@@ -43,6 +48,9 @@ export default async(req) => {
         err.status = 500
         throw err
       }
+    }
+    return {
+      message: 'do not have session on the server',
     }
   }catch(err) {
     if(typeof err.status !== 'number'){

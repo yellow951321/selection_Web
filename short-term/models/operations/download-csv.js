@@ -7,6 +7,12 @@ import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mappi
 
 export default async(info) => {
   try{
+    if(typeof info !== 'object'){
+      let err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     info.dataId = Number(info.dataId)
     if(Number.isNaN(info.dataId)){
       const err = new Error('dataId is NaN')
@@ -50,7 +56,7 @@ export default async(info) => {
     try{
       data = await Content.findAll({
         where: {
-          dataId,
+          dataId: info.dataId,
         },
         attributes:[
           'pageFrom',

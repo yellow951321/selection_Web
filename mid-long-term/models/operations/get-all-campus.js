@@ -4,6 +4,12 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 export default async(info) => {
   try{
+    if(typeof info !== 'object'){
+      let err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     info.typeId = Number(info.typeId)
     if(Number.isNaN(info.typeId)){
       const err = new Error('typeId is NaN.')

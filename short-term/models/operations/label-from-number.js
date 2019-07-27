@@ -5,6 +5,12 @@ export default async(data) => {
   try{
     let inputIsNotArray = false
     if(!Array.isArray(data)){
+      if(typeof data !== 'object'){
+        let err = new Error('invalid data argument')
+        err.status = 400
+        throw err
+      }
+
       data = [ data, ]
       inputIsNotArray = true
     }

@@ -1,14 +1,20 @@
 import User from 'auth/models/schemas/user.js'
 import Session from 'auth/models/schemas/session.js'
 
-export default async(req) =>{
+export default async(info) =>{
   try{
+    if(typeof info !== 'object'){
+      let err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     let data
     try{
       data = await User.findOne({
         where:{
-          account: req.body.username,
-          password: req.body.password,
+          account: info.account,
+          password: info.password,
         },
       })
     }catch(err){
@@ -17,23 +23,31 @@ export default async(req) =>{
       throw err
     }
     if(data != null){
-      req.session.userId = data.userId
+      info.expiration = Number(info.expiration)
 
+      if(Number.isNaN(info.expiration)){
+        let err = new Error('expiration is NaN')
+        err.status = 400
+        throw err
+      }
       try{
         Session.create({
-          sessionId: req.session.id,
-          expiration: Number(req.session.cookie.expires),
+          sessionId: info.sessionId,
+          expiration: info.expiration,
           userId: data.userId,
-        })       
+        })
       }catch(err){
         err = new Error('session create failed')
         err.status = 500
         throw err
       }
     }else{
-      let err = new Error(`No account matched ${req.body.username}.`)
+      let err = new Error(`No account matched ${info.account}.`)
       err.status = 401
       throw err
+    }
+    return {
+      userId : data.userId,
     }
   }catch(err){
     if(typeof err.status !== 'number'){

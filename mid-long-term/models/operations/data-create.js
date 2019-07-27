@@ -2,6 +2,12 @@ import Data from 'mid-long-term/models/schemas/Data.js'
 
 export default async(info={}) =>{
   try{
+    if(typeof info !== 'object'){
+      let err = new Error('invalid argument')
+      err.status = 400
+      throw err
+    }
+
     info.campusId = Number(info.campusId)
     info.typeId = Number(info.typeId)
     info.userId = Number(info.userId)
