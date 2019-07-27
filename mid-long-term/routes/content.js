@@ -140,18 +140,9 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     let keypoint = Number(req.query.keypoint);
     let method = Number(req.query.method);
 
-<<<<<<< HEAD
-    if(Number.isNaN(aspect)){
-      const err = new Error('invalid argument');
-      err.status = 400
-      throw err
-    }
-    let data = await getContent(aspect, keypoint, method, res.locals.dataId, req.query.isChecked, 0)
-=======
     numberValid([aspect])
 
     let data = await getContent(aspect, keypoint, method, res.locals.dataId, -1, 0)
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
 
     if(data.length === 0 || typeof data === 'null'){
       res.send('')
@@ -178,7 +169,7 @@ router.route('/:dataId/check')
 .get(async(req, res, next) => {
   try{
     let dataId = Number(res.locals.dataId)
-    
+
     numberValid([dataId])
 
     let data = await getContent(-1, -1, -1, res.locals.dataId, 0, 1)
@@ -202,7 +193,7 @@ router.route('/:dataId/check')
 .post(async(req, res) => {
   try{
     let contentId = Number(req.body.contentId)
-   
+
     numberValid([contentId])
 
     let savedData = await contentUpdate(contentId,{

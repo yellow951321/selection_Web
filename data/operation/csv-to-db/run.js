@@ -1,6 +1,8 @@
 import uploadToSinica from 'projectRoot/data/operation/csv-to-db/csv-to-database.js'
 import fs from 'fs'
 import checkData from 'projectRoot/data/operation/csv-to-db/check-data.js'
+import validData from 'projectRoot/data/operation/csv-to-db/data-valid.js'
+import upload2db from 'projectRoot/data/operation/csv-to-db/upload-to-db.js'
 
 const root_dir = '/home/nober/git/selection_Web/data/operation/csv-to-db/'
 
@@ -15,30 +17,43 @@ const main = async (child_dir) => {
   })
   console.log(dirNames)
 
-  // const finalResult = await Promise.all( dirNames.map( async (fName) => {
-  //   return checkData(fName, root_dir + child_dir, 'shortTerm')
-  // }))
-
-  // const totalWrongAspect = finalResult.map(d => d.wrongAspect).reduce( (acc, cur) => {
-  //   return acc + cur
-  // }, 0)
-
-  // const totalEmptyPage = finalResult.map( d => d.emptyPage).reduceRight((acc, cur) => {
-  //   return acc + cur
-  // }, 0)
-
-  const finalResult = await Promise.all( dirNames.map( async (fName) => {
-    return uploadToSinica(fName, root_dir + child_dir, 'shortTerm')
+  /**
+   * check data
+   */
+  let finalResult = await Promise.all( dirNames.map( async (fName) => {
+    return checkData(fName, root_dir + child_dir, 'shortTerm')
   }))
 
-  fs.writeFile('error-data.json', JSON.stringify(finalResult, null, 2 ), (err)=> {
-    if(err)
-      console.log(err)
-      console.log('OK')
-  })
+  /**
+   * valid data
+   */
+  finalResult = await Promise.all( finalResult.map( ({result, wrongResult}) => {
+    result = result.filter( (data) => {
+      if( validData({
+            aspect : data.data['構面'],
+            keypoint : data.data['推動重點'],
+            method : data.data['作法']
+          })
+      ) return true
+      else {
+        wrongResult.push(data)
+        return false
+      }
+    })
 
+    fs.writeFileSync(`${root_dir}error-data/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
+    return {
+      result, wrongResult
+    }
+  }))
+
+  await Promise.all( finalResult.map( async ({result, wrongResult}) => {
+    await upload2db(result, 'shortTerm')
+    fs.writeFileSync(`${root_dir}error-data/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
+    console.log(`${result[0].campus} upload finished`)
+  }))
 
 }
 
 
-main('csv-data/missing-csv-data/')
+main('csv-data/csv-data.4_unicode/')

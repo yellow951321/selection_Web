@@ -19,22 +19,10 @@ import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import dataSave from 'projectRoot/short-term/models/operations/data-save.js'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
-<<<<<<< HEAD
-
-/**
- * Express route class
- * @name content/Router
- * @function router
- * @param {object} [options] - The custimized setting of Router()
- * @inner
- * @see https://expressjs.com/
- */
-=======
 import numberValid from 'projectRoot/lib/static/javascripts/number-valid.js'
 import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
 import contentDelete from 'projectRoot/short-term/models/operations/content-delete.js'
 
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -53,20 +41,7 @@ const router = express.Router({
  */
 router.post('/save', async(req, res, next)=>{
   try{
-<<<<<<< HEAD
-    /**
-     *
-     */
-    let contentId = Number(req.body.contentId)
-    if(Number.isNaN(contentId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-    let savedContent = await dataSave({
-=======
     await dataSave({
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
       userId: req.session.userId,
       content: req.body.content,
       summary: req.body.summary,
