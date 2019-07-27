@@ -5,6 +5,12 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 const Op = Sequelize.Op
 
 async function getCampusDetail(data) {
+  if(typeof data !== 'object'){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+
   const [
     user,
     numUnchecked,

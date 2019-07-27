@@ -1,11 +1,11 @@
 import Session from 'auth/models/schemas/session.js'
 
-export default async(req) => {
+export default async(info) => {
   try{
     try{
       await Session.destroy({
         where: {
-          sessionId: req.session.id,
+          sessionId: info.sessionId,
         },
       })
     }catch(err){
@@ -13,7 +13,6 @@ export default async(req) => {
       err.status = 500
       throw err
     }
-    req.session.destroy()
   }catch(err){
     if(typeof err.status !== 'number'){
       err = new Error('delete-session failed')

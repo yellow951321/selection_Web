@@ -46,7 +46,13 @@ app.use('/public', express.static(`${config.projectRoot}/auth/public`, {
 // automatically login
 app.use(async(req, {}, next) => {
   try {
-    await syncSession(req)
+    let result = await syncSession({
+      cookies: req.cookies,
+      sessionId: req.session.id,
+    })
+    if(result.message === 'sync success'){
+      req.session.userId = result.userId
+    }
     next()
   }
   catch (err) {
@@ -76,7 +82,13 @@ app.route('/login')
   })
   .post(async(req, res, next)=>{
     try{
-      await login(req)
+      let result = await login({
+        account: req.body.username,
+        password: req.body.password,
+        sessionId: req.session.id,
+        expiration: req.session.cookie.expires,
+      })
+      req.session.userId = result.userId
       res.redirect('/auth/login')
     }
     catch(err){
@@ -113,7 +125,10 @@ app.get('/channel', async(req, res, next)=> {
 app.get('/logout', async(req, res, next)=>{
   try {
     // remove session and remove the login record in the database
-    await deleteSession(req)
+    await deleteSession({
+      sessionId: req.session.id,
+    })
+    req.session.destroy()
 
     res.redirect('/auth/login')
   } catch (err) {

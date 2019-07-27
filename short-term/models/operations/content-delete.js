@@ -30,7 +30,7 @@ export default async(info)=>{
     return result
   }
   catch(err){
-    if(Number.isNaN(err.status)){
+    if(typeof err.status !== 'number'){
       err = new Error('content-delete.js failed')
       err.status = 500
     }
