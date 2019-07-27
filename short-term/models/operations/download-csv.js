@@ -56,7 +56,7 @@ export default async(info) => {
     try{
       data = await Content.findAll({
         where: {
-          dataId,
+          dataId: info.dataId,
         },
         attributes:[
           'pageFrom',

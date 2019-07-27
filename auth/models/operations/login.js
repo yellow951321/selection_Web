@@ -42,7 +42,7 @@ export default async(info) =>{
         throw err
       }
     }else{
-      let err = new Error(`No account matched ${req.body.username}.`)
+      let err = new Error(`No account matched ${info.account}.`)
       err.status = 401
       throw err
     }

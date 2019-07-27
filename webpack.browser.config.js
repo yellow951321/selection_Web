@@ -56,7 +56,6 @@ const authJsDistRoot = path.join(config.projectRoot, 'auth/public/javascripts')
 const authJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: {
     'login': path.join(authJsSrcRoot, 'login.js'),
-    'signup': path.join(authJsSrcRoot, 'signup.js'),
   },
   output: {
     path: authJsDistRoot,

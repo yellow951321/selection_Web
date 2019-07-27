@@ -88,7 +88,7 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
     ],
   })
 
-  if(data.length === 0 || typeof data === 'null'){
+  if(data === null || data.length === 0){
     return 'empty data'
   }
 
