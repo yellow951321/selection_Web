@@ -11,7 +11,7 @@ mixin renderCampus(obj)
             a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/review/${obj.dataId}/index`) 檢閱
           a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/download/${obj.dataId}/index`) 下載
           button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
-      .ui.row.userTimeRow
+      .ui.row.user-time-row
         p.userTime
           span= `編輯者: ${obj.user.name}`
           br

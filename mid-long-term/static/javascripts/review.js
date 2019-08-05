@@ -45,7 +45,7 @@ class Filter{
   }
 
   static chooseMode(that){
-    return (event) => {
+    return () => {
       const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value
       switch (mode){
       case 'view':
