@@ -1,5 +1,5 @@
 import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
-const Sequelize = require('sequelize')
+import Sequelize from 'sequelize'
 
 // todo require('./Data)
 

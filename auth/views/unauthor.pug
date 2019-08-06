@@ -1,0 +1,13 @@
+extends mixins/layout
+
+//- css
+append head
+  +authCss('unauthor')
+
+append content
+  section#title 您沒有此權限
+
+  #type-select.ui.middle.aligned.center.aligned.grid.container
+    .two.column.row
+      .column
+        a.blue.square-box(href=`${GLOBAL.config.server.host}/auth/channel`) 返回首頁

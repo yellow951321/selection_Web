@@ -77,3 +77,4 @@ short-term/public/*
 webpack.transfer.config.js
 
 key/*
+.well-known/*

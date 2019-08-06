@@ -38,8 +38,11 @@ router.post('/add', async(req, res, next)=>{
 
 router.post('/delete', async(req, res, next)=>{
   try{
-    await dataDelete(req.body.dataId, req.session.userId)
-    res.redirect('/mid-long-term/index')
+    const result = await dataDelete(req.body.dataId, req.session.userId)
+    if(result === 'Unauthorized')
+      res.redirect('/auth/unauthor')
+    else
+      res.redirect('/mid-long-term/index')
   } catch (err) {
     if(!err.status){
       err = new Error('fail to delete data')

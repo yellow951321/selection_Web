@@ -140,6 +140,15 @@ app.get('/logout', async(req, res, next)=>{
   }
 })
 
+app.get('/unauthor', async(req, res, next)=> {
+  try {
+    res.render('unauthor')
+  }
+  catch (err){
+    next(err)
+  }
+})
+
 app.use(({}, {}, next)=>{
   const err = new Error('Page not found.')
   err.status = 404

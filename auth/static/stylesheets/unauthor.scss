@@ -1,0 +1,40 @@
+@import 'lib/static/stylesheets/layout';
+@import 'component/style';
+@import 'component/manage';
+
+#title {
+  margin-top: 50px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.box-container {
+  margin-top: 1em;
+  font-size: 8px;
+}
+
+.square-box {
+  box-sizing: border-box;
+  font-size: 2em;
+  width: 11em;
+  height: auto;
+  display: inline-block;
+  margin: 2em 0.2em 0 0.2em;
+  border-radius: 0.2em;
+  padding: 2em 0 2em 0;
+  text-align: center;
+  border: 0.2em solid transparent;
+  color: #ddd;
+
+}
+
+.blue {
+  background:#26ADE4;
+}
+
+.lastModified {
+  position: relative;
+  bottom: 2px;
+  right: 2px;
+  font-size: 1rem;
+}

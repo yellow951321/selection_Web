@@ -3,7 +3,7 @@ import User from 'auth/models/schemas/user.js'
 export default async(info) => {
   try{
     info.userId = Number(info.userId)
-        
+
     if(Number.isNaN(info.userId)){
       let err = new Error('userId is NaN')
       err.status = 400

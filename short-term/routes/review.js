@@ -92,7 +92,7 @@ router.use('/:dataId', async (req, res, next) => {
 
 router.get('/:dataId/index', async(req, res, next) => {
   try{
-    
+
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId]['campus'][res.locals.campusId]
 
@@ -136,7 +136,7 @@ router.get('/:dataId/filter', async(req, res, next) => {
 
     if(data === 'empty data'){
       res.send('')
-      return 
+      return
     }
 
     res.render('mixins/editnodes/review.pug', {

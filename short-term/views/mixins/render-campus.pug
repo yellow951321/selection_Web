@@ -1,17 +1,17 @@
-mixin renderYear(obj)
-  form.rectangle-box.year(action=`${GLOBAL.config.server.host}/mid-long-term/data/delete`, method='POST')
+mixin renderCampus(obj)
+  form.rectangle-box.year(action=`${GLOBAL.config.server.host}/short-term/data/delete`, method='POST')
     .ui.segment.center.aligned.grid
-      .ui.two.column.row
-        h3.column.yearHeader= obj.yearTo
+      .ui.row
+        h3.column.yearHeader= obj.campusName
       .ui.row
         .sixteen.wide.column
           if obj.user.id == id
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/data/${obj.dataId}/edit`) 編輯
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/data/${obj.dataId}/edit`) 編輯
           else
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/review/${obj.dataId}/index`) 檢閱
-          a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/download/${obj.dataId}/index`) 下載
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/review/${obj.dataId}/index`) 檢閱
+          a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/download/${obj.dataId}/index`) 下載
           button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
-      .ui.row.userTimeRow
+      .ui.row.user-time-row
         p.userTime
           span= `編輯者: ${obj.user.name}`
           br
@@ -40,4 +40,3 @@ mixin renderYear(obj)
               .bar
                 .progress
               .label 尚未確認
-
