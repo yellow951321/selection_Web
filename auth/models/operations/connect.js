@@ -1,29 +1,39 @@
 /**
- * @file Define the connection between client and the database server.
+ * @file Define the connection between the clients and the database server.
  */
 
 import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
 
-// The defined const Sequelize Object
+/**
+ * The new instance of Class `Sequelize`, which account information is defined in `config.js`
+ */
 const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.database.password}`, {
-  // Custom host
+  /** Custom host */
   host: `${config.database.host}`,
-  // Custom port
+  /**
+   * Custom port defined in `config.js`
+   */
   port: config.database.port,
-  // The sql dialect of the dtabase
+  /** The sql dialect of the dtabase */
   dialect: 'mysql',
-  // Disable inserting undefined values as NULL
-  //-default: false
+  /**
+   * Disable inserting undefined values as `NULL`
+   * default: `false`
+   */
   omitNull: true,
-  // a flag for using a native library or not
-  //-default: false
+  /**
+   * A flag for using a native library or not
+   * default: `false`
+   */
   native: true,
-
-  // remove logging
+  /**
+   * Removing logging
+   */
   logging: false,
-
-  // Specify options, which are used when sequelize.define is called.
+  /**
+   * Specify options, which are used when `sequelize.define` is called
+   */
   define:{
     underscored: true,
     charset: 'utf-8',
@@ -33,12 +43,18 @@ const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.
     },
     timestamps: false,
   },
-  // String based operator alias, default value is true which will enable all operators alias
-  // Pass object to limit set of aliased operators or false to disable completely
+  /**
+   * String based operator alias, default value is true which will enable all operators alias
+   * Pass object ot limit set of aliased operators or false to diable completely
+   */
   operatorsAliases: false,
-  // Similar for sync: you can define this to always force sync for models
+  /**
+   * Similar for sync: you can define this to always force sync for models
+   */
   sync: { force: false, },
-  // pool configuration used to pool database connections
+  /**
+   * pool configuration used to pool database connections
+   */
   pool: {
     max: 5,
     min: 0,
@@ -46,7 +62,6 @@ const UserDB = new Sequelize('sinicaUser', `${config.database.user}`, `${config.
     idle: 30000,
   },
 })
-
 
 export default UserDB
 

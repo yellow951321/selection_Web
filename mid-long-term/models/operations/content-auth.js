@@ -1,5 +1,23 @@
+/**
+ * @file Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ */
 import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
 
+/**
+ * @typedef infoObject
+ * @property {string | number} userId,
+ * @property {string | number} dataId
+ */
+
+/**
+ * Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ * @function content-auth
+ * @param {infoObject} info
+ * @returns {string}
+ * @throws `dataId` is `NaN`
+ * @throws `userId` is `NaN`
+ * @throws data fetch failed
+ */
 export default async(info) => {
   try{
     if(typeof info !== 'object'){
@@ -35,6 +53,9 @@ export default async(info) => {
         ],
       })
     }catch(err){
+      /**
+       * Catch the exception occurred in executing `Data.findOne`
+       */
       err = new Error('data fetch failed')
       err.status = 500
       throw err
@@ -46,7 +67,7 @@ export default async(info) => {
     let result = {
       info:{
         typeId: checkData.typeId,
-        campusId: checkData.campusId, 
+        campusId: checkData.campusId,
       },
     }
     if(checkData.userId !== info.userId){
@@ -58,6 +79,10 @@ export default async(info) => {
 
     return result
   }catch(err){
+    /**
+     * Catch the error whatever it is, and it will check
+     * whether this error is identified or not.
+     */
     if(typeof err.status !== 'number'){
       err = new Error('content-auth failed')
       err.status = 500

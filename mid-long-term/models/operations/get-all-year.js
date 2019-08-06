@@ -2,12 +2,20 @@ import {Content, Data, User, } from 'mid-long-term/models/association.js'
 import Sequelize from 'sequelize'
 
 const Op = Sequelize.Op
-
+/**
+ * @typedef {object} campusYearInfo
+ * @property {number} year
+ */
+/**
+ * Return all year data
+ * @function getAllYear
+ * @returns {campusYearInfo[]}
+ * @throws - throw a new Error if it occurred a unknown error
+ */
 async function getYearDetail(data) {
   try{
     data.dataId = Number(data.dataId)
     data.userId = Number(data.userId)
-    
     if(Number.isNaN(data.dataId)){
       const err = new Error('dataId is NaN')
       err.status = 400
@@ -84,12 +92,12 @@ export default async(info={}) => {
     if(Number.isNaN(info.typeId)){
       const err = new Error('typeId is NaN')
       err.status = 400
-      throw err      
+      throw err
     }
     if(Number.isNaN(info.campusId)){
       const err = new Error('campusId is NaN')
       err.status = 400
-      throw err      
+      throw err
     }
 
     let data

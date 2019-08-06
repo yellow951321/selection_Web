@@ -5,6 +5,19 @@ import Content from 'mid-long-term/models/schemas/Content.js'
 import Data from 'mid-long-term/models/schemas/Data.js'
 import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
+
+/**
+ * dump the data to a csv file with the given dataId
+ * @function downloadCsv
+ * @param {number} dataId - The ID of the data
+ * @returns {string} - return the path of the file
+ * @requires fs
+ * @requires uniqueFilename
+ * @requires csv-writer
+ * @requires 'short-term/models/schemas/Content.js'
+ * @requires 'projectRoot/lib/static/javascripts/mapping/label.js'
+ * @
+ */
 export default async(info) => {
   try{
     info.dataId = Number(info.dataId)
@@ -18,7 +31,6 @@ export default async(info) => {
       tmpDir = '/tmp/selection_Web'
       if(!fs.existsSync(tmpDir))
         fs.mkdirSync(tmpDir)
-    
       filePath = uniqueFilename(tmpDir)
     }catch(err){
       err = new Error('create file failed')
@@ -127,6 +139,10 @@ export default async(info) => {
       data: data,
     }
   }catch(err){
+    /**
+     * Catch the error whatever it is, and it will check
+     * whether this error is identified or not.
+     */
     if(typeof err.status !== 'number'){
       err = new Error('Error occurred in mid-long-term/models/operations/download-csv.js')
       err.status = 500
