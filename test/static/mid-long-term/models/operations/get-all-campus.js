@@ -11,11 +11,12 @@ import getAllCampus from 'projectRoot/mid-long-term/models/operations/get-all-ca
 const expect = chai.expect
 const sandbox = sinon.createSandbox();
 
-describe('chai test', () => {
+describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
 
     context('test get-all-campus',()=>{
-        it('should return an object ', async ()=>{
-            let dbStub = sinon.stub(Data, 'findAll').callsFake(()=>{
+        let dbStub
+        beforeEach(()=>{
+            dbStub = sinon.stub(Data, 'findAll').callsFake(()=>{
                 return [{
                     campusId: 0,
                     typeId:   0,
@@ -24,33 +25,34 @@ describe('chai test', () => {
                     }
                 }]
             })
-
-            let output = await getAllCampus({typeId: 0})
-
-            expect(output).to.be.an('object')
-            expect(output).to.have.property('campuses')
-            expect(output).to.have.property('typeName')
-            expect(dbStub).to.have.been.calledOnce
+        })
+        afterEach(()=>{
             dbStub.restore();
         })
-
-        it('should throw an error ', async ()=>{
-            let dbStub = sinon.stub(Data, 'findAll').callsFake(()=>{
-                return [{
-                    campusId: 0,
-                    typeId:   0,
-                    content: {
-                        length: 0,
-                    }
-                }]
-            })
+        it('should throw an invalid argument error ', async ()=>{
             try{
                 await getAllCampus(null)
             }catch(err){
-                expect(err).to.have.property('status').to.equals(500)
+                expect(err).to.have.property('status').to.equals(400)
+                expect(err).to.have.property('message').to.equals('invalid argument')
             }
-            dbStub.restore();
+        })
+
+        it('should throw an typeId is NaN. error ', async ()=>{
+            try{
+                await getAllCampus({typeId: null})
+            }catch(err){
+                expect(err).to.have.property('status').to.equals(400)
+                expect(err).to.have.property('message').to.equals('typeId is NaN.')
+            }
+        })
+
+        it('should return an object ', async ()=>{
+            let output = await getAllCampus({typeId: 0})
+            expect(output).to.be.an('object')
+            expect(output).to.have.property('campuses').to.be.a('array')
+            expect(output).to.have.property('typeName').to.be.a('string')
+            expect(dbStub).to.have.been.calledOnce
         })
     })
-
 })

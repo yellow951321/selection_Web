@@ -3,46 +3,46 @@ import Sequelize from 'sequelize'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    const err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+
+  info.typeId = Number(info.typeId)
+  if(Number.isNaN(info.typeId)){
+    const err = new Error('typeId is NaN.')
+    err.status = 400
+    throw err
+  }
+
+  let data
   try{
-    if(typeof info !== 'object'){
-      let err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    info.typeId = Number(info.typeId)
-    if(Number.isNaN(info.typeId)){
-      const err = new Error('typeId is NaN.')
-      err.status = 400
-      throw err
-    }
-
-    let data
-    try{
-      data = await Data.findAll({
-        where:{
-          typeId: info.typeId,
+    data = await Data.findAll({
+      where:{
+        typeId: info.typeId,
+      },
+      attributes: [
+        'campusId',
+        'typeId',
+      ],
+      group: ['campusId', ],
+      include: [
+        {
+          model: Content,
+          as: 'content',
+          attributes: [[Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ], ],
         },
-        attributes: [
-          'campusId',
-          'typeId',
-        ],
-        group: ['campusId', ],
-        include: [
-          {
-            model: Content,
-            as: 'content',
-            attributes: [[Sequelize.fn('max', Sequelize.col('`content`.`updateTime`')), 'lastUpdateTime', ], ],
-          },
 
-        ],
-      })
-    }catch(err){
-      err = new Error('data fetch failed')
-      err.status = 500
-      throw err
-    }
+      ],
+    })
+  }catch(err){
+    err = new Error('data fetch failed')
+    err.status = 500
+    throw err
+  }
 
+  try{
     // transfer data into column campusId only
     data = data.map(data => {
       return {
@@ -57,7 +57,7 @@ export default async(info) => {
       typeName: campusMap[info.typeId].type,
     }
   }catch(err){
-    if(!err.status){
+    if(typeof err.status !== 'number'){
       err = new Error('fail at get-all-campus.js')
       err.status = 500
     }

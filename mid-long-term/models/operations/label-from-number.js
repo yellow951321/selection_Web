@@ -5,8 +5,8 @@ export default async(data) => {
   try{
     let inputIsNotArray = false
     if(!Array.isArray(data)){
-      if(typeof data !== 'object'){
-        let err = new Error('invalid data argument')
+      if(typeof data !== 'object' || data === null){
+        let err = new Error('invalid argument')
         err.status = 400
         throw err
       }
@@ -15,45 +15,45 @@ export default async(data) => {
       inputIsNotArray = true
     }
     data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
+      let temp = data.dataValues === undefined ? {} : data.dataValues
 
-      if(typeof data.contentId === 'number')
+      if(typeof data.contentId === 'number' && !Number.isNaN(data.contentId))
         temp.contentId = data.contentId
       else{
-        let err = new Error('contentID is not a number')
+        let err = new Error('contentId is NaN')
         err.status = 400
       }
-      if(typeof data.aspect === 'number')
+      if(typeof data.aspect === 'number' && !Number.isNaN(data.aspect))
         temp.aspect = data.aspect
       else{
-        let err = new Error('aspect is not a number')
+        let err = new Error('aspect is NaN')
         err.status = 400
       }
-      if(typeof data.keypoint === 'number')
+      if(typeof data.keypoint === 'number' && !Number.isNaN(data.keypoint))
         temp.keypoint = data.keypoint
       else{
-        let err = new Error('keypoint is not a number')
+        let err = new Error('keypoint is NaN')
         err.status = 400
       }
-      if(typeof data.method === 'number')
+      if(typeof data.method === 'number'&& !Number.isNaN(data.method))
         temp.method = data.method
       else{
-        let err = new Error('method is not a number')
+        let err = new Error('method is NaN')
         err.status = 400
       }
       temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method, }).method
       temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, }).keypoint
       temp.aspect = midLongTermFromNumber({aspect: temp.aspect, }).aspect
 
-      if(typeof data.conflictedAspect === 'number'){
+      if(typeof data.conflictedAspect === 'number' && !Number.isNaN(data.conflictedAspect)){
         temp.conflictedAspect = data.conflictedAspect
-        if(typeof data.conflictedKeypoint === 'number')
+        if(typeof data.conflictedKeypoint === 'number' && !Number.isNaN(data.conflictedKeypoint))
           temp.conflictedKeypoint = data.conflictedKeypoint
         else{
           let err = new Error('conflictedKeypoint is not a number')
           err.status = 400
         }
-        if(typeof data.conflictedMethod === 'number')
+        if(typeof data.conflictedMethod === 'number' && !Number.isNaN(data.conflictedMethod))
           temp.conflictedMethod = data.conflictedMethod
         else{
           let err = new Error('conflictedKeypoint is not a number')
@@ -69,6 +69,9 @@ export default async(data) => {
           where: {
             userId: temp.reviewerId,
           },
+          attributes: [
+            'account',
+          ],
         })
           .catch(()=>{
             let err = new Error('fail to fetch reviewerId')
