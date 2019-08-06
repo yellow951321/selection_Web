@@ -16,7 +16,7 @@ router.get('/index', async(req, res, next)=>{
     const typeName = campusMap[res.locals.typeId].type
     const data = await getAllCampus({
       typeId: res.locals.typeId,
-      yearId: res.locals.yearId,
+      year: res.locals.yearId,
     })
     res.render('campus', {
       breadcrumb: [

@@ -2,13 +2,20 @@ import Data from 'short-term/models/schemas/Data.js'
 import typeMap from 'lib/static/javascripts/mapping/campus.js'
 
 export default async() => {
+  let data
   try{
     // find all data with the given userId and year
-    let data = await Data.findAll({
+    data = await Data.findAll({
       attributes: ['typeId', ],
       group: ['typeId', ],
     })
+  }catch(err){
+    err = new Error('data fetch error')
+    err.status = 500
+    throw err
+  }
 
+  try{
     return data.map(d => {
       return {
         name: typeMap[d.typeId].type,
@@ -17,6 +24,8 @@ export default async() => {
     })
   }
   catch(err){
-    throw new Error('Error occur in short-term/models/operations/get-all-type.js')
+    err = new Error('Error occur in short-term/models/operations/get-all-type.js')
+    err.status = 500
+    throw err
   }
 }

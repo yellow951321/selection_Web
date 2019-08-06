@@ -5,12 +5,6 @@ import campusMap from 'lib/static/javascripts/mapping/campus.js'
 const Op = Sequelize.Op
 
 async function getCampusDetail(data) {
-  if(typeof data !== 'object'){
-    let err = new Error('invalid argument')
-    err.status = 400
-    throw err
-  }
-
   const [
     user,
     numUnchecked,
@@ -58,6 +52,7 @@ async function getCampusDetail(data) {
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
   data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
+  data.campusName = campusMap[data.typeId].campus[data.campusId]
 
   return data
 }
@@ -66,16 +61,21 @@ async function getCampusDetail(data) {
 export default async(info={}) => {
   try{
     let typeId = Number(info.typeId)
-    let yearId = Number(info.yearId)
-    if(Number.isNaN(typeId) || Number.isNaN(yearId)){
-      const err = new Error('invalid argument')
+    let year = Number(info.year)
+    if(Number.isNaN(typeId)){
+      const err = new Error('typeId argument')
+      err.status = 400
+      throw err
+    }
+    if(Number.isNaN(year)){
+      const err = new Error('year argument')
       err.status = 400
       throw err
     }
     let data = await Data.findAll({
       where:{
         typeId,
-        year: yearId,
+        year,
       },
       attributes: [
         'dataId',
@@ -95,13 +95,9 @@ export default async(info={}) => {
       }
     })
 
-    data = await Promise.all(data.map(d=>getCampusDetail(d)))
-    data.forEach(c => {
-      c.campusName = campusMap[c.typeId].campus[c.campusId]
-    })
-    return data
+    return Promise.all(data.map(d=>getCampusDetail(d)))
   }catch(err) {
-    if(!err.status){
+    if(typeof err.status !== 'number'){
       err = new Error('Error occurred in get-all-campus.js')
       err.status = 500
     }
