@@ -1,4 +1,4 @@
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {Content, } from 'mid-long-term/models/association.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
 export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflicted=-1) => {
@@ -8,36 +8,43 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
     */
   dataId = Number(dataId)
   aspect = Number(aspect)
+  keypoint = Number(keypoint)
   method = Number(method)
   dataId = Number(dataId)
   isChecked = Number(isChecked)
   isConflicted = Number(isConflicted)
 
   if(Number.isNaN(dataId)){
-    let err = new Error('dataId is NaN')
+    const err = new Error('dataId is NaN')
     err.status = 400
+    throw err
   }
 
   if(Number.isNaN(aspect)){
-    let err = new Error('aspect is NaN')
+    const err = new Error('aspect is NaN')
     err.status = 400
+    throw err
   }
   if(Number.isNaN(keypoint)){
-    let err = new Error('keypoint is NaN')
+    const err = new Error('keypoint is NaN')
     err.status = 400
+    throw err
   }
   if(Number.isNaN(method)){
-    let err = new Error('method is NaN')
+    const err = new Error('method is NaN')
     err.status = 400
+    throw err
   }
-  if(isConflicted !== 1 && isConflicted !== -1 && isConflicted !== 0){
-    let err = new Error('isConflicted is not a valid option')
+  if(isChecked !== 1 && isChecked !== -1 && isChecked !== 0){
+    const err = new Error('isChecked is not a valid option')
     err.status = 400
+    throw err
   }
 
-  if(isChecked !== 1 && isChecked !== -1 && isChecked !== 0){
-    let err = new Error('isChecked is not a valid option')
+  if(isConflicted !== 1 && isConflicted !== -1 && isConflicted !== 0){
+    const err = new Error('isConflicted is not a valid option')
     err.status = 400
+    throw err
   }
 
   let whereCondition = {

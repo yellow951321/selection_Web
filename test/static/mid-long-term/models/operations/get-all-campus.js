@@ -2,13 +2,14 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {Data, Content, } from 'mid-long-term/models/association.js'
+import {Data, } from 'mid-long-term/models/association.js'
 chai.use(chaiAsPromised)
 chai.use(sinonChai)
 
 import getAllCampus from 'projectRoot/mid-long-term/models/operations/get-all-campus.js'
 
 const expect = chai.expect
+const should = chai.should()
 const sandbox = sinon.createSandbox();
 
 describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
@@ -32,18 +33,20 @@ describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
         it('should throw an invalid argument error ', async ()=>{
             try{
                 await getAllCampus(null)
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('invalid argument')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('invalid argument')
             }
         })
 
         it('should throw an typeId is NaN. error ', async ()=>{
             try{
-                await getAllCampus({typeId: null})
+                await getAllCampus({typeId: undefined})
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('typeId is NaN.')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('typeId is NaN.')
             }
         })
 

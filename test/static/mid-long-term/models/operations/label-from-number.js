@@ -1,14 +1,17 @@
 import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-chai.use(sinonChai) 
+chai.use(chaiAsPromised)
+chai.use(sinonChai)
 
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
+import {User, } from 'mid-long-term/models/association.js'
 
 const expect = chai.expect
+const should = chai.should()
 
-describe('test mid-long-term/models/operations/label-from-number.js', () => {
+describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
 
     context('test labelFromNumber',()=>{
         let mappingStub, dbStub
@@ -32,54 +35,83 @@ describe('test mid-long-term/models/operations/label-from-number.js', () => {
             labelFromNumber.__ResetDependency__('midLongTermFromNumber')
             dbStub.restore()
         })
-        it('should throw an invalid argument error ', async ()=>{
+        it('should throw a invalid argument error ', async ()=>{
             try{
                 await labelFromNumber(null)
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('invalid argument')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('invalid argument')
             }
-            dbStub.restore();
         })
-        it('should throw an contentID is NaN error ', async ()=>{
+        it('should throw a contentID is NaN error ', async ()=>{
             try{
                 await labelFromNumber({contentId: NaN})
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('contentId is NaN')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('contentId is NaN')
             }
-            dbStub.restore();
         })
-        it('should throw an aspect is NaN error ', async ()=>{
+        it('should throw a aspect is NaN error ', async ()=>{
             try{
-                await labelFromNumber({aspect: NaN})
+                await labelFromNumber({contentId:0, aspect: NaN})
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('aspect is NaN')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('aspect is NaN')
             }
-            dbStub.restore();
         })
-        it('should throw an keypoint is NaN error ', async ()=>{
+        it('should throw a keypoint is NaN error ', async ()=>{
             try{
-                await labelFromNumber({keypoint: NaN})
+                await labelFromNumber({contentId:0, aspect:0, keypoint: NaN})
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('keypoint is NaN')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('keypoint is NaN')
             }
-            dbStub.restore();
         })
-        it('should throw an method is NaN error ', async ()=>{
+        it('should throw a method is NaN error ', async ()=>{
             try{
-                await labelFromNumber({method: NaN})
+                await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: NaN})
+                should.fail('should not get here')
             }catch(err){
-                expect(err).to.have.property('status').to.equals(400)
-                expect(err).to.have.property('message').to.equals('method is NaN')
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('method is NaN')
             }
+        })
+        it('should throw a conflictedKeypoint is NaN error ', async ()=>{
+            try{
+                await labelFromNumber({contentId:0 , aspect: 0, keypoint: 0, method: 0, conflictedAspect: 0,conflictedKeypoint: NaN})
+                should.fail('should not get here')
+            }catch(err){
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('conflictedKeypoint is NaN')
+            }
+        })
+        it('should throw a conflictedMethod is NaN error ', async ()=>{
+            try{
+                await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: 0, conflictedAspect: 0, conflictedKeypoint: 0, conflictedMethod: NaN})
+                should.fail('should not get here')
+            }catch(err){
+                expect(err).to.have.property('status').to.equal(400)
+                expect(err).to.have.property('message').to.equal('conflictedMethod is NaN')
+            }
+        })
+        it('should throw a fail to fetch reviewerId error ', async ()=>{
             dbStub.restore();
+            dbStub = sinon.stub(User, 'findOne').throws()
+            try{
+                await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: 0, reviewerId: 1})
+                should.fail('should not get here')
+            }catch(err){
+                expect(err).to.have.property('status').to.equal(500)
+                expect(err).to.have.property('message').to.equal('fail to fetch reviewerId')
+            }
         })
         it('should return an object ', async ()=>{
             let output = await labelFromNumber({
-                aspect: 0, keypoint: 0, method: 0,
+                contentId:0, aspect: 0, keypoint: 0, method: 0,
             })
             expect(output).to.be.an('object')
             expect(mappingStub).to.have.been.calledThrice
@@ -88,10 +120,10 @@ describe('test mid-long-term/models/operations/label-from-number.js', () => {
         it('should return an array ', async ()=>{
             let output = await labelFromNumber([
                 {
-                    aspect: 0, keypoint: 0, method: 0,
+                    contentId:0, aspect: 0, keypoint: 0, method: 0,
                 },
                 {
-                    aspect: 0, keypoint: 0, method: 1,
+                    contentId:0, aspect: 0, keypoint: 0, method: 1,
                 },
             ])
             expect(output).to.be.an('array')
