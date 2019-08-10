@@ -1,8 +1,6 @@
 import chai from 'chai'
-import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-chai.use(chaiAsPromised)
 chai.use(sinonChai)
 
 import downloadCsv from 'mid-long-term/models/operations/download-csv.js'
@@ -56,10 +54,6 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
                     method: 0,
                 }]
             })
-            midLongTermFromNumberStub = sandbox.stub().callsFake(()=>{
-                return 'test label'
-            })
-            downloadCsv.__set__('midLongTermFromNumber', midLongTermFromNumberStub)
             DataDbStub = sandbox.stub(Data, 'findOne').callsFake(()=>{
                 return {
                     yearFrom: 0,
@@ -72,46 +66,30 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
         afterEach(()=>{
             downloadCsv.__ResetDependency__('uniqueFilename')
             downloadCsv.__ResetDependency__('createObjectCsvWriter')
-            downloadCsv.__ResetDependency__('midLongTermFromNumber')
             sandbox.restore()
         })
         it('should throw an invalid argument error', async()=>{
-            try{
-                await downloadCsv('aaa')
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(400)
-                expect(err).to.have.property('message').to.equal('invalid argument')
-            }
-            try{
-                await downloadCsv(123)
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(400)
-                expect(err).to.have.property('message').to.equal('invalid argument')
-            }
-            try{
-                await downloadCsv(null)
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(400)
-                expect(err).to.have.property('message').to.equal('invalid argument')
-            }
-            try{
-                await downloadCsv(NaN)
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(400)
-                expect(err).to.have.property('message').to.equal('invalid argument')
+            let invalidType = [1, '1', undefined, null, true, ()=> {return 123}]
+            for(let arg of invalidType){
+                try{
+                    await downloadCsv(arg)
+                    should.fail('should not get here')
+                }catch(err){
+                    expect(err).to.have.property('status').to.equal(400)
+                    expect(err).to.have.property('message').to.equal('invalid argument')
+                }
             }
         })
         it('should throw a dataId is NaN error', async()=>{
-            try{
-                await downloadCsv({dataId: NaN})
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(400)
-                expect(err).to.have.property('message').to.equal('dataId is NaN')
+            let invalidType = [NaN ,{}, '1', undefined, null, true, ()=> {return 123}]
+            for(let arg of invalidType){
+                try{
+                    await downloadCsv({dataId: arg})
+                    should.fail('should not get here')
+                }catch(err){
+                    expect(err).to.have.property('status').to.equal(400)
+                    expect(err).to.have.property('message').to.equal('dataId is NaN')
+                }
             }
         })
         it('should throw a create file failed', async()=>{
@@ -176,7 +154,6 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             }
         })
         it('should throw a data formatting failed error', async()=>{
-            downloadCsv.__ResetDependency__('midLongTermFromNumber')
             downloadCsv.__set__('midLongTermFromNumber', sandbox.stub().throws())
             try{
                 await downloadCsv({dataId:0})
@@ -185,17 +162,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
                 expect(err).to.have.property('status').to.equal(500)
                 expect(err).to.have.property('message').to.equal('data formatting failed')
             }
-        })
-        it('should throw a data featch failed error', async()=>{
             downloadCsv.__ResetDependency__('midLongTermFromNumber')
-            downloadCsv.__set__('midLongTermFromNumber', sandbox.stub().throws())
-            try{
-                await downloadCsv({dataId:0})
-                should.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data formatting failed')
-            }
         })
         it('should throw adata featch failed error', async()=>{
             DataDbStub.restore()

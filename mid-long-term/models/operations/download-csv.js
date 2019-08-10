@@ -11,12 +11,13 @@ export default async(info) => {
     throw err
   }
 
-  info.dataId = Number(info.dataId)
-  if(Number.isNaN(info.dataId)){
+  if(typeof info.dataId !== 'number' || Number.isNaN(Number(info.dataId))){
     const err = new Error('dataId is NaN')
     err.status = 400
     throw err
   }
+  info.dataId = Number(info.dataId)
+
   let tmpDir, filePath
   try{
     tmpDir = '/tmp/selection_Web'

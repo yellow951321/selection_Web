@@ -1,9 +1,7 @@
 import chai from 'chai'
-import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import {Data, } from 'mid-long-term/models/association.js'
-chai.use(chaiAsPromised)
 chai.use(sinonChai)
 
 import getAllType from 'projectRoot/mid-long-term/models/operations/get-all-type.js'
