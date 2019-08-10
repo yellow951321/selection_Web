@@ -76,7 +76,7 @@ export default async(data) => {
           },
           attributes: [
             'account',
-          ],}
+          ], }
         )
         temp.reviewerId = temp.reviewerId.account
       }

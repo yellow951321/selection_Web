@@ -45,9 +45,11 @@ const midLongTermOperationDIstRoot = path.join(config.projectRoot, 'test/public/
 const midLongTermOperationConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: [
     'babel-polyfill',
-    path.join(midLongTermOperationSrcRoot, 'label-from-number.js'),
+    path.join(midLongTermOperationSrcRoot, 'download-csv.js'),
     path.join(midLongTermOperationSrcRoot, 'get-all-campus.js'),
+    path.join(midLongTermOperationSrcRoot, 'get-all-type.js'),
     path.join(midLongTermOperationSrcRoot, 'get-content.js'),
+    path.join(midLongTermOperationSrcRoot, 'label-from-number.js'),
   ],
   output: {
     path: midLongTermOperationDIstRoot,
