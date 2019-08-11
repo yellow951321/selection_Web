@@ -7,8 +7,6 @@ import getContent from 'projectRoot/mid-long-term/models/operations/get-content.
 import {Content, } from 'mid-long-term/models/association.js'
 
 const expect = chai.expect
-const should = chai.should()
-
 describe('test mid-long-term/models/operations/get-contentjs', ()=>{
 
     context('test getContent', ()=>{
@@ -31,7 +29,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(0, 0, 0, arg)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -44,7 +42,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(arg, 0, 0, 0)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -57,7 +55,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(0, arg, 0, 0)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -70,7 +68,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(0, 0, arg, 0)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -83,7 +81,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(0, 0, 0, 0, arg)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -96,7 +94,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             for(let arg of invalidType){
                 try{
                     await getContent(0, 0, 0, 0, -1, arg)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }
                 catch(err){
                     expect(err).to.have.property('status').to.equal(400)
@@ -122,7 +120,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             getContent.__set__('labelFromNumber', labelFromNumberStub)
             try{
                 await getContent(0, 0, 0, 0)
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)

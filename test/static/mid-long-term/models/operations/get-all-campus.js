@@ -7,8 +7,6 @@ chai.use(sinonChai)
 import getAllCampus from 'projectRoot/mid-long-term/models/operations/get-all-campus.js'
 
 const expect = chai.expect
-const should = chai.should()
-const sandbox = sinon.createSandbox();
 
 describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
 
@@ -33,7 +31,7 @@ describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
             for(let arg of invalidType){
                 try{
                     await getAllCampus(arg)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }catch(err){
                     expect(err).to.have.property('status').to.equal(400)
                     expect(err).to.have.property('message').to.equal('invalid argument')
@@ -46,7 +44,7 @@ describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
             for(let arg of invalidType){
                 try{
                     await getAllCampus({typeId: arg})
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }catch(err){
                     expect(err).to.have.property('status').to.equal(400)
                     expect(err).to.have.property('message').to.equal('typeId is not valid.')

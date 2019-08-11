@@ -7,7 +7,6 @@ chai.use(sinonChai)
 import getAllType from 'projectRoot/mid-long-term/models/operations/get-all-type.js'
 
 const expect = chai.expect
-const should = chai.should()
 
 describe('test mid-long-term/models/operations/get-all-type.js', () => {
 
@@ -17,7 +16,7 @@ describe('test mid-long-term/models/operations/get-all-type.js', () => {
             dbStub = sinon.stub(Data, 'findAll').throws()
             try{
                 await getAllType()
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)
@@ -33,7 +32,7 @@ describe('test mid-long-term/models/operations/get-all-type.js', () => {
             })
             try{
                 await getAllType()
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)

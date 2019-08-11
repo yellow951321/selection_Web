@@ -21,8 +21,10 @@ describe('yearRouter', ()=>{
             })
             // yearRouter.__set__('getAllYear', dbStub)
 
-            request(yearRouter).get('/index')
-                .expect(200)
+            request(server).get('/auth/login').set('Accept', 'application/json').then(res=>{
+                console.log(res)
+            })
+                
         })
     })
 })

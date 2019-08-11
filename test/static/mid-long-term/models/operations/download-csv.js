@@ -8,7 +8,6 @@ import fs from 'fs'
 import {Content, Data} from 'mid-long-term/models/association.js'
 
 const expect = chai.expect
-const should = chai.should()
 const sandbox = sinon.createSandbox()
 
 describe('test mid-long-term/models/operations/download-csv.js', ()=>{
@@ -73,7 +72,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             for(let arg of invalidType){
                 try{
                     await downloadCsv(arg)
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }catch(err){
                     expect(err).to.have.property('status').to.equal(400)
                     expect(err).to.have.property('message').to.equal('invalid argument')
@@ -85,7 +84,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             for(let arg of invalidType){
                 try{
                     await downloadCsv({dataId: arg})
-                    should.fail('should not get here')
+                    expect.fail('should not get here')
                 }catch(err){
                     expect(err).to.have.property('status').to.equal(400)
                     expect(err).to.have.property('message').to.equal('dataId is NaN')
@@ -97,7 +96,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             exsistsSyncStub = sandbox.stub(fs, 'existsSync').throws()
             try{
                 await downloadCsv({dataId: 0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(507)
                 expect(err).to.have.property('message').to.equal('create file failed')
@@ -111,7 +110,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             mkdirSyncStub = sandbox.stub(fs, 'mkdirSync').throws()
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(507)
                 expect(err).to.have.property('message').to.equal('create file failed')
@@ -125,7 +124,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             downloadCsv.__set__('uniqueFilename', sandbox.stub().throws())
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(507)
                 expect(err).to.have.property('message').to.equal('create file failed')
@@ -136,7 +135,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             downloadCsv.__set__('createObjectCsvWriter', sandbox.stub().throws())
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(500)
                 expect(err).to.have.property('message').to.equal('setting csv config failed')
@@ -147,7 +146,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             ContentDbStub = sandbox.stub(Content, 'findAll').throws()
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(500)
                 expect(err).to.have.property('message').to.equal('data fetch failed')
@@ -157,7 +156,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             downloadCsv.__set__('midLongTermFromNumber', sandbox.stub().throws())
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(500)
                 expect(err).to.have.property('message').to.equal('data formatting failed')
@@ -169,7 +168,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
             DataDbStub = sandbox.stub(Data,'findOne').throws()
             try{
                 await downloadCsv({dataId:0})
-                should.fail('should not get here')
+                expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(500)
                 expect(err).to.have.property('message').to.equal('data featch failed')

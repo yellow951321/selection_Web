@@ -57,6 +57,21 @@ const midLongTermOperationConfig = Object.assign({}, webpackJsConfigTemplate, {
   },
 })
 
+const midLongTermRoutesSrcRoot = path.join(config.projectRoot, 'test/static/mid-long-term/routes')
+const midLongTermRoutesDIstRoot = path.join(config.projectRoot, 'test/public/mid-long-term')
+
+const midLongTermRoutesConfig = Object.assign({}, webpackJsConfigTemplate, {
+  entry: [
+    'babel-polyfill',
+    path.join(midLongTermRoutesSrcRoot, 'year.js'),
+  ],
+  output: {
+    path: midLongTermRoutesDIstRoot,
+    filename: 'mid-long-term-route.test.js',
+  },
+})
+
 module.exports = [
   midLongTermOperationConfig,
+  midLongTermRoutesConfig,
 ]

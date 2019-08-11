@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
     "develop": "cross-env NODE_ENV=development npm-run-all --parallel watch nodemon browser-sync",
-    "test": "cross-env NODE_ENV=production webpack --config webpack.test.config.js && mocha test/public/**/*.test.js",
+    "test": "cross-env NODE_ENV=production webpack --config webpack.test.config.js && mocha test/public/**/*.test.js --exit",
     "nodemon": "cross-env NODE_ENV=development nodemon --config nodemon.config.json bin/server.bundle.js",
     "browser-sync": "browser-sync --config browser-sync.config.js start",
     "lint": "npm-run-all --parallel lint:*",
