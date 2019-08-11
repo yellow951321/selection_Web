@@ -3,7 +3,7 @@ import uniqueFilename from 'unique-filename'
 import {createObjectCsvWriter, } from 'csv-writer'
 import Content from 'short-term/models/schemas/Content.js'
 import Data from 'short-term/models/schemas/Data.js'
-import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import { shortTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 export default async(info) => {
   try{
@@ -24,7 +24,7 @@ export default async(info) => {
       tmpDir = '/tmp/selection_Web'
       if(!fs.existsSync(tmpDir))
         fs.mkdirSync(tmpDir)
-    
+
       filePath = uniqueFilename(tmpDir)
     }catch(err){
       err = new Error('create file failed')
@@ -81,9 +81,9 @@ export default async(info) => {
     }
 
     for(let val of data) {
-      let method = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, method: val.method, }).method
-      let keypoint = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, }).keypoint
-      let aspect = midLongTermFromNumber({aspect: val.aspect, }).aspect
+      let method = shortTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, method: val.method, }).method
+      let keypoint = shortTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, }).keypoint
+      let aspect = shortTermFromNumber({aspect: val.aspect, }).aspect
 
       outputObject.push({
         pageFrom: val.pageFrom,

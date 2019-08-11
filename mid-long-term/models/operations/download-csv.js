@@ -24,7 +24,7 @@ export default async(info) => {
       tmpDir = '/tmp/selection_Web'
       if(!fs.existsSync(tmpDir))
         fs.mkdirSync(tmpDir)
-    
+
       filePath = uniqueFilename(tmpDir)
     }catch(err){
       err = new Error('create file failed')
