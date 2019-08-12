@@ -115,10 +115,10 @@ export default async(info={}) => {
     try{
       data = data.map(d => {
         return {
-          dataId: d.dataId,
-          yearFrom: d.yearFrom,
-          yearTo: d.yearTo,
-          userId: d.userId,
+          dataId: Number(d.dataId),
+          yearFrom: Number(d.yearFrom),
+          yearTo: Number(d.yearTo),
+          userId: Number(d.userId),
         }
       })
 
