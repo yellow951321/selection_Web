@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node bin/server.bundle.js",
     "develop": "cross-env NODE_ENV=development npm-run-all --parallel watch nodemon browser-sync",
-    "test": "cross-env NODE_ENV=production webpack --config webpack.test.config.js && mocha test/public/**/*.test.js --exit",
+    "test": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0  NODE_ENV=production webpack --config webpack.test.config.js && mocha test/public/**/*.test.js --exit",
     "nodemon": "cross-env NODE_ENV=development nodemon --config nodemon.config.json bin/server.bundle.js",
     "browser-sync": "browser-sync --config browser-sync.config.js start",
     "lint": "npm-run-all --parallel lint:*",
@@ -63,6 +63,7 @@
     "postcss-loader": "^3.0.0",
     "pug": "2.0.0-beta11",
     "pug-loader": "^2.4.0",
+    "pug-render": "^2.0.0",
     "rewire": "^4.0.1",
     "sass-loader": "^7.1.0",
     "sequelize": "^4.43.1",
