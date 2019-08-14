@@ -55,11 +55,6 @@ router.use('/:dataId', async(req, res, next) => {
       dataId: req.params.dataId,
       userId: req.session.userId
     })
-    if(result === 'empty data'){
-      const err = new Error('data not found')
-      err.status = 404
-      throw err
-    }
 
     if(result.message === 'as a reviewer'){
       res.redirect(`/mid-long-term/review/${dataId}/index`)

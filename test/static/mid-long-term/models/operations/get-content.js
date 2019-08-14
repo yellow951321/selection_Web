@@ -7,12 +7,14 @@ import getContent from 'projectRoot/mid-long-term/models/operations/get-content.
 import {Content, } from 'mid-long-term/models/association.js'
 
 const expect = chai.expect
+const sandbox = sinon.createSandbox()
+
 describe('test mid-long-term/models/operations/get-contentjs', ()=>{
 
     context('test getContent', ()=>{
-        let dbStub, labelFromNumberStub
+        let dbStub
         beforeEach(()=>{
-            dbStub = sinon.stub(Content, 'findAll').callsFake(()=>{
+            dbStub = sandbox.stub(Content, 'findAll').callsFake(()=>{
                 return [{
                     contentId: 0,
                     aspect: 0,
@@ -22,7 +24,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             })
         })
         afterEach(()=>{
-            dbStub.restore()
+            sandbox.restore()
         })
         it('should throw a dataId is NaN error', async()=>{
             let invalidType = ['ABC', undefined, null, true, ()=> {return 123}]
@@ -116,17 +118,78 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
             expect(await getContent(0, 0, 0, 0)).to.equal('empty data')
         })
         it('should throw a data formatting failed', async()=>{
-            labelFromNumberStub = sinon.stub().throws()
-            getContent.__set__('labelFromNumber', labelFromNumberStub)
-            try{
-                await getContent(0, 0, 0, 0)
-                expect.fail('should not get here')
+            let outRangeLabels = [
+                {aspect: 0, keypoint: 0, method: 16},
+                {aspect: 0, keypoint: 1, method: 4},
+                {aspect: 0, keypoint: 2, method: 4},
+                {aspect: 0, keypoint: 3, method: 11},
+                {aspect: 0, keypoint: 4, method: 1},
+                {aspect: 0, keypoint: 5, method: 5},
+                {aspect: 0, keypoint: 6, method: 11},
+                {aspect: 0, keypoint: 7, method: 5},
+                {aspect: 0, keypoint: 8, method: 7},
+                {aspect: 0, keypoint: 9, method: 5},
+                {aspect: 0, keypoint: 10, method: 5},
+                {aspect: 0, keypoint: 11, method: 6},
+                {aspect: 0, keypoint: 12, method: 8},
+                {aspect: 0, keypoint: 13, method: 3},
+                {aspect: 0, keypoint: 14, method: 6},
+                {aspect: 0, keypoint: 15, method: 4},
+                {aspect: 0, keypoint: 16, method: 0},
+                {aspect: 1, keypoint: 0, method: 13},
+                {aspect: 1, keypoint: 1, method: 7},
+                {aspect: 1, keypoint: 2, method: 7},
+                {aspect: 1, keypoint: 3, method: 4},
+                {aspect: 1, keypoint: 4, method: 1},
+                {aspect: 1, keypoint: 5, method: 4},
+                {aspect: 1, keypoint: 6, method: 0},
+                {aspect: 2, keypoint: 0, method: 7},
+                {aspect: 2, keypoint: 1, method: 7},
+                {aspect: 2, keypoint: 2, method: 6},
+                {aspect: 2, keypoint: 3, method: 7},
+                {aspect: 2, keypoint: 4, method: 7},
+                {aspect: 2, keypoint: 5, method: 4},
+                {aspect: 2, keypoint: 6, method: 0},
+                {aspect: 3, keypoint: 0, method: 5},
+                {aspect: 3, keypoint: 1, method: 4},
+                {aspect: 3, keypoint: 2, method: 5},
+                {aspect: 3, keypoint: 3, method: 6},
+                {aspect: 3, keypoint: 4, method: 6},
+                {aspect: 3, keypoint: 5, method: 4},
+                {aspect: 3, keypoint: 6, method: 4},
+                {aspect: 3, keypoint: 7, method: 0},
+                {aspect: 4, keypoint: 0, method: 7},
+                {aspect: 4, keypoint: 1, method: 6},
+                {aspect: 4, keypoint: 2, method: 9},
+                {aspect: 4, keypoint: 3, method: 4},
+                {aspect: 4, keypoint: 4, method: 5},
+                {aspect: 4, keypoint: 5, method: 4},
+                {aspect: 4, keypoint: 6, method: 4},
+                {aspect: 4, keypoint: 7, method: 4},
+                {aspect: 4, keypoint: 8, method: 5},
+                {aspect: 4, keypoint: 9, method: 4},
+                {aspect: 4, keypoint: 10, method: 8},
+                {aspect: 4, keypoint: 11, method: 0},
+            ]
+            for(let outRangeLabel of outRangeLabels){
+                dbStub.restore()
+                dbStub = sandbox.stub(Content, 'findAll').callsFake(()=>{
+                    return [{
+                        contentId: 0,
+                        aspect: outRangeLabel.aspect,
+                        keypoint: outRangeLabel.keypoint,
+                        method: outRangeLabel.method,
+                    }]
+                })
+                try{
+                    await getContent(0, 0, 0, 0)
+                    expect.fail('should not get here')
+                }
+                catch(err){
+                    expect(err).to.have.property('status').to.equal(500)
+                    expect(err).to.have.property('message').to.equal('data formatting failed')
+                }
             }
-            catch(err){
-                expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data formatting failed')
-            }
-            getContent.__ResetDependency__('labelFromNumber')
         })
         it('should return a array', async()=>{
             expect(await getContent(0, 0, 0, 0)).to.be.instanceOf(Array).to.have.lengthOf(1)

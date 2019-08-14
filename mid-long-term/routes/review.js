@@ -66,10 +66,6 @@ router.use('/:dataId', async (req, res, next) => {
       dataId: req.params.dataId,
       userId: req.session.userId
     })
-    if(result === 'empty data'){
-      res.redirect('/auth/channel')
-      return
-    }
 
     if(result.message === 'as an editor'){
       res.redirect(`/mid-long-term/data/${req.params.dataId}/edit`)
@@ -81,6 +77,8 @@ router.use('/:dataId', async (req, res, next) => {
     next()
   }
   catch(err){
+    if(err.status === 404)
+      res.redirect('/auth/channel')
     if(typeof err.status !== 'number'){
       err = new Error('invalid argument')
       err.status = 400

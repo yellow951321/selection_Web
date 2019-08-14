@@ -97,10 +97,8 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
     data = await Promise.all(data.map(async(obj) => {return await labelFromNumber(obj)}))
   }
   catch(err){
-    if(typeof err.status !== 'number'){
-      err = new Error('data formatting failed')
-      err.status = 500
-    }
+    err = new Error('data formatting failed')
+    err.status = 500
     throw err
   }
   return data

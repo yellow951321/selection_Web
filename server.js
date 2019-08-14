@@ -15,7 +15,7 @@ const isDevMode = process.env.NODE_ENV === 'development'
 const options = {
   key: fs.readFileSync('key/private.key'),
   ca: fs.readFileSync('key/ca_bundle.crt'),
-  // cert: fs.readFileSync('key/certificate.crt'),
+  cert: fs.readFileSync('key/certificate.crt'),
 }
 
 const httpsExpressServer = express()
@@ -81,4 +81,3 @@ httpsExpressServer.use((req, res) => {
 })
 
 export default httpsServer.listen(config.server.port)
-// export default httpsExpressServer.listen(config.server.port)

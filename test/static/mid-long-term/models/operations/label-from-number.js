@@ -294,34 +294,15 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
                 {aspect: 4, keypoint: 10, method: 8},
                 {aspect: 4, keypoint: 11, method: 0},
             ]
-            for(let outRangeLabel of outRangeLabels)
-            try{
-                await labelFromNumber({contentId:0, aspect: outRangeLabel.aspect, keypoint: outRangeLabel.keypoint, method: outRangeLabel.method, reviewerId: 1})
-                expect.fail('should not get here')
-            }catch(err){
-                expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('fail to transfer label from number')
+            for(let outRangeLabel of outRangeLabels){
+                try{
+                    await labelFromNumber({contentId:0, aspect: outRangeLabel.aspect, keypoint: outRangeLabel.keypoint, method: outRangeLabel.method, reviewerId: 1})
+                    expect.fail('should not get here')
+                }catch(err){
+                    expect(err).to.have.property('status').to.equal(500)
+                    expect(err).to.have.property('message').to.equal('fail to transfer label from number')
+                }
             }
-            // for(let aspectIndex of [0, 1, 2, 3, 4]){
-            //     for(let keypointIndex in map[aspectIndex].keypoint){
-            //         console.log(`{aspect: ${aspectIndex}, keypoint: ${keypointIndex}, method: ${map[aspectIndex].keypoint[keypointIndex].method.length}}`)
-            //         try{
-            //             await labelFromNumber({contentId:0, aspect: Number(aspectIndex), keypoint: Number(keypointIndex), method: map[aspectIndex].keypoint[keypointIndex].method.length, reviewerId: 1})
-            //             expect.fail('should not get here')
-            //         }catch(err){
-            //             expect(err).to.have.property('status').to.equal(500)
-            //             expect(err).to.have.property('message').to.equal('fail to transfer label from number')
-            //         }
-            //     }
-            //     console.log(`{aspect: ${aspectIndex}, keypoint: ${map[aspectIndex].keypoint.length}, method: ${0}}`)
-            //     try{
-            //         await labelFromNumber({contentId:0, aspect: Number(aspectIndex), keypoint: map[aspectIndex].keypoint.length, method: 0, reviewerId: 1})
-            //         expect.fail('should not get here')
-            //     }catch(err){
-            //         expect(err).to.have.property('status').to.equal(500)
-            //         expect(err).to.have.property('message').to.equal('fail to transfer label from number')
-            //     }
-            // }
             try{
                 await labelFromNumber({contentId:0, aspect: 7, keypoint: 0, method: 0, reviewerId: 1})
                 expect.fail('should not get here')
@@ -349,7 +330,7 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
                         keypointIndex = Number(keypointIndex)
                         methodIndex = Number(methodIndex)
                         let expected = {
-                            dataId: NaN,
+                            dataId: undefined,
                             isChecked: undefined,
                             isConflicted: undefined,
                             content: undefined,

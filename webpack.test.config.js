@@ -45,6 +45,9 @@ const midLongTermOperationDIstRoot = path.join(config.projectRoot, 'test/public/
 const midLongTermOperationConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: [
     'babel-polyfill',
+    path.join(midLongTermOperationSrcRoot, 'content-auth.js'),
+    path.join(midLongTermOperationSrcRoot, 'content-change-label.js'),
+    path.join(midLongTermOperationSrcRoot, 'content-create.js'),
     path.join(midLongTermOperationSrcRoot, 'content-delete.js'),
     path.join(midLongTermOperationSrcRoot, 'content-save.js'),
     path.join(midLongTermOperationSrcRoot, 'content-update.js'),
@@ -53,6 +56,7 @@ const midLongTermOperationConfig = Object.assign({}, webpackJsConfigTemplate, {
     path.join(midLongTermOperationSrcRoot, 'download-csv.js'),
     path.join(midLongTermOperationSrcRoot, 'get-all-campus.js'),
     path.join(midLongTermOperationSrcRoot, 'get-all-type.js'),
+    path.join(midLongTermOperationSrcRoot, 'get-all-year.js'),
     path.join(midLongTermOperationSrcRoot, 'get-content.js'),
     path.join(midLongTermOperationSrcRoot, 'label-from-number.js'),
   ],

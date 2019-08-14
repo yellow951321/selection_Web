@@ -89,7 +89,7 @@ app.route('/login')
         expiration: req.session.cookie.expires,
       })
       req.session.userId = result.userId
-      res.redirect('/auth/login')
+      res.redirect('/auth/channel')
     }
     catch(err){
       if(typeof err.status !== 'number'){

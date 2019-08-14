@@ -62,9 +62,8 @@ export default async(info) => {
     return await labelFromNumber(data)
   }
   catch(err){
-    if(typeof err.status !== 'number'){
-      err = new Error('converting label from number failed')
-    }
+    err = new Error('converting label from number failed')
+    err.status = 500
     throw err
   }
 }
