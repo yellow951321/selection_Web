@@ -12,7 +12,7 @@ describe('test mid-long-term/models/operations/get-all-type.js', () => {
 
     context('test get-all-type',()=>{
         let dbStub
-        it('should throw a data fetch failed error', async ()=>{
+        it('should throw a fetching data failed error', async ()=>{
             dbStub = sinon.stub(Data, 'findAll').throws()
             try{
                 await getAllType()
@@ -20,7 +20,7 @@ describe('test mid-long-term/models/operations/get-all-type.js', () => {
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data fetch failed')
+                expect(err).to.have.property('message').to.equal('fetching data failed')
             }
             dbStub.restore();
         })

@@ -66,7 +66,7 @@ export default async(data) => {
   temp.isConflicted = data.isConflicted
   
   if(data.dataId === undefined || (typeof data.dataId === 'number' && !Number.isNaN(data.dataId)))
-    temp.dataId = Number(data.dataId)
+    temp.dataId = data.dataId
   else{
     const err = new Error('dataId is not valid')
     err.status = 400
@@ -74,7 +74,7 @@ export default async(data) => {
   }
 
   if(typeof data.contentId === 'number' && !Number.isNaN(data.contentId))
-    temp.contentId = Number(data.contentId)
+    temp.contentId =data.contentId
   else{
     const err = new Error('contentId is NaN')
     err.status = 400

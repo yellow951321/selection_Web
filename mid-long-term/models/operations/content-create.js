@@ -1,71 +1,69 @@
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {Content, } from 'mid-long-term/models/association.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
 export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
 
+  let dataId, aspect, keypoint, method
+  if(Number.isNaN(info.dataId) || typeof info.dataId !== 'number'){
+    const err = new Error('dataId is NaN')
+    err.status = 400
+    throw err
+  }
+  dataId = Number(info.dataId)
+  if(Number.isNaN(info.aspect) || typeof info.aspect !== 'number'){
+    const err = new Error('aspect is NaN')
+    err.status = 400
+    throw err
+  }
+  aspect = Number(info.aspect)
+  if(Number.isNaN(info.keypoint) || typeof info.keypoint !== 'number'){
+    const err = new Error('keypoint is NaN')
+    err.status = 400
+    throw err
+  }
+  keypoint = Number(info.keypoint)
+  if(Number.isNaN(info.method) || typeof info.method !== 'number'){
+    const err = new Error('method is NaN')
+    err.status = 400
+    throw err
+  }
+  method = Number(info.method)
+  let data
   try{
-
-    if(typeof info !== 'object'){
-      let err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    info.dataId = Number(info.dataId)
-    info.aspect = Number(info.aspect)
-    info.keypoint = Number(info.keypoint)
-    info.method = Number(info.method)
-
-    if(Number.isNaN(info.dataId)){
-      const err = new Error('dataId is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.aspect)){
-      const err = new Error('aspect is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.keypoint)){
-      const err = new Error('keypoint is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.method)){
-      const err = new Error('method is NaN')
-      err.status = 400
-      throw err
-    }
-    let data
-    try{
-      data= await Content.create({
-        dataId: info.dataId,
-        title1: null,
-        title2: null,
-        title3: null,
-        title4: null,
-        content: null,
-        pageFrom: 1,
-        pageTo: 1,
-        aspect: info.aspect,
-        keypoint: info.keypoint,
-        method: info.method,
-        isChecked: 0,
-        reviewerId: 0,
-        isConflicted: 0,
-        updateTime: Date.now(),
-      })
-    }
-    catch(err){
-      err = new Error('data create failed')
-      err.status = 500
-      throw err
-    }
+    data= await Content.create({
+      dataId,
+      title1: null,
+      title2: null,
+      title3: null,
+      title4: null,
+      content: null,
+      pageFrom: 1,
+      pageTo: 1,
+      aspect,
+      keypoint,
+      method,
+      isChecked: 0,
+      reviewerId: 0,
+      isConflicted: 0,
+      updateTime: Date.now(),
+    })
+  }
+  catch(err){
+    err = new Error('creating data failed')
+    err.status = 500
+    throw err
+  }
+  try{
     return await labelFromNumber(data)
-  }catch(err){
-    if(!err.status){
-      err = new Error('content-create failed')
-      err.status = 500
+  }
+  catch(err){
+    if(typeof err.status !== 'number'){
+      err = new Error('converting label from number failed')
     }
     throw err
   }

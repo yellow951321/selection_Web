@@ -54,7 +54,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
                 }
             }
         })
-        it('should throw a data fetch failed error', async()=>{
+        it('should throw a fetching data failed error', async()=>{
             findOneStub.restore()
             findOneStub = sandbox.stub(Data, 'findOne').throws()
             try{
@@ -63,7 +63,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data fetch failed')
+                expect(err).to.have.property('message').to.equal('fetching data failed')
             }
         })
         it('should throw a No specified dataId error', async()=>{

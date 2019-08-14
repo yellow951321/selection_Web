@@ -18,7 +18,7 @@ const router = express.Router({
 router.post('/save', async(req, res, next)=>{
   try{
     await contentSave({
-      userId: req.session.userId,
+      userId: Number(req.session.userId),
       content: req.body.content,
       summary: req.body.summary,
       note: req.body.note,
@@ -26,9 +26,9 @@ router.post('/save', async(req, res, next)=>{
       title2: req.body.title2,
       title3: req.body.title3,
       title4: req.body.title4,
-      pageFrom: req.body.pageFrom,
-      pageTo: req.body.pageTo,
-      contentId: req.body.contentId,
+      pageFrom: Number(req.body.pageFrom),
+      pageTo: Number(req.body.pageTo),
+      contentId: Number(req.body.contentId),
     })
     res.send('completed')
   } catch(err) {
@@ -91,7 +91,7 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let data = await getContent(req.query.aspect, req.query.keypoint, req.query.method, res.locals.dataId, -1, 0)
+    let data = await getContent(Number(req.query.aspect), Number(req.query.keypoint), Number(req.query.method), Number(res.locals.dataId), -1, 0)
 
     if(data === 'empty data'){
       res.send('')
@@ -103,8 +103,7 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     })
   }
   catch (err){
-    console.log(err)
-    if(!err.status){
+    if(typeof err.status !== 'number'){
       err = new Error('filter failed')
       err.status = 500
     }

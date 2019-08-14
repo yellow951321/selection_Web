@@ -141,7 +141,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
                 expect(err).to.have.property('message').to.equal('setting csv config failed')
             }
         })
-        it('should throw a data fetch failed error', async()=>{
+        it('should throw a fetching data failed error', async()=>{
             ContentDbStub.restore()
             ContentDbStub = sandbox.stub(Content, 'findAll').throws()
             try{
@@ -149,7 +149,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
                 expect.fail('should not get here')
             }catch(err){
                 expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data fetch failed')
+                expect(err).to.have.property('message').to.equal('fetching data failed')
             }
         })
         it('should throw a data formatting failed error', async()=>{

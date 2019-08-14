@@ -81,7 +81,7 @@ export default async(info) => {
       ],
     })
   }catch(err){
-    err = new Error('data fetch failed')
+    err = new Error('fetching data failed')
     err.status = 500
     throw err
   }

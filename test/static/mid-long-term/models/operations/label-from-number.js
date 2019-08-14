@@ -154,6 +154,30 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
                 }
             }
         })
+        it('should throw a pageFrom is NaN error ', async ()=>{
+            let invalidType = [NaN ,{}, '1', null, true, ()=> {return 123}]
+            for(let arg of invalidType){
+                try{
+                    await labelFromNumber({dataId: 0, contentId: 0, pageFrom: arg,})
+                    expect.fail('should not get here')
+                }catch(err){
+                    expect(err).to.have.property('status').to.equal(400)
+                    expect(err).to.have.property('message').to.equal('pageFrom is NaN')
+                }
+            }
+        })
+        it('should throw a pageTo is NaN error ', async ()=>{
+            let invalidType = [NaN ,{}, '1', null, true, ()=> {return 123}]
+            for(let arg of invalidType){
+                try{
+                    await labelFromNumber({dataId: 0, contentId: 0, pageTo: arg,})
+                    expect.fail('should not get here')
+                }catch(err){
+                    expect(err).to.have.property('status').to.equal(400)
+                    expect(err).to.have.property('message').to.equal('pageTo is NaN')
+                }
+            }
+        })
         it('should throw a aspect is NaN error ', async ()=>{
             let invalidType = [NaN ,{}, '1', undefined, null, true, ()=> {return 123}]
             for(let arg of invalidType){

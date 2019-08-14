@@ -69,7 +69,6 @@ describe('test mid-long-term/models/operations/data-create.js', ()=>{
                     })
                     expect.fail('should not get here')
                 }catch(err){
-                    console.log(err)
                     expect(err).to.have.property('status').to.equal(400)
                     expect(err).to.have.property('message').to.equal('typeId is NaN')
                 }
@@ -129,7 +128,7 @@ describe('test mid-long-term/models/operations/data-create.js', ()=>{
                 }
             }
         })
-        it('should throw a data fetch failed error', async()=>{
+        it('should throw a fetching data failed error', async()=>{
             findOneStub.restore()
             findOneStub = sandbox.stub(Data, 'findOne').throws()
             try{
@@ -144,7 +143,7 @@ describe('test mid-long-term/models/operations/data-create.js', ()=>{
             }
             catch(err){
                 expect(err).to.have.property('status').to.equal(500)
-                expect(err).to.have.property('message').to.equal('data fetch failed')
+                expect(err).to.have.property('message').to.equal('fetching data failed')
             }
         })
         it('should throw a data create failed error', async()=>{

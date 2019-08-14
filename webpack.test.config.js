@@ -45,6 +45,9 @@ const midLongTermOperationDIstRoot = path.join(config.projectRoot, 'test/public/
 const midLongTermOperationConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: [
     'babel-polyfill',
+    path.join(midLongTermOperationSrcRoot, 'content-delete.js'),
+    path.join(midLongTermOperationSrcRoot, 'content-save.js'),
+    path.join(midLongTermOperationSrcRoot, 'content-update.js'),
     path.join(midLongTermOperationSrcRoot, 'data-create.js'),
     path.join(midLongTermOperationSrcRoot, 'data-delete.js'),
     path.join(midLongTermOperationSrcRoot, 'download-csv.js'),
