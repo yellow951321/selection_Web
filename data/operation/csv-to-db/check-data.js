@@ -10,7 +10,6 @@ export default (filename, root_dir, typeData = '') => {
   let wrongResult = []
   return new Promise((res,rej)=>{
     let info = filename.split('_')
-    console.log(info)
     let year, typeId, campusName, campusId
     if( typeData == 'midLongTerm'){
       year = [info[0], info[1]]
@@ -27,6 +26,7 @@ export default (filename, root_dir, typeData = '') => {
     .pipe(csv())
     .on('data', (data) => {
       let flag = false
+      let wrongAspect
       data['構面'] =  String(data['構面']).trim()
       /**
        * `不具體`
@@ -49,14 +49,11 @@ export default (filename, root_dir, typeData = '') => {
       if ( data['﻿頁碼起始'] == "" && data['頁碼結束'] == "" ) {
         data['頁碼起始'] = 0
         data['頁碼結束'] = 0
-      }else
+      }else if( data['﻿頁碼起始'] ){
         data['頁碼起始'] = data['﻿頁碼起始']
-
-      delete data['﻿頁碼起始']
-      // data['構面'] = map.indexOf(data['構面'])
-      if(flag){
-        console.log(info)
+        delete data['﻿頁碼起始']
       }
+      // data['構面'] = map.indexOf(data['構面'])
       let temp
       if(typeData == 'midLongTerm'){
         temp = {
@@ -77,6 +74,7 @@ export default (filename, root_dir, typeData = '') => {
         }
       }
       if(flag) {
+        temp.error = '構面錯誤'
         wrongResult.push(temp)
       } else {
         result.push(temp)

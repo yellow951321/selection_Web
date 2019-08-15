@@ -40,12 +40,11 @@ export default async(info)=>{
       let err = new Error('contentId is not a number')
       err.status = 400
     }
-    let result
     try{
       /**
        * Destroy the content with the given `contentId`
        */
-      result = await Content.destroy({
+      return Content.destroy({
         where:{
           contentId: info.contentId,
         },
@@ -58,7 +57,6 @@ export default async(info)=>{
       err = new Error('content delete failed')
       err.status = 500
     }
-    return result
   }
   catch(err){
     /**

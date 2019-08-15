@@ -1,12 +1,15 @@
 import uploadToSinica from 'projectRoot/data/operation/csv-to-db/csv-to-database.js'
 import fs from 'fs'
+import TSV from 'tsv'
 import checkData from 'projectRoot/data/operation/csv-to-db/check-data.js'
 import validData from 'projectRoot/data/operation/csv-to-db/data-valid.js'
 import upload2db from 'projectRoot/data/operation/csv-to-db/upload-to-db.js'
 
 const root_dir = '/home/nober/git/selection_Web/data/operation/csv-to-db/'
+// const folderName = 'csv-data.2_unicode'
+// const child_dir = `csv-data/data/${folderName}/`
 
-const main = async (child_dir) => {
+const main = async (child_dir, folderName, uploading=false) => {
 
   const dirNames = await new Promise((res, rej) => {
     fs.readdir(root_dir + child_dir, { encoding: 'utf8'}, (err, files) => {
@@ -21,7 +24,8 @@ const main = async (child_dir) => {
    * check data
    */
   let finalResult = await Promise.all( dirNames.map( async (fName) => {
-    return checkData(fName, root_dir + child_dir, 'shortTerm')
+    const typeData = fName.split('_').length != 3 ? 'midLongTerm' : 'shortTerm'
+    return checkData(fName, root_dir + child_dir, typeData)
   }))
 
   /**
@@ -36,24 +40,59 @@ const main = async (child_dir) => {
           })
       ) return true
       else {
+        if(data.error === undefined ){
+          data.error = 'valid error'
+        }
         wrongResult.push(data)
         return false
       }
     })
 
-    fs.writeFileSync(`${root_dir}error-data/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
+    // fs.writeFileSync(`${root_dir}csv-data/error-data/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
+    // console.log(wrongResult)
     return {
       result, wrongResult
     }
   }))
+  let makeFile = await new Promise((res,rej)=>{
+    fs.stat(`${root_dir}csv-data/error-data/${folderName}`, (err, dir)=>{
+      if(err)
+        rej(err)
+      else
+        res(dir.isDirectory)
+    })
+  }).catch(err => {
+    console.log(err)
+  })
+  if(!makeFile)
+    fs.mkdirSync(`${root_dir}csv-data/error-data/${folderName}`)
 
   await Promise.all( finalResult.map( async ({result, wrongResult}) => {
-    await upload2db(result, 'shortTerm')
-    fs.writeFileSync(`${root_dir}error-data/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
-    console.log(`${result[0].campus} upload finished`)
+    if(uploading)
+      await upload2db(result, 'shortTerm')
+
+    let outputData = result.map(d => {
+      return d.data
+    })
+    let tsvFile = TSV.stringify(outputData)
+
+    fs.writeFileSync(`${root_dir}csv-data/tsv-data/${result[0].campus}.tsv`, tsvFile)
+    // fs.writeFileSync(`${root_dir}csv-data/error-data/${folderName}/${result[0].campus}.json`, JSON.stringify(wrongResult, null, 2))
+    if(uploading)
+      console.log(`${result[0].campus} upload finished`)
+    else
+      console.log(`${result[0].campus} authentication finished`)
   }))
 
 }
 
 
-main('csv-data/csv-data.4_unicode/')
+
+
+for(let i=1;i<=5;i++){
+  const folderName = `csv-data.${i}_unicode`
+  const child_dir = `csv-data/data/${folderName}/`
+  main(child_dir, folderName, false)
+}
+
+

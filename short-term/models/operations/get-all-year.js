@@ -36,6 +36,6 @@ export default async() => {
       err = new Error('Error occur in short-term/models/operations/get-all-year.js')
       err.status = 500
     }
-    throw err 
+    throw err
   }
 }

@@ -117,9 +117,8 @@ export default async(contentId, updatedData) => {
       }
     }
 
-    let data, newData
     try{
-      data = await Content.findOne({
+      const data = await Content.findOne({
         where:{
           contentId,
         },
@@ -133,7 +132,7 @@ export default async(contentId, updatedData) => {
         err.status = 404
         throw err
       }
-      newData = await data.update(updatedData)
+      return data.update(updatedData)
     }catch(err){
             /**
        * Catch the exception, `Content.findOne`.
@@ -142,7 +141,6 @@ export default async(contentId, updatedData) => {
       err.status = 500
       throw err
     }
-    return newData
   }
   catch(err){
     /**
