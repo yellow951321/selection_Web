@@ -71,4 +71,5 @@ local/*
 auth/public/*
 mid-long-term/public/*
 short-term/public/*
+data/operation/csv-to-db/*
 
