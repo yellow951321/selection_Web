@@ -103,7 +103,12 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     })
   }
   catch (err){
+<<<<<<< HEAD
     if(typeof err.status !== 'number'){
+=======
+    console.log(err)
+    if(!err.status){
+>>>>>>> feature-backend
       err = new Error('filter failed')
       err.status = 500
     }

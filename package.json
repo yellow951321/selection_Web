@@ -30,7 +30,10 @@
     "w": "npm run watch",
     "ws": "npm run watch:server-js",
     "wb": "npm run watch:browser-js",
-    "t": "webpack --watch --config webpack.transfer.config.js"
+    "t": "webpack --watch --config webpack.transfer.config.js",
+    "u": "webpack --watch --config webpack.upload.config.js",
+    "c": "webpack --watch --config webpack.check.config.js",
+    "v": "webpack --watch --config webpack.valid.config.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
@@ -70,6 +73,7 @@
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "style-loader": "^0.23.1",
+    "tsv": "^0.2.0",
     "unique-filename": "^1.1.1",
     "webpack": "^4.29.6",
     "webpack-node-externals": "^1.7.2"
@@ -82,6 +86,7 @@
     "chai-as-promised": "^7.1.1",
     "eslint": "^5.12.0",
     "eslint-config-google": "^0.11.0",
+    "jsdoc-to-markdown": "^5.0.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.18.9",
     "supertest": "^4.0.2",

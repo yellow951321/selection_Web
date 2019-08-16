@@ -1,3 +1,18 @@
+/**
+ * @namespace shortTermRoute
+ */
+
+// /**
+//  * @file
+//  * @module app/content
+//  * @requires express
+//  * @requires module:Content
+//  * @requires 'projectRoot/short-term/models/schemas/Data.js'
+//  * @requires 'projectRoot/auth/models/schemas/user.js'
+//  * @requires module:get-content
+//  * @requires 'projectRoot/lib/static/javascripts/mapping/label.js'
+//  */
+//import express module
 import express from 'express'
 import getContent from 'projectRoot/short-term/models/operations/get-content.js'
 import contentUpdate from 'projectRoot/short-term/models/operations/content-update.js'
@@ -14,7 +29,14 @@ const router = express.Router({
   // fool proof route path
   strict: false,
 })
-
+/**
+ * set A '/index' route, method GET
+ * @name post/save
+ * @function
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware
+ * @thorws - Throws an error if any error occurred in here
+ */
 router.post('/save', async(req, res, next)=>{
   try{
     await contentSave({

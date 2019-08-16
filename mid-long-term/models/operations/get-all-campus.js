@@ -2,6 +2,17 @@ import {Data, Content, } from 'mid-long-term/models/association.js'
 import Sequelize from 'sequelize'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
+/**
+ * return the whole campus information
+ * @function getAllCampus
+ * @param {object} info
+ * @param {number} info.year - The year of the campus
+ * @param {number} info.typeId - The type of the campus
+ * @returns {array} - Each element represent a content of campus
+ * @requires 'short-term/models/association.js'
+ * @requires Sequelize
+ * @requires 'lib/static/javascripts/mapping/campus.js'
+ */
 export default async(info) => {
   if(typeof info !== 'object' || info === null){
     const err = new Error('invalid argument')
@@ -18,6 +29,16 @@ export default async(info) => {
 
   let data
   try{
+    /**
+       * find all campus data with the given typeId and yearId.
+          And, we set the attributes as [
+          'dataId',
+          'year',
+          'userId',
+          'campusId',
+          'typeId',
+        ]
+       */
     data = await Data.findAll({
       where:{
         typeId: info.typeId,

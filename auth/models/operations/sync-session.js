@@ -1,12 +1,29 @@
+/**
+ * @file Check the session of the user
+ */
 import Session from 'auth/models/schemas/session.js'
 import config from 'projectRoot/config.js'
 import cookieParser from 'cookie-parser'
 
+
+/**
+ * @function sync-session
+ * @param {object} info - It is a request object
+ * @returns {void}
+ * @throws Data fetch failed
+ * @throws Data update or destroy failed
+ * @throws Failed in syncSession
+ * @example
+ * // if it execute well, return `void`
+ * syncSession(info)
+ */
 export default async(info) => {
   try{
-    let sessionId = cookieParser.signedCookies(info.cookies, config.server.secret)['sekiro']
-    // sessionId will be reset after restarting server
-    // we need to update session after every connection
+    /**
+     * `sessionId` will be reset after restarting server,
+     * we need to update the session after every connection
+     */
+    let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
 
     if(sessionId !== info.sessionId){
       let data
@@ -21,7 +38,11 @@ export default async(info) => {
           },
         })
       }catch(err){
-        err = new Error('data fetch failed')
+       /**
+       * It only catch the error when
+       * it occurs exception in executing `Session.findOne`
+       */
+        err = new Error('Data fetch failed')
         err.status = 500
         throw err
       }
@@ -44,7 +65,11 @@ export default async(info) => {
           }
         }
       }catch(err){
-        err = new Error('data update or destroy failed')
+        /**
+       * It only catch the error when
+       * it occurs exception in executing `data.update`
+       */
+        err = new Error('Data update or destroy failed')
         err.status = 500
         throw err
       }
@@ -53,6 +78,10 @@ export default async(info) => {
       message: 'do not have session on the server',
     }
   }catch(err) {
+    /**
+     * Catch the error whatever it is, and it will check
+     * whether this error is identified or not.
+     */
     if(typeof err.status !== 'number'){
       err = new Error('Failed in syncSession.')
       err.status = 500

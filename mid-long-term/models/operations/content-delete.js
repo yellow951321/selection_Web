@@ -1,5 +1,22 @@
+/**
+ * @file Delete the content with the given `contentId`
+ */
 import {Content, } from 'mid-long-term/models/association.js'
 
+/**
+ * @typedef infoObject info
+ * @property {number} contentId
+ */
+
+/**
+ * Delete the content with the given `contentId`
+ * @function content-delete
+ * @param {infoObject} info
+ * @returns {object}
+ * @throws invalid argument
+ * @throws contentId is not a number
+ * @throws content delete failed
+ */
 export default async(info)=>{
   if(typeof info !== 'object' || info === null){
     let err = new Error('invalid argument')

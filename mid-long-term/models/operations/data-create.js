@@ -1,5 +1,18 @@
+/**
+ * @file Create a new Campus into database given the following information
+ */
 import {Data, } from 'mid-long-term/models/association.js'
-
+/**
+ * Create a new Campus into database given the following information
+ * @function dataCreate
+ * @param {object} info
+ * @param {number} info.campusId - The ID of campus name
+ * @param {number} info.typeId - The ID of the type(0 or 1)
+ * @param {number} info.userId - The ID of the user
+ * @param {number} info.year - The year
+ * @returns {string} - return a OK to represent this op is work correctly
+ * @thorows - Throw an error if the campusId | typeId | userId | year == isNan
+ */
 export default async(info) =>{
   if(typeof info !== 'object' || info === null){
     let err = new Error('invalid argument')

@@ -1,10 +1,56 @@
+/**
+ * return the whole campus information
+ * @function getAllCampus
+ * @param {object} info
+ * @param {number} info.year - The year of the campus
+ * @param {number} info.typeId - The type of the campus
+ * @returns {array} - Each element represent a content of campus
+ * @requires 'short-term/models/association.js'
+ * @requires Sequelize
+ * @requires 'lib/static/javascripts/mapping/campus.js'
+ */
+
+// import  association.js module
 import {Data, Content, User, } from 'short-term/models/association.js'
+// import the sequelize
 import Sequelize from 'sequelize'
+// import the campusMap module
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
+// Assign Variable Op to a Sequelize.Op
 const Op = Sequelize.Op
 
+/**
+ * @typedef {object} userInfo
+ * @property {number} id - The id of user
+ * @property {string} name - The account of the user
+ */
+
+/**
+ * @typedef {object} CampusDetail
+ * @property {userInfo} user - The userInfo type object
+ * @property {number} unchecked - the number of the content which is unchecked
+ * @property {number} checked - the number of the content which is checked
+ * @property {number} confliced - numConflicted : the number of the content which is conflicted
+ * @property {string} lastUpdateTime - the last modified time
+ */
+
+/**
+ * The auxiliary function to finished the statistics of data
+ * @function getCampusDetail
+ * @param {object} data - A campus data, it is needed to compute some statistics
+ * @returns {CampusDetail} - The statistics of campus
+*/
 async function getCampusDetail(data) {
+
+  /*
+  use the Promise.all to get the
+  1. user : {id, name}
+  2. numUncheked : the number of the content which is unchecked
+  3. numChecked : the number of the content which is checked
+  4. numConflicted : the number of the content which is conflicted
+  5. The lastUpdataTime : the last modified time
+   */
   const [
     user,
     numUnchecked,
@@ -45,22 +91,37 @@ async function getCampusDetail(data) {
       ],
     }),
   ])
-
+  // sum the `unchecked` and `Checked` and `Conflicted`
   const numTotal = numUnchecked + numChecked + numConfliced
+  // assign the details as a property of the data
   data.user = {id: user.userId, name: user.account, }
   data.unchecked = numTotal !== 0 ? (numUnchecked / numTotal * 100).toFixed(0) : 0
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
   data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
+<<<<<<< HEAD
   data.campusName = campusMap[data.typeId].campus[data.campusId]
 
+=======
+>>>>>>> feature-backend
   return data
 }
 
 
+/**
+ * Return the total details of total campus with the given information
+ * @function getAllCampus
+ * @param {object} info
+ * @param {number} info.typeId
+ * @param {number} info.yearId
+ * @returns {CampusDetail[]}
+ * @throws - throw an error message if the typeId or yearId is isNaN value
+ */
 export default async(info={}) => {
   try{
+    // explicitly convert the typeId and yearId into type of number
     let typeId = Number(info.typeId)
+<<<<<<< HEAD
     let year = Number(info.year)
     if(Number.isNaN(typeId)){
       const err = new Error('typeId argument')
@@ -69,9 +130,25 @@ export default async(info={}) => {
     }
     if(Number.isNaN(year)){
       const err = new Error('year argument')
+=======
+    let yearId = Number(info.yearId)
+    // check whether typeId or yearId is isNaN
+    if(Number.isNaN(typeId) || Number.isNaN(yearId)){
+      const err = new Error('invalid argument')
+>>>>>>> feature-backend
       err.status = 400
       throw err
     }
+    /*
+    find all campus data with the given typeId and yearId.
+    And, we set the attributes as [
+        'dataId',
+        'year',
+        'userId',
+        'campusId',
+        'typeId',
+      ]
+     */
     let data = await Data.findAll({
       where:{
         typeId,
@@ -85,6 +162,9 @@ export default async(info={}) => {
         'typeId',
       ],
     })
+    /*
+    Transform a new array with new data structure
+     */
     data = data.map(d => {
       return {
         dataId: d.dataId,
@@ -94,10 +174,25 @@ export default async(info={}) => {
         typeId: d.typeId,
       }
     })
+<<<<<<< HEAD
 
     return Promise.all(data.map(d=>getCampusDetail(d)))
   }catch(err) {
     if(typeof err.status !== 'number'){
+=======
+    /*
+    use Promise.all method to execute the getCampusDetail func
+     */
+    data = await Promise.all(data.map(d=>getCampusDetail(d)))
+    // Assign a new property campusName into each elelemnt of the data of array.
+    data.forEach(c => {
+      c.campusName = campusMap[c.typeId].campus[c.campusId]
+    })
+    return data
+  }catch(err) {
+    // error handling
+    if(!err.status){
+>>>>>>> feature-backend
       err = new Error('Error occurred in get-all-campus.js')
       err.status = 500
     }

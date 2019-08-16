@@ -78,7 +78,12 @@ short-term/public/*
 data/operation/csv-to-db/*
 =======
 webpack.transfer.config.js
+<<<<<<< HEAD
 >>>>>>> a2a7775e48afb9d3efdc34d39b1f5eb9be06fb98
+=======
+data/operation/csv-to-db/csv-data
+error-data.json
+>>>>>>> feature-backend
 
 key/*
 .well-known/*

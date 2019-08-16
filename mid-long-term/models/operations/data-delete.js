@@ -1,5 +1,13 @@
 import {Data, } from 'mid-long-term/models/association.js'
-
+/**
+ * Create a new Campus into database with the given information.
+ * WARNING: There is no remedy to recover the deleted data.
+ * @function dataDelete
+ * @param {number} dataId - The ID of the data
+ * @param {number} userId - The ID of userID
+ * @returns {object} - return the deleted data in data table
+ * @thorows - Throw an error if the dataId == isNan
+ */
 export default async(dataId, userId) => {
   if(Number.isNaN(Number(dataId)) || typeof dataId !== 'number'){
     const err = new Error('dataId is NaN')

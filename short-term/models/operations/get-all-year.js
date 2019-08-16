@@ -1,3 +1,14 @@
+/**
+ * @typedef {object} campusYearInfo
+ * @property {number} year
+ */
+/**
+ * Return all year data
+ * @function getAllYear
+ * @returns {campusYearInfo[]}
+ * @throws - throw a new Error if it occurred a unknown error
+ */
+// import the Data module
 import Data from 'short-term/models/schemas/Data.js'
 
 export default async() => {
@@ -25,6 +36,6 @@ export default async() => {
       err = new Error('Error occur in short-term/models/operations/get-all-year.js')
       err.status = 500
     }
-    throw err 
+    throw err
   }
 }

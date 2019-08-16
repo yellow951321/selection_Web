@@ -2,7 +2,16 @@ import {Content, Data, User, } from 'mid-long-term/models/association.js'
 import Sequelize from 'sequelize'
 
 const Op = Sequelize.Op
-
+/**
+ * @typedef {object} campusYearInfo
+ * @property {number} year
+ */
+/**
+ * Return all year data
+ * @function getAllYear
+ * @returns {campusYearInfo[]}
+ * @throws - throw a new Error if it occurred a unknown error
+ */
 async function getYearDetail(data) {
   let user, numUnchecked, numChecked, numConfliced, lastUpdateTime
   [

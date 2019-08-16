@@ -1,5 +1,23 @@
+/**
+ * @file Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ */
 import {Data, } from 'mid-long-term/models/association.js'
 
+/**
+ * @typedef infoObject
+ * @property {string | number} userId,
+ * @property {string | number} dataId
+ */
+
+/**
+ * Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ * @function content-auth
+ * @param {infoObject} info
+ * @returns {string}
+ * @throws `dataId` is `NaN`
+ * @throws `userId` is `NaN`
+ * @throws data fetch failed
+ */
 export default async(info) => {
   if(typeof info !== 'object' || info === null){
     let err = new Error('invalid argument')

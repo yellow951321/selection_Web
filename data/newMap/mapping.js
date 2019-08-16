@@ -1747,7 +1747,7 @@ const midLongTermFromWord = (src) => {
 }
 
 const midLongTermFromNumber = (src) => {
-	src = src || {};
+	src = src || {}
 	if(typeof src != 'object'){
 		throw new Error('formatting error')
 	}
@@ -1755,24 +1755,33 @@ const midLongTermFromNumber = (src) => {
 	let aspect;
 	let keypoint;
 	let method;
-	if(src.aspect){
+	if( typeof src.aspect === 'number' ){
 		aspect = map[src.aspect]
 		if(!aspect){
-			throw new Error('aspect mapping error')
+			let err = new Error('aspect mapping error')
+			console.log(src)
+			err.status = 339
+			throw err
 		}
 		output.aspect = aspect.midLongTerm;
 	}
-	if(src.keypoint){
+	if( typeof src.keypoint === 'number'){
 		keypoint = aspect['keypoint'][src.keypoint]
 		if(!keypoint){
-			throw new Error('aspect mapping error')
+			let err = new Error('keypoint mapping error')
+			console.log(src)
+			err.status = 339
+			throw err
 		}
 		output.keypoint = keypoint.midLongTerm;
 	}
-	if(src.method){
+	if( typeof src.method === 'number'){
 		method = keypoint['method'][src.method]
 		if(!method){
-			throw new Error('aspect mapping error')
+			let err = new Error('method mapping error')
+			console.log(src)
+			err.status = 339
+			throw err
 		}
 		output.method = method.midLongTerm;
 	}
@@ -1782,4 +1791,5 @@ const midLongTermFromNumber = (src) => {
 module.exports = {
 	midLongTermFromWord,
 	midLongTermFromNumber,
+	map
 }

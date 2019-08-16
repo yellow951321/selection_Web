@@ -1,3 +1,12 @@
+/**
+ * @file The review route for reviewer
+ * @module reviewRouter
+ * @requires express
+ * @requires 'projectRoot/mid-long-term/models/operations/get-content.js'
+ * @requires 'lib/static/javascripts/mapping/campus.js'
+ * @requires 'projectRoot/mid-long-term/models/operations/content-update.js'
+ * @requires 'projectRoot/mid-long-term/models/operations/content-auth.js'
+ */
 import express from 'express'
 import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
@@ -13,12 +22,27 @@ const router = express.Router({
   strict: false,
 })
 
+
+/**
+ * It will update the status of the `isChecked` of the content
+ * @name check
+ * @inner
+ * @function
+ */
 router.post('/check', async(req, res, next) => {
   try{
+    /**
+     * Update the value of the column, `isChecked` to `1`
+     */
     let newData = await contentUpdate(req.body.contentId, {
       reviewerId: req.session.userId,
       isChecked: 1,
     })
+    /**
+     * If `newData` is not `undefined` or `null`,
+     * sent a 'completed' string back.
+     * Otherwise, throw an error.
+     */
     if(newData){
       res.send('completed')
     }
@@ -27,6 +51,10 @@ router.post('/check', async(req, res, next) => {
     }
   }
   catch(err){
+    /**
+     * Catch the error whatever it is, and it will check
+     * whether this error is identified or not.
+     */
     if(!err.status){
       const err = new Error('ckeck failed')
       err.status = 500
@@ -35,8 +63,27 @@ router.post('/check', async(req, res, next) => {
   }
 })
 
+/**
+ * It will update the status of
+ * `isConflicted`,
+ * `conflictedAspect`,
+ * `conflictedKeypoint`,
+ * `conflictedMethod`,
+ * of the content
+ * @name conflict
+ * @inner
+ * @function
+ */
 router.post('/conflict', async(req, res, next) => {
   try{
+    /**
+     * Update the value of the columns,
+     * `conflictedAspect`,
+     * `conflictedKeypoint`,
+     * `conflictedMethod`,
+     * `isConflicted`,
+     * `reviewerId`
+     */
     let newData = await contentUpdate(req.body.contentId, {
       conflictedAspect: req.body.conflictedAspect,
       conflictedKeypoint: req.body.conflictedKeypoint,
@@ -44,6 +91,11 @@ router.post('/conflict', async(req, res, next) => {
       isConflicted: 1,
       reviewerId: req.session.userId,
     })
+    /**
+     * If `newData` is not `undefined` or `null`,
+     * sent a 'completed' string back.
+     * Otherwise, throw an error.
+     */
     if(newData){
       res.send('completed')
     }
@@ -52,6 +104,10 @@ router.post('/conflict', async(req, res, next) => {
     }
   }
   catch(err){
+     /**
+     * Catch the error whatever it is, and it will check
+     * whether this error is identified or not.
+     */
     if(!err.status){
       const err = new Error('conflict failed')
       err.status = 500
@@ -59,19 +115,31 @@ router.post('/conflict', async(req, res, next) => {
     next(err)
   }
 })
-
+/**
+ * Check whether `dataId` is owned by the user,`userId` or not.
+ * @name authRouter
+ * @inner
+ * @function
+ */
 router.use('/:dataId', async (req, res, next) => {
   try{
     let result = await contentAuth({
       dataId: req.params.dataId,
       userId: req.session.userId
     })
+<<<<<<< HEAD
+=======
+
+    if(result === 'empty data'){
+      res.redirect('/auth/channel')
+      return
+    }
+>>>>>>> feature-backend
 
     if(result.message === 'as an editor'){
       res.redirect(`/mid-long-term/data/${req.params.dataId}/edit`)
       return
     }
-
     res.locals.typeId = result.info.typeId
     res.locals.campusId = result.info.campusId
     next()
@@ -87,9 +155,18 @@ router.use('/:dataId', async (req, res, next) => {
   }
 })
 
+/**
+ * Render the `review.pug` back to the client.
+ * @name reviewPugRouter
+ * @inner
+ * @function
+ */
 router.get('/:dataId/index', async(req, res, next) => {
   try{
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature-backend
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId]['campus'][res.locals.campusId]
 
@@ -122,6 +199,13 @@ router.get('/:dataId/index', async(req, res, next) => {
   }
 })
 
+/**
+ * Render the `reivew.pug` with the desired data
+ * respected to `aspect`, `keypoint`, `method`.
+ * @name reviewFilterRouter
+ * @inner
+ * @function
+ */
 router.get('/:dataId/filter', async(req, res, next) => {
   try{
     let data;

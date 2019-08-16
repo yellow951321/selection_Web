@@ -64,7 +64,7 @@ export default async(data) => {
     throw err
   }
   temp.isConflicted = data.isConflicted
-  
+
   if(data.dataId === undefined || (typeof data.dataId === 'number' && !Number.isNaN(data.dataId)))
     temp.dataId = data.dataId
   else{

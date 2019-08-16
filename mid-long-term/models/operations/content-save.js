@@ -1,5 +1,35 @@
+/**
+ * @file update a content with the given `userId`, `contentId`.
+ */
 import {Content, Data, } from 'mid-long-term/models/association.js'
 
+/**
+ * @typedef infoObject info
+ * @property {number} contentId
+ * @property {number} userId
+ * @property {number} pageFrom
+ * @property {nummber} pageTo
+ * @property {string} title1
+ * @property {string} title2
+ * @property {string} title3
+ * @property {string} title4
+ * @property {string} content
+ * @property {string} summary
+ * @property {string} note
+ * @property {number} reviewerId
+ */
+
+/**
+ * update a content with the given `userId`, `contentId`.
+ * @function content-save
+ * @param {infoObject} info
+ * @returns {array}
+ * @throws invalide argument
+ * @throws `contentId`is `NaN`
+ * @throws `pageFrom` is `NaN`
+ * @throws `pageTo` is `NaN`
+ * @throws data fetch failed
+ */
 export default async(info)=> {
   if(typeof info !== 'object' || info === null){
     let err = new Error('invalid argument')
@@ -26,7 +56,7 @@ export default async(info)=> {
     conflictedKeypoint: null,
     conflictedMethod: null,
   }
-  
+
   if(typeof info.title1 !== 'string' && typeof info.title1 !== 'undefined' && info.title1 !== null){
     const err = new Error('title1 is not valid')
     err.status = 400
@@ -83,7 +113,7 @@ export default async(info)=> {
     err.status = 400
     throw err
   }
-  
+
   let content, data, savedContent
   try{
     content = await Content.findOne({
