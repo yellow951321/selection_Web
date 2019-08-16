@@ -1,4 +1,3 @@
-import http from 'http'
 import express from 'express'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
@@ -7,26 +6,34 @@ import logger from 'morgan'
 import config from 'projectRoot/config.js'
 import auth from 'auth/app.js'
 import midLongTerm from 'mid-long-term/app.js'
-// import shortTerm from 'short-term/app.js'
-const isDevMode = process.env.NODE_ENV == 'development'
+import shortTerm from 'short-term/app.js'
+import https from 'https'
+import fs from 'fs'
 
-const server = express()
+const isDevMode = process.env.NODE_ENV === 'development'
 
-http.createServer(server)
-server.listen(config.server.port)
-
-if(isDevMode){
-  server.use(logger('dev'))
+const options = {
+  key: fs.readFileSync('key/private.key'),
+  ca: fs.readFileSync('key/ca_bundle.crt'),
+  cert: fs.readFileSync('key/certificate.crt'),
 }
 
-server.use(cookieParser())
-server.use(express.json({
+const httpsExpressServer = express()
+const httpsServer = https.createServer(options, httpsExpressServer)
+httpsServer.listen(config.server.port)
+
+if(isDevMode){
+  httpsExpressServer.use(logger('dev'))
+}
+
+httpsExpressServer.use(cookieParser())
+httpsExpressServer.use(express.json({
   inflate: true,
   limit: '5GB',
   strict: true,
   type: 'application/json',
 }))
-server.use(express.urlencoded({
+httpsExpressServer.use(express.urlencoded({
   extended: true,
   inflate: true,
   limit: '5GB',
@@ -40,7 +47,7 @@ server.use(express.urlencoded({
   ],
 }))
 
-server.use(session({
+httpsExpressServer.use(session({
   cookie: {
     path: '/',
     httpOnly: !isDevMode,
@@ -63,15 +70,13 @@ server.use(session({
   unset: 'destroy',
 }))
 
-server.use('/auth', auth)
-server.use('/mid-long-term', midLongTerm)
-// server.use('/short-term', shortTerm)
+httpsExpressServer.use('/auth', auth)
+httpsExpressServer.use('/mid-long-term', midLongTerm)
+httpsExpressServer.use('/short-term', shortTerm)
 
-
-server.use((req, res) => {
+httpsExpressServer.use((req, res) => {
   if(req.session.userId)
     res.redirect('/auth/channel')
   else
     res.redirect('/auth/login')
 })
-

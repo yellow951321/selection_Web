@@ -4,18 +4,19 @@ extends mixins/layout
 append head
   +midLongCss('campus')
 
+//- append buttons in the header
 append buttons
   //- append buttons in the header
-  include mixins/_addbutton
+  include mixins/add-button
 
 append content
   //- pop up deleteproject
-  include mixins/_suredelete
+  include mixins/sure-delete
 
   //- popup addproject
-  include mixins/_projectcreation.pug
+  include mixins/project-creation.pug
 
-  include mixins/_rendercampus.pug
+  include mixins/render-campus.pug
   //- content
   //- page management
   #page-management.ui.container.pusher

@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import config from 'projectRoot/config.js'
 
-export default new Sequelize('sinicaShortTerm', `${config.databse.user}`, `${config.database.password}`, {
+const shortTermDB = new Sequelize('sinicaShortTerm', `${config.database.user}`, `${config.database.password}`, {
   // Custom host
   host: `${config.database.host}`,
   // Custom port
@@ -10,7 +10,7 @@ export default new Sequelize('sinicaShortTerm', `${config.databse.user}`, `${con
   dialect: 'mysql',
   // Disable inserting undefined values as NULL
   //-default: false
-  omitNull: true,
+  omitNull: false,
   // a flag for using a native library or not
   //-default: false
   native: true,
@@ -41,3 +41,6 @@ export default new Sequelize('sinicaShortTerm', `${config.databse.user}`, `${con
     idle: 30000,
   },
 })
+
+
+export default shortTermDB

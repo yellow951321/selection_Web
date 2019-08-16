@@ -1,0 +1,92 @@
+each val in contents
+	form.ui.form.segment.editNode
+		.fields
+			.four.wide.field
+				.fields
+					.eight.wide.field
+						label 開始頁
+						if val.isChecked == 1
+							p.page__start= val.pageFrom
+						else
+							input.page__start(type='number' value=val.pageFrom)
+					.eight.wide.field
+						label 結束頁
+						if val.isChecked == 1
+							p.page__end= val.pageTo
+						else
+							input.page__end(type='number' value=val.pageTo)
+			.seven.wide.field
+				label 審查者
+				if val.isChecked == 1
+					.ui.green.large.label=`已經由${val.reviewerId}審核`
+				else
+					.ui.red.large.label=`尚未審核`
+			.two.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.changeLabel(type='submit') 改變標籤
+			if val.isChecked == 1
+				.two.wide.field
+			else
+				.two.wide.field
+					.ui.container.center.aligned.choice-block
+						button.ui.button.save(type='submit') 儲存
+			.two.wide.field
+				.ui.container.center.aligned.choice-block
+					button.ui.button.delete(type='submit') 刪除
+		.three.fields
+			.field
+				label 構面
+				.ui.large.tag.label=val.aspect
+			.field
+				label 推動重點
+				.ui.large.tag.label=val.keypoint
+			.field
+				label 具體作法
+				.ui.large.tag.label=val.method
+		.fields
+			.four.wide.field
+				label 大標題
+				if val.isChecked == 1
+					p.title1= val.title1
+				else
+					input.title1(value = val.title1)
+			.four.wide.field
+				label 中標題
+				if val.isChecked == 1
+					p.title2= val.title2
+				else
+					input.title2(value = val.title2)
+			.four.wide.field
+				label 小標題
+				if val.isChecked == 1
+					p.title3= val.title3
+				else
+					input.title3(value = val.title3)
+			.four.wide.field
+				label 最小標題
+				if val.isChecked == 1
+					p.title4= val.title4
+				else
+					input.title4(value = val.title4)
+		.field
+			label 內容
+			if val.isChecked == 1
+				p.content= val.content
+			else
+				textarea.resizs_none.content(name="", rows="5")= val.content
+		.field
+			if val.isChecked == 1
+				if val.summary
+					label 摘要
+					p.summary= val.summary
+			else
+				label 摘要
+				textarea.resizs_none.summary(name="", rows="2")= val.summary
+			if val.isChecked == 1
+				if val.note
+					label 備註
+					p.note= val.note
+			else
+				label 摘要
+				textarea.resizs_none.note(name="", rows="1")= val.note
+		input.node-index(type='hidden', value = val.contentId)

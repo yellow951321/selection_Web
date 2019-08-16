@@ -1,5 +1,5 @@
 import midLongTermDB from 'projectRoot/mid-long-term/models/operations/connect.js'
-const Sequelize = require('sequelize')
+import Sequelize from 'sequelize'
 import User from 'projectRoot/auth/models/schemas/user.js'
 
 const dataSchema = {

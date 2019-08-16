@@ -1,0 +1,1 @@
+import 'short-term/static/javascripts/module/projectCreation'

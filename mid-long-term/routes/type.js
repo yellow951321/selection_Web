@@ -16,9 +16,13 @@ router.get('/index', async(req, res, next)=>{
       ],
       id: req.session.userId,
       user: res.locals.user,
-      types: types,
+      types,
     })
   }catch(err) {
+    if(!err.status){
+      err = new Error('Error occurred in mid-long-term/routes/type.js')
+      err.status = 500
+    }
     next(err)
   }
 })

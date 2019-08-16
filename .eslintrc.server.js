@@ -61,5 +61,6 @@ module.exports = {
       },
     ],
     'no-empty-pattern': ['off', ],
+    'no-ex-assign': ['off', ],
   },
 }

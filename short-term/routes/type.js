@@ -1,36 +1,34 @@
 import express from 'express'
 
-import { findTypeAll, } from 'projectRoot/short-term/models/operations/Data.js'
-import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
+import getAllType from 'short-term/models/operations/get-all-type.js'
 
 const router = express.Router()
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
-    console.log(req.session.userId)
-    let types = await findTypeAll(req.session.userId)
-
-    types = await types.map((typeNum) => {
-      return {
-        name: getFromNum(map, {type: typeNum, }),
-        id: typeNum,
-      }
-    })
-
-    res.render('manage/type', {
-      GLOBAL:{
-        channel: {
+    let types = await getAllType()
+    res.render('type', {
+      breadcrumb: [
+        {
           id: 'short-term',
-          name: '短程計畫',
+          name: '計畫申請書',
         },
-        id: req.session.userId,
-        user: res.locals.user,
-        map: map.campus,
-        types: types,
-      },
+        {
+          id: res.locals.yearId,
+          name: res.locals.yearId,
+        },
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      types: types,
+      year: res.locals.yearId,
     })
   }catch(err) {
-    console.log(err)
+    if(!err.status){
+      err = new Error('Error occurred in short-term/routes/type.js')
+      err.status = 500
+    }
+    next(err)
   }
 })
 

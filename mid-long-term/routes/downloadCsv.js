@@ -1,10 +1,8 @@
 import express from 'express'
-import { createObjectCsvWriter, } from 'csv-writer'
 import fs from 'fs'
-import uniqueFilename from 'unique-filename'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-import {map, getFromNum, } from 'projectRoot/data/operation/mapping.js'
+import createCsv from 'mid-long-term/models/operations/download-csv.js'
+import Data from 'mid-long-term/models/schemas/Data.js'
+import campusMap from 'projectRoot/lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -15,102 +13,42 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/:dataId/index', async(req, res, next)=>{
   try {
-    // const {dataValues, } = await Data.findOne({
-    //   where: {
-    //     campusId: res.locals.campusId,
-    //     typeId: res.locals.typeId,
-    //     yearFrom: res.locals.year, // TODO
-    //     yearTo: res.locals.year, // TODO
-    //     userId: req.session.userId
-    //   },
-    //   attributes: ['dataId']
-    // })
-
-    let tmpDir = '/tmp/selection_Web'
-    if(!fs.existsSync(tmpDir))
-      fs.mkdirSync(tmpDir)
-
-    let filePath = uniqueFilename(tmpDir)
-
-    // setup csvWriter
-    const csvWriter = createObjectCsvWriter({
-      path: filePath,
-      header: [
-        {id: 'aspect', title: '構面', },
-        {id: 'keypoint', title: '推動重點', },
-        {id: 'method', title: '具體作法', },
-        {id: 'title1', title: '大標題', },
-        {id: 'title2', title: '中標題', },
-        {id: 'title3', title: '小標題', },
-        {id: 'title4', title: '最小標題', },
-        {id: 'content', title: '內容', },
-      ],
+    const {filePath, data} = await createCsv({
+      dataId: req.params.dataId
     })
-    // write in the tmp output file
-    let outputObject = []
 
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-      },
-      attributes:[
-        'contentId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'content',
-        'summary',
-        'note',
-        'aspect',
-        'keypoint',
-        'method',
-      ],
-    })
-      .then(data => {return data})
-      .catch(err => {throw err})
-
-    data = data.map(val => val.dataValues)
-
-    for(let val of data){
-      outputObject.push({
-        aspect: getFromNum(map, {dimension: val.aspect, }),
-        keypoint: getFromNum(map, {item: val.keypoint, }),
-        method: getFromNum(map, {detail: val.method, }),
-        title1: val.title1,
-        title2: val.title2,
-        title3: val.title3,
-        title4: val.title4,
-        content: val.content,
-      })
-    }
-
-    await csvWriter.writeRecords(outputObject)
-
-    // send requested output file
-    let options = {
+    const options = {
       root: '/',
       dotfiles: 'deny',
       headers: {
         'content-type': 'text/csv',
-        'Content-Disposition': `attachment;filename=${encodeURIComponent(req.params.campusName)}.csv`,
+        'Content-Disposition': `attachment;filename=${encodeURIComponent(campusMap[data.typeId]['campus'][data.campusId])}${data.yearFrom}to${data.yearTo}.csv`,
       },
     }
-    res.sendFile(filePath, options, function(err){
+    res.sendFile(filePath, options, (err) => {
       if(err){
+        err = new Error("send file failed")
+        err.status = 500
         throw err
       }
       else{
-        fs.unlink(filePath, function(err){
-          if(err)
+        fs.unlink(filePath, (err) => {
+          if(err){
+            err = new Error("file unlink failed")
+            err.status = 500
             throw err
+          }
         })
       }
     })
   } catch (err) {
-    console.log(err)
+    if(!err.status){
+      err = new Error("Error occurred in downloadCsv.js")
+      err.status = 500
+    }
+    next(err)
   }
 })
 

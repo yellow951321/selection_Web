@@ -1,7 +1,9 @@
-extends layout
+extends mixins/layout
+
+append head
+  +shortCss('error')
 
 block content
   .ui.center.aligned.container
     h1.ui.header= message
     h2.ui.header= error.status
-    pre #{error.stack}

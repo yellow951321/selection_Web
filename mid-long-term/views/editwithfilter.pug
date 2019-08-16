@@ -4,7 +4,7 @@ append head
   +midLongCss('editwithfilter')
 
 append content
-  include mixins/_suredelete
+  include mixins/sure-delete
 
   //- content
   //- page edit
@@ -14,8 +14,8 @@ append content
   #page-filter.ui.container.pusher
     .ui.form.segment.filter
       .four.fields
-        include mixins/_filterthreefield
-        +filter('教學','研究','產學','社會責任','大學治理及公共性')
+        include mixins/filter-three-field
+        +filter('教學','研究','產學','社會責任','大學治理及公共性','不具體','未分類')
         .field
           .ui.container.center.aligned.choice-block
             button.ui.button.filter.filter__choice 選擇

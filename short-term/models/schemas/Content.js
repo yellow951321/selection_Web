@@ -1,5 +1,5 @@
-const { sequelizeShortTerm, } = require('../operations/connect')
-const Sequelize = require('sequelize')
+import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
+import Sequelize from 'sequelize'
 
 // todo require('./Data)
 
@@ -61,7 +61,7 @@ const contentSchema = {
     allowNull: false,
   },
   isChecked: {
-    type: Sequelize.BLOB(1),
+    type: Sequelize.TINYINT(1),
     allowNull: false,
   },
   reviewerId: {
@@ -69,7 +69,7 @@ const contentSchema = {
     allowNull: true,
   },
   isConflicted: {
-    type: Sequelize.BLOB(1),
+    type: Sequelize.TINYINT(1),
     allowNull: false,
   },
   conflictedAspect: {
@@ -94,6 +94,6 @@ const contentSchema = {
   },
 }
 
-const Content = sequelizeShortTerm.define('content', contentSchema)
+const Content = shortTermDB.define('content', contentSchema)
 
-module.exports = Content
+export default Content

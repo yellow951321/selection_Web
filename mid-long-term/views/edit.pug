@@ -5,15 +5,18 @@ append head
 
 append content
   //- popup delete content
-  include mixins/_suredelete
+  include mixins/sure-delete
 
   //- popup advice filter
   .ui.container
-    #advice.ui.small.modal
-      .ui.form.segment.filter
+    #changeSelect.ui.small.modal
+      .ui.form.segment
         .three.fields
-          include mixins/_filterthreefield
-          +filter('教學','研究','產學','社會責任','大學治理及公共性')
+          include mixins/filter-three-field
+          +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類')
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 確認
 
   //- content
   //- page edit
@@ -24,7 +27,7 @@ append content
     .dataId.transition.hidden=dataId
     .ui.form.segment.filter
       .five.fields
-        +filter('教學','研究','產學','社會責任','大學治理及公共性')
+        +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類','全部')
         .field
           label 模式
           select.filter.filter__mode.ui.selection.dropdown
@@ -44,7 +47,8 @@ append content
   #footer.ui.container.center.aligned.transition.hidden
     .ui.floating.message.transition.hidden
       p 尚未新增任何資料
-    button.add-content.ui.blue.button 新增
+    i.add-content.ui.plus.circle.icon.transition
+  i#arrow.arrow.alternate.circle.up.icon
 
 append script
   +midLongJS('edit')

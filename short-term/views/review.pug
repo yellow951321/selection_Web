@@ -1,0 +1,49 @@
+extends mixins/layout
+
+append head
+  +shortCss('review')
+
+append content
+  .ui.container
+    #advice.ui.small.modal
+      .ui.form.segment
+        .three.fields
+          include mixins/filter-three-field
+          +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類')
+      .actions
+        button.ui.negative.button 取消
+        button.ui.positive.button 確認
+
+  #page-filter.ui.container.pusher
+    .dataId.transition.hidden=dataId
+    .ui.form.segment.filter
+      .five.fields
+        +filter('教學(B)','研究(C)','產學(D)','社會責任(E)','大學治理及公共性(F)','不具體','未分類','全部')
+        .field
+          label 模式
+          select.filter.filter__mode.ui.selection.dropdown
+            option(value='view') 瀏覽
+            option(value='audit') 審查
+        .field
+          .ui.container.center.aligned.choice-block
+            button.ui.button.filter.filter__choice 選擇
+
+  //- content
+  //- page edit
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-audit.ui.container
+
+  #page-message.ui.container.center.aligned.transition.hidden.save-message
+    .ui.floating.message
+
+  #page-edit.ui.container
+
+  #footer.ui.container.center.aligned.transition.hidden
+    .ui.floating.message.transition
+      p 尚未擁有任何資料
+
+
+append script
+  +shortJS('review')

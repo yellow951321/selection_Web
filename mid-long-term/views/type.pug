@@ -6,13 +6,13 @@ append head
 
 append buttons
   //- append buttons in the header
-  include mixins/_addbutton
+  include mixins/add-button
 
 append content
   //- popup addproject
-  include mixins/_projectcreation.pug
+  include mixins/project-creation.pug
 
-  .ui.middle.aligned.center.aligned.grid.container.pusher
+  #type-select.ui.middle.aligned.center.aligned.grid.container.pusher
     .two.column.row
       for val in types
         .column

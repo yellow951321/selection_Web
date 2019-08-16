@@ -1,0 +1,44 @@
+mixin renderYear(obj)
+  form.rectangle-box.year(action=`${GLOBAL.config.server.host}/mid-long-term/data/delete`, method='POST')
+    .ui.segment.center.aligned.grid
+      .ui.two.column.row
+        h3.column.yearHeader= obj.yearTo
+      .ui.row
+        .sixteen.wide.column
+          if obj.user.id == id
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/data/${obj.dataId}/edit`) 編輯
+          else
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/review/${obj.dataId}/index`) 檢閱
+          a.ui.button.option(href=`${GLOBAL.config.server.host}/mid-long-term/download/${obj.dataId}/index`) 下載
+          //- if obj.user.id == id
+          button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
+      .ui.row.user-time-row
+        p.userTime
+          span= `編輯者: ${obj.user.name}`
+          br
+          if obj.lastUpdateTime
+            span= `最後更新時間： ${obj.lastUpdateTime}`
+          else
+            span 尚無資料
+      if obj.unchecked > 0
+        .ui.row
+          .sixteen.wide.column
+            #unchecked.ui.red.progress.error(data-percent=`${obj.unchecked}`)
+              .bar
+                .progress
+              .label 尚未審核
+      if obj.checked > 0
+        .ui.row
+          .sixteen.wide.column
+            #isChecked.ui.green.progress(data-percent=`${obj.checked}`)
+              .bar
+                .progress
+              .label 審核通過
+      if obj.confliced > 0
+        .ui.row
+          .sixteen.wide.column
+            #unsolved.ui.yellow.progress.warning(data-percent=`${obj.confliced}`)
+              .bar
+                .progress
+              .label 尚未確認
+

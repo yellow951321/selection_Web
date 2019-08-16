@@ -4,29 +4,31 @@ extends mixins/layout
 append head
   +midLongCss('year')
 
-//- append buttons in the header
 append buttons
-  include mixins/_addbutton
+  //- append buttons in the header
+  include mixins/add-button
 
 append content
   //- pop up deleteproject
-  include mixins/_suredelete
+  include mixins/sure-delete
 
   //- popup addproject
-  include mixins/_projectcreation.pug
+  include mixins/project-creation.pug
 
-  include mixins/_renderyear.pug
+  include mixins/render-year.pug
   //- content
   //- page select
   #page-management.ui.container.pusher
-    if yearFroms.length
-      for yearFrom in yearFroms
+    if data.length
+      - let currentYear = 0
+      each dataObj in data
         .year.ui.container
-          h1.yearFrom.header= yearFrom.year
-          for yearTo in yearFrom.info
-            +renderYear(yearTo)
-
-
+          if currentYear === dataObj.yearFrom
+            +renderYear(dataObj)
+          else
+            - currentYear = dataObj.yearFrom
+            h1.yearFrom.header= dataObj.yearFrom
+            +renderYear(dataObj)
     else
       .ui.center.aligned.container
         div 請點擊右上角新增來新增專案

@@ -1,7 +1,6 @@
 import express from 'express'
-
-import { findCampusAll, } from 'projectRoot/short-term/models/operations/Data.js'
-import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
+import getAllCampus from 'short-term/models/operations/get-all-campus.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -12,45 +11,45 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
-
-    let campuses = await findCampusAll(req.session.userId, res.locals.typeId)
-    campuses = campuses.map(data => {
-      return {
-        id: data,
-        name: getFromNum(map, {
-          type: res.locals.typeId,
-          campus: data,
-        }),
-        time: '2019-05-20',
-      }
+    const typeName = campusMap[res.locals.typeId].type
+    const data = await getAllCampus({
+      typeId: res.locals.typeId,
+      year: res.locals.yearId,
     })
-
-    let typeName = getFromNum(map, {type: res.locals.typeId, })
-
-    res.render('manage/campus', {
-      GLOBAL: {
-        channel:{
+    res.render('campus', {
+      breadcrumb: [
+        {
           id: 'short-term',
-          name: '短程計畫',
+          name: '計畫申請書',
         },
-        id: req.session.userId,
-        user: res.locals.user,
-        map: map.campus,
-        type: {
+        {
+          id: res.locals.yearId,
+          name: res.locals.yearId,
+        },
+        {
           id: res.locals.typeId,
-          name: typeName,
-        },
-        campuses: campuses,
+          name: typeName
+        }
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      year: res.locals.yearId,
+      type: {
+        id: res.locals.typeId,
+        name: typeName
       },
+      data,
     })
-
   }catch(err){
-    console.log(err)
+    if(!err.status){
+      err = new Error('Error occurred in short-term/routes/campus.js')
+      err.status = 500
+    }
+    next(err)
   }
 })
-
 
 
 export default router

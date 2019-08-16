@@ -1,22 +1,27 @@
 import path from 'path'
 import express from 'express'
 
+import authUser from 'lib/middleware/auth.js'
+
 import config from 'projectRoot/config.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
 import typeRouter from 'short-term/routes/type.js'
-import campusRouter from 'short-term/routes/campus.js'
 import yearRouter from 'short-term/routes/year.js'
-import fileRouter from 'short-term/routes/file.js'
+import reviewRouter from 'short-term/routes/review.js'
+import campusRouter from 'short-term/routes/campus.js'
+import dataRouter from 'short-term/routes/data.js'
 import contentRouter from 'short-term/routes/content.js'
 import downloadRouter from 'short-term/routes/downloadCsv.js'
-import graphRouter from 'short-term/routes/graph.js'
-
 
 const app = express()
+app.locals.GLOBAL = {
+  config,
+  campusMap,
+}
 
-app.set('views', path.join(config.projectRoot, 'shrot-term/views'))
+app.set('views', path.join(config.projectRoot, 'short-term/views'))
 app.set('view engine', 'pug')
-app.use('/static', express.static(`${config.projectRoot}/short-term/public`, {
+app.use('/public', express.static(`${config.projectRoot}/short-term/public`, {
   cacheControl: false,
   // 404 for request dot files
   dotfiles: 'ignore',
@@ -37,56 +42,59 @@ app.use('/static', express.static(`${config.projectRoot}/short-term/public`, {
   // do not redirect to trailing '/'
   redirect: false,
   // add timestamp for test
-  setHeaders(res, {}, {}){
+  setHeaders(res){
     res.set('x-timestamp', Date.now())
   },
 }))
 
-app.use('/:userId', async(req, res, next)=>{
-  if(req.session && req.session.userId == req.params.userId){
-    const data = await User.findOne({
-      where:{
-        userId: req.session.userId,
-      },
-    })
-    if(data != null)
-      res.locals.user = data.dataValues.account
+
+app.use(authUser)
+
+app.use('/', yearRouter)
+
+app.use('/data', dataRouter)
+
+app.use('/content', contentRouter)
+
+app.use('/review', reviewRouter)
+
+app.use('/download', downloadRouter)
+
+app.use('/:yearId', (req, res, next)=>{
+  const yearId = Number(req.params.yearId)
+  if(typeof yearId === 'number'){
+    res.locals.yearId = yearId
     next()
-  }else{
-    res.redirect('/auth/login')
   }
-})
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invaliad type',
+    })
+  }
+},
+typeRouter)
 
-app.use('/:userId', typeRouter)
-
-
-app.use('/:userId/:typeId', (req, res, next)=>{
-  res.locals.typeId = Number(req.params.typeId)
-  next()
+app.use('/:yearId/:typeId', (req, res, next)=>{
+  const typeId = Number(req.params.typeId)
+  if(typeof typeId === 'number'){
+    res.locals.typeId = typeId
+    next()
+  }
+  else{
+    res.status(400).render('error', {
+      status: 400,
+      message: 'invaliad type',
+    })
+  }
 },
 campusRouter)
 
-app.use('/:userId/:typeId/:campusId', (req, res, next)=>{
-  res.locals.campusId = Number(req.params.campusId)
-  next()
-},
-yearRouter)
-
-app.use('/:userId/:typeId/:campusId/:year', (req, res, next)=>{
-  res.locals.year = Number(req.params.year)
-  next()
+app.use((err, {}, res, {}) => {
+  res.render('error', {
+    message: err,
+    error: err,
+  })
 })
-
-app.use('/:userId/:typeId/:campusId/:year/graph', graphRouter)
-
-app.use('/:userId/:typeId/:campusId/:year/download', downloadRouter)
-
-app.use('/:userId/:typeId/:campusId/:year/file', fileRouter)
-
-app.use('/:userId/:typeId/:campusId/:year/content', contentRouter)
-
-
-
-// app.use('/:userId/downloadCsv')
 
 export default app

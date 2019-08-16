@@ -1,10 +1,5 @@
 import express from 'express'
-
-import {map, getFromNum, } from 'projectRoot/data/operation/mapping'
-import { findYearAll, parseYear, projectDelete, } from 'projectRoot/mid-long-term/models/operations/Data.js'
-import { TSArrayType, } from 'babel-types'
-
-
+import getAllYear from 'short-term/models/operations/get-all-year.js'
 const router = express.Router({
   // case sensitive for route path
   caseSensitive: true,
@@ -14,57 +9,29 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/index', async(req, res)=>{
+router.get('/index', async(req, res, next)=>{
   try{
-    let data = await findYearAll({
-      userId: req.session.userId,
-      typeId: res.locals.typeId,
-      campusId: res.locals.campusId,
-    })
+    const years = await getAllYear()
 
-    let type = getFromNum(map, { type: res.locals.typeId, })
-    let campusName = getFromNum(map, {
-      type: res.locals.typeId,
-      campus: res.locals.campusId,
+    res.render('year', {
+      breadcrumb: [
+        {
+          id: 'short-term',
+          name: '計畫申請書',
+        },
+      ],
+      id: req.session.userId,
+      user: res.locals.user,
+      years,
     })
-    let yearFroms = await parseYear(data)
-    res.render('manage/year', {
-      GLOBAL: {
-        channel: {
-          id: 'mid-long-term',
-          name: '中長程計畫',
-        },
-        id: req.session.userId,
-        user: res.locals.user,
-        map: map.campus,
-        type: {
-          id: res.locals.typeId,
-          name: type,
-        },
-        campus: {
-          id: res.locals.campusId,
-          name: campusName,
-        },
-        yearFroms: yearFroms,
-      },
-    })
-
   }catch(err){
-    console.log(err)
+    if(!err.staus){
+      err =  new Error("Error occurred in short-term/routes/year.js")
+      err.stauts = 500
+    }
+    next(err)
   }
 })
 
-
-// router.get('/review', (req,res)=>{
-// //TODO render the manage/edit without edition permission
-// })
-
-// router.get('/edit', (req,res)=>{
-//   try {
-//     res.redirect(`/mid-long-term/${req.session.userId}/${res.locals.typeId}/${res.locals.campusId}/${res.locals.year}/index`)
-//   } catch(err) {
-//     console.log(err)
-//   }
-// })
 
 export default router

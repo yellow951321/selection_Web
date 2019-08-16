@@ -1,27 +1,20 @@
-import schema from 'projectRoot/mid-long-term/static/javascripts/src/schema.js'
+import {map, midLongTermFromNumber, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
-const header = document.getElementById('header')
-const footer = document.getElementById('footer')
-const pageEdit = document.getElementById('page-edit')
+const pageAdvice = document.getElementById('advice')
 const pageFilter = document.getElementById('page-filter')
-const pageAdvice = document.querySelector('#advice')
+const pageAudit = document.getElementById('page-audit')
+const footer = document.getElementById('footer')
 
 class Filter{
   constructor(){
-    this.selectedDimension = ''
-    this.selectedItem = ''
-    this.selectedDetail = ''
+    this.selectedAspect = ''
+    this.selectedkeypoint = ''
+    this.selectedmethod = ''
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
+    this.dataId = pageFilter.querySelector('.dataId').innerHTML
     this.targetNode = null
-
-    const pathSplit = window.location.pathname.split('/')
-    this.selected= {
-      type: pathSplit[2],
-      campus: pathSplit[3] ? decodeURI(pathSplit[3]) : '',
-      dataId: pathSplit[4] ? decodeURI(pathSplit[4]) : '',
-    }
   }
 
   // build htmltable
@@ -30,22 +23,100 @@ class Filter{
       item: {},
       detail: {},
     }
-    Reflect.ownKeys(schema).forEach((dimension) => {
-      table['item'][dimension] = ''
-      if(schema[dimension] instanceof Object){
-        Reflect.ownKeys(schema[dimension]).forEach((item) =>{
-          Reflect.ownKeys(schema[dimension][item]).forEach((detail) =>{
-            if(table['detail'][dimension] === undefined)
-              table['detail'][dimension] = {}
-            if(table['detail'][dimension][item] === undefined)
-              table['detail'][dimension][item] = ''
-            table['detail'][dimension][item] += `<option value='${ detail }'>${ detail }</option>`
-          })
-          table['item'][dimension] += `<option value='${ item }'>${ item }</option>`
-        })
+    for(let aspectIndex in map){
+      let aspect = map[aspectIndex]
+      table[aspectIndex] = {
+        table: '',
+        keypoint: [],
       }
-    })
+      for(let keypointIndex in aspect.keypoint){
+        let keypoint = aspect.keypoint[keypointIndex]
+        let keypointLabel = `${ aspect.label }${ keypoint.label }`
+        table[aspectIndex].table += `<option value='${ keypointIndex }'>${ keypoint.midLongTerm }(${ keypointLabel })</option>`
+        table[aspectIndex]['keypoint'][keypointIndex] = ''
+        for(let methodIndex in keypoint.method){
+          let method = keypoint.method[methodIndex]
+          let methodLabel = `${keypointLabel}${method.label}`
+          table[aspectIndex]['keypoint'][keypointIndex] += `<option value='${ methodIndex }'>${ method.midLongTerm }(${methodLabel})</option>`
+        }
+      }
+    }
     return table
+  }
+
+  static chooseMode(that){
+    return () => {
+      const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value
+      switch (mode){
+      case 'view':
+        this.viewAndAuditMode(that, 'view')
+        break
+      case 'audit':
+        this.viewAndAuditMode(that, 'audit')
+        break
+      default:
+        console.log('mode detection failed')
+      }
+    }
+  }
+
+  static viewAndAuditMode(that, mode){
+    const aspect = pageFilter.querySelector('.filter.filter__dimension').firstChild
+    const keypoint = pageFilter.querySelector('.filter.filter__item').firstChild
+    const method = pageFilter.querySelector('.filter.filter__detail').firstChild
+    const message = that.pageMessage.querySelector('.message')
+    let isChecked
+    if(mode === 'audit'){
+      isChecked = 0
+    }
+    else{
+      isChecked = 1
+    }
+    // query parameter for GET
+    let parameters = {
+      aspect: aspect.value,
+      keypoint: keypoint.value,
+      method: method.value,
+      isChecked,
+    }
+    parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
+    fetch(`/mid-long-term/review/${that.dataId}/filter?${parameters}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.text())
+      .then(data => {
+        that.selectedAspect = Number(aspect.value)
+        that.selectedkeypoint = Number(keypoint.value)
+        that.selectedmethod = Number(method.value)
+        pageAudit.innerHTML = ''
+        if(data === ''){
+          footer.classList.remove('hidden')
+          return
+        }
+        else{
+          footer.classList.add('hidden')
+        }
+        // if there is no project in this campus yet
+        pageAudit.insertAdjacentHTML('beforeend', data)
+
+
+        // add eventListener to showRecommend and check button
+        Array.apply(null, document.querySelectorAll('.recommend')).forEach((button) => {
+          button.addEventListener('click', Filter.showRecommend(filter))
+        })
+        Array.apply(null, document.querySelectorAll('.check')).forEach((button) => {
+          button.addEventListener('click', Filter.check(filter))
+        })
+      })
+      .catch(err => {
+        message.classList.remove('green')
+        message.classList.add('red')
+        message.innerHTML = `<p>${err.message}</p>`
+        that.fadeOut(that.pageMessage)
+      })
   }
 
   static showRecommend(that){
@@ -62,14 +133,11 @@ class Filter{
     const message = that.pageMessage.querySelector('.message')
     return (event) => {
       event.preventDefault()
-      const aspectLabel = that.targetNode.querySelector('.conflictedAspect')
-      const keyointLabel = that.targetNode.querySelector('.conflictedKeypoint')
-      const methodLabel = that.targetNode.querySelector('.conflictedMethod')
 
-      let conflictedAspect = pageAdvice.querySelector('.filter.filter__dimension').firstChild.value
-      let conflictedKeypoint = pageAdvice.querySelector('.filter.filter__item').firstChild.value
-      let conflictedMethod = pageAdvice.querySelector('.filter.filter__detail').firstChild.value
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/conflict`, {
+      let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
+      let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
+      let conflictedMethod = Number(pageAdvice.querySelector('.filter.filter__detail').firstChild.value)
+      fetch('/mid-long-term/review/conflict', {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.targetNode.querySelector('.node-index').value,
@@ -86,9 +154,7 @@ class Filter{
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')
-          aspectLabel.innerHTML = conflictedAspect
-          keyointLabel.innerHTML = conflictedKeypoint
-          methodLabel.innerHTML = conflictedMethod
+          that.targetNode.parentNode.removeChild(that.targetNode)
         })
         .catch(err => {
           message.classList.remove('green')
@@ -103,7 +169,7 @@ class Filter{
     return (event) => {
       event.preventDefault()
       let node = event.target.parentNode.parentNode.parentNode.parentNode
-      fetch(`/mid-long-term/${that.selected.type}/${that.selected.campus}/${that.selected.dataId}/review/check`, {
+      fetch('/mid-long-term/review/check', {
         method: 'POST',
         body: JSON.stringify({
           contentId: node.querySelector('.node-index').value,
@@ -131,24 +197,48 @@ class Filter{
   }
   // dropdown on change
   // dropdown dimension on change
-  static dimensionDropdownOnChanged(that){
+  static aspectDropdownOnChanged(that){
     return (event) => {
-      const editNode = event.target.parentNode.parentNode.parentNode
-      const item = editNode.querySelector('.filter__item').firstChild
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      const defaultItem = Object.keys(schema[event.target.value])[0]
-      item.innerHTML = that.htmlTable['item'][event.target.value]
-      item.value = defaultItem
-      detail.innerHTML = that.htmlTable['detail'][event.target.value][item.value]
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
+      const keypoint = editNode.querySelector('.filter__item').firstChild
+      const method = editNode.querySelector('.filter__detail').firstChild
+      const defaultkeypoint = 0
+      // if the label is 5 or 6 remove keypoint and method choice
+      if(Number(event.target.value) === 5 || Number(event.target.value) === 6 || Number(event.target.value) === -1){
+        editNode.querySelector('.keypointBlock').classList.add('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
+      else {
+        editNode.querySelector('.keypointBlock').classList.remove('visbility--hidden')
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+        keypoint.innerHTML = that.htmlTable[event.target.value]['table']
+        keypoint.value = defaultkeypoint
+        method.innerHTML = that.htmlTable[event.target.value]['keypoint'][keypoint.value]
+      }
+      // handle show all option
+      if(editNode.classList.contains('filter')){
+        keypoint.innerHTML += '<option value=\'-1\'>全部</option>'
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
+      }
     }
   }
   // dropndown item on change
-  static itemDropdownOnChanged(that){
+  static keypointDropdownOnChanged(that){
     return (event) => {
-      const editNode = event.target.parentNode.parentNode.parentNode
-      const dimensionName = editNode.querySelector('.filter__dimension').querySelector('.text').innerHTML
-      const detail = editNode.querySelector('.filter__detail').firstChild
-      detail.innerHTML = that.htmlTable['detail'][dimensionName][event.target.value]
+      const editNode = event.target.parentNode.parentNode.parentNode.parentNode
+      const aspect = editNode.querySelector('.filter__dimension').firstChild.value
+      const method = editNode.querySelector('.filter__detail').firstChild
+      if(Number(event.target.value) === -1){
+        editNode.querySelector('.methodBlock').classList.add('visbility--hidden')
+      }
+      else {
+        method.innerHTML = that.htmlTable[aspect]['keypoint'][event.target.value]
+        editNode.querySelector('.methodBlock').classList.remove('visbility--hidden')
+      }
+      // handle show all option
+      if(editNode.classList.contains('filter')){
+        method.innerHTML += '<option value=\'-1\'>全部</option>'
+      }
     }
   }
 
@@ -193,27 +283,14 @@ $('select.dropdown')
 $('.ui.checkbox')
   .checkbox()
 
+// add event listener to the choice content button
+pageFilter.querySelector('.filter.filter__choice').addEventListener('click', Filter.chooseMode(filter))
 
-// initialize dropdown
-// pageFilter.querySelector('[data-value="研究"]').click()
-// pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
-
-// test
-
-// document.querySelector('.success').addEventListener('click', (event) => {
-//   $('#advice').modal({
-//     onApprove : function(){return false},
-//   }).modal('show')
-// })
-
-Array.apply(null, document.querySelectorAll('.recommend')).forEach((button) => {
-  button.addEventListener('click', Filter.showRecommend(filter))
-})
-Array.apply(null, document.querySelectorAll('.check')).forEach((button) => {
-  button.addEventListener('click', Filter.check(filter))
-})
-
-pageAdvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.dimensionDropdownOnChanged(filter))
-pageAdvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.itemDropdownOnChanged(filter))
+pageAdvice.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
+pageAdvice.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
 pageAdvice.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))
 pageAdvice.querySelector('.positive').addEventListener('click', Filter.recommend(filter))
+
+pageFilter.querySelector('.filter.filter__dimension').firstChild.addEventListener('change', Filter.aspectDropdownOnChanged(filter))
+pageFilter.querySelector('.filter.filter__item').firstChild.addEventListener('change', Filter.keypointDropdownOnChanged(filter))
+pageFilter.querySelector('.filter.filter__dimension').firstChild.dispatchEvent(new Event('change'))

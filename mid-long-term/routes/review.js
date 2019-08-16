@@ -1,9 +1,8 @@
 import express from 'express'
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
-import Data from 'projectRoot/mid-long-term/models/schemas/Data.js'
-import User from 'projectRoot/auth/models/schemas/user.js'
-import {map, getFromNum, getFromWord, } from 'projectRoot/data/operation/mapping'
-import { midLongTermFromNumber, midLongTermFromWord, } from 'lib/static/javascripts/mapping/label.js'
+import getContent from 'projectRoot/mid-long-term/models/operations/get-content.js'
+import campusMap from 'lib/static/javascripts/mapping/campus.js'
+import contentUpdate from 'projectRoot/mid-long-term/models/operations/content-update.js'
+import contentAuth from 'projectRoot/mid-long-term/models/operations/content-auth.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -14,160 +13,137 @@ const router = express.Router({
   strict: false,
 })
 
-router.get('/', async(req, res) => {
+router.post('/check', async(req, res, next) => {
   try{
-    let checkData = await Data.findOne({
-      where:{
-        dataId: res.locals.dataId,
-      }
-      ,
-      attributes: [
-        'dataId',
-      ],
+    let newData = await contentUpdate(req.body.contentId, {
+      reviewerId: req.session.userId,
+      isChecked: 1,
     })
-    if(checkData.dataValues.userId === req.session.userId){
-      res.redirect(`/mid-long-term/${res.locals.typeId}/${res.locals.campusId}/${res.locals.dataId}/edit/file`)
+    if(newData){
+      res.send('completed')
+    }
+    else{
+      throw new Error('failed')
+    }
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('ckeck failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.post('/conflict', async(req, res, next) => {
+  try{
+    let newData = await contentUpdate(req.body.contentId, {
+      conflictedAspect: req.body.conflictedAspect,
+      conflictedKeypoint: req.body.conflictedKeypoint,
+      conflictedMethod: req.body.conflictedMethod,
+      isConflicted: 1,
+      reviewerId: req.session.userId,
+    })
+    if(newData){
+      res.send('completed')
+    }
+    else{
+      throw new Error('failed')
+    }
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('conflict failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.use('/:dataId', async (req, res, next) => {
+  try{
+    let result = await contentAuth({
+      dataId: req.params.dataId,
+      userId: req.session.userId
+    })
+    if(result === 'empty data'){
+      res.redirect('/auth/channel')
       return
     }
-    let data = await Content.findAll({
-      where: {
-        dataId: res.locals.dataId,
-      },
-      attributes: [
-        'contentId',
-        'dataId',
-        'title1',
-        'title2',
-        'title3',
-        'title4',
-        'note',
-        'content',
-        'pageFrom',
-        'pageTo',
-        'aspect',
-        'keypoint',
-        'method',
-        'isChecked',
-        'conflictedAspect',
-        'conflictedKeypoint',
-        'conflictedMethod',
-        'reviewerId',
-        'updateTime',
-      ],
-    })
-    data = await Promise.all(data.map(async(data) => {
-      let temp = data.dataValues
-      temp.aspect = getFromNum(map, {dimension: temp.aspect, })
-      temp.keypoint = getFromNum(map, {item: temp.keypoint, })
-      temp.method = getFromNum(map, {detail: temp.method, })
 
-      // temp.aspect = midLongTermFromNumber({aspect: temp.aspect })
-      // temp.keypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
-      // temp.method = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
+    if(result.message === 'as an editor'){
+      res.redirect(`/mid-long-term/data/${req.params.dataId}/edit`)
+      return
+    }
 
+    res.locals.typeId = result.info.typeId
+    res.locals.campusId = result.info.campusId
+    next()
+  }
+  catch(err){
+    if(typeof err.status !== 'number'){
+      err = new Error('invalid argument')
+      err.status = 400
+    }
+    next(err)
+  }
+})
 
-      temp.conflictedAspect = getFromNum(map, {dimension: temp.conflictedAspect, })
-      temp.conflictedKeypoint = getFromNum(map, {item: temp.conflictedKeypoint, })
-      temp.conflictedMethod = getFromNum(map, {detail: temp.conflictedMethod, })
+router.get('/:dataId/index', async(req, res, next) => {
+  try{
 
-      // temp.conflictedAspect = midLongTermFromNumber({aspect: temp.aspect})
-      // temp.conflictedKeypoint = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint})
-      // temp.conflictedMethod = midLongTermFromNumber({aspect: temp.aspect, keypoint: temp.keypoint, method: temp.method})
-      if(temp.reviewerId){
-        temp.reviewerId = await User.findOne({
-          where: {
-            userId: temp.reviewerId,
-          },
-        })
-
-        temp.reviewerId = temp.reviewerId.dataValues.account
-      }
-      return temp
-    }))
     let typeName = campusMap[res.locals.typeId].type
-    let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
+    let campusName = campusMap[res.locals.typeId]['campus'][res.locals.campusId]
 
     res.render('review.pug', {
+      breadcrumb: [
+        {
+          id: 'mid-long-term',
+          name: '中長程計畫',
+        },
+        {
+          id: res.locals.typeId,
+          name: typeName
+        },
+        {
+          id: res.locals.campusId,
+          name: campusName
+        }
+      ],
       id: req.session.userId,
       user: res.locals.user,
-      type: {
-        id: res.locals.typeId,
-        name: typeName
-      },
-      campus: {
-        id: res.locals.campusId,
-        name: campusName
-      },
+      dataId: req.params.dataId,
+    })
+  }
+  catch(err){
+    if(!err.status){
+      const err = new Error('enter review page failed')
+      err.status = 500
+    }
+    next(err)
+  }
+})
+
+router.get('/:dataId/filter', async(req, res, next) => {
+  try{
+    let data;
+    data = await getContent(req.query.aspect, req.query.keypoint, req.query.method, req.params.dataId, Number(req.query.isChecked))
+
+    if(data === 'empty data'){
+      res.send('')
+      return
+    }
+
+    res.render('mixins/editnodes/review.pug', {
       contents: data,
     })
   }
   catch(err){
-    res.sendStatus(404)
-  }
-})
-
-router.post('/conflict', async(req, res) => {
-  try{
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let conflictedAspect = getFromWord(map, {dimension: req.body.conflictedAspect, })
-    let conflictedKeypoint = getFromWord(map, {item: req.body.conflictedKeypoint, })
-    let conflictedMethod = getFromWord(map, {detail: req.body.conflictedMethod, })
-
-    // let conflictedAspect = midLongTermFromWord({ aspect: req.body.conflictedAspect, })
-    // let conflictedKeypoint = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint})
-    // let conflictedMethod = midLongTermFromWord({aspect: req.body.conflictedAspect, keypoint: req.body.conflictedKeypoint, method: req.body.conflictedMethod})
-
-    let newData = await data.update({
-      conflictedAspect,
-      conflictedKeypoint,
-      conflictedMethod,
-      isConflicted: 1,
-      reviewerId: req.session.userId,
-    })
-
-    if(newData){
-      res.send('completed')
+    if(!err.status){
+      const err = new Error('get review filter failed')
+      err.status = 500
     }
-    else{
-      throw new Error('failed')
-    }
-  }
-  catch(err){
-    res.status(404)
-  }
-})
-
-router.post('/check', async(req, res) => {
-  try{
-    let data = await Content.findOne({
-      where:{
-        contentId: req.body.contentId,
-      },
-      attributes:[
-        'contentId',
-      ],
-    })
-    let newData = await data.update({
-      reviewerId: req.session.userId,
-      isChecked: 1,
-    })
-
-    if(newData){
-      res.send('completed')
-    }
-    else{
-      throw new Error('failed')
-    }
-  }
-  catch(err){
-
+    next(err)
   }
 })
 
