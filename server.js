@@ -20,7 +20,6 @@ const options = {
 
 const httpsExpressServer = express()
 const httpsServer = https.createServer(options, httpsExpressServer)
-httpsServer.listen(config.server.port)
 
 if(isDevMode){
   httpsExpressServer.use(logger('dev'))
@@ -80,3 +79,5 @@ httpsExpressServer.use((req, res) => {
   else
     res.redirect('/auth/login')
 })
+
+export default httpsServer.listen(config.server.port)

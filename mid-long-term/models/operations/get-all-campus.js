@@ -9,9 +9,9 @@ export default async(info) => {
     throw err
   }
 
-  info.typeId = Number(info.typeId)
-  if(Number.isNaN(info.typeId)){
-    const err = new Error('typeId is NaN.')
+
+  if(info.typeId !== 1 && info.typeId !== 0){
+    const err = new Error('typeId is not valid.')
     err.status = 400
     throw err
   }
@@ -37,30 +37,22 @@ export default async(info) => {
       ],
     })
   }catch(err){
-    err = new Error('data fetch failed')
+    err = new Error('fetching data failed')
     err.status = 500
     throw err
   }
 
-  try{
-    // transfer data into column campusId only
-    data = data.map(data => {
-      return {
-        id: data.campusId,
-        name: campusMap[data.typeId].campus[data.campusId],
-        time: data.content.length != 0 ? data.content[0].dataValues.lastUpdateTime : null,
-      }
-    })
 
+  data = data.map(data => {
     return {
-      campuses: data,
-      typeName: campusMap[info.typeId].type,
+      id: data.campusId,
+      name: campusMap[data.typeId].campus[data.campusId],
+      time: data.content.length != 0 ? data.content[0].dataValues.lastUpdateTime : null,
     }
-  }catch(err){
-    if(typeof err.status !== 'number'){
-      err = new Error('fail at get-all-campus.js')
-      err.status = 500
-    }
-    throw err
+  })
+
+  return {
+    campuses: data,
+    typeName: campusMap[info.typeId].type,
   }
 }

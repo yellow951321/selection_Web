@@ -16,35 +16,32 @@ const router = express.Router({
 router.post('/add', async(req, res, next)=>{
   try{
     await dataCreate({
-      campusId: req.body.campus,
-      yearFrom: req.body.yearFrom,
-      yearTo: req.body.yearTo,
-      typeId: req.body.type,
-      userId: req.session.userId,
+      campusId: Number(req.body.campus),
+      yearFrom: Number(req.body.yearFrom),
+      yearTo: Number(req.body.yearTo),
+      typeId: Number(req.body.type),
+      userId: Number(req.session.userId),
     })
     res.redirect(`/mid-long-term/${req.body.type}/index`)
 
   }catch(err){
-    if(err.status)
-      next(err)
-    else {
+    if(typeof err.status !== 'number'){
       err = new Error('Failed to POST at route `/mid-long-term/data/add`.')
       err.status = 500
-      next(err)
     }
+    next(err)
   }
 })
 
 
 router.post('/delete', async(req, res, next)=>{
   try{
-    const result = await dataDelete(req.body.dataId, req.session.userId)
-    if(result === 'Unauthorized')
-      res.redirect('/auth/unauthor')
-    else
-      res.redirect('/mid-long-term/index')
+    await dataDelete(Number(req.body.dataId), Number(req.session.userId))
+    res.redirect('/mid-long-term/index')
   } catch (err) {
-    if(!err.status){
+    if(err.status === 401)
+      res.redirect('/auth/unauthor')
+    if(typeof err.status !== 'number'){
       err = new Error('fail to delete data')
       err.status = 500
     }
@@ -58,11 +55,6 @@ router.use('/:dataId', async(req, res, next) => {
       dataId: req.params.dataId,
       userId: req.session.userId
     })
-    if(result === 'empty data'){
-      const err = new Error('data not found')
-      err.status = 404
-      throw err
-    }
 
     if(result.message === 'as a reviewer'){
       res.redirect(`/mid-long-term/review/${dataId}/index`)

@@ -1,4 +1,4 @@
-import Content from 'projectRoot/mid-long-term/models/schemas/Content.js'
+import {Content, } from 'mid-long-term/models/association.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
 export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflicted=-1) => {
@@ -6,38 +6,40 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
      *  ,which means show all the content under this label
      *  ,we need to set special condition
     */
+
+  if(Number.isNaN(Number(dataId)) || typeof dataId !== 'number'){
+    const err = new Error('dataId is NaN')
+    err.status = 400
+    throw err
+  }
   dataId = Number(dataId)
+  if(Number.isNaN(Number(aspect)) || typeof aspect !== 'number'){
+    const err = new Error('aspect is NaN')
+    err.status = 400
+    throw err
+  }
   aspect = Number(aspect)
+  if(Number.isNaN(Number(keypoint)) || typeof keypoint !== 'number'){
+    const err = new Error('keypoint is NaN')
+    err.status = 400
+    throw err
+  }
+  keypoint = Number(keypoint)
+  if(Number.isNaN(Number(method)) || typeof method !== 'number'){
+    const err = new Error('method is NaN')
+    err.status = 400
+    throw err
+  }
   method = Number(method)
-  dataId = Number(dataId)
-  isChecked = Number(isChecked)
-  isConflicted = Number(isConflicted)
-
-  if(Number.isNaN(dataId)){
-    let err = new Error('dataId is NaN')
+  if(isChecked !== 1 && isChecked !== -1 && isChecked !== 0){
+    const err = new Error('isChecked is not a valid option')
     err.status = 400
-  }
-
-  if(Number.isNaN(aspect)){
-    let err = new Error('aspect is NaN')
-    err.status = 400
-  }
-  if(Number.isNaN(keypoint)){
-    let err = new Error('keypoint is NaN')
-    err.status = 400
-  }
-  if(Number.isNaN(method)){
-    let err = new Error('method is NaN')
-    err.status = 400
+    throw err
   }
   if(isConflicted !== 1 && isConflicted !== -1 && isConflicted !== 0){
-    let err = new Error('isConflicted is not a valid option')
+    const err = new Error('isConflicted is not a valid option')
     err.status = 400
-  }
-
-  if(isChecked !== 1 && isChecked !== -1 && isChecked !== 0){
-    let err = new Error('isChecked is not a valid option')
-    err.status = 400
+    throw err
   }
 
   let whereCondition = {
@@ -91,7 +93,13 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
   if(data === null || data.length === 0){
     return 'empty data'
   }
-
-  data = await labelFromNumber(data)
+  try{
+    data = await Promise.all(data.map(async(obj) => {return await labelFromNumber(obj)}))
+  }
+  catch(err){
+    err = new Error('data formatting failed')
+    err.status = 500
+    throw err
+  }
   return data
 }

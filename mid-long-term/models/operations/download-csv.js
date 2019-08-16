@@ -1,18 +1,30 @@
 import fs from 'fs'
 import uniqueFilename from 'unique-filename'
 import {createObjectCsvWriter, } from 'csv-writer'
-import Content from 'mid-long-term/models/schemas/Content.js'
-import Data from 'mid-long-term/models/schemas/Data.js'
-import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {Content, Data, } from 'mid-long-term/models/association.js'
+import {midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 export default async(info) => {
-  try{
-    if(typeof info !== 'object'){
-      let err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
 
+  if(typeof info.dataId !== 'number' || Number.isNaN(Number(info.dataId))){
+    const err = new Error('dataId is NaN')
+    err.status = 400
+    throw err
+  }
+  info.dataId = Number(info.dataId)
+
+  let tmpDir, filePath
+  try{
+    tmpDir = '/tmp/selection_Web'
+    if(!fs.existsSync(tmpDir))
+      fs.mkdirSync(tmpDir)
+
+<<<<<<< HEAD
     info.dataId = Number(info.dataId)
     if(Number.isNaN(info.dataId)){
       const err = new Error('dataId is NaN')
@@ -31,8 +43,18 @@ export default async(info) => {
       err.status = 507
       throw err
     }
+=======
+    filePath = uniqueFilename(tmpDir)
+  }catch(err){
+    err = new Error('create file failed')
+    err.status = 507
+    throw err
+  }
+>>>>>>> 988fea74cb1d9925d7f9b2012afb467640998d10
 
-    const csvWriter = createObjectCsvWriter({
+  let csvWriter
+  try{
+    csvWriter = createObjectCsvWriter({
       path: filePath,
       header: [
         {id: 'pageFrom', title: '開始頁面', },
@@ -49,38 +71,43 @@ export default async(info) => {
         {id: 'note', title: '備註', },
       ],
     })
-    // write in the tmp output file
-    let outputObject = []
-    let data
+  }catch(err){
+    err = new Error('setting csv config failed')
+    err.status = 500
+    throw err
+  }
+  // write in the tmp output file
+  let outputObject = []
+  let data
 
-    try{
-      data = await Content.findAll({
-        where: {
-          dataId: info.dataId,
-        },
-        attributes:[
-          'pageFrom',
-          'pageTo',
-          'contentId',
-          'title1',
-          'title2',
-          'title3',
-          'title4',
-          'content',
-          'summary',
-          'note',
-          'aspect',
-          'keypoint',
-          'method',
-        ],
-      })
-    }catch(err){
-      err = new Error('data fetch failed')
-      err.status = 500
-      throw err
-    }
+  try{
+    data = await Content.findAll({
+      where: {
+        dataId: info.dataId,
+      },
+      attributes:[
+        'pageFrom',
+        'pageTo',
+        'contentId',
+        'title1',
+        'title2',
+        'title3',
+        'title4',
+        'content',
+        'summary',
+        'note',
+        'aspect',
+        'keypoint',
+        'method',
+      ],
+    })
+  }catch(err){
+    err = new Error('fetching data failed')
+    err.status = 500
+    throw err
+  }
 
-
+  try{
     for(let val of data) {
       let method = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, method: val.method, }).method
       let keypoint = midLongTermFromNumber({aspect: val.aspect, keypoint: val.keypoint, }).keypoint
@@ -101,42 +128,40 @@ export default async(info) => {
         note: val.note,
       })
     }
-
-    try{
-      await csvWriter.writeRecords(outputObject)
-    }catch(err){
-      err = new Error('create Csv file failed')
-      err.status = 500
-      throw err
-    }
-
-    try{
-      data = await Data.findOne({
-        where: {
-          dataId: info.dataId,
-        },
-        attribute: [
-          'yearFrom',
-          'yearTo',
-          'campusId',
-          'typeId',
-        ],
-      })
-    }catch(err){
-      err = new Error('data featch failed')
-      err.status = 500
-      throw err
-    }
-
-    return {
-      filePath: filePath,
-      data: data,
-    }
   }catch(err){
-    if(typeof err.status !== 'number'){
-      err = new Error('Error occurred in mid-long-term/models/operations/download-csv.js')
-      err.status = 500
-    }
+    err = new Error('data formatting failed')
+    err.status = 500
     throw err
+  }
+
+  try{
+    await csvWriter.writeRecords(outputObject)
+  }catch(err){
+    err = new Error('create Csv file failed')
+    err.status = 500
+    throw err
+  }
+
+  try{
+    data = await Data.findOne({
+      where: {
+        dataId: info.dataId,
+      },
+      attribute: [
+        'yearFrom',
+        'yearTo',
+        'campusId',
+        'typeId',
+      ],
+    })
+  }catch(err){
+    err = new Error('data featch failed')
+    err.status = 500
+    throw err
+  }
+
+  return {
+    filePath: filePath,
+    data: data,
   }
 }
