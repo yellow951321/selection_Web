@@ -108,9 +108,9 @@ describe('test mid-long-term/models/operations/syncSession.js', ()=>{
         return null
       })
       expect(await syncSession({})).to.deep.equal({
-        status: 200,
+        status: 302,
         message: 'session is latest on the server',
       })
     })
-  })  
+  })
 })

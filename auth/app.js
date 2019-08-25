@@ -50,7 +50,6 @@ app.use(async(req, {}, next) => {
       cookies: req.cookies,
       sessionId: req.session.id,
     })
-    console.log(result)
     if(result.status === 200){
       req.session.userId = result.userId
     }
