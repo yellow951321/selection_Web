@@ -64,7 +64,7 @@ export default async(info) => {
     }
   }
   return {
-    status: 200,
+    status: 302,
     message: 'session is latest on the server',
   }
 }
