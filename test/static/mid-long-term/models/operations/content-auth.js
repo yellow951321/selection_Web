@@ -25,46 +25,46 @@ describe('test mid-long-term/models/operations/content-auth.js', ()=>{
     afterEach(()=>{
       sandbox.restore()
     })
-    it('should throw a invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentAuth(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
         }
       }
     })
-    it('should throw a dataId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: dataId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentAuth({dataId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('dataId is NaN')
         }
       }
     })
-    it('should throw a userId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: userId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentAuth({
             dataId: 0,
             userId: arg,
           })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('userId is NaN')
         }
       }
     })
-    it('should throw a fetching data failed error ', async()=>{
+    it('should throw an error message: fetching data failed', async()=>{
       findOneStub.restore()
       findOneStub = sandbox.stub(Data, 'findOne').throws()
       try{
@@ -78,7 +78,7 @@ describe('test mid-long-term/models/operations/content-auth.js', ()=>{
         expect(err).to.have.property('message').to.equal('fetching data failed')
       }
     })
-    it('should throw a data not Found error ', async()=>{
+    it('should throw an error message: data not Found', async()=>{
       findOneStub.restore()
       findOneStub = sandbox.stub(Data, 'findOne').callsFake(()=>{
         return null

@@ -24,8 +24,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
     afterEach(()=>{
       dbStub.restore()
     })
-    it('should throw a invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber(arg)
@@ -36,8 +36,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a title1 is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: title1 is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({title1: arg, })
@@ -48,8 +48,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a title2 is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: title2 is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({title2: arg, })
@@ -60,8 +60,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a title3 is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: title3 is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({title3: arg, })
@@ -72,8 +72,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a title4 is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: title4 is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({title4: arg, })
@@ -84,8 +84,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a content is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: content is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({content: arg, })
@@ -96,8 +96,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a summary is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: summary is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({summary: arg, })
@@ -108,8 +108,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a note is not valid error ', async()=>{
-      let invalidType = [1, {}, true, ()=> {return 123}, ]
+    it('should throw an error message: note is not valid', async()=>{
+      let invalidType = [1, {}, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({note: arg, })
@@ -120,8 +120,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a isChecked is not valid error ', async()=>{
-      let invalidType = [2, -2, '1', {}, null, true, ()=> {return 123}, ]
+    it('should throw an error message: isChecked is not valid', async()=>{
+      let invalidType = [2, -2, '1', {}, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({isChecked: arg, })
@@ -132,8 +132,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a isConflicted is not valid error ', async()=>{
-      let invalidType = [2, -2, '1', {}, null, true, ()=> {return 123}, ]
+    it('should throw an error message: isConflicted is not valid', async()=>{
+      let invalidType = [2, -2, '1', {}, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({isConflicted: arg, })
@@ -144,8 +144,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a contentId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: contentId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({dataId: 0, contentId: arg, })
@@ -156,8 +156,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a pageFrom is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', null, true, ()=> {return 123}, ]
+    it('should throw an error message: pageFrom is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({dataId: 0, contentId: 0, pageFrom: arg, })
@@ -168,8 +168,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a pageTo is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', null, true, ()=> {return 123}, ]
+    it('should throw an error message: pageTo is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({dataId: 0, contentId: 0, pageTo: arg, })
@@ -180,8 +180,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a aspect is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: aspect is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({dataId: 0, contentId:0, aspect: arg, })
@@ -192,8 +192,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a keypoint is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: keypoint is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({dataId: 0, contentId:0, aspect:0, keypoint: arg, })
@@ -204,8 +204,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a method is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: method is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: arg, })
@@ -216,8 +216,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a conflictedKeypoint is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: conflictedKeypoint is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: 0, conflictedAspect: 0, conflictedKeypoint: arg, })
@@ -228,8 +228,8 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a conflictedMethod is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: conflictedMethod is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await labelFromNumber({contentId:0, aspect: 0, keypoint: 0, method: 0, conflictedAspect: 0, conflictedKeypoint: 0, conflictedMethod: arg, })
@@ -240,7 +240,7 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         }
       }
     })
-    it('should throw a fail to transfer label from number error ', async()=>{
+    it('should throw an error message: fail to transfer label from number', async()=>{
       let outRangeLabels = [
         {aspect: 0, keypoint: 0, method: 16, },
         {aspect: 0, keypoint: 1, method: 4, },
@@ -311,7 +311,7 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         expect(err).to.have.property('message').to.equal('fail to transfer label from number')
       }
     })
-    it('should throw a fail to fetch reviewerId error ', async()=>{
+    it('should throw an error message: fail to fetch reviewerId', async()=>{
       dbStub.restore()
       dbStub = sinon.stub(User, 'findOne').throws()
       try{
@@ -322,7 +322,7 @@ describe('test mid-long-term/models/operations/label-from-number.js', ()=>{
         expect(err).to.have.property('message').to.equal('fail to fetch reviewerId')
       }
     })
-    it('should return an object ', async()=>{
+    it('should return an object', async()=>{
       for(let aspectIndex of [0, 1, 2, 3, 4, ]){
         for(let keypointIndex in map[aspectIndex].keypoint){
           for(let methodIndex in map[aspectIndex].keypoint[keypointIndex].method){

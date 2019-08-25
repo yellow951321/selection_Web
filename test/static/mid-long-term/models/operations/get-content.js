@@ -26,12 +26,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
     afterEach(()=>{
       sandbox.restore()
     })
-    it('should throw a dataId is NaN error', async()=>{
-      let invalidType = ['ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: dataId is NaN', async()=>{
+      let invalidType = ['ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(0, 0, 0, arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -39,12 +39,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
         }
       }
     })
-    it('should throw a aspect is NaN error', async()=>{
-      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: aspect is NaN', async()=>{
+      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(arg, 0, 0, 0)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -52,12 +52,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
         }
       }
     })
-    it('should throw a keypoint is NaN error', async()=>{
-      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: keypoint is NaN', async()=>{
+      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(0, arg, 0, 0)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -65,12 +65,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
         }
       }
     })
-    it('should throw a method is NaN error', async()=>{
-      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: method is NaN', async()=>{
+      let invalidType = [NaN, 'ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(0, 0, arg, 0)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -78,12 +78,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
         }
       }
     })
-    it('should throw a isChecked is not a valid option error', async()=>{
-      let invalidType = [2, -2, NaN, 'ABC', null, true, ()=> {return 123}, ]
+    it('should throw an error message: isChecked is not a valid option', async()=>{
+      let invalidType = [2, -2, NaN, 'ABC', null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(0, 0, 0, 0, arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -91,12 +91,12 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
         }
       }
     })
-    it('should throw a isConflicted is not a valid option error', async()=>{
-      let invalidType = [2, -2, NaN, 'ABC', null, true, ()=> {return 123}, ]
+    it('should throw an error message: isConflicted is not a valid option', async()=>{
+      let invalidType = [2, -2, NaN, 'ABC', null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getContent(0, 0, 0, 0, -1, arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -117,7 +117,7 @@ describe('test mid-long-term/models/operations/get-contentjs', ()=>{
       })
       expect(await getContent(0, 0, 0, 0)).to.equal('empty data')
     })
-    it('should throw a data formatting failed', async()=>{
+    it('should throw an error message: data formatting failed', async()=>{
       let outRangeLabels = [
         {aspect: 0, keypoint: 0, method: 16, },
         {aspect: 0, keypoint: 1, method: 4, },

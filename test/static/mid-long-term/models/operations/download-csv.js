@@ -67,31 +67,31 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
       downloadCsv.__ResetDependency__('createObjectCsvWriter')
       sandbox.restore()
     })
-    it('should throw an invalid argument error', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await downloadCsv(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
         }
       }
     })
-    it('should throw a dataId is NaN error', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: dataId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await downloadCsv({dataId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('dataId is NaN')
         }
       }
     })
-    it('should throw a create file failed', async()=>{
+    it('should throw an error message: create file failed', async()=>{
       exsistsSyncStub.restore()
       exsistsSyncStub = sandbox.stub(fs, 'existsSync').throws()
       try{
@@ -130,7 +130,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
         expect(err).to.have.property('message').to.equal('create file failed')
       }
     })
-    it('should throw a setting csv config failed error', async()=>{
+    it('should throw an error message: setting csv config failed', async()=>{
       downloadCsv.__ResetDependency__('createObjectCsvWriter')
       downloadCsv.__set__('createObjectCsvWriter', sandbox.stub().throws())
       try{
@@ -141,7 +141,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
         expect(err).to.have.property('message').to.equal('setting csv config failed')
       }
     })
-    it('should throw a fetching data failed error', async()=>{
+    it('should throw an error message: fetching data failed', async()=>{
       ContentDbStub.restore()
       ContentDbStub = sandbox.stub(Content, 'findAll').throws()
       try{
@@ -152,7 +152,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
         expect(err).to.have.property('message').to.equal('fetching data failed')
       }
     })
-    it('should throw a data formatting failed error', async()=>{
+    it('should throw an error message: data formatting failed', async()=>{
       downloadCsv.__set__('midLongTermFromNumber', sandbox.stub().throws())
       try{
         await downloadCsv({dataId:0, })
@@ -163,7 +163,7 @@ describe('test mid-long-term/models/operations/download-csv.js', ()=>{
       }
       downloadCsv.__ResetDependency__('midLongTermFromNumber')
     })
-    it('should throw adata featch failed error', async()=>{
+    it('should throw adata featch failed', async()=>{
       DataDbStub.restore()
       DataDbStub = sandbox.stub(Data, 'findOne').throws()
       try{

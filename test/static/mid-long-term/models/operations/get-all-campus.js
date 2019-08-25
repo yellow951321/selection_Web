@@ -26,12 +26,12 @@ describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
     afterEach(()=>{
       dbStub.restore()
     })
-    it('should throw an invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message:  invalid argument error ', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getAllCampus(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
@@ -39,12 +39,12 @@ describe('test mid-long-term/models/operations/get-all-cmpus.js', () => {
       }
     })
 
-    it('should throw an typeId is NaN. error ', async()=>{
-      let invalidType = [NaN, 2, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: typeId is NaN. error ', async()=>{
+      let invalidType = [NaN, 2, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getAllCampus({typeId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('typeId is not valid.')

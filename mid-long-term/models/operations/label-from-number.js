@@ -52,13 +52,13 @@ export default async(data) => {
     throw err
   }
   temp.note = data.note
-  if(data.isChecked !== -1 && data.isChecked !== 0 && data.isChecked !== undefined){
+  if(data.isChecked !== -1 && data.isChecked !== 0 && data.isChecked !== 1 && data.isChecked !== undefined){
     const err = new Error('isChecked is not valid')
     err.status = 400
     throw err
   }
   temp.isChecked = data.isChecked
-  if(data.isConflicted !== -1 && data.isConflicted !== 0 && data.isConflicted !== undefined){
+  if(data.isConflicted !== -1 && data.isConflicted !== 0 && data.isChecked !== 1 && data.isConflicted !== undefined){
     const err = new Error('isConflicted is not valid')
     err.status = 400
     throw err

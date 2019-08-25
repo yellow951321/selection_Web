@@ -1,53 +1,49 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import session from 'supertest-session'
+import request from 'supertest'
 
 chai.use(sinonChai)
 const expect = chai.expect
-const sandbox = sinon.createSandbox()
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-import pugRender from 'pug-render'
-import config from 'projectRoot/config'
-import path from 'path'
-const midLongTermPugRoot = path.join(config.projectRoot, 'mid-long-term/views')
-
-const render = pugRender(midLongTermPugRoot, {
-  locals: {env: process.env, },
-})
-
+import { JSDOM, } from 'jsdom'
+import campusMap from 'projectRoot/lib/static/javascripts/mapping/campus.js'
 import server from 'projectRoot/server.js'
-import yearRouter from 'mid-long-term/routes/year.js'
 
 describe('yearRouter', ()=>{
 
   context('Get /index', ()=>{
-    let testSession = null, authenticatedSession = null, sessionCookie
-    before(()=>{
-      testSession = session(server)
-      sessionCookie = testSession.cookies.find(function(cookie) {
-        return cookie.name === connect.sid
-      })
-    })
-    it('should get /index', async()=>{
-      let dbStub = sinon.stub().callsFake(()=>{
-        return []
-      })
-      let output = await testSession.get('/mid-long-term/0/0/index')
-      console.log(output.text)
-    })
-    it('should get /index', async()=>{
-      await testSession.post('/auth/login')
+    let agent, cookie
+    
+    before((done)=>{
+      agent = request.agent(server)
+      agent.post('/auth/login')
         .send({username: 'admintest', password: 'admintest', })
         .expect(302)
-        .then(()=>{
-          authenticatedSession = testSession
+        .end((err, res)=>{
+          cookie = res.header['set-cookie']
+          done()
         })
-      let output = await authenticatedSession.get('/mid-long-term/0/0/index')
-        .expect(302)
-      console.log(output.text)
+    })
+    it('should test', (done)=>{
+      let typeId, campusId
+      typeId = 0
+      campusId = 0
+      agent.get(`/mid-long-term/${typeId}/${campusId}/index`)
+        .set('Cookie', cookie)
+        .send()
+        .expect(200)
+        .expect((res)=>{
+          const dom = new JSDOM(res.text)
+          let breadcrumbElement = dom.window.document.querySelector('.breadcrumb').firstChild.children
+          expect(breadcrumbElement[0].innerHTML).to.be.a('string')
+          expect(breadcrumbElement[2].innerHTML).to.equal('中長程計畫')
+          expect(breadcrumbElement[4].innerHTML).to.equal(campusMap[typeId].type)
+          expect(breadcrumbElement[6].innerHTML).to.equal(campusMap[typeId].campus[campusId])
+        })
+        .end(done)
     })
   })
 })

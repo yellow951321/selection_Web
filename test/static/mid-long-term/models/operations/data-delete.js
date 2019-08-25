@@ -28,12 +28,12 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
     afterEach(()=>{
       sandbox.restore()
     })
-    it('should throw a dataId is NaN error', async()=>{
-      let invalidType = ['ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: dataId is NaN', async()=>{
+      let invalidType = ['ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await dataDelete(arg, 0)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -41,12 +41,12 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
         }
       }
     })
-    it('should throw a userId is NaN error', async()=>{
-      let invalidType = ['ABC', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: userId is NaN', async()=>{
+      let invalidType = ['ABC', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await dataDelete(0, arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }
         catch(err){
           expect(err).to.have.property('status').to.equal(400)
@@ -54,7 +54,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
         }
       }
     })
-    it('should throw a fetching data failed error', async()=>{
+    it('should throw an error message: fetching data failed', async()=>{
       findOneStub.restore()
       findOneStub = sandbox.stub(Data, 'findOne').throws()
       try{
@@ -66,7 +66,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
         expect(err).to.have.property('message').to.equal('fetching data failed')
       }
     })
-    it('should throw a No specified dataId error', async()=>{
+    it('should throw an error message: No specified dataId', async()=>{
       findOneStub.restore()
       findOneStub = sandbox.stub(Data, 'findOne').callsFake(()=>{
         return null
@@ -80,7 +80,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
         expect(err).to.have.property('message').to.equal('No specified dataId')
       }
     })
-    it('should throw a Unauthorized error', async()=>{
+    it('should throw an error message: Unauthorized', async()=>{
       findOneStub.restore()
       findOneStub = sandbox.stub(Data, 'findOne').callsFake(()=>{
         return {
@@ -96,7 +96,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
         expect(err).to.have.property('message').to.equal('Unauthorized')
       }
     })
-    it('should throw a data delete failed error', async()=>{
+    it('should throw an error message: deleting data failed', async()=>{
       deleteStub.restore()
       deleteStub = sandbox.stub(Data, 'destroy').throws()
       try{
@@ -105,7 +105,7 @@ describe('test mid-long-term/models/operations/data-delete.js', () => {
       }
       catch(err){
         expect(err).to.have.property('status').to.equal(500)
-        expect(err).to.have.property('message').to.equal('data delete failed')
+        expect(err).to.have.property('message').to.equal('deleting data failed')
       }
     })
   })

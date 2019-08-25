@@ -22,43 +22,43 @@ describe('test mid-long-term/models/operations/content-delete.js', ()=>{
     sandbox.restore()
   })
   context('test contentDelete', ()=>{
-    it('should throw a invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentDelete(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
         }
       }
     })
-    it('should throw a contentId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: contentId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentDelete({contentId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('contentId is NaN')
         }
       }
     })
-    it('should throw a contentId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: contentId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentDelete({contentId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('contentId is NaN')
         }
       }
     })
-    it('should throw a deleting data failed error ', async()=>{
+    it('should throw an error message: deleting data failed', async()=>{
       destroyStub.restore()
       destroyStub = sandbox.stub(Content, 'destroy').throws()
       try{

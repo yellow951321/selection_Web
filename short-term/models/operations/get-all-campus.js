@@ -58,21 +58,28 @@ async function getCampusDetail(data) {
 }
 
 
-export default async(info={}) => {
+export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+  let typeId, year
+  if(Number.isNaN(info.typeId) || typeof info.typeId !== 'number'){
+    const err = new Error('typeId is NaN')
+    err.status = 400
+    throw err
+  }
+  typeId = Number(info.typeId)
+  if(Number.isNaN(info.year) || typeof info.year !== 'number'){
+    const err = new Error('year is NaN')
+    err.status = 400
+    throw err
+  }
+  year = Number(info.year)
+  let data
   try{
-    let typeId = Number(info.typeId)
-    let year = Number(info.year)
-    if(Number.isNaN(typeId)){
-      const err = new Error('typeId argument')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(year)){
-      const err = new Error('year argument')
-      err.status = 400
-      throw err
-    }
-    let data = await Data.findAll({
+    data = await Data.findAll({
       where:{
         typeId,
         year,
@@ -85,6 +92,12 @@ export default async(info={}) => {
         'typeId',
       ],
     })
+  }catch(err){
+    err = new Error('fetching data failed')
+    err.status = 500
+    throw err
+  }
+  try{
     data = data.map(d => {
       return {
         dataId: d.dataId,
@@ -94,13 +107,10 @@ export default async(info={}) => {
         typeId: d.typeId,
       }
     })
-
-    return Promise.all(data.map(d=>getCampusDetail(d)))
-  }catch(err) {
-    if(typeof err.status !== 'number'){
-      err = new Error('Error occurred in get-all-campus.js')
-      err.status = 500
-    }
+    return await Promise.all(data.map(d=>getCampusDetail(d)))
+  }catch(err){
+    err = new Error('formatting data failed')
+    err.status = 500
     throw err
   }
 }

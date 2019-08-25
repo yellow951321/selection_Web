@@ -1,39 +1,30 @@
-import Content from 'projectRoot/short-term/models/schemas/Content.js'
+import {Content, } from 'short-term/models/association.js'
 
 export default async(info)=>{
-  try{
-
-    if(typeof info !== 'object'){
-      let err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    info.contentId = Number(info.contentId)
-
-    if(Number.isNaN(info.contentId)){
-      let err = new Error('contentId is not a number')
-      err.status = 400
-    }
-    let result
-    try{
-      result = await Content.destroy({
-        where:{
-          contentId: info.contentId,
-        },
-      })
-    }
-    catch(err){
-      err = new Error('content delete failed')
-      err.status = 500
-    }
-    return result
-  }
-  catch(err){
-    if(typeof err.status !== 'number'){
-      err = new Error('content-delete.js failed')
-      err.status = 500
-    }
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
     throw err
   }
+
+  if(typeof info.contentId !== 'number' || Number.isNaN(info.contentId)){
+    const err = new Error('contentId is NaN')
+    err.status = 400
+    throw err
+  }
+
+  let result
+  try{
+    result = await Content.destroy({
+      where:{
+        contentId: info.contentId,
+      },
+    })
+  }
+  catch(err){
+    err = new Error('deleting data failed')
+    err.status = 500
+    throw err
+  }
+  return result
 }

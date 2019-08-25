@@ -35,47 +35,47 @@ describe('test mid-long-term/models/operations/content-create.js', ()=>{
     afterEach(()=>{
       sandbox.restore()
     })
-    it('should throw a invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentCreate(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
         }
       }
     })
-    it('should throw a dataId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: dataId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentCreate({dataId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('dataId is NaN')
         }
       }
     })
-    it('should throw a aspect is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: aspect is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentCreate({
             dataId: 0,
             aspect: arg,
           })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('aspect is NaN')
         }
       }
     })
-    it('should throw a keypoint is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: keypoint is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentCreate({
@@ -83,15 +83,15 @@ describe('test mid-long-term/models/operations/content-create.js', ()=>{
             aspect: 0,
             keypoint: arg,
           })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('keypoint is NaN')
         }
       }
     })
-    it('should throw a method is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: method is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await contentCreate({
@@ -100,14 +100,14 @@ describe('test mid-long-term/models/operations/content-create.js', ()=>{
             keypoint: 0,
             method: arg,
           })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('method is NaN')
         }
       }
     })
-    it('should throw a creating data failed error ', async()=>{
+    it('should throw an error message: creating data failed', async()=>{
       createStub.restore()
       createStub = sandbox.stub(Content, 'create').throws()
       try{
@@ -123,7 +123,7 @@ describe('test mid-long-term/models/operations/content-create.js', ()=>{
         expect(err).to.have.property('message').to.equal('creating data failed')
       }
     })
-    it('should throw a creating data failed error ', async()=>{
+    it('should throw an error message: creating data failed', async()=>{
       let outRangeLabels = [
         {aspect: 0, keypoint: 0, method: 16, },
         {aspect: 0, keypoint: 1, method: 4, },

@@ -38,46 +38,46 @@ describe('test mid-long-term/models/operations/get-all-year.js', ()=>{
     afterEach(()=>{
       sandbox.restore()
     })
-    it('should throw a invalid argument error ', async()=>{
-      let invalidType = [1, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: invalid argument', async()=>{
+      let invalidType = [1, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getAllYear(arg)
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('invalid argument')
         }
       }
     })
-    it('should throw a typeId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: typeId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getAllYear({typeId: arg, })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('typeId is NaN')
         }
       }
     })
-    it('should throw a campusId is NaN error ', async()=>{
-      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return 123}, ]
+    it('should throw an error message: campusId is NaN', async()=>{
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
       for(let arg of invalidType){
         try{
           await getAllYear({
             typeId: 0,
             campusId: arg,
           })
-          expect.fail('should not get here')
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
         }catch(err){
           expect(err).to.have.property('status').to.equal(400)
           expect(err).to.have.property('message').to.equal('campusId is NaN')
         }
       }
     })
-    it('should throw a fetching data failed error ', async()=>{
+    it('should throw an error message: fetching data failed', async()=>{
       DatafindAllStub.restore()
       DatafindAllStub = sandbox.stub(Data, 'findAll').throws()
       try{
@@ -91,7 +91,7 @@ describe('test mid-long-term/models/operations/get-all-year.js', ()=>{
         expect(err).to.have.property('message').to.equal('fetching data failed')
       }
     })
-    it('should throw a formatting data failed error ', async()=>{
+    it('should throw an error message: data failed', async()=>{
       UserFindOneStub.restore()
       UserFindOneStub = sandbox.stub(User, 'findOne').throws()
       try{
