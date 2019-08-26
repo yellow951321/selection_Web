@@ -52,8 +52,8 @@ router.post('/delete', async(req, res, next)=>{
 router.use('/:dataId', async(req, res, next) => {
   try{
     let result = await contentAuth({
-      dataId: req.params.dataId,
-      userId: req.session.userId
+      dataId: Number(req.params.dataId),
+      userId: Number(req.session.userId),
     })
 
     if(result.message === 'as a reviewer'){

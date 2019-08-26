@@ -11,35 +11,29 @@ import Session from 'auth/models/schemas/session.js'
  * @throws delete-session failed
  */
 export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+
   try{
-    try{
-      /**
-       * Destroy the data in `Session` table.
-       * @see {@link Session}
-       */
-      await Session.destroy({
-        where: {
-          sessionId: info.sessionId,
-        },
-      })
-    }catch(err){
-      /**
+    /**
+     * Destroy the data in `Session` table.
+     * @see {@link Session}
+     */
+    await Session.destroy({
+      where: {
+        sessionId: info.sessionId,
+      },
+    })
+  }catch(err){
+     /**
        * This might be a potential error
        * 1. The Unknow problem occurred when execute `Session.destroy` operation.
        */
-      err = new Error('session deletion failed')
-      err.status = 500
-      throw err
-    }
-  }catch(err){
-    /**
-     * Catch the error whatever it is, and it will check
-     * whether this error is identified or not.
-     */
-    if(typeof err.status !== 'number'){
-      err = new Error('delete-session failed')
-      err.status = 500
-    }
+    err = new Error('deleting session failed')
+    err.status = 500
     throw err
   }
 }

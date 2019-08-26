@@ -1,4 +1,4 @@
-import Data from 'short-term/models/schemas/Data.js'
+import {Data, } from 'short-term/models/association.js'
 import typeMap from 'lib/static/javascripts/mapping/campus.js'
 
 /**
@@ -20,15 +20,14 @@ export default async() => {
       attributes: ['typeId', ],
       group: ['typeId', ],
     })
-    /*
-    a array which rearrange each element into a object with properties name and id
-    [
-    {
-      name: {string}
-      id: {number}
-    },
-    ...]
-    */
+  }
+  catch(err){
+    err = new Error('fetching data failed')
+    err. status = 500
+    throw err
+  }
+
+  try{
     return data.map(d => {
       return {
         name: typeMap[d.typeId].type,
@@ -37,7 +36,8 @@ export default async() => {
     })
   }
   catch(err){
-    // error handling
-    throw new Error('Error occur in short-term/models/operations/get-all-type.js')
+    err= new Error('data formatting failed')
+    err.status = 500
+    throw err
   }
 }

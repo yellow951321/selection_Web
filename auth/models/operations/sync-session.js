@@ -18,74 +18,76 @@ import cookieParser from 'cookie-parser'
  * syncSession(info)
  */
 export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+
+  let sessionId
   try{
     /**
      * `sessionId` will be reset after restarting server,
      * we need to update the session after every connection
      */
-    let sessionId = cookieParser.signedCookies(req.cookies, config.server.secret)['sekiro']
-
-    if(sessionId !== info.sessionId){
-      let data
-      try{
-        data = await Session.findOne({
-          attribute: [
-            'expiration',
-            'userId',
-          ],
-          where: {
-            sessionId,
-          },
-        })
-      }catch(err){
-       /**
-       * It only catch the error when
-       * it occurs exception in executing `Session.findOne`
-       */
-        err = new Error('Data fetch failed')
-        err.status = 500
-        throw err
-      }
-      try{
-        if(data !== null){
-          if(Number(data.expiration) > Date.now()){
-            await data.update({
-              sessionId: info.sessionId,
-            })
-            return {
-              message: 'sync success',
-              userId: data.userId,
-            }
-          }
-          else{
-            await data.destroy()
-            return {
-              message: 'session expired',
-            }
+    sessionId = cookieParser.signedCookies(info.cookies, config.server.secret)['sekiro']
+  }
+  catch(err){
+    /**
+     * It only catch the error when
+     * it occurs exception in executing `Session.findOne`
+     */
+    err = new Error('parsering cookie failed')
+    err.status = 500
+    throw err
+  }
+  // sessionId will be reset after restarting server
+  // we need to update session after every connection
+  if(sessionId !== info.sessionId){
+    let data
+    try{
+      data = await Session.findOne({
+        attribute: [
+          'expiration',
+          'userId',
+        ],
+        where: {
+          sessionId,
+        },
+      })
+    }catch(err){
+      err = new Error('fetching data failed')
+      err.status = 500
+      throw err
+    }
+    try{
+      if(data !== null){
+        if(Number(data.expiration) > Date.now()){
+          await data.update({
+            sessionId: info.sessionId,
+          })
+          return {
+            status: 200,
+            message: 'sync success',
+            userId: data.userId,
           }
         }
-      }catch(err){
-        /**
-       * It only catch the error when
-       * it occurs exception in executing `data.update`
-       */
-        err = new Error('Data update or destroy failed')
-        err.status = 500
-        throw err
+        else{
+          await data.destroy()
+          return {
+            status: 440,
+            message: 'session expired',
+          }
+        }
       }
-    }
-    return {
-      message: 'do not have session on the server',
-    }
-  }catch(err) {
-    /**
-     * Catch the error whatever it is, and it will check
-     * whether this error is identified or not.
-     */
-    if(typeof err.status !== 'number'){
-      err = new Error('Failed in syncSession.')
+    }catch(err){
+      err = new Error('updating data failed')
       err.status = 500
+      throw err
     }
-    throw err
+  }
+  return {
+    status: 302,
+    message: 'session is latest on the server',
   }
 }

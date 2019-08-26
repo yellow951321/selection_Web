@@ -86,8 +86,6 @@ async function getCampusDetail(data) {
   data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
   return data
 }
-
-
 /**
  * Return the total details of total campus with the given information
  * @function getAllCampus
@@ -97,28 +95,29 @@ async function getCampusDetail(data) {
  * @returns {CampusDetail[]}
  * @throws - throw an error message if the typeId or yearId is isNaN value
  */
-export default async(info={}) => {
+
+export default async(info) => {
+  if(typeof info !== 'object' || info === null){
+    let err = new Error('invalid argument')
+    err.status = 400
+    throw err
+  }
+  let typeId, year
+  if(Number.isNaN(info.typeId) || typeof info.typeId !== 'number'){
+    const err = new Error('typeId is NaN')
+    err.status = 400
+    throw err
+  }
+  typeId = Number(info.typeId)
+  if(Number.isNaN(info.year) || typeof info.year !== 'number'){
+    const err = new Error('year is NaN')
+    err.status = 400
+    throw err
+  }
+  year = Number(info.year)
+  let data
   try{
-    // explicitly convert the typeId and yearId into type of number
-    let typeId = Number(info.typeId)
-    let yearId = Number(info.yearId)
-    // check whether typeId or yearId is isNaN
-    if(Number.isNaN(typeId) || Number.isNaN(yearId)){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-    /*
-    find all campus data with the given typeId and yearId.
-    And, we set the attributes as [
-        'dataId',
-        'year',
-        'userId',
-        'campusId',
-        'typeId',
-      ]
-     */
-    let data = await Data.findAll({
+    data = await Data.findAll({
       where:{
         typeId,
         year,
@@ -131,9 +130,12 @@ export default async(info={}) => {
         'typeId',
       ],
     })
-    /*
-    Transform a new array with new data structure
-     */
+  }catch(err){
+    err = new Error('fetching data failed')
+    err.status = 500
+    throw err
+  }
+  try{
     data = data.map(d => {
       return {
         dataId: d.dataId,
@@ -146,18 +148,10 @@ export default async(info={}) => {
     /*
     use Promise.all method to execute the getCampusDetail func
      */
-    data = await Promise.all(data.map(d=>getCampusDetail(d)))
-    // Assign a new property campusName into each elelemnt of the data of array.
-    data.forEach(c => {
-      c.campusName = campusMap[c.typeId].campus[c.campusId]
-    })
-    return data
-  }catch(err) {
-    // error handling
-    if(!err.status){
-      err = new Error('Error occurred in get-all-campus.js')
-      err.status = 500
-    }
+    return await Promise.all(data.map(d=>getCampusDetail(d)))
+  }catch(err){
+    err = new Error('formatting data failed')
+    err.status = 500
     throw err
   }
 }

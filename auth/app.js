@@ -73,7 +73,7 @@ app.use(async(req, {}, next) => {
       cookies: req.cookies,
       sessionId: req.session.id,
     })
-    if(result.message === 'sync success'){
+    if(result.status === 200){
       req.session.userId = result.userId
     }
     next()
@@ -126,7 +126,7 @@ app.route('/login')
         account: req.body.username,
         password: req.body.password,
         sessionId: req.session.id,
-        expiration: req.session.cookie.expires,
+        expiration: Number(req.session.cookie.expires),
       })
       req.session.userId = result.userId
       res.redirect('/auth/channel')
@@ -157,7 +157,7 @@ app.get('/channel', async(req, res, next)=> {
      */
     if(req.session && req.session.userId){
       let user = await getUserInfo({
-        userId: req.session.userId,
+        userId: Number(req.session.userId),
       })
       /**
        * Render a `channel.pug` back

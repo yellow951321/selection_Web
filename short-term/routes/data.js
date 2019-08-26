@@ -16,10 +16,10 @@ const router = express.Router({
 router.post('/add', async(req, res, next)=>{
   try{
     await dataCreate({
-      campusId: req.body.campus,
-      year: req.body.year,
-      typeId: req.body.type,
-      userId: req.session.userId,
+      campusId: Number(req.body.campus),
+      year: Number(req.body.year),
+      typeId: Number(req.body.type),
+      userId: Number(req.session.userId),
     })
     res.redirect(`/short-term/${req.body.year}/${req.body.type}/index`)
 
@@ -37,13 +37,12 @@ router.post('/add', async(req, res, next)=>{
 
 router.post('/delete', async(req, res, next)=>{
   try{
-    const result = await dataDelete(req.body.dataId, req.session.userId)
-    if(result === 'Unauthorized')
-      res.redirect('/auth/unauthor')
-    else
-      res.redirect('/short-term/index')
+    await dataDelete(Number(req.body.dataId), Number(req.session.userId))
+    res.redirect('/short-term/index')
   } catch (err) {
-    if(!err.status){
+    if(err.status === 401)
+      res.redirect('/auth/unauthor')
+    if(typeof err.status !== 'number'){
       err = new Error('fail to delete data')
       err.status = 500
     }
@@ -54,16 +53,11 @@ router.post('/delete', async(req, res, next)=>{
 router.use('/:dataId', async(req, res, next) => {
   try{
     let result = await contentAuth({
-      dataId: req.params.dataId,
-      userId: req.session.userId
+      dataId: Number(req.params.dataId),
+      userId: Number(req.session.userId),
     })
-    if(result === 'empty data'){
-      const err = new Error('data not found')
-      err.status = 404
-      throw err
-    }
 
-    if(result === 'as a reviewer'){
+    if(result.message === 'as a reviewer'){
       res.redirect(`/short-term/review/${dataId}/index`)
       return
     }

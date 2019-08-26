@@ -1,4 +1,4 @@
-import Data from 'short-term/models/schemas/Data.js'
+import {Data, } from 'short-term/models/association.js'
 
 /**
  * Create a new Campus into database with the given information.
@@ -11,6 +11,7 @@ import Data from 'short-term/models/schemas/Data.js'
  */
 
 export default async(dataId, userId) => {
+<<<<<<< HEAD
   try {
     // conver the dataId & userId into number type explicitly
     dataId = Number(dataId)
@@ -40,19 +41,48 @@ export default async(dataId, userId) => {
       err = new new Error('data fetch failed.')
       err.status = 500
     }
+=======
+  if(Number.isNaN(Number(dataId)) || typeof dataId !== 'number'){
+    const err = new Error('dataId is NaN')
+    err.status = 400
+    throw err
+  }
+  dataId = Number(dataId)
+  if(Number.isNaN(Number(userId)) || typeof userId !== 'number'){
+    const err = new Error('userId is NaN')
+    err.status = 400
+    throw err
+  }
+  userId = Number(userId)
+  let data, output
+  try{
+    data = await Data.findOne({
+      where: {
+        dataId: dataId,
+      },
+      attribute: [
+        'userId',
+      ],
+    })
+  }catch(err){
+    err = new Error('fetching data failed')
+    err.status = 500
+    throw err
+  }
+>>>>>>> 187c312727e947cd8f91262dd7070a0d6a18e2dc
 
-    if(data === null){
-      const err = new Error('No specified dataId')
-      err.status = 400
-      throw err
-    }
-    if(data.userId !== userId){
-      // const err = new Error('Unauthorized')
-      // err.status = 401
-      // throw err
-      return 'Unauthorized'
-    }
+  if(data === null){
+    const err = new Error('No specified dataId')
+    err.status = 400
+    throw err
+  }
+  if(data.userId !== userId){
+    const err = new Error('Unauthorized')
+    err.status = 401
+    throw err
+  }
 
+<<<<<<< HEAD
     try{
       output = await Data.destroy({
         where: {
@@ -71,6 +101,19 @@ export default async(dataId, userId) => {
       err = new Error('Failed to delete data.')
       err.status = 500
     }
+=======
+  try{
+    output = await Data.destroy({
+      where: {
+        dataId: dataId,
+      },
+    })
+  }
+  catch(err){
+    err = new Error('deleting data failed')
+    err.status = 500
+>>>>>>> 187c312727e947cd8f91262dd7070a0d6a18e2dc
     throw err
   }
+  return output
 }

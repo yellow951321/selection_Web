@@ -56,7 +56,7 @@ export default async(dataId, userId) => {
     })
   }
   catch(err){
-    err = new Error('data delete failed')
+    err = new Error('deleting data failed')
     err.status = 500
     throw err
   }

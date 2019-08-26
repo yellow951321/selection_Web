@@ -12,8 +12,6 @@ import yearRouter from 'mid-long-term/routes/year.js'
 import dataRouter from 'mid-long-term/routes/data.js'
 import contentRouter from 'mid-long-term/routes/content.js'
 import downloadRouter from 'mid-long-term/routes/downloadCsv.js'
-import graphRouter from 'mid-long-term/routes/graph.js'
-
 
 const app = express()
 app.locals.GLOBAL = {
@@ -104,10 +102,6 @@ app.use('/:typeId/:campusId/:dataId', (req, res, next)=>{
     next(err)
   }
 })
-
-app.use('/:typeId/:campusId/:dataId/graph', graphRouter)
-
-
 
 app.use((err, {}, res, {}) => {
   res.render('error', {

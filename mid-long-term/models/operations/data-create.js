@@ -77,7 +77,7 @@ export default async(info) =>{
       })
     }
   }catch(err){
-    err = new Error('data creation failed')
+    err = new Error('creating data failed')
     err.status = 500
     throw err
   }

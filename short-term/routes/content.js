@@ -40,7 +40,7 @@ const router = express.Router({
 router.post('/save', async(req, res, next)=>{
   try{
     await contentSave({
-      userId: req.session.userId,
+      userId: Number(req.session.userId),
       content: req.body.content,
       summary: req.body.summary,
       note: req.body.note,
@@ -48,9 +48,9 @@ router.post('/save', async(req, res, next)=>{
       title2: req.body.title2,
       title3: req.body.title3,
       title4: req.body.title4,
-      pageFrom: req.body.pageFrom,
-      pageTo: req.body.pageTo,
-      contentId: req.body.contentId,
+      pageFrom: Number(req.body.pageFrom),
+      pageTo: Number(req.body.pageTo),
+      contentId: Number(req.body.contentId),
     })
 
     res.send('completed')
@@ -81,17 +81,17 @@ router.post('/change', async(req, res) => {
   try{
 
     await contentChangeLabel({
-      contentId: req.body.contentId,
-      aspect: req.body.aspect,
-      keypoint: req.body.keypoint,
-      method: req.body.method,
+      contentId: Number(req.body.contentId),
+      aspect: Number(req.body.aspect),
+      keypoint: Number(req.body.keypoint),
+      method: Number(req.body.method),
     })
 
     res.send('completed')
 
   } catch(err) {
     if(!err.status){
-      err = new Error('filter failed')
+      err = new Error('change label failed failed')
       err.status = 500
     }
     next(err)
@@ -114,7 +114,7 @@ router.use('/:dataId', (req, res, next) => {
 
 router.get('/:dataId/filter', async(req, res, next)=>{
   try{
-    let data = await getContent(req.query.aspect, req.query.keypoint, req.query.method, res.locals.dataId, -1, 0)
+    let data = await getContent(Number(req.query.aspect), Number(req.query.keypoint), Number(req.query.method), Number(res.locals.dataId), -1, 0)
 
     if(data === 'empty data'){
       res.send('')
