@@ -1,3 +1,5 @@
+import Data from 'short-term/models/schemas/Data.js'
+
 /**
  * Create a new Campus into database with the given information.
  * WARNING: There is no remedy to recover the deleted data.
@@ -7,8 +9,6 @@
  * @returns {object} - return the deleted data in data table
  * @thorows - Throw an error if the dataId == isNan
  */
-// import Data module
-import Data from 'short-term/models/schemas/Data.js'
 
 export default async(dataId, userId) => {
   try {

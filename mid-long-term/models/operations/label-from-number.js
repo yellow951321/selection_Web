@@ -1,6 +1,14 @@
 import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 import {User, } from 'mid-long-term/models/association.js'
 
+/**
+ * Return the word of label by the given content
+ * @function labelFromumber
+ * @param {ContentInfo} data
+ * @returns {ContentInfo} - the `aspect`, `keypoint`, `method` are been converted to word
+ * @throws - Throw the error message if the type of the argument,`data` is not correct.
+ */
+
 export default async(data) => {
   if(typeof data !== 'object' || data === null || Array.isArray(data)){
     const err = new Error('invalid argument')

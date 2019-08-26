@@ -1,4 +1,36 @@
+/**
+ * @file update the content fo the `content` by the given `contetId`
+ */
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
+/**
+ * @typedef infoObject info
+ * @property {number} contentId
+ * @property {number} userId
+ * @property {number} pageFrom
+ * @property {nummber} pageTo
+ * @property {string} title1
+ * @property {string} title2
+ * @property {string} title3
+ * @property {string} title4
+ * @property {string} content
+ * @property {string} summary
+ * @property {string} note
+ * @property {number} reviewerId
+ */
+
+/**
+ * update a content with the given `userId`, `contentId`.
+ * @function content-update
+ * @param {number} contentId
+ * @param {infoObject} updateData
+ * @returns {object}
+ * @throws invalide argument
+ * @throws `contentId`is `NaN`
+ * @throws `pageFrom` is `NaN`
+ * @throws `pageTo` is `NaN`
+ * @throws data fetch failed
+ */
+
 export default async(contentId, updatedData) => {
   try{
     if(typeof updatedData !== 'object'){

@@ -1,6 +1,42 @@
 import {Content, } from 'mid-long-term/models/association.js'
 import labelFromNumber from 'projectRoot/mid-long-term/models/operations/label-from-number.js'
 
+/**
+ * @typedef ContentInfo
+ * @property {string} updateTime
+ * @property {string} title1
+ * @property {string} title2
+ * @property {string} title3
+ * @property {string} title4
+ * @property {string} content
+ * @property {string} summary
+ * @property {string} note
+ * @property {number} isChecked
+ * @property {number} isConflicted
+ * @property {number} contentId
+ * @property {number} pageFrom
+ * @property {number} pageTo
+ * @property {number} aspect
+ * @property {number} keypoint
+ * @property {number} method
+ * @property {number} conflictedAspect
+ * @property {number} conflictedKeypoint
+ * @property {number} conflictedMethod
+ * @property {number} reviewerId
+ */
+
+/**
+ * Return all the content given the specific condition
+ * @function getContent
+ * @param {number} aspect
+ * @param {number} keypoint
+ * @param {number} method
+ * @param {number} dataId
+ * @param {number} isChecked
+ * @param {number} isConflicted
+ * @returns {ContentInfo[]}
+ * @throws - throw a
+ */
 export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflicted=-1) => {
   /** if any of the value of the three type of label is -1
      *  ,which means show all the content under this label

@@ -127,14 +127,11 @@ router.use('/:dataId', async (req, res, next) => {
       dataId: req.params.dataId,
       userId: req.session.userId
     })
-<<<<<<< HEAD
-=======
 
     if(result === 'empty data'){
       res.redirect('/auth/channel')
       return
     }
->>>>>>> feature-backend
 
     if(result.message === 'as an editor'){
       res.redirect(`/mid-long-term/data/${req.params.dataId}/edit`)
@@ -163,10 +160,6 @@ router.use('/:dataId', async (req, res, next) => {
  */
 router.get('/:dataId/index', async(req, res, next) => {
   try{
-<<<<<<< HEAD
-
-=======
->>>>>>> feature-backend
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId]['campus'][res.locals.campusId]
 

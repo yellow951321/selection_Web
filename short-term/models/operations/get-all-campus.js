@@ -1,20 +1,5 @@
-/**
- * return the whole campus information
- * @function getAllCampus
- * @param {object} info
- * @param {number} info.year - The year of the campus
- * @param {number} info.typeId - The type of the campus
- * @returns {array} - Each element represent a content of campus
- * @requires 'short-term/models/association.js'
- * @requires Sequelize
- * @requires 'lib/static/javascripts/mapping/campus.js'
- */
-
-// import  association.js module
 import {Data, Content, User, } from 'short-term/models/association.js'
-// import the sequelize
 import Sequelize from 'sequelize'
-// import the campusMap module
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
 
 // Assign Variable Op to a Sequelize.Op
@@ -99,11 +84,6 @@ async function getCampusDetail(data) {
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
   data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
-<<<<<<< HEAD
-  data.campusName = campusMap[data.typeId].campus[data.campusId]
-
-=======
->>>>>>> feature-backend
   return data
 }
 
@@ -121,21 +101,10 @@ export default async(info={}) => {
   try{
     // explicitly convert the typeId and yearId into type of number
     let typeId = Number(info.typeId)
-<<<<<<< HEAD
-    let year = Number(info.year)
-    if(Number.isNaN(typeId)){
-      const err = new Error('typeId argument')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(year)){
-      const err = new Error('year argument')
-=======
     let yearId = Number(info.yearId)
     // check whether typeId or yearId is isNaN
     if(Number.isNaN(typeId) || Number.isNaN(yearId)){
       const err = new Error('invalid argument')
->>>>>>> feature-backend
       err.status = 400
       throw err
     }
@@ -174,12 +143,6 @@ export default async(info={}) => {
         typeId: d.typeId,
       }
     })
-<<<<<<< HEAD
-
-    return Promise.all(data.map(d=>getCampusDetail(d)))
-  }catch(err) {
-    if(typeof err.status !== 'number'){
-=======
     /*
     use Promise.all method to execute the getCampusDetail func
      */
@@ -192,7 +155,6 @@ export default async(info={}) => {
   }catch(err) {
     // error handling
     if(!err.status){
->>>>>>> feature-backend
       err = new Error('Error occurred in get-all-campus.js')
       err.status = 500
     }

@@ -1,4 +1,23 @@
+/**
+ * @file Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ */
 import Data from 'projectRoot/short-term/models/schemas/Data.js'
+
+/**
+ * @typedef infoObject
+ * @property {string | number} userId,
+ * @property {string | number} dataId
+ */
+
+/**
+ * Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ * @function content-auth
+ * @param {infoObject} info
+ * @returns {string}
+ * @throws `dataId` is `NaN`
+ * @throws `userId` is `NaN`
+ * @throws data fetch failed
+ */
 
 export default async(info) => {
   try{
@@ -48,7 +67,7 @@ export default async(info) => {
       info:{
         year: checkData.year,
         typeId: checkData.typeId,
-        campusId: checkData.campusId, 
+        campusId: checkData.campusId,
       },
     }
     if(checkData.userId !== info.userId){

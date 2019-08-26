@@ -1,5 +1,28 @@
+/**
+ * @file Used for creating new content
+ */
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
 import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
+
+/**
+ * @typedef infoObject
+ * @property {number} dataId
+ * @property {number} aspect
+ * @property {number} keypoint
+ * @property {number} method
+ */
+
+/**
+ * Used for creating new content
+ * @function content-create
+ * @param {infoObject} info
+ * @returns {object}
+ * @throws invalid argument
+ * @throws `dataId` is `NaN`
+ * @throws `aspect` is `NaN`
+ * @throws `keypoint` is `NaN`
+ * @throws `method` is `NaN`
+ */
 
 export default async(info) => {
 

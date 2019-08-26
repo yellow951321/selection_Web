@@ -1,3 +1,5 @@
+import Data from 'short-term/models/schemas/Data.js'
+
 /**
  * @typedef {object} campusYearInfo
  * @property {number} year
@@ -8,8 +10,6 @@
  * @returns {campusYearInfo[]}
  * @throws - throw a new Error if it occurred a unknown error
  */
-// import the Data module
-import Data from 'short-term/models/schemas/Data.js'
 
 export default async() => {
   try{

@@ -7,14 +7,14 @@ import Session from 'auth/models/schemas/session.js'
 
 /**
  * @function login
- * @param {object} req - A Express request object
+ * @param {object} info - A Express request object
  * @returns {void}
  * @throws Data fetch failed
  * @throws Session create failed
  * @throws No matched account
  * @throws login.js failed
  */
-export default async(req) =>{
+export default async(info) =>{
   try{
     if(typeof info !== 'object'){
       let err = new Error('invalid argument')

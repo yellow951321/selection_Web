@@ -1,3 +1,11 @@
+import fs from 'fs'
+import uniqueFilename from 'unique-filename'
+import {createObjectCsvWriter, } from 'csv-writer'
+import Content from 'short-term/models/schemas/Content.js'
+import Data from 'short-term/models/schemas/Data.js'
+import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
+
+
 /**
  * dump the data to a csv file with the given dataId
  * @function downloadCsv
@@ -10,17 +18,6 @@
  * @requires 'projectRoot/lib/static/javascripts/mapping/label.js'
  * @
  */
-
-// import FileSystem module
-import fs from 'fs'
-// import the uniqueFilename
-import uniqueFilename from 'unique-filename'
-// import csv-writer module
-import {createObjectCsvWriter, } from 'csv-writer'
-// import Content module
-import Content from 'short-term/models/schemas/Content.js'
-import Data from 'short-term/models/schemas/Data.js'
-import { midLongTermFromNumber, } from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 export default async(info) => {
   try{
@@ -41,7 +38,7 @@ export default async(info) => {
       tmpDir = '/tmp/selection_Web'
       if(!fs.existsSync(tmpDir))
         fs.mkdirSync(tmpDir)
-    
+
       filePath = uniqueFilename(tmpDir)
     }catch(err){
       err = new Error('create file failed')

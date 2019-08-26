@@ -1,4 +1,22 @@
+/**
+ * @file Delete the content with the given `contentId`
+ */
 import Content from 'projectRoot/short-term/models/schemas/Content.js'
+
+/**
+ * @typedef infoObject info
+ * @property {number} contentId
+ */
+
+/**
+ * Delete the content with the given `contentId`
+ * @function content-delete
+ * @param {infoObject} info
+ * @returns {object}
+ * @throws invalid argument
+ * @throws contentId is not a number
+ * @throws content delete failed
+ */
 
 export default async(info)=>{
   try{

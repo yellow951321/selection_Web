@@ -1,6 +1,20 @@
 import {Data, } from 'mid-long-term/models/association.js'
 import typeMap from 'lib/static/javascripts/mapping/campus.js'
 
+/**
+ * @typedef {object} typeInfo
+ * @property {string} name
+ * @property {number} id
+ */
+
+/**
+ * Return all kinds of type, `大學`, `技專院校`
+ * @function getAllType
+ * @returns {typeInfo[]}
+ * @throws - throw two errors
+ * 1. `fetching data failed`
+ * 2. `data formatting failed`
+ */
 export default async() => {
   let data
   try{

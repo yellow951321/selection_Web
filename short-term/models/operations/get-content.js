@@ -1,3 +1,6 @@
+import Content from 'projectRoot/short-term/models/schemas/Content.js'
+import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
+
 /**
  * @typedef {object} ContentInfo
  * @property {number} campusId
@@ -34,24 +37,7 @@
  * @returns {ContentInfo}
  * @todo give the link of the illustration of isChecked and isConflicted
  */
-// import the COntent Module
-import Content from 'projectRoot/short-term/models/schemas/Content.js'
-import labelFromNumber from 'projectRoot/short-term/models/operations/label-from-number.js'
-
-
 export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflicted=-1) => {
-<<<<<<< HEAD
-  /**
-   * Define the where condition for Content.findAll()
-   */
-  let whereCondition = {
-    dataId,
-  }
-  /**
-   * Check whether the aspect is -1 or not,so as keypoint and method,
-   * then assign into a property into the variablet whereCondition
-   */
-=======
   /** if any of the value of the three type of label is -1
      *  ,which means show all the content under this label
      *  ,we need to set special condition
@@ -93,7 +79,6 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
   let whereCondition = {
     dataId,
   }
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
   if(aspect !== -1){
     whereCondition['aspect'] = aspect
     if(keypoint !== -1){
@@ -117,13 +102,6 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
   if(isChecked != -1){
     whereCondition['isChecked'] = isChecked
   }
-<<<<<<< HEAD
-  /**
-   * Find all Content with the given condition, whereCondition
-   */
-=======
-
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
   let data = await Content.findAll({
     where: whereCondition,
     attributes: [
@@ -150,15 +128,11 @@ export default async(aspect, keypoint, method, dataId, isChecked =-1, isConflict
       'dataId',
     ],
   })
-<<<<<<< HEAD
-  // return a array of data
-=======
 
   if(data === null || data.length === 0){
     return 'empty data'
   }
 
   data = await labelFromNumber(data)
->>>>>>> 07904db85fa1f65e91fda716314f1a0cc2dedf67
   return data
 }

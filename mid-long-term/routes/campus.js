@@ -1,3 +1,4 @@
+
 import express from 'express'
 import getAllCampus from 'mid-long-term/models/operations/get-all-campus.js'
 

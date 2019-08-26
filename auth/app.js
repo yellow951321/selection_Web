@@ -201,19 +201,6 @@ app.get('/logout', async(req, res, next)=>{
     next(err)
   }
 })
-<<<<<<< HEAD
-
-app.get('/unauthor', async(req, res, next)=> {
-  try {
-    res.render('unauthor')
-  }
-  catch (err){
-    next(err)
-  }
-})
-
-=======
->>>>>>> feature-backend
 app.use(({}, {}, next)=>{
   // create a error message with page not found
   const err = new Error('Page not found.')

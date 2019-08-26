@@ -1,4 +1,9 @@
 /**
+ * @file Create a new Campus into database given the following information
+ */
+import Data from 'short-term/models/schemas/Data.js'
+
+/**
  * Create a new Campus into database given the following information
  * @function dataCreate
  * @param {object} info
@@ -9,8 +14,6 @@
  * @returns {string} - return a OK to represent this op is work correctly
  * @thorows - Throw an error if the campusId | typeId | userId | year == isNan
  */
-// import Data Module
-import Data from 'short-term/models/schemas/Data.js'
 
 export default async(info={}) =>{
   try{
@@ -66,14 +69,10 @@ export default async(info={}) =>{
       err.status = 400
       throw err
     }
-<<<<<<< HEAD
-  }catch(err){
-=======
 
     return result
   }catch(err) {
     // error handling
->>>>>>> feature-backend
     if(!err.status){
       err = new Error('data fetch fail')
       err.status = 500
