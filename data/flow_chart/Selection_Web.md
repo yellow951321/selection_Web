@@ -239,7 +239,7 @@ mid-long-term/
             - `POST /:dataId/check`
             ![POST /:dataId/check](./mid-long-term/content/content-post-dataId-check.svg)
             - `GET /:dataId/add`
-            1[GET /:dataId/add](./mid-long-term/content/content-dataId-add.svg)
+            ![GET /:dataId/add](./mid-long-term/content/content-dataId-add.svg)
         - `data.js`
             - Controll the logic when the user add a new content or delete a content. And, it also has the function of rendering a edit web page when the users access the edit page.
             - `POST /add`
