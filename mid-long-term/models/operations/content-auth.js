@@ -10,7 +10,7 @@ import {Data, } from 'mid-long-term/models/association.js'
  */
 
 /**
- * Used for Checking the `info.userId` wether is owned `info.dataId` or not.
+ * Used for Checking the `info.userId` whether is owned `info.dataId` or not.
  * @function content-auth
  * @param {infoObject} info
  * @returns {string}
