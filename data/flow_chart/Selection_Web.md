@@ -68,6 +68,7 @@ auth
     - It is just the bundle of front-end code which is not readable.
 
 <a id="auth_static"></a>
+
 - `auth/static`
 
     - `auth/static/javascripts`
@@ -89,6 +90,7 @@ auth
     - This defines the html of login web page and signup web page.
 
 <a id="auth_app"></a>
+
 - [`app.js`](https://hackmd.io/iBpjWIvnRqK8eAmIUpLDXQ#module_userApp..login)
     - This is the server, which defines the operation of login and signup.
 
@@ -105,6 +107,7 @@ auth
         ![GET /logout](./auth/logout.svg)
 
 # `mid-long-term`
+
 ```bash
 mid-long-term/
 ├── models
@@ -124,8 +127,6 @@ mid-long-term/
 │    └── mixins
 │        └── editnodes
 └── app.js
-
-
 ```
 
 - `mid-long-term/models`
