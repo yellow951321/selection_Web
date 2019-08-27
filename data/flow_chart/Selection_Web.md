@@ -96,54 +96,13 @@ auth
         - `POST /login` - only can be requested from GET `/login` page
         ![POST /login](./auth/post_login.svg)
         - `GET /login` - could be from any page
-        ```flow
-        _login_get=>start: GET /login
-        se_ex=>condition: Session & userId exist ?
-        r_auth_channel=>operation: Redirect to auth/channel
-        r_login=>operation: Redircet to auth/login
-
-        _login_get->se_ex
-        se_ex(yes)->r_auth_channel
-        se_ex(no)->r_login
-        ```
-
+        ![GET /login](./auth/get_login.svg)
         - `/public` - could be from any page
-        ```flow
-        _public=>start: /public
-        page_404=>condition: Is page existed?
-        r_static_page=>operation: Render static web page
-        next=>operation: call next():> http://expressjs.com/zh-tw/api.html#express.static[blank] 
-
-        _public->page_404
-        page_404(yes)->r_static_page
-        page_404(no)->next
-        ```
-
+        ![/public](./auth/public.svg)
         - `GET /channel` - could be from any page
-        ```flow
-        _channel=>start: /channel
-        se_ex=>condition: Are session & userId existed ?
-        getUserInfo=>condition: If `getUserInfo` occurred error?
-        r_channel=>operation: Render channel.pug
-        r_login=>operation: Redirect to auth/login
-        throw_err=>operation: Error code 500
-        _channel->se_ex
-        se_ex(yes)->getUserInfo
-        getUserInfo(yes)->throw_err
-        getUserInfo(no)->r_channel
-        se_ex(no)->r_login
-        ```
-
+        ![/channel](./auth/channel.svg)
         - `GET /logout` - could be get from `/channel`, `mid-long-term/` and `short-term/`
-        ```flow
-        _logout=>start: /logout
-        deleteSession=>condition: `DeleteSession` method
-        r_login=>operation: Redirect to auth/login
-        throw_err=>operation: throw 500 status code
-        _logout->deleteSession
-        deleteSession(yes)->r_login
-        deleteSession(no)->throw_err
-        ```
+        ![GET /logout](./auth/logout.svg)
 
 # `mid-long-term`
 ```bash
@@ -199,7 +158,7 @@ mid-long-term/
 
 - `mid-long-term/static`
 
-    - `/javascripts` 
+    - `/javascripts`
         - It defines the function of creating new campus and buttons on the web page.
 
         - ```bash
@@ -226,7 +185,7 @@ mid-long-term/
             - Define the function of the  filter and dropdown button in the edit mode when the user owns the edit permission. Otherwise, the user only has the permission to read.
         - `module/`
             - `projectCreation.js`
-                - It will be called when the users add a new campus to the database. 
+                - It will be called when the users add a new campus to the database.
             - `projectDelete.backup.js`
                 - It will be called when the users want to delete a campus(project)
 
@@ -238,7 +197,7 @@ mid-long-term/
             - Import `projectCreation.js`.
         - year.js
             - Import `projectCreation.js` and the function of progress bar.
-        
+
     - `/stylesheets`
         - It defines the exterior of the web page
         - `signup.css`
@@ -248,7 +207,7 @@ mid-long-term/
     - `mid-long-term/routes`
         - All routes of controlling the logic of responding and requesting
         - Hierarachy
-            - ```bash 
+            - ```bash
                 routes/
                 ├── campus.js
                 ├── content.js
@@ -261,7 +220,7 @@ mid-long-term/
                 └── year.js
                 ```
         - `campus.js` - `GET midLongTerm/:typeId`
-            - Controll the logic in the campus web page(.scss). 
+            - Controll the logic in the campus web page(.scss).
             ```flow
                 _campus=>start: midLongTerm/:typeId
                 getAllCampus=>operation: Call getAllCampus in get-all-campus.js
@@ -275,19 +234,19 @@ mid-long-term/
             ```flow
             _save=>start: /save
             _:dataId/add=>start: /:dataId/add
-            
+
             contentSave=>operation: call contentSave method in content-save.js
             next=>operation: call next()
-            
+
             _save->contentSave
-            
-            
+
+
             ```
             - `GET /delete`
             ```flow
             _delete=>start: /delete
             contentDelete=>operation: call contentDelete method in content-delete.js
-            
+
             _delete->contentDelete
             ```
             - `GET /change`
