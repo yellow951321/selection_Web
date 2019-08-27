@@ -221,161 +221,63 @@ mid-long-term/
                 ```
         - `campus.js` - `GET midLongTerm/:typeId`
             - Controll the logic in the campus web page(.scss).
-            ```flow
-                _campus=>start: midLongTerm/:typeId
-                getAllCampus=>operation: Call getAllCampus in get-all-campus.js
-                r_campus=>operation: Render campus.pug
-                _campus->getAllCampus
-                getAllCampus->r_campus
-            ```
+            ![GET midLongTerm/:typeId](./mid-long-term/campus.svg)
         - `content.js`-`midLongTerm/content`
             - Controll the logic in the edit web page(.scss).
             - `GET /save`
-            ```flow
-            _save=>start: /save
-            _:dataId/add=>start: /:dataId/add
-
-            contentSave=>operation: call contentSave method in content-save.js
-            next=>operation: call next()
-
-            _save->contentSave
-
-
-            ```
+            ![GET /save](./mid-long-term/content/content-save.svg)
             - `GET /delete`
-            ```flow
-            _delete=>start: /delete
-            contentDelete=>operation: call contentDelete method in content-delete.js
-
-            _delete->contentDelete
-            ```
+            ![GET /delete](./mid-long-term/content/content-delete.svg)
             - `GET /change`
-            ```flow
-            _change=>start: /change
-            contentChangeLabel=>operation: call contentChangeLabel method in content-change-label.js
-            _change->contentChangeLabel
-            ```
-            - `GET /:dataId` 
-            ```flow
-            _:dataId=>start: /:dataId
-            dataIdIsNaN=>condition: Is dataId `NaN`?
-            error=>operation: throw an Error
-            next=>operation: call next()
-            next_err=>operation: call next(err)
-            _:dataId->dataIdIsNaN
-            dataIdIsNaN(yes)->error
-            dataIdIsNaN(no)->next
-            error->next_err
-            ```
+            ![GET /change](./mid-long-term/content/content-change.svg)
+            - `GET /:dataId`
+            ![GET /:dataId](./mid-long-term/content/content-dataId.svg)
             - `GET /:dataId/filter`
-            ```flow
-            _:dataId/filter=>start: /:dataId/filter
-            getContent=>operation: call getContent in get-content.js
-            empty_data=>condition: Return string `empty data`?
-            r_own=>operation: Render own.pug
-            r_empty=>operation: Send back an empty string ''
-            _:dataId/filter->getContent
-            getContent->empty_data
-            empty_data(yes)->r_empty
-            empty_data(no)->r_own
-            ```
+            ![GET /:dataId/filter](./mid-long-term/content/content-dataId-filter.svg)
             - `GET /:dataId/check`
-            ```flow
-            _:dataId/check=>start: /:dataId/check
-            getContent=>operation: call getContent in get-content.js
-            empty_data=>condition: Return string `empty data`?
-            r_check=>operation: Render check.pug
-            r_empty=>operation: Send back an empty string ''
-            _:dataId/check->getContent
-            getContent->empty_data
-            empty_data(yes)->r_empty
-            empty_data(no)->r_check
-            ```
+            ![GET /:dataId/check](./mid-long-term/content/content-get-dataId-check.svg)
             - `POST /:dataId/check`
-            ```flow
-            _:dataId/check=>start: /:dataId/check
-            contentUpdate=>operation: call contentUpdate in content-update.js
-            _:dataId/check->contentUpdate
-            ```
+            ![POST /:dataId/check](./mid-long-term/content/content-post-dataId-check.svg)
             - `GET /:dataId/add`
-            ```flow
-            _:dataId/add=>start: /:dataId/add
-            contentCreate=>operation: call contentCreate in cntent-create.js
-            _:dataId/add->contentCreate
-            ```
+            1[GET /:dataId/add](./mid-long-term/content/content-dataId-add.svg)
         - `data.js`
             - Controll the logic when the user add a new content or delete a content. And, it also has the function of rendering a edit web page when the users access the edit page.
             - `POST /add`
-            ```flow
-            _add=>start: /add
-            dataCreate=>operation: call dataCreate in data-create.js
-            r_:typeId/index=>operation: Redirect to migLongTerm/:typeId/index
-            _add->dataCreate
-            dataCreate->r_:typeId/index
-            ```
+            ![POST /add](./mid-long-term/data/data-add.svg)
             - `POST /delete`
-            ```flow
-            _delete=>start: /delete
-            dataDelete=>operation: Call dataDelete in data-delete.js
-            r_midLongTerm=>operation: Redirect to /midLongTerm/index
-            _delete->dataDelete
-            dataDelete->r_midLongTerm
-            ```
+            ![POST /delete](./mid-long-term/data/data-delete.svg)
             - `/:dataId`
-            ```flow
-            _:dataId=>start: /:dataId
-            contentAuth=>operation: call contentAuth in content-auth.js
-            asAReviewer=>condition: Return `as a reviewer`?
-            r_review=>operation: Redirect to /reivew/:dataId/index
-            next=>operation: call next()
-            _:dataId->contentAuth
-            contentAuth->asAReviewer
-            asAReviewer(yes)->r_review
-            asAReviewer(no)->next
-            ```
+            ![POST /:dataId](./mid-long-term/data/data-dataId.svg)
             - `POST /:dataId/edit`- only could be requested from `year.pug`
-            ```flow
-            _:dataId/edit=>start: /:dataId/edit
-            r_edit=>operation: Render edit.pug
-            _:dataId/edit->r_edit
-            ```
+            ![POST /:dataId/edit](./mid-long-term/data/data-dataId-edit.svg)
         - `downloadCsv.js`
             - Controll the logic when the user wants to download the current project into a csv file.
             - `downloadCsv/:dataId/index`
-            ```flow
-            _d_index=>start: downloadCsv/:dataId/index
-            createCsv=>operation: Call createCsv method in create-csv.js
-            sendFile=>operation: call res.sendFile()
-            
-            _d_index->createCsv
-            createCsv->sendFile
-            ```
+            ![GET downloadCsv/:dataId/index](./mid-long-term/download.svg)
         - `graph.js`
             - Controll the logic when the user wants to see the statistic result of the campus.
         - `index.js`
-            - Just render the `type.pug` page to the client. 
+            - Just render the `type.pug` page to the client.
         - `review.js`
             - Controll the logic of reviewer or editor. If the user is the owner, it will redirect to the `data.js`. Otherwise, it will render a `review.pug`
+            - GET /check
+            ![GET /check](./mid-long-term/review/review-check.svg)
+            - GET /conflict
+            ![GET /conflict](./mid-long-term/review/review-conflict.svg)
+            - GET /:dataId
+            ![GET /:dataId](./mid-long-term/review/review-dataId.svg)
+            - GET /:dataId/filter
+            ![GET /:dataId/filter](./mid-long-term/review/review-dataId-filter.svg)
+            - GET /:dataId/index
+            ![GET /:dataId/index](./mid-long-term/review/review-dataId-index.svg)
         - `type.js`
             - Sending the web page,`type.pug`, with all types of campuses to the client.
-            - `/index`
-            ```flow
-            _index=>start: /index
-            getAllType=>operation: Call getAllType in get-all-type.js
-            r_type=>operation: Render type.pug
-        
-            _index->getAllType->r_type
-            ```
+            - GET `/index`
+            ![GET /index](./mid-long-term/type.svg)
         - `year.js`
             - Sending the web page, `year.pug`, with all years of campuses to the client.
-            - `/index`
-            ```flow
-            _index=>start: /index
-            getAllYear=>operation: Call getAllYear in get-all-year.js
-            r_year=>operation: Render year.pug
-        
-            _index->getAllYear->r_year
-            ```
+            - GET `/index`
+            ![GET /index](./mid-long-term/year.svg)
     - `/views`
         - All web pages of mid-long-term are here.
         - Hierarachy
