@@ -222,11 +222,12 @@ mid-long-term/
                 ```
         - `campus.js` - `GET midLongTerm/:typeId`
             - Controll the logic in the campus web page(.scss).
+
             ![GET midLongTerm/:typeId](./midLongTerm/campus.svg)
         - `content.js`-`midLongTerm/content`
             - Controll the logic in the edit web page(.scss).
             - `GET /save`
-            ![GET /save](./midLongTerm/content/content-save.svg)
+            ![GET /save](./midLongTerm/content/content_save.svg)
             - `GET /delete`
             ![GET /delete](./midLongTerm/content/content-delete.svg)
             - `GET /change`
