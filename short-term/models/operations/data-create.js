@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 /**
  * @file Create a new Campus into database given the following information
  */
-import Data from 'short-term/models/schemas/Data.js'
-
+import {Data, } from 'short-term/models/association.js'
 /**
  * Create a new Campus into database given the following information
  * @function dataCreate
@@ -15,48 +13,6 @@ import Data from 'short-term/models/schemas/Data.js'
  * @returns {string} - return a OK to represent this op is work correctly
  * @thorows - Throw an error if the campusId | typeId | userId | year == isNan
  */
-
-export default async(info={}) =>{
-  try{
-    if(typeof info !== 'object'){
-      const err = new Error('invalid argument')
-      err.status = 400
-      throw err
-    }
-
-    info.campusId = Number(info.campusId)
-    info.typeId = Number(info.typeId)
-    info.userId = Number(info.userId)
-    info.year = Number(info.year)
-
-    if(Number.isNaN(info.campusId)){
-      const err = new Error('campusId is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.typeId)){
-      const err = new Error('typeId is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.userId)){
-      const err = new Error('userId is NaN')
-      err.status = 400
-      throw err
-    }
-    if(Number.isNaN(info.year)){
-      const err = new Error('year is NaN')
-      err.status = 400
-      throw err
-    }
-  }catch(err) {
-    if(!err.status){
-      err = new Error('invalid argument')
-      err.status = 400
-    }
-=======
-import {Data, } from 'short-term/models/association.js'
-
 export default async(info) =>{
   if(typeof info !== 'object' || info === null){
     let err = new Error('invalid argument')
@@ -66,7 +22,6 @@ export default async(info) =>{
   if(Number.isNaN(Number(info.campusId)) || typeof info.campusId !== 'number'){
     const err = new Error('campusId is NaN')
     err.status = 400
->>>>>>> 187c312727e947cd8f91262dd7070a0d6a18e2dc
     throw err
   }
   info.campusId = Number(info.campusId)
@@ -98,25 +53,9 @@ export default async(info) =>{
         year: info.year,
       },
     })
-<<<<<<< HEAD
-    if(campus !== null){
-      err = new Error('data already exist')
-      err.status = 400
-      throw err
-    }
-
-    return result
-  }catch(err) {
-    // error handling
-    if(!err.status){
-      err = new Error('data fetch fail')
-      err.status = 500
-    }
-=======
   }catch(err){
     err = new Error('fetching data failed')
     err.status = 500
->>>>>>> 187c312727e947cd8f91262dd7070a0d6a18e2dc
     throw err
   }
 
