@@ -27,4 +27,4 @@ npm run develop
 - 可以修改 `config.js` 裡的 `server.port` 來自訂 port
 
 ## Documentation
-- [Doc](https://github.com/yellow951321/selection_Web/feature-webpack/data/flow_chart/Selection_Web.md)
+- [Doc](https://github.com/yellow951321/selection_Web/blob/feature-webpack/data/flow_chart/Selection_Web.md)
