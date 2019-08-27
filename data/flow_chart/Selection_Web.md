@@ -70,7 +70,7 @@ auth
 <a id="auth_static"></a>
 - `auth/static`
 
-    - `auth/static/javascripts` 
+    - `auth/static/javascripts`
         - It defines the function of login and signup.
         - [`login.js`](https://hackmd.io/kw0LaJzeRjyIZy0-j0IXAQ)
         - [`signup.js`](https://hackmd.io/bEv5a2MCTi2XsW0CHvEkyA)
@@ -94,6 +94,7 @@ auth
 
     - Route
         - `POST /login` - only can be requested from GET `/login` page
+        ![POST /login](./auth/post_login.svg)
         - `GET /login` - could be from any page
         ```flow
         _login_get=>start: GET /login
