@@ -222,39 +222,39 @@ mid-long-term/
                 ```
         - `campus.js` - `GET midLongTerm/:typeId`
             - Controll the logic in the campus web page(.scss).
-            ![GET midLongTerm/:typeId](./mid-long-term/campus.svg)
+            ![GET midLongTerm/:typeId](./midLongTerm/campus.svg)
         - `content.js`-`midLongTerm/content`
             - Controll the logic in the edit web page(.scss).
             - `GET /save`
-            ![GET /save](./mid-long-term/content/content-save.svg)
+            ![GET /save](./midLongTerm/content/content-save.svg)
             - `GET /delete`
-            ![GET /delete](./mid-long-term/content/content-delete.svg)
+            ![GET /delete](./midLongTerm/content/content-delete.svg)
             - `GET /change`
-            ![GET /change](./mid-long-term/content/content-change.svg)
+            ![GET /change](./midLongTerm/content/content-change.svg)
             - `GET /:dataId`
-            ![GET /:dataId](./mid-long-term/content/content-dataId.svg)
+            ![GET /:dataId](./midLongTerm/content/content-dataId.svg)
             - `GET /:dataId/filter`
-            ![GET /:dataId/filter](./mid-long-term/content/content-dataId-filter.svg)
+            ![GET /:dataId/filter](./midLongTerm/content/content-dataId-filter.svg)
             - `GET /:dataId/check`
-            ![GET /:dataId/check](./mid-long-term/content/content-get-dataId-check.svg)
+            ![GET /:dataId/check](./midLongTerm/content/content-get-dataId-check.svg)
             - `POST /:dataId/check`
-            ![POST /:dataId/check](./mid-long-term/content/content-post-dataId-check.svg)
+            ![POST /:dataId/check](./midLongTerm/content/content-post-dataId-check.svg)
             - `GET /:dataId/add`
-            ![GET /:dataId/add](./mid-long-term/content/content-dataId-add.svg)
+            ![GET /:dataId/add](./midLongTerm/content/content-dataId-add.svg)
         - `data.js`
             - Controll the logic when the user add a new content or delete a content. And, it also has the function of rendering a edit web page when the users access the edit page.
             - `POST /add`
-            ![POST /add](./mid-long-term/data/data-add.svg)
+            ![POST /add](./midLongTerm/data/data-add.svg)
             - `POST /delete`
-            ![POST /delete](./mid-long-term/data/data-delete.svg)
+            ![POST /delete](./midLongTerm/data/data-delete.svg)
             - `/:dataId`
-            ![POST /:dataId](./mid-long-term/data/data-dataId.svg)
+            ![POST /:dataId](./midLongTerm/data/data-dataId.svg)
             - `POST /:dataId/edit`- only could be requested from `year.pug`
-            ![POST /:dataId/edit](./mid-long-term/data/data-dataId-edit.svg)
+            ![POST /:dataId/edit](./midLongTerm/data/data-dataId-edit.svg)
         - `downloadCsv.js`
             - Controll the logic when the user wants to download the current project into a csv file.
             - `downloadCsv/:dataId/index`
-            ![GET downloadCsv/:dataId/index](./mid-long-term/download.svg)
+            ![GET downloadCsv/:dataId/index](./midLongTerm/download.svg)
         - `graph.js`
             - Controll the logic when the user wants to see the statistic result of the campus.
         - `index.js`
@@ -262,23 +262,23 @@ mid-long-term/
         - `review.js`
             - Controll the logic of reviewer or editor. If the user is the owner, it will redirect to the `data.js`. Otherwise, it will render a `review.pug`
             - GET /check
-            ![GET /check](./mid-long-term/review/review-check.svg)
+            ![GET /check](./midLongTerm/review/review-check.svg)
             - GET /conflict
-            ![GET /conflict](./mid-long-term/review/review-conflict.svg)
+            ![GET /conflict](./midLongTerm/review/review-conflict.svg)
             - GET /:dataId
-            ![GET /:dataId](./mid-long-term/review/review-dataId.svg)
+            ![GET /:dataId](./midLongTerm/review/review-dataId.svg)
             - GET /:dataId/filter
-            ![GET /:dataId/filter](./mid-long-term/review/review-dataId-filter.svg)
+            ![GET /:dataId/filter](./midLongTerm/review/review-dataId-filter.svg)
             - GET /:dataId/index
-            ![GET /:dataId/index](./mid-long-term/review/review-dataId-index.svg)
+            ![GET /:dataId/index](./midLongTerm/review/review-dataId-index.svg)
         - `type.js`
             - Sending the web page,`type.pug`, with all types of campuses to the client.
             - GET `/index`
-            ![GET /index](./mid-long-term/type.svg)
+            ![GET /index](./midLongTerm/type.svg)
         - `year.js`
             - Sending the web page, `year.pug`, with all years of campuses to the client.
             - GET `/index`
-            ![GET /index](./mid-long-term/year.svg)
+            ![GET /index](./midLongTerm/year.svg)
     - `/views`
         - All web pages of mid-long-term are here.
         - Hierarachy
