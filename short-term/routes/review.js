@@ -103,8 +103,8 @@ router.get('/:dataId/index', async(req, res, next) => {
           name: '計畫申請書',
         },
         {
-          id: res.locals.year,
-          name: res.locals.year,
+          id: res.locals.yearId,
+          name: res.locals.yearId,
         },
         {
           id: res.locals.typeId,
@@ -116,6 +116,7 @@ router.get('/:dataId/index', async(req, res, next) => {
         }
       ],
       id: req.session.userId,
+      year: res.locals.yearId,
       user: res.locals.user,
       dataId: req.params.dataId,
     })

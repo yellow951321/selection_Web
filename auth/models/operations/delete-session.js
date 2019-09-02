@@ -28,7 +28,7 @@ export default async(info) => {
       },
     })
   }catch(err){
-     /**
+    /**
        * This might be a potential error
        * 1. The Unknow problem occurred when execute `Session.destroy` operation.
        */

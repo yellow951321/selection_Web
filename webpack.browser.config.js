@@ -68,7 +68,6 @@ const midLongTermJsDistRoot = path.join(config.projectRoot, 'mid-long-term/publi
 const midLongTermJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: {
     'campus': path.join(midLongTermJsSrcRoot, 'campus.js'),
-    'draw': path.join(midLongTermJsSrcRoot, 'draw.js'),
     'edit': path.join(midLongTermJsSrcRoot, 'edit.js'),
     'review': path.join(midLongTermJsSrcRoot, 'review.js'),
     'type': path.join(midLongTermJsSrcRoot, 'type.js'),
@@ -85,7 +84,6 @@ const shortTermJsDistRoot = path.join(config.projectRoot, 'short-term/public/jav
 const shortTermJsConfig = Object.assign({}, webpackJsConfigTemplate, {
   entry: {
     'campus': path.join(shortTermJsSrcRoot, 'campus.js'),
-    'draw': path.join(shortTermJsSrcRoot, 'draw.js'),
     'edit': path.join(shortTermJsSrcRoot, 'edit.js'),
     'review': path.join(shortTermJsSrcRoot, 'review.js'),
     'type': path.join(shortTermJsSrcRoot, 'type.js'),

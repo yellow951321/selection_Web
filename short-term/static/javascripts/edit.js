@@ -93,7 +93,7 @@ class Filter{
         this.checkMode(that)
         break
       default:
-        console.log('mode detection failed')
+
       }
     }
   }
@@ -297,7 +297,7 @@ class Filter{
       }
     }
   }
-  static modeDropdownOnChanged(that){
+  static modeDropdownOnChanged(){
     return (event) => {
       const editNode = event.target.parentNode.parentNode.parentNode.parentNode
       if(event.target.value === 'edit'){
@@ -569,7 +569,7 @@ window.addEventListener('beforeunload', (e) => {
   e.preventDefault()
   // check if there is unsaved content
   if(pageEdit.querySelector('.red.inverted'))
-	  e.returnValue = 'Do you want to leave?'
+    e.returnValue = 'Do you want to leave?'
   return true
 })
 
@@ -607,7 +607,7 @@ if(reserved.querySelector('.reserved__dimension') !== null){
   let itm = reserved.querySelector('.reserved__item').innerHTML
   let det = reserved.querySelector('.reserved__detail').innerHTML
 
-  new Promise((res, rej) => {
+  new Promise((res, {}) => {
     pageFilter.querySelector(`[data-value="${dim}"]`).click()
     res()
   })

@@ -1,5 +1,5 @@
 class projectCreation {
-  constructor(addButton){
+  constructor(){
     //refresh dropdwon in addForm
     $('#type-dropdown.dropdown')
       .dropdown()

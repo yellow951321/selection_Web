@@ -49,7 +49,7 @@ describe('test mid-long-term/models/operations/syncSession.js', ()=>{
       cookieParserStub = sandbox.stub(cookieParser, 'signedCookies').throws()
       try{
         await syncSession({})
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('parsering cookie failed')
@@ -60,7 +60,7 @@ describe('test mid-long-term/models/operations/syncSession.js', ()=>{
       SessionFindOneStub = sandbox.stub(Session, 'findOne').throws()
       try{
         await syncSession({})
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('fetching data failed')
@@ -78,7 +78,7 @@ describe('test mid-long-term/models/operations/syncSession.js', ()=>{
       })
       try{
         await syncSession({})
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('updating data failed')

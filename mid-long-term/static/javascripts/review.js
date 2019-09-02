@@ -1,4 +1,4 @@
-import {map, midLongTermFromNumber, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const pageAdvice = document.getElementById('advice')
@@ -55,7 +55,7 @@ class Filter{
         this.viewAndAuditMode(that, 'audit')
         break
       default:
-        console.log('mode detection failed')
+
       }
     }
   }
@@ -150,7 +150,7 @@ class Filter{
         },
       })
         .then(res => res.text())
-        .then(data => {
+        .then(() => {
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')

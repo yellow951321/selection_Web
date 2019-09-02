@@ -9,7 +9,6 @@
 // import shortTermDB module
 import shortTermDB from 'projectRoot/short-term/models/operations/connect.js'
 import Sequelize from 'sequelize'
-import User from 'projectRoot/auth/models/schemas/user.js'
 
 
 const dataSchema = {

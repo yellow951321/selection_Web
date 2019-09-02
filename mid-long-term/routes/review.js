@@ -34,8 +34,8 @@ router.post('/check', async(req, res, next) => {
     /**
      * Update the value of the column, `isChecked` to `1`
      */
-    let newData = await contentUpdate(req.body.contentId, {
-      reviewerId: req.session.userId,
+    let newData = await contentUpdate(Number(req.body.contentId), {
+      reviewerId: Number(req.session.userId),
       isChecked: 1,
     })
     /**
@@ -84,10 +84,10 @@ router.post('/conflict', async(req, res, next) => {
      * `isConflicted`,
      * `reviewerId`
      */
-    let newData = await contentUpdate(req.body.contentId, {
-      conflictedAspect: req.body.conflictedAspect,
-      conflictedKeypoint: req.body.conflictedKeypoint,
-      conflictedMethod: req.body.conflictedMethod,
+    let newData = await contentUpdate(Number(req.body.contentId), {
+      conflictedAspect: Number(req.body.conflictedAspect),
+      conflictedKeypoint: Number(req.body.conflictedKeypoint),
+      conflictedMethod: Number(req.body.conflictedMethod),
       isConflicted: 1,
       reviewerId: req.session.userId,
     })
@@ -124,8 +124,8 @@ router.post('/conflict', async(req, res, next) => {
 router.use('/:dataId', async (req, res, next) => {
   try{
     let result = await contentAuth({
-      dataId: req.params.dataId,
-      userId: req.session.userId
+      dataId: Number(req.params.dataId),
+      userId: req.session.userId,
     })
 
     if(result === 'empty data'){
@@ -202,7 +202,7 @@ router.get('/:dataId/index', async(req, res, next) => {
 router.get('/:dataId/filter', async(req, res, next) => {
   try{
     let data;
-    data = await getContent(req.query.aspect, req.query.keypoint, req.query.method, req.params.dataId, Number(req.query.isChecked))
+    data = await getContent(Number(req.query.aspect), Number(req.query.keypoint), Number(req.query.method), Number(req.params.dataId), Number(req.query.isChecked))
 
     if(data === 'empty data'){
       res.send('')

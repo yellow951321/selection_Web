@@ -52,11 +52,7 @@ app.use(authUser)
 
 app.use('/', yearRouter)
 
-app.use('/data', dataRouter)
-
 app.use('/content', contentRouter)
-
-app.use('/review', reviewRouter)
 
 app.use('/download', downloadRouter)
 
@@ -74,6 +70,10 @@ app.use('/:yearId', (req, res, next)=>{
   }
 },
 typeRouter)
+
+app.use('/:yearId/data', dataRouter)
+
+app.use('/:yearId/review', reviewRouter)
 
 app.use('/:yearId/:typeId', (req, res, next)=>{
   const typeId = Number(req.params.typeId)

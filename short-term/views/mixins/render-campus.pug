@@ -6,9 +6,9 @@ mixin renderCampus(obj)
       .ui.row
         .sixteen.wide.column
           if obj.user.id == id
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/data/${obj.dataId}/edit`) 編輯
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/${year}/data/${obj.dataId}/edit`) 編輯
           else
-            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/review/${obj.dataId}/index`) 檢閱
+            a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/${year}/review/${obj.dataId}/index`) 檢閱
           a.ui.button.option(href=`${GLOBAL.config.server.host}/short-term/download/${obj.dataId}/index`) 下載
           button.ui.button.option.deleteBtn(type='submit', name='dataId', value=obj.dataId) 刪除
       .ui.row.user-time-row

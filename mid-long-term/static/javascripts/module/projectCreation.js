@@ -1,5 +1,5 @@
 class projectCreation {
-  constructor(addButton){
+  constructor(){
     //refresh dropdwon in addForm
     $('#type-dropdown.dropdown')
       .dropdown()
@@ -43,7 +43,7 @@ class projectCreation {
       const to = parseInt(that.yearTo.value)
       const from = parseInt(that.yearFrom.value)
       if(from >= to)
-        yearTo.value = from + 1
+        that.yearTo.value = from + 1
     }
   }
 }

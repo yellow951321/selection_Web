@@ -84,6 +84,7 @@ async function getCampusDetail(data) {
   data.checked = numTotal !== 0 ?(numChecked / numTotal * 100).toFixed(0) : 0
   data.confliced = numTotal !== 0 ? (numConfliced / numTotal * 100).toFixed(0) : 0
   data.lastUpdateTime = lastUpdateTime[0].dataValues.lastUpdateTime
+  data.campusName = campusMap[data.typeId].campus[data.campusId]
   return data
 }
 /**

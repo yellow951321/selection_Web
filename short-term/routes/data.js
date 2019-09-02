@@ -87,8 +87,8 @@ router.get('/:dataId/edit', async(req, res, next) => {
           name: '計畫申請書',
         },
         {
-          id: res.locals.year,
-          name: res.locals.year,
+          id: res.locals.yearId,
+          name: res.locals.yearId,
         },
         {
           id: res.locals.typeId,

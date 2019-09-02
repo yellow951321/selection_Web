@@ -44,7 +44,7 @@ describe('test mid-long-term/models/operations/login.js', ()=>{
       UserFindOneStub = sandbox.stub(User, 'findOne').throws()
       try{
         await login({expiration: 0, })
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('fetching data failed')
@@ -59,7 +59,7 @@ describe('test mid-long-term/models/operations/login.js', ()=>{
       })
       try{
         await login({account, expiration: 0, })
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(401)
         expect(err).to.have.property('message').to.equal(`No account matched ${account}.`)
@@ -67,23 +67,23 @@ describe('test mid-long-term/models/operations/login.js', ()=>{
       UserFindOneStub.restore()
     })
     it('should throw an error message: expiration is NaN', async()=>{
-        let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
-        for(let arg of invalidType){
-          try{
-            await login({expiration: arg, })
-            expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
-          }catch(err){
-            expect(err).to.have.property('status').to.equal(400)
-            expect(err).to.have.property('message').to.equal('expiration is NaN')
-          }
+      let invalidType = [NaN, {}, '1', undefined, null, true, ()=> {return}, ]
+      for(let arg of invalidType){
+        try{
+          await login({expiration: arg, })
+          expect.fail(`should not get here with arg ${invalidType} with type ${typeof invalidType}`)
+        }catch(err){
+          expect(err).to.have.property('status').to.equal(400)
+          expect(err).to.have.property('message').to.equal('expiration is NaN')
         }
-      })
+      }
+    })
     it('should throw an error message: creating session failed', async()=>{
       SessionCreateStub.restore()
       SessionCreateStub = sandbox.stub(Session, 'create').throws()
       try{
         await login({expiration: 0, })
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('creating session failed')

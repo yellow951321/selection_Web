@@ -1,4 +1,4 @@
-import {map, shortTermFromNumber, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
+import {map, }from 'projectRoot/lib/static/javascripts/mapping/label.js'
 
 // variables
 const pageAdvice = document.getElementById('advice')
@@ -14,6 +14,7 @@ class Filter{
     this.htmlTable = this.buildTables()
     this.pageMessage = document.getElementById('page-message')
     this.dataId = pageFilter.querySelector('.dataId').innerHTML
+    this.year = pageFilter.querySelector('.year').innerHTML
     this.targetNode = null
   }
 
@@ -45,7 +46,7 @@ class Filter{
   }
 
   static chooseMode(that){
-    return (event) => {
+    return () => {
       const mode = pageFilter.querySelector('.filter.filter__mode').firstChild.value
       switch (mode){
       case 'view':
@@ -55,7 +56,7 @@ class Filter{
         this.viewAndAuditMode(that, 'audit')
         break
       default:
-        console.log('mode detection failed')
+
       }
     }
   }
@@ -80,7 +81,7 @@ class Filter{
       isChecked,
     }
     parameters = Reflect.ownKeys(parameters).map(key => `${key}=${parameters[key]}`).join('&')
-    fetch(`/short-term/review/${that.dataId}/filter?${parameters}`, {
+    fetch(`/short-term/${that.year}/review/${that.dataId}/filter?${parameters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -137,7 +138,7 @@ class Filter{
       let conflictedAspect = Number(pageAdvice.querySelector('.filter.filter__dimension').firstChild.value)
       let conflictedKeypoint = Number(pageAdvice.querySelector('.filter.filter__item').firstChild.value)
       let conflictedMethod = Number(pageAdvice.querySelector('.filter.filter__detail').firstChild.value)
-      fetch('/short-term/review/conflict', {
+      fetch(`/short-term/${that.year}/review/conflict`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: that.targetNode.querySelector('.node-index').value,
@@ -150,7 +151,7 @@ class Filter{
         },
       })
         .then(res => res.text())
-        .then(data => {
+        .then(() => {
           $('#advice').modal({
             onApprove : function(){return false},
           }).modal('hide')
@@ -170,7 +171,7 @@ class Filter{
     return (event) => {
       event.preventDefault()
       let node = event.target.parentNode.parentNode.parentNode.parentNode
-      fetch('/short-term/review/check', {
+      fetch(`/short-term/${that.year}/review/check`, {
         method: 'POST',
         body: JSON.stringify({
           contentId: node.querySelector('.node-index').value,

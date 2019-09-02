@@ -10,7 +10,7 @@
     "browser-sync": "browser-sync --config browser-sync.config.js start",
     "lint": "npm-run-all --parallel lint:*",
     "lint:server-js": "eslint -c .eslintrc.server.js --ignore-path .gitignore --ignore-pattern \"!.eslintrc.*.js\" --fix \"server.js\" \".eslintrc.browser.js\" \".eslintrc.server.js\" \"browser-list.js\" \"browser-sync.config.js\" \"webpack.*.config.js\" \"auth/app.js\" \"auth/models/**/*.js\" \"short-term/app.js\" \"short-term/models/**/*.js\" \"mid-long-term/app.js\" \"mid-long-term/models/**/*.js\"",
-    "lint:browser-js": "eslint -c .eslintrc.browser.js --ignore-path .gitignore --fix \"server.js\" \"auth/static/javascripts/**/*.js\" \"short-term/static/javascripts/**/*.js\" \"mid-long-term/static/javascripts/**/*.js\"",
+    "lint:browser-js": "eslint -c .eslintrc.browser.js --ignore-path .gitignore --fix \"auth/static/javascripts/**/*.js\" \"short-term/static/javascripts/**/*.js\" \"mid-long-term/static/javascripts/**/*.js\"",
     "lint:test-js": "eslint -c .eslintrc.test.js --ignore-path .gitignore --fix \"test/static/**/*.js\"",
     "pre-build": "cp config.js.default config.js",
     "build": "cross-env NODE_ENV=production npm-run-all --parallel build:*",

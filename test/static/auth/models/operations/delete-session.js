@@ -31,7 +31,7 @@ describe('test mid-long-term/models/operations/content-auth.js', ()=>{
       let sessionStub = sandbox.stub(Session, 'destroy').throws()
       try{
         await deleteSession({sessionId: 'testSession', })
-        expect.fail(`should not get here`)
+        expect.fail('should not get here')
       }catch(err){
         expect(err).to.have.property('status').to.equal(500)
         expect(err).to.have.property('message').to.equal('deleting session failed')

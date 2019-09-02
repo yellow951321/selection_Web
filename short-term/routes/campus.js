@@ -56,8 +56,8 @@ router.get('/index', async(req, res, next)=>{
      * with the given typeIda and yearId
      */
     const data = await getAllCampus({
-      typeId: res.locals.typeId,
-      year: res.locals.yearId,
+      typeId: Number(res.locals.typeId),
+      year: Number(res.locals.yearId),
     })
     /**
      * After obtain the whole campus data,
