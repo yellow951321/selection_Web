@@ -58,10 +58,10 @@ router.post('/change', async(req, res) => {
   try{
 
     await contentChangeLabel({
-      contentId: req.body.contentId,
-      aspect: req.body.aspect,
-      keypoint: req.body.keypoint,
-      method: req.body.method,
+      contentId: Number(req.body.contentId),
+      aspect: Number(req.body.aspect),
+      keypoint: Number(req.body.keypoint),
+      method: Number(req.body.method),
     })
 
     res.send('completed')
@@ -103,7 +103,6 @@ router.get('/:dataId/filter', async(req, res, next)=>{
     })
   }
   catch (err){
-    console.log(err)
     if(!err.status){
       err = new Error('filter failed')
       err.status = 500
@@ -138,7 +137,7 @@ router.route('/:dataId/check')
 .post(async(req, res) => {
   try{
 
-    await contentUpdate(req.body.contentId,{
+    await contentUpdate(Number(req.body.contentId),{
       isChecked: 1,
       isConflicted: 0,
     })
@@ -157,10 +156,10 @@ router.post('/:dataId/add', async(req, res, next)=>{
   try{
 
     let data = await contentCreate({
-      aspect: req.body.aspect,
-      keypoint: req.body.keypoint,
-      method: req.body.method,
-      dataId: res.locals.dataId,
+      aspect: Number(req.body.aspect),
+      keypoint: Number(req.body.keypoint),
+      method: Number(req.body.method),
+      dataId: Number(res.locals.dataId),
     })
 
     res.render('mixins/editnodes/newedit', {

@@ -65,7 +65,7 @@ router.post('/save', async(req, res, next)=>{
 
 router.delete('/delete', async(req, res)=>{
   try{
-    await contentDelete({contentId: req.body.contentId})
+    await contentDelete({contentId: Number(req.body.contentId)})
     res.send('completed')
   }
   catch(err){
@@ -160,7 +160,7 @@ router.route('/:dataId/check')
 .post(async(req, res) => {
   try{
 
-    await contentUpdate(req.body.contentId,{
+    await contentUpdate(Number(req.body.contentId),{
       isChecked: 1,
       isConflicted: 0,
     })
@@ -179,10 +179,10 @@ router.post('/:dataId/add', async(req, res, next)=>{
   try{
 
     let data = await contentCreate({
-      aspect: req.body.aspect,
-      keypoint: req.body.keypoint,
-      method: req.body.method,
-      dataId: res.locals.dataId,
+      aspect: Number(req.body.aspect),
+      keypoint: Number(req.body.keypoint),
+      method: Number(req.body.method),
+      dataId: Number(res.locals.dataId),
     })
 
     res.render('mixins/editnodes/newedit', {
