@@ -16,7 +16,7 @@ const router = express.Router({
 router.get('/:dataId/index', async(req, res, next)=>{
   try {
     const {filePath, data} = await createCsv({
-      dataId: req.params.dataId
+      dataId: Number(req.params.dataId),
     })
 
     const options = {
