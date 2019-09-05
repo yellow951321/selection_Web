@@ -50,6 +50,7 @@ export default async(info) => {
         'typeId',
         'campusId',
         'userId',
+        'year',
       ],
     })
   }catch(err){
@@ -68,6 +69,7 @@ export default async(info) => {
     info:{
       typeId: checkData.typeId,
       campusId: checkData.campusId,
+      year: checkData.year,
     },
   }
   if(checkData.userId !== userId){

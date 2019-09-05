@@ -2,7 +2,7 @@ import express from 'express'
 import dataDelete from 'short-term/models/operations/data-delete.js'
 import dataCreate from 'short-term/models/operations/data-create.js'
 import campusMap from 'lib/static/javascripts/mapping/campus.js'
-import contentAuth from 'projectRoot/short-term/models/operations/content-auth.js'
+import contentAuth from 'short-term/models/operations/content-auth.js'
 
 const router = express.Router({
   // case sensitive for route path
@@ -37,6 +37,7 @@ router.post('/add', async(req, res, next)=>{
 
 router.post('/delete', async(req, res, next)=>{
   try{
+
     await dataDelete(Number(req.body.dataId), Number(req.session.userId))
     res.redirect('/short-term/index')
   } catch (err) {
@@ -78,6 +79,7 @@ router.use('/:dataId', async(req, res, next) => {
 
 router.get('/:dataId/edit', async(req, res, next) => {
   try {
+
     let typeName = campusMap[res.locals.typeId].type
     let campusName = campusMap[res.locals.typeId].campus[res.locals.campusId]
     res.render('edit', {
@@ -87,8 +89,8 @@ router.get('/:dataId/edit', async(req, res, next) => {
           name: '計畫申請書',
         },
         {
-          id: res.locals.yearId,
-          name: res.locals.yearId,
+          id: res.locals.year,
+          name: res.locals.year,
         },
         {
           id: res.locals.typeId,

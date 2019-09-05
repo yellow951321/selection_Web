@@ -44,6 +44,7 @@ export default async(dataId, userId) => {
     err.status = 400
     throw err
   }
+
   if(data.userId !== userId){
     const err = new Error('Unauthorized')
     err.status = 401
